@@ -1,7 +1,9 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
+  "conventionalCommits.scopes": [
+    "shared",
+    "docs",
+    "packages",
+    "client",
+    "api"
   ]
 }

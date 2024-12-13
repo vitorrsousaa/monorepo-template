@@ -7,8 +7,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "lint": "biome lint --apply ./src",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "format": "biome format --write ./src"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
@@ -17,7 +19,6 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20",
     "@types/react": "18.3.1",
