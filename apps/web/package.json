@@ -1,16 +1,15 @@
 {
   "name": "web",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint --apply ./src",
+    "lint": "biome lint --apply ./app",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "format": "biome format --write ./src"
+    "format": "biome format --write ./app"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
@@ -23,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "5.5.4"
   }
 }
