@@ -1,26 +1,51 @@
-# Turborepo starter
+# Monorepo Starter Template
 
-This is an official starter Turborepo.
+The purpose of this configuration is to ensure strict coding standards and facilitate coding experience using monorepo.
 
-## Using this example
+## Intro
 
-Run the following command:
+This monorepo consist in these packages:
 
-```sh
-npx create-turbo@latest
+```bash
+└─ monorepo # <- monorepo root package
+   ├─ apps
+   │  ├─ api # <- typescript server application
+   │  ├─ client # <- typescript react application
+   │  └─ storefront # <- typescript next application
+   └─ packages
+      ├─ @shared/config-css # <- css config files used throughout the monorepo
+      ├─ @shared/config-typescript # <- tsconfig.json's used throughout the monorepo
+      ├─ @shared/logger # <- isomorphic logger (a small wrapper around console.log)
+      ├─ @shared/vitest-presets # <- Vitest configurations
+      └─ @shared/ui # <- a dummy React UI library with tailwindcss and shadcn
 ```
 
-## What's inside?
+## Configuration
 
-This Turborepo includes the following packages/apps:
+### Core
 
-### Apps and Packages
+- [Git](/docs/core/git.md)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Monorepo
+
+- [Monorepo](docs/packages/monorepo.md)
+- [Biome](/tools/biome.md)
+- [CommitLint](/tools/commitlint.md)
+- [LintStaged](/docs/tools/lint-staged.md)
+- [Lefthook](/docs/tools/lefthook.md)
+
+### Lib
+
+- [Typescript](/packages/typescript.md)
+- [Vitest](/packages/vitest.md)
+
+### Lib | `react`
+
+- [React Lib](https://react.dev/)
+
+### App | `next`
+
+- [Next App](https://nextjs.org/)
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -29,8 +54,6 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 This Turborepo has some additional tools already setup for you:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
