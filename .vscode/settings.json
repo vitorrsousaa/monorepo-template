@@ -4,6 +4,7 @@
     "docs",
     "packages",
     "client",
-    "api"
+    "api",
+    "ui"
   ]
 }
