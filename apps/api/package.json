@@ -1,0 +1,17 @@
+{
+  "name": "api",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20",
+    "serverless-esbuild": "^1.54.6",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "serverless-dotenv-plugin": "^6.0.0"
+  }
+}

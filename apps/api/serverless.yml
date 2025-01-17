@@ -1,0 +1,134 @@
+
+service: ProjectName
+useDotenv: true
+frameworkVersion: '3'
+
+plugins:
+  - serverless-esbuild
+  - serverless-dotenv-plugin
+
+package:
+  individually: true
+  excludeDevDependencies: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  deploymentMethod: direct
+  architecture: arm64
+  accessKeyId: ${env:AWS_ACCESS_KEY_ID}
+  secretAccessKeyId: ${env:AWS_SECRET_ACCESS_KEY}
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:DeleteItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:ConditionCheckItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - !GetAtt ProjectNameTable.Arn
+            - !Sub ${ProjectNameTable.Arn}/index/GSI1Index
+  environment:
+    STAGE: ${self:provider.stage}
+    STRIPE_PUBLISHABLE_KEY: ${env:STRIPE_PUBLISHABLE_KEY}
+    STRIPE_FREE_PRICE_ID: ${env:STRIPE_FREE_PRICE_ID}
+    STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
+    STRIPE_WEBHOOK_SECRET: ${env:STRIPE_WEBHOOK_SECRET}
+    STRIPE_PRICE_ID: ${env:STRIPE_PRICE_ID}
+    STRIPE_PRO_PRICE_ID: ${env:STRIPE_PRO_PRICE_ID}
+    STRIPE_PRO_QUOTA: ${env:STRIPE_PRO_QUOTA}
+    STRIPE_FREE_QUOTA: ${env:STRIPE_FREE_QUOTA}
+    REDIRECT_URL_STRIPE: ${env:REDIRECT_URL_STRIPE}
+    AUTH_GOOGLE_CLIENT_ID: ${env:AUTH_GOOGLE_CLIENT_ID}
+    AUTH_GOOGLE_CLIENT_SECRET: ${env:AUTH_GOOGLE_CLIENT_SECRET}
+    AUTH_GOOGLE_REDIRECT_URI: ${env:AUTH_GOOGLE_REDIRECT_URI}
+    AUTH_SECRET: ${env:AUTH_SECRET}
+  httpApi:
+    cors:
+      allowedOrigins:
+        - '*'
+      allowedHeaders:
+        - '*'
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+
+resources:
+  Resources:
+    ProjectNameTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        TableName: ProjectNameTable-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: gsi1pk
+            AttributeType: S
+          - AttributeName: gsi1sk
+            AttributeType: S
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1Index
+            KeySchema:
+              - AttributeName: gsi1pk
+                KeyType: HASH
+              - AttributeName: gsi1sk
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+custom:
+  dotenv:
+    path: ${file(./.env.${self:provider.stage})}
+  stages:
+    - dev
+    - prod
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: false
+    target: node20
+    exclude:
+      - '@aws-sdk/*'
+    define:
+      require.resolve: undefined
+    platform: node
+    concurrency: 10
+
+functions:
+  signinWithGoogle:
+    handler: src/server/functions/auth/signin-with-google.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /auth/google
+  getProfile:
+    handler: src/server/functions/auth/profile.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /auth/profile
+  createCheckoutSession:
+    handler: src/server/functions/payment/create-checkout.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /payment/create-checkout
