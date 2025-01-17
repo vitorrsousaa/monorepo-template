@@ -5,6 +5,7 @@
     "packages",
     "client",
     "api",
-    "ui"
+    "ui",
+    "cli"
   ]
 }
