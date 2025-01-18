@@ -22,6 +22,10 @@ export class AuthenticationMiddleware implements IAuthenticationMiddleware {
 				throw new InvalidAccessToken();
 			}
 
+			if (!token) {
+				throw new InvalidAccessToken();
+			}
+
 			const payload = await this.tokenProvider.verify(token);
 
 			return {

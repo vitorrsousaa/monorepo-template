@@ -10,11 +10,14 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "serverless-esbuild": "^1.54.6",
     "typescript": "5.5.4"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "jsonwebtoken": "^9.0.2",
     "serverless": "^4.4.19",
     "serverless-dotenv-plugin": "^6.0.0",
     "zod": "^3.24.1"
