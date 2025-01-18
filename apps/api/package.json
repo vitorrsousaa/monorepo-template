@@ -3,7 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "biome lint --apply ./src",
+    "typecheck": "tsc --noEmit",
+    "format": "biome format --write ./src"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -13,6 +16,7 @@
   },
   "dependencies": {
     "serverless": "^4.4.19",
-    "serverless-dotenv-plugin": "^6.0.0"
+    "serverless-dotenv-plugin": "^6.0.0",
+    "zod": "^3.24.1"
   }
 }

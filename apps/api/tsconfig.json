@@ -8,9 +8,9 @@
       "ES2015"
     ],
     "outDir": "./dist",
-    "types": [
-      "vitest/globals"
-    ]
+    // "types": [
+    //   "vitest/globals"
+    // ]
   },
   "exclude": [
     "node_modules"
