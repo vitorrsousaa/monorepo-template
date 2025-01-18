@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import inquirer from "inquirer";
+import { createController } from "./commands/create/controller";
 import { createModule } from "./commands/create/module";
+import { createService } from "./commands/create/service";
 
 async function create(moduleName: string) {
 	const { type, name } = await inquirer.prompt([
@@ -14,9 +16,9 @@ async function create(moduleName: string) {
 		{
 			type: "input",
 			name: "name",
-			message: "Qual o nome do módulo?",
+			message: "Qual o nome do recurso que voce deseja criar?",
 			validate: (input: string) =>
-				input.length > 0 ? true : "O nome do módulo não pode ser vazio.",
+				input.length > 0 ? true : "O nome do recurso não pode ser vazio.",
 		},
 	]);
 
@@ -31,6 +33,36 @@ async function create(moduleName: string) {
 			},
 		]);
 		await createModule(name, serviceName);
+		return;
+	}
+
+	if (type === "controller") {
+		const { moduleName } = await inquirer.prompt([
+			{
+				type: "input",
+				name: "moduleName",
+				message: "Qual o nome do module que o controller vai ser inserido?",
+				validate: (input: string) =>
+					input.length > 0 ? true : "O nome do service não pode ser vazio.",
+			},
+		]);
+
+		await createController(moduleName, name);
+		return;
+	}
+
+	if (type === "service") {
+		const { moduleName } = await inquirer.prompt([
+			{
+				type: "input",
+				name: "moduleName",
+				message: "Qual o nome do module que o service vai ser inserido?",
+				validate: (input: string) =>
+					input.length > 0 ? true : "O nome do service não pode ser vazio.",
+			},
+		]);
+
+		await createService(moduleName, name);
 		return;
 	}
 }

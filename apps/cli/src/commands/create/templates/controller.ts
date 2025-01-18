@@ -1,4 +1,4 @@
-import { toKebabCase } from "@/utils";
+import { toKebabCase } from "../../../utils";
 
 export function getControllerTemplate(input: string) {
 	return `import type { IController } from "@application/interfaces/controller";
