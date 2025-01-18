@@ -1,4 +1,4 @@
-import { toKebabCase } from "../../../utils";
+import { toPascalCase } from "../../../utils";
 
 export function getControllerTemplate(input: string) {
 	return `import type { IController } from "@application/interfaces/controller";
@@ -7,7 +7,7 @@ import { IAuthenticationMiddleware } from "@application/shared/middlewares/authe
 import { errorHandler } from "@application/utils/error-handler";
 import { missingFields } from "@application/utils/missing-fields";
 
-export class ${toKebabCase(input)}Controller implements IController {
+export class ${toPascalCase(input)}Controller implements IController {
   constructor(private readonly authenticationMiddleware: IAuthenticationMiddleware) {}
   async handle(request: IRequest): Promise<IResponse> {
     try {
