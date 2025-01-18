@@ -3,6 +3,7 @@ import { Command } from "commander";
 import inquirer from "inquirer";
 import { createController } from "./commands/create/controller";
 import { createModule } from "./commands/create/module";
+import { createProvider } from "./commands/create/provider";
 import { createService } from "./commands/create/service";
 
 async function create(moduleName: string) {
@@ -11,7 +12,7 @@ async function create(moduleName: string) {
 			type: "list",
 			name: "type",
 			message: "O que você deseja criar?",
-			choices: ["module", "controller", "service"],
+			choices: ["module", "controller", "service", "provider"],
 		},
 		{
 			type: "input",
@@ -63,6 +64,12 @@ async function create(moduleName: string) {
 		]);
 
 		await createService(moduleName, name);
+		return;
+	}
+
+	if (type === "provider") {
+		await createProvider(name);
+
 		return;
 	}
 }
