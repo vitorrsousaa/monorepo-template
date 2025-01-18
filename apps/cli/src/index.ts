@@ -1,47 +1,45 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import fs from "fs-extra";
-import path from "node:path";
+import inquirer from "inquirer";
+import { createModule } from "./commands/create/module";
 
-// Função para gerar os arquivos TypeScript
-async function createModuleFile(moduleName: string) {
-	const targetDir = path.resolve(__dirname, "../apps/api/module");
+async function create(moduleName: string) {
+	const { type, name } = await inquirer.prompt([
+		{
+			type: "list",
+			name: "type",
+			message: "O que você deseja criar?",
+			choices: ["module", "controller", "service"],
+		},
+		{
+			type: "input",
+			name: "name",
+			message: "Qual o nome do módulo?",
+			validate: (input: string) =>
+				input.length > 0 ? true : "O nome do módulo não pode ser vazio.",
+		},
+	]);
 
-	// Verificando se o diretório 'module' existe dentro do api
-	const moduleDir = path.join(targetDir, moduleName);
-	if (fs.existsSync(moduleDir)) {
-		console.log(`O módulo '${moduleName}' já existe.`);
+	if (type === "module") {
+		const { serviceName } = await inquirer.prompt([
+			{
+				type: "input",
+				name: "serviceName",
+				message: "Qual o nome do service default?",
+				validate: (input: string) =>
+					input.length > 0 ? true : "O nome do service não pode ser vazio.",
+			},
+		]);
+		await createModule(name, serviceName);
 		return;
-	}
-
-	try {
-		// Criação do diretório do módulo (caso não exista)
-		await fs.ensureDir(moduleDir);
-
-		// Criação do arquivo TypeScript
-		const filePath = path.join(moduleDir, `${moduleName}.ts`);
-		const fileContent = `
-      // Arquivo gerado automaticamente para o módulo ${moduleName}
-      export const ${moduleName} = () => {
-        console.log('Módulo ${moduleName} criado com sucesso!');
-      };
-    `;
-		await fs.outputFile(filePath, fileContent);
-
-		console.log(
-			`Módulo '${moduleName}' criado com sucesso! Arquivo em: ${filePath}`,
-		);
-	} catch (err) {
-		console.error("Erro ao criar o módulo:", err);
 	}
 }
 
-// Configuração da CLI com o Commander
 const program = new Command();
 
 program
-	.command("create <moduleName>")
+	.command("create")
 	.description("Cria um novo módulo com um arquivo TypeScript")
-	.action(createModuleFile);
+	.action(create);
 
 program.parse(process.argv);
