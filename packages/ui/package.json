@@ -4,15 +4,10 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./button": "./src/components/button.tsx",
-    "./card": "./src/components/card.tsx",
-    "./input": "./src/components/input.tsx",
-    "./avatar": "./src/components/avatar.tsx",
-    "./sheet": "./src/components/sheet.tsx",
-    "./alert": "./src/components/alert.tsx",
-    "./skeleton": "./src/components/skeleton.tsx",
-    "./label": "./src/components/label.tsx",
-    "./utils": "./src/utils",
+    "./*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
     "./postcss.config": "./postcss.config.mjs",
     "./tailwind.config": "./tailwind.config.mjs"
   },
@@ -20,17 +15,21 @@
     "generate:component": "turbo gen react-component",
     "lint": "biome lint --apply ./src",
     "typecheck": "tsc --noEmit",
-    "format": "biome format --write ./src"
+    "format": "biome format --write ./src",
+    "build": "tsup",
+    "prepublishOnly": "pnpm build",
+    "dev": "tsup --watch"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@turbo/gen": "^1.12.4",
-    "@types/node": "^20.11.24",
+    "@types/node": "^24.6.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
+    "tsup": "^8.0.1",
     "typescript": "5.5.4"
   },
   "dependencies": {
@@ -45,5 +44,11 @@
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
-  }
+  },
+  "files": [
+    "dist",
+    "postcss.config.mjs",
+    "tailwind.config.mjs"
+  ],
+  "sideEffects": false
 }
