@@ -12,18 +12,21 @@
     "format": "biome format --write ./src"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.5",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.4"
   },
   "devDependencies": {
+    "@repo/ui": "workspace:*",
+    "@repo/vitest-presets": "workspace:*",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "@types/node": "^24.6.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
     "globals": "^16.4.0",
     "typescript": "~5.9.3",
-    "vite": "^7.1.7",
-    "@repo/vitest-presets": "workspace:*",
-    "@repo/ui": "workspace:*"
+    "vite": "^7.1.7"
   }
 }

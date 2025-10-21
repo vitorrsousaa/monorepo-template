@@ -5,12 +5,9 @@ import { defineConfig } from "vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    open: true,
-  },
   resolve: {
     alias: {
-      "@/screens": path.resolve(__dirname, "./src/view/screens"),
+      "@/pages": path.resolve(__dirname, "./src/view/pages"),
       "@/ui": path.resolve(__dirname, "./src/view/ui"),
       "@/components": path.resolve(__dirname, "./src/view/components"),
       "@/layouts": path.resolve(__dirname, "./src/view/layouts"),
