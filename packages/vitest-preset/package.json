@@ -1,0 +1,15 @@
+{
+  "name": "@repo/vitest-presets",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "browser/vitest.config.js",
+    "node/vitest.config.js"
+  ],
+  "devDependencies": {
+    "@vitest/spy": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "happy-dom": "^20.0.7"
+  }
+}
