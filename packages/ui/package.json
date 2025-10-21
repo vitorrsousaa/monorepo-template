@@ -14,7 +14,7 @@
     "./label": "./src/components/label.tsx",
     "./utils": "./src/utils",
     "./postcss.config": "./postcss.config.mjs",
-    "./tailwind.config": "./tailwind.config.js"
+    "./tailwind.config": "./tailwind.config.mjs"
   },
   "scripts": {
     "generate:component": "turbo gen react-component",
