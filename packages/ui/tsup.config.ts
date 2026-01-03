@@ -2,7 +2,11 @@ import path from "node:path";
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/components/**/*.tsx", "src/utils/index.ts"],
+  entry: [
+    "src/components/**/*.tsx",
+    "src/utils/index.ts",
+    "src/providers/index.ts",
+  ],
   format: ["esm"],
   dts: true,
   splitting: false,

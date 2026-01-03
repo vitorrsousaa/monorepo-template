@@ -1,6 +1,6 @@
+import "@repo/ui/styles/theme.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./view/App.tsx";
 
 const el = document.getElementById("root");

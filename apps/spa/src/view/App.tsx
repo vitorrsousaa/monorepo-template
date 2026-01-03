@@ -1,11 +1,14 @@
 import { QueryClientProvider } from "@/libs/query";
+import { ThemeProvider } from "@repo/ui/providers";
 import { Router } from "./router/browser";
 
 function App() {
 	return (
-		<QueryClientProvider>
-			<Router />
-		</QueryClientProvider>
+		<ThemeProvider defaultTheme="system" storageKey="spa-ui-theme">
+			<QueryClientProvider>
+				<Router />
+			</QueryClientProvider>
+		</ThemeProvider>
 	);
 }
 

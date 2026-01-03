@@ -8,6 +8,11 @@
       "types": "./dist/components/*.d.ts",
       "import": "./dist/components/*.js"
     },
+    "./providers": {
+      "types": "./dist/providers/index.d.ts",
+      "import": "./dist/providers/index.js"
+    },
+    "./styles/theme.css": "./src/styles/theme.css",
     "./postcss.config": "./postcss.config.mjs",
     "./tailwind.config": "./tailwind.config.mjs"
   },
@@ -47,6 +52,7 @@
   },
   "files": [
     "dist",
+    "src/styles",
     "postcss.config.mjs",
     "tailwind.config.mjs"
   ],
