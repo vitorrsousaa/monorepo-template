@@ -11,6 +11,7 @@ This monorepo consist in these packages:
    ├─ apps
    │  ├─ api # <- typescript server application
    │  ├─ client # <- typescript react application
+   │  └─ cli # <- cli application
    │  └─ storefront # <- typescript next application
    └─ packages
       ├─ @shared/config-css # <- css config files used throughout the monorepo
