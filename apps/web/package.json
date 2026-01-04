@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint --apply ./app",
+    "lint": "biome lint --write ./app",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "format": "biome format --write ./app"

@@ -20,7 +20,7 @@
     "generate:component": "turbo gen react-component",
     "lint": "biome lint --write ./src",
     "typecheck": "tsc --noEmit",
-    "format": "biome format --apply ./src",
+    "format": "biome format --write ./src",
     "build": "tsup",
     "prepublishOnly": "pnpm build",
     "dev": "tsup --watch"

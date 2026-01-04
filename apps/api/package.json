@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "biome lint --apply ./src",
+    "lint": "biome lint --write ./src",
     "typecheck": "tsc --noEmit",
     "format": "biome format --write ./src"
   },
