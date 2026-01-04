@@ -1,4 +1,16 @@
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import {
+	ArrowRightEndOnRectangleIcon,
+	ArrowUturnRightIcon,
+	BellIcon,
+	CheckBadgeIcon,
+	ChevronRightIcon,
+	ChevronUpDownIcon,
+	CreditCardIcon,
+	EllipsisHorizontalIcon,
+	FolderIcon,
+	SparklesIcon,
+	TrashIcon,
+} from "@heroicons/react/24/outline";
 
 export interface IconProps {
 	name: keyof typeof icons;
@@ -7,6 +19,16 @@ export interface IconProps {
 
 const icons = {
 	chevronRight: ChevronRightIcon,
+	arrowRightEndOnRectangle: ArrowRightEndOnRectangleIcon,
+	bell: BellIcon,
+	checkBadge: CheckBadgeIcon,
+	chevronUpDown: ChevronUpDownIcon,
+	creditCard: CreditCardIcon,
+	sparkles: SparklesIcon,
+	folder: FolderIcon,
+	arrowUturnRight: ArrowUturnRightIcon,
+	ellipsisHorizontal: EllipsisHorizontalIcon,
+	trash: TrashIcon,
 } as const;
 
 export function Icon(props: IconProps) {

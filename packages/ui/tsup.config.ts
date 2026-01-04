@@ -6,7 +6,6 @@ export default defineConfig({
 		"src/components/**/*.tsx",
 		"src/utils/index.ts",
 		"src/providers/index.ts",
-		"src/others/index.ts",
 	],
 	format: ["esm"],
 	dts: true,
