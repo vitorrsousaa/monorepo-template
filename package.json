@@ -6,7 +6,8 @@
     "dev": "turbo dev",
     "format": "turbo run format --",
     "lint": "turbo run lint --",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "cosmos": "node apps/cli/dist/index.js"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

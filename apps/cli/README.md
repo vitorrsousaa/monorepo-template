@@ -21,30 +21,41 @@ pnpm build
 
 ## Usage
 
-After building, you can run the CLI using:
+After building the CLI (it will be built automatically when you run `pnpm build` from the root), you can use it directly from the monorepo root:
 
 ```bash
-# From the monorepo root
-pnpm --filter=cli start create
+# From the monorepo root - simply type:
+pnpm cosmos create
+```
 
-# Or using the binary directly (after building)
+This will execute the CLI directly from the built files. Make sure the CLI is built first:
+
+```bash
+# Build the CLI (if not already built)
+pnpm build --filter=cli
+
+# Or build everything
+pnpm build
+```
+
+### Alternative: Direct Execution
+
+You can also run it directly using Node:
+
+```bash
 node apps/cli/dist/index.js create
 ```
 
-### Global Installation (Optional)
+### ⚠️ Global Installation (Not Recommended)
 
-To use the CLI globally, you can link it:
+If you want to use `cosmos` globally from anywhere on your system, you can link it:
 
 ```bash
 cd apps/cli
 pnpm link --global
 ```
 
-Then use it from anywhere:
-
-```bash
-cosmos create
-```
+**Important:** Using global linking can cause conflicts if you have multiple projects with a `cosmos` command. The global link will point to one specific version, which may not be compatible with other projects. It's recommended to use the project-local script (`pnpm cosmos`) instead, which ensures you're always using the correct version for this specific project.
 
 ## Commands
 
@@ -63,16 +74,19 @@ This command will prompt you with a series of questions to determine what to cre
 ### 1. Module
 
 Creates a complete module structure with:
+
 - A default controller
 - A default service
 - Proper directory structure (`controllers/` and `services/` subdirectories)
 - Index files for exports
 
 **Prompts:**
+
 - Module name
 - Default service name (used for the initial controller and service)
 
 **Generated Structure:**
+
 ```
 api/src/app/modules/{module-name}/
 ├── controllers/
@@ -86,6 +100,7 @@ api/src/app/modules/{module-name}/
 ```
 
 **Example:**
+
 ```bash
 cosmos create
 # Select: module
@@ -98,10 +113,12 @@ cosmos create
 Creates a new controller within an existing module.
 
 **Prompts:**
+
 - Module name (must exist)
 - Controller name
 
 **Generated Structure:**
+
 ```
 api/src/app/modules/{module-name}/controllers/{controller-name}/
 ├── controller.ts
@@ -109,6 +126,7 @@ api/src/app/modules/{module-name}/controllers/{controller-name}/
 ```
 
 **Generated Controller Template:**
+
 - Implements `IController` interface
 - Includes authentication middleware
 - Error handling with `errorHandler`
@@ -116,6 +134,7 @@ api/src/app/modules/{module-name}/controllers/{controller-name}/
 - Proper TypeScript types
 
 **Example:**
+
 ```bash
 cosmos create
 # Select: controller
@@ -128,10 +147,12 @@ cosmos create
 Creates a new service within an existing module.
 
 **Prompts:**
+
 - Module name (must exist)
 - Service name
 
 **Generated Structure:**
+
 ```
 api/src/app/modules/{module-name}/services/{service-name}/
 ├── service.ts
@@ -139,12 +160,14 @@ api/src/app/modules/{module-name}/services/{service-name}/
 ```
 
 **Generated Service Template:**
+
 - Implements `IService` interface
 - Zod schema for input validation
 - TypeScript types for input/output
 - Proper class structure
 
 **Example:**
+
 ```bash
 cosmos create
 # Select: service
@@ -157,9 +180,11 @@ cosmos create
 Creates a new provider in the providers directory.
 
 **Prompts:**
+
 - Provider name
 
 **Generated Structure:**
+
 ```
 api/src/app/providers/{provider-name}/
 ├── provider.ts
@@ -168,11 +193,13 @@ api/src/app/providers/{provider-name}/
 ```
 
 **Generated Provider Template:**
+
 - Provider class with config injection
 - TypeScript interface for the provider
 - Proper exports
 
 **Example:**
+
 ```bash
 cosmos create
 # Select: provider
@@ -190,6 +217,7 @@ The CLI automatically converts your input to the appropriate naming convention:
 ### Utility Functions
 
 The CLI includes utility functions for name conversion:
+
 - `toPascalCase()`: Converts to PascalCase
 - `toCamelCase()`: Converts to camelCase
 - `toKebabCase()`: Converts to kebab-case
@@ -199,6 +227,7 @@ The CLI includes utility functions for name conversion:
 ### Controller Template
 
 Controllers include:
+
 - Authentication middleware integration
 - Request/response handling
 - Field validation
@@ -208,6 +237,7 @@ Controllers include:
 ### Service Template
 
 Services include:
+
 - Zod schema for input validation
 - TypeScript types for input and output
 - Service interface implementation
@@ -216,6 +246,7 @@ Services include:
 ### Provider Template
 
 Providers include:
+
 - Configuration injection
 - Type definitions
 - Interface implementation
@@ -323,6 +354,7 @@ The CLI prevents overwriting existing resources. If you need to recreate a resou
 ### Build Errors
 
 Make sure you've built the CLI before using it:
+
 ```bash
 cd apps/cli
 pnpm build
@@ -340,4 +372,3 @@ When adding new templates or commands:
 ## License
 
 ISC
-
