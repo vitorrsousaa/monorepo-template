@@ -66,6 +66,9 @@
       "@/entities/*": [
         "./src/app/entities/*"
       ],
+      "@/modules/*": [
+        "./src/modules/*"
+      ],
     }
   },
   "include": [
