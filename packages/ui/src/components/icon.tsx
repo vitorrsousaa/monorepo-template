@@ -7,9 +7,10 @@ import {
 	ChevronUpDownIcon,
 	CreditCardIcon,
 	EllipsisHorizontalIcon,
+	FireIcon,
 	FolderIcon,
 	SparklesIcon,
-	TrashIcon,
+	TrashIcon
 } from "@heroicons/react/24/outline";
 
 export interface IconProps {
@@ -29,6 +30,7 @@ const icons = {
 	arrowUturnRight: ArrowUturnRightIcon,
 	ellipsisHorizontal: EllipsisHorizontalIcon,
 	trash: TrashIcon,
+	fire: FireIcon,
 } as const;
 
 export function Icon(props: IconProps) {
