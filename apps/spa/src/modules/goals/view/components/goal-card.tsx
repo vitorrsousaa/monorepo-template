@@ -12,21 +12,21 @@ export function GoalCard(props: GoalCardProps) {
 
   return (
     <Card className="p-6 bg-card border-border">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
+      <div className="flex items-start justify-between mb-4 gap-3">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0">
             <Timer className="w-5 h-5 text-primary" />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-balance">{
-              goal.name
-            }</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold truncate">
+              {goal.name}
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
               {goal.description}
             </p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="h-8 w-8 -mt-1">
+        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
           <MoreVertical className="w-4 h-4" />
         </Button>
       </div>
@@ -34,7 +34,7 @@ export function GoalCard(props: GoalCardProps) {
       <div className="space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Progress</span>
-          <span className="font-medium">2/10 tasks</span>
+          <span className="font-medium">{goal.tasks - goal.pending}/{goal.tasks} tasks</span>
         </div>
         <div className="space-y-2">
           <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -42,7 +42,7 @@ export function GoalCard(props: GoalCardProps) {
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-chart-2">{goal.progress}% complete</span>
-            <span className="text-muted-foreground">8 pending</span>
+            <span className="text-muted-foreground">{goal.pending} pending</span>
           </div>
         </div>
       </div>

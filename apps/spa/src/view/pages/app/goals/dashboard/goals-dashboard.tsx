@@ -35,7 +35,7 @@ export function GoalsDashboard() {
     {
       id: '4',
       name: 'Database Design Fundamentalssssss',
-      description: 'Learn database design principles and SQL optimization techniques.',
+      description: 'Learn database design principles and SQL optimization techniques. Learn database design principles and SQL optimization techniques.',
       progress: 70,
       tasks: 12,
       pending: 9,
@@ -61,7 +61,7 @@ export function GoalsDashboard() {
         </div>
         <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="w-4 h-4 mr-2" />
-          New Group
+          New Goal
         </Button>
       </div>
 
