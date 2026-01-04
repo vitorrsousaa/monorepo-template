@@ -17,11 +17,11 @@ pre-commit:
   commands:
     lint:
       glob: "*.{js,ts,jsx,tsx,md}"
-      run: pnpm run lint {staged_files}
+      run: pnpm exec biome lint --write {staged_files}
       stage_fixed: true
     format:
       glob: "*.{js,ts,jsx,tsx,md}"
-      run: pnpm run format {staged_files}
+      run: pnpm exec biome format --write {staged_files}
       stage_fixed: true
 
 pre-push:
