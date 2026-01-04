@@ -1,6 +1,6 @@
-import * as React from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light" | "system";
+export type Theme = "dark" | "light" | "system";
 
 type ThemeProviderProps = {
 	children: React.ReactNode;
@@ -18,33 +18,19 @@ const initialState: ThemeProviderState = {
 	setTheme: () => null,
 };
 
-const ThemeProviderContext =
-	React.createContext<ThemeProviderState>(initialState);
+const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
 	children,
 	defaultTheme = "system",
-	storageKey = "ui-theme",
+	storageKey = "vite-ui-theme",
 	...props
 }: ThemeProviderProps) {
-	const [theme, setTheme] = React.useState<Theme>(defaultTheme);
-	const [mounted, setMounted] = React.useState(false);
+	const [theme, setTheme] = useState<Theme>(
+		() => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
+	);
 
-	React.useEffect(() => {
-		setMounted(true);
-		// Só acessa localStorage após montar (client-side)
-		const stored = localStorage?.getItem(storageKey);
-		if (
-			stored &&
-			(stored === "light" || stored === "dark" || stored === "system")
-		) {
-			setTheme(stored as Theme);
-		}
-	}, [storageKey]);
-
-	React.useEffect(() => {
-		if (!mounted) return;
-
+	useEffect(() => {
 		const root = window.document.documentElement;
 
 		root.classList.remove("light", "dark");
@@ -60,26 +46,15 @@ export function ThemeProvider({
 		}
 
 		root.classList.add(theme);
-	}, [theme, mounted]);
+	}, [theme]);
 
 	const value = {
 		theme,
-		setTheme: (newTheme: Theme) => {
-			if (typeof window !== "undefined") {
-				localStorage?.setItem(storageKey, newTheme);
-			}
-			setTheme(newTheme);
+		setTheme: (theme: Theme) => {
+			localStorage.setItem(storageKey, theme);
+			setTheme(theme);
 		},
 	};
-
-	// Previne flash de conteúdo não estilizado no Next.js
-	if (!mounted) {
-		return (
-			<ThemeProviderContext.Provider {...props} value={value}>
-				{children}
-			</ThemeProviderContext.Provider>
-		);
-	}
 
 	return (
 		<ThemeProviderContext.Provider {...props} value={value}>
@@ -89,7 +64,7 @@ export function ThemeProvider({
 }
 
 export const useTheme = () => {
-	const context = React.useContext(ThemeProviderContext);
+	const context = useContext(ThemeProviderContext);
 
 	if (context === undefined)
 		throw new Error("useTheme must be used within a ThemeProvider");

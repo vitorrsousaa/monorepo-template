@@ -10,6 +10,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@repo/ui/sidebar";
+import { ThemeToggle } from "@repo/ui/theme-toggle";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "./sidebar";
 
@@ -19,7 +20,7 @@ export function DashboardLayout() {
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2">
+				<header className="flex h-16 shrink-0 items-center gap-2 justify-between mr-3">
 					<div className="flex items-center gap-2 px-4">
 						<SidebarTrigger className="-ml-1" />
 						<Separator
@@ -37,6 +38,7 @@ export function DashboardLayout() {
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>
+					<ThemeToggle />
 				</header>
 				<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
 					<Outlet />
