@@ -1,5 +1,3 @@
-"use client";
-
 import { Slot } from "@radix-ui/react-slot";
 import { SidebarLeftIcon } from "@sidekickicons/react/24/outline";
 import { cva, type VariantProps } from "class-variance-authority";
