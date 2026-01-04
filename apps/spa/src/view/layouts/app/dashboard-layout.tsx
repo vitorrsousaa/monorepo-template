@@ -2,9 +2,7 @@ import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
+	BreadcrumbList
 } from "@repo/ui/breadcrumb";
 import { Separator } from "@repo/ui/separator";
 import {
@@ -12,13 +10,11 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@repo/ui/sidebar";
+import { Outlet } from "react-router-dom";
 import { AppSidebar } from "./sidebar";
 
-type DashboardLayoutProps = {
-	children: React.ReactNode;
-};
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout() {
 	return (
 		<SidebarProvider>
 			<AppSidebar />
@@ -33,19 +29,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 						<Breadcrumb>
 							<BreadcrumbList>
 								<BreadcrumbItem className="hidden md:block">
-									<BreadcrumbLink href="#">
-										Building Your Application
+									<BreadcrumbLink >
+										Artemis
 									</BreadcrumbLink>
 								</BreadcrumbItem>
-								<BreadcrumbSeparator className="hidden md:block" />
-								<BreadcrumbItem>
-									<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-								</BreadcrumbItem>
+
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>
 				</header>
-				{children}
+				<Outlet />
 			</SidebarInset>
 		</SidebarProvider>
 	);

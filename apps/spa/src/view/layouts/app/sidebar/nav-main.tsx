@@ -24,7 +24,7 @@ export function NavMain({
 }: {
 	items: {
 		title: string;
-		url: string;
+		url?: string;
 		icon: LucideIcon;
 		isActive?: boolean;
 		items?: {
@@ -41,7 +41,7 @@ export function NavMain({
 					<Collapsible key={item.title} asChild defaultOpen={item.isActive}>
 						<SidebarMenuItem>
 							<SidebarMenuButton asChild tooltip={item.title}>
-								<a href={item.url}>
+								<a href={item.url ?? "#"}>
 									<item.icon />
 									<span>{item.title}</span>
 								</a>

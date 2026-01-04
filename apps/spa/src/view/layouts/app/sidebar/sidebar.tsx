@@ -1,13 +1,11 @@
 import {
-	BookOpen,
-	Bot,
+	CalendarIcon,
 	Command,
 	Frame,
+	GoalIcon,
 	LifeBuoy,
-	PieChart,
 	Send,
-	Settings2,
-	SquareTerminal,
+	SquareTerminal
 } from "lucide-react";
 import type * as React from "react";
 
@@ -33,29 +31,24 @@ const data = {
 	},
 	navMain: [
 		{
-			title: "Playground",
-			url: "#",
+			title: "Todo List",
 			icon: SquareTerminal,
 			isActive: true,
 			items: [
 				{
-					title: "History",
+					title: "Today",
 					url: "#",
 				},
 				{
-					title: "Starred",
-					url: "#",
-				},
-				{
-					title: "Settings",
+					title: "Upcoming",
 					url: "#",
 				},
 			],
 		},
 		{
-			title: "Models",
+			title: "Calendar",
 			url: "#",
-			icon: Bot,
+			icon: CalendarIcon,
 			items: [
 				{
 					title: "Genesis",
@@ -72,9 +65,9 @@ const data = {
 			],
 		},
 		{
-			title: "Documentation",
+			title: "Goals",
 			url: "#",
-			icon: BookOpen,
+			icon: GoalIcon,
 			items: [
 				{
 					title: "Introduction",
@@ -94,29 +87,7 @@ const data = {
 				},
 			],
 		},
-		{
-			title: "Settings",
-			url: "#",
-			icon: Settings2,
-			items: [
-				{
-					title: "General",
-					url: "#",
-				},
-				{
-					title: "Team",
-					url: "#",
-				},
-				{
-					title: "Billing",
-					url: "#",
-				},
-				{
-					title: "Limits",
-					url: "#",
-				},
-			],
-		},
+
 	],
 	navSecondary: [
 		{
@@ -136,16 +107,6 @@ const data = {
 			url: "#",
 			icon: Frame,
 		},
-		{
-			name: "Sales & Marketing",
-			url: "#",
-			icon: PieChart,
-		},
-		{
-			name: "Travel",
-			url: "#",
-			icon: LifeBuoy,
-		},
 	],
 };
 
@@ -161,7 +122,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 									<Command className="size-4" />
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">Acme Inc</span>
+									<span className="truncate font-semibold">Artemis</span>
 									<span className="truncate text-xs">Enterprise</span>
 								</div>
 							</a>
