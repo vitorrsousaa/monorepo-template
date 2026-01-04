@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type * as React from "react";
 
+import { ROUTES } from "@/config/routes";
 import {
 	Sidebar,
 	SidebarContent,
@@ -35,6 +36,10 @@ const data = {
 			icon: SquareTerminal,
 			isActive: true,
 			items: [
+				{
+					title: "Dashboard",
+					url: ROUTES.DASHBOARD,
+				},
 				{
 					title: "Today",
 					url: "#",
@@ -66,12 +71,11 @@ const data = {
 		},
 		{
 			title: "Goals",
-			url: "#",
 			icon: GoalIcon,
 			items: [
 				{
-					title: "Introduction",
-					url: "#",
+					title: "Dashboard",
+					url: ROUTES.GOALS_DASHBOARD,
 				},
 				{
 					title: "Get Started",
