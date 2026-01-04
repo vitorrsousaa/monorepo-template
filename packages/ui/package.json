@@ -14,7 +14,7 @@
     },
     "./styles/theme.css": "./src/styles/theme.css",
     "./postcss.config": "./postcss.config.mjs",
-    "./tailwind.config": "./tailwind.config.mjs"
+    "./tailwind.config": "./tailwind.config.js"
   },
   "scripts": {
     "generate:component": "turbo gen react-component",
@@ -59,7 +59,7 @@
     "dist",
     "src/styles",
     "postcss.config.mjs",
-    "tailwind.config.mjs"
+    "tailwind.config.js"
   ],
   "sideEffects": false
 }
