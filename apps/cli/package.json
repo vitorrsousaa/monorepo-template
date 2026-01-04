@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "dev": "tsc --watch -p tsconfig.json",
     "clean": "rm -rf dist",
-    "lint": "biome lint --apply ./src",
+    "lint": "biome lint --write ./src",
     "typecheck": "tsc --noEmit",
     "format": "biome format --write ./src"
   },

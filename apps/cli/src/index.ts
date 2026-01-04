@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import inquirer from "inquirer";
+import { spawn } from "node:child_process";
+import * as path from "node:path";
 import { createController } from "./commands/create/controller";
 import { createModule } from "./commands/create/module";
 import { createProvider } from "./commands/create/provider";
@@ -74,11 +76,54 @@ async function create(moduleName: string) {
 	}
 }
 
+async function add(componentName: string) {
+	// Calcula o caminho para packages/ui a partir do diretório da CLI
+	// Quando compilado, o arquivo estará em apps/cli/dist/index.js
+	// Então precisamos ir para ../../packages/ui
+	const uiPackagePath = path.resolve(__dirname, "../../../packages/ui");
+
+	console.log("changing folder to", uiPackagePath);
+	console.log(
+		`Executando: npx shadcn@latest add ${componentName} em ${uiPackagePath}...\n`,
+	);
+
+	return new Promise<void>((resolve, reject) => {
+		const shadcnProcess = spawn(
+			"npx",
+			["shadcn@latest", "add", componentName],
+			{
+				stdio: "inherit",
+				shell: true,
+				cwd: uiPackagePath,
+			},
+		);
+
+		shadcnProcess.on("error", (error) => {
+			console.error(`Erro ao executar shadcn: ${error.message}`);
+			reject(error);
+		});
+
+		shadcnProcess.on("exit", (code) => {
+			if (code !== 0) {
+				console.error(`shadcn falhou com código de saída ${code}`);
+				reject(new Error(`Processo falhou com código ${code}`));
+			} else {
+				resolve();
+			}
+		});
+	});
+}
+
 const program = new Command();
 
 program
 	.command("create")
 	.description("Cria um novo módulo com um arquivo TypeScript")
 	.action(create);
+
+program
+	.command("add <component>")
+	.description("Adiciona um componente do shadcn/ui")
+	.action(add);
 
 program.parse(process.argv);
