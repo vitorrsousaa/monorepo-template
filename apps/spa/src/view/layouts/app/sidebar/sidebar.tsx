@@ -48,6 +48,10 @@ const data = {
 					title: "Upcoming",
 					url: "#",
 				},
+				{
+					title: "Completed",
+					url: "#",
+				},
 			],
 		},
 		{

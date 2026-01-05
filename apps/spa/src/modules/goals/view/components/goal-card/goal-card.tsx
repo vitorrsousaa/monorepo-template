@@ -1,7 +1,7 @@
 import type { Goal } from "@/modules/goals/app/entities/goal";
-import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
-import { MoreVertical, Timer } from "lucide-react";
+import { Timer } from "lucide-react";
+import { GoalActionsDropdown } from "./goal-actions";
 
 type GoalCardProps = {
   goal: Goal;
@@ -25,10 +25,9 @@ export function GoalCard(props: GoalCardProps) {
               {goal.description}
             </p>
           </div>
+
         </div>
-        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
-          <MoreVertical className="w-4 h-4" />
-        </Button>
+        <GoalActionsDropdown goalId={goal.id} />
       </div>
 
       <div className="space-y-3">

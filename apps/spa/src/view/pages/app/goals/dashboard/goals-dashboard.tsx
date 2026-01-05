@@ -1,9 +1,11 @@
 import type { Goal } from "@/modules/goals/app/entities/goal";
 import { GoalCard } from "@/modules/goals/view/components/goal-card";
+import { NewGoalModal } from "@/modules/goals/view/modals/new-goal-modal";
 import { Button } from "@repo/ui/button";
 import { Icon } from "@repo/ui/icon";
 import { Input } from "@repo/ui/input";
 import { Plus, Search } from "lucide-react";
+import { useReducer } from "react";
 
 
 export function GoalsDashboard() {
@@ -42,6 +44,9 @@ export function GoalsDashboard() {
     }
   ]
 
+
+  const [isNewGoalModalOpen, toggleNewGoalModal] = useReducer((state) => !state, false);
+
   return (
     <div className="p-2 space-y-6">
       <div className="flex items-center justify-between">
@@ -59,7 +64,7 @@ export function GoalsDashboard() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search groups..." className="pl-10 bg-card border-border" />
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={toggleNewGoalModal}>
           <Plus className="w-4 h-4 mr-2" />
           New Goal
         </Button>
@@ -70,6 +75,9 @@ export function GoalsDashboard() {
           <GoalCard key={goal.id} goal={goal} />
         ))}
       </div>
+
+      <NewGoalModal isOpen={isNewGoalModalOpen} onClose={toggleNewGoalModal} />
+
     </div>
   );
 }
