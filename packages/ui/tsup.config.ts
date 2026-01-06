@@ -12,6 +12,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
+  watch: process.env.NODE_ENV !== "production" ? ["src/**/*"] : false,
   esbuildOptions(options) {
     options.alias = {
       ...(options.alias || {}),
