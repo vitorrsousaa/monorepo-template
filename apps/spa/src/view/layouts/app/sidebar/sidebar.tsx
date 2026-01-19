@@ -42,7 +42,7 @@ const data = {
 				},
 				{
 					title: "Inbox",
-					url: ROUTES.TODO_INBOX,
+					url: ROUTES.TODO.INBOX,
 				},
 				{
 					title: "Projects",
@@ -50,7 +50,7 @@ const data = {
 				},
 				{
 					title: "Today",
-					url: "#",
+					url: ROUTES.TODO.TODAY,
 				},
 				{
 					title: "Upcoming",
