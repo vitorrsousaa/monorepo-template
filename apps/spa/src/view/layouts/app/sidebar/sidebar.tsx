@@ -41,6 +41,14 @@ const data = {
 					url: ROUTES.DASHBOARD,
 				},
 				{
+					title: "Inbox",
+					url: ROUTES.TODO_INBOX,
+				},
+				{
+					title: "Projects",
+					url: "#",
+				},
+				{
 					title: "Today",
 					url: "#",
 				},

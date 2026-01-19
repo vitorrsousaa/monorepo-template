@@ -1,4 +1,5 @@
 export const ROUTES = {
+  TODO_INBOX: "/todo/inbox",
   DASHBOARD: "/dashboard",
   SETTINGS: "/configuracoes",
   SIGNIN: "/login",
