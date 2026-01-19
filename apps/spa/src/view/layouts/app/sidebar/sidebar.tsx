@@ -115,8 +115,9 @@ const data = {
 	],
 	projects: [
 		{
+			id: "1",
 			name: "Design Engineering",
-			url: "#",
+			url: ROUTES.TODO.PROJECTS.replace(":id", "1"),
 			icon: Frame,
 		},
 	],

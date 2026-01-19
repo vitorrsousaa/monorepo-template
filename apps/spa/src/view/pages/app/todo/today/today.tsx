@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes"
 import { DeleteProjectModal } from "@/modules/todo/modals/delete-project-modal"
 import { EditTodoModal } from "@/modules/todo/modals/edit-todo-modal"
 import { NewProjectModal } from "@/modules/todo/modals/new-project-modal"
@@ -13,8 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu"
-import { Calendar, MessageSquare, MoreVertical, Plus, Settings } from "lucide-react"
+import { Calendar, Info, MessageSquare, MoreVertical, Plus } from "lucide-react"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 interface Todo {
   id: string
@@ -35,6 +37,7 @@ interface Project {
 }
 
 export function Today() {
+  const navigate = useNavigate()
   const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false)
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
@@ -243,6 +246,11 @@ export function Today() {
     setSelectedTodo({ ...todo, project: project.name, createdAt: new Date().toISOString() })
   }
 
+  const handleViewProjectDetails = (projectId: string) => {
+    console.log("projectId", projectId)
+    navigate(ROUTES.TODO.PROJECTS.replace(":id", projectId))
+  }
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
@@ -296,8 +304,11 @@ export function Today() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Settings className="w-4 h-4 mr-2" />
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation()
+                      handleViewProjectDetails(project.id)
+                    }}>
+                      <Info className="w-4 h-4 mr-2" />
                       Project Details
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
