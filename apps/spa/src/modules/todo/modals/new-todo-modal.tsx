@@ -19,6 +19,7 @@ export function NewTodoModal({ isOpen, onClose, projectId }: NewTodoModalProps) 
     title: "",
     description: "",
     project: projectId || "inbox",
+    section: "",
     priority: "medium",
     dueDate: "",
     completed: false,
@@ -32,6 +33,7 @@ export function NewTodoModal({ isOpen, onClose, projectId }: NewTodoModalProps) 
       title: "",
       description: "",
       project: projectId || "inbox",
+      section: "",
       priority: "medium",
       dueDate: "",
       completed: false,
@@ -102,7 +104,7 @@ export function NewTodoModal({ isOpen, onClose, projectId }: NewTodoModalProps) 
                 </div>
                 <Select
                   value={todoData.project}
-                  onValueChange={(value: string) => setTodoData({ ...todoData, project: value })}
+                  onValueChange={(value) => setTodoData({ ...todoData, project: value })}
                 >
                   <SelectTrigger className="h-8">
                     <SelectValue />
@@ -118,6 +120,27 @@ export function NewTodoModal({ isOpen, onClose, projectId }: NewTodoModalProps) 
                     <SelectItem value="2">Study Plan - Automated Tests</SelectItem>
                     <SelectItem value="3">Web Development Mastery</SelectItem>
                     <SelectItem value="4">Database Design Fundamentals</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Section</span>
+                </div>
+                <Select
+                  value={todoData.section}
+                  onValueChange={(value) => setTodoData({ ...todoData, section: value })}
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue placeholder="No section" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No section</SelectItem>
+                    <SelectItem value="backlog">Backlog</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
+                    <SelectItem value="review">Review</SelectItem>
+                    <SelectItem value="done">Done</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -155,7 +178,7 @@ export function NewTodoModal({ isOpen, onClose, projectId }: NewTodoModalProps) 
                 </div>
                 <Select
                   value={todoData.priority}
-                  onValueChange={(value: string) => setTodoData({ ...todoData, priority: value })}
+                  onValueChange={(value) => setTodoData({ ...todoData, priority: value })}
                 >
                   <SelectTrigger className="h-8">
                     <SelectValue />

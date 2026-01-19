@@ -1,3 +1,5 @@
+import { DeleteProjectModal } from "@/modules/todo/modals/delete-project-modal"
+import { EditTodoModal } from "@/modules/todo/modals/edit-todo-modal"
 import { NewProjectModal } from "@/modules/todo/modals/new-project-modal"
 import { NewTodoModal } from "@/modules/todo/modals/new-todo-modal"
 import { Badge } from "@repo/ui/badge"
@@ -36,10 +38,14 @@ export function Today() {
   const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false)
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [deleteProjectModal, setDeleteProjectModal] = useState<{ isOpen: boolean; project: Project | null }>({
+    isOpen: false,
+    project: null,
+  })
+  const [selectedTodo, setSelectedTodo] = useState<any>(null)
 
   // Mock projects data
   const [projects, setProjects] = useState<Project[]>([
-
     {
       id: "1",
       name: "Casa",
@@ -222,6 +228,21 @@ export function Today() {
     return `${count}`
   }
 
+  const handleDeleteProject = (project: Project) => {
+    setDeleteProjectModal({ isOpen: true, project })
+  }
+
+  const confirmDeleteProject = () => {
+    if (deleteProjectModal.project) {
+      console.log("[v0] Deleting project:", deleteProjectModal.project.id)
+      setProjects(projects.filter((p) => p.id !== deleteProjectModal.project?.id))
+    }
+  }
+
+  const handleTaskClick = (todo: Todo, project: Project) => {
+    setSelectedTodo({ ...todo, project: project.name, createdAt: new Date().toISOString() })
+  }
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
@@ -280,7 +301,10 @@ export function Today() {
                       Project Details
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">Delete Project</DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive" onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteProject(project)
+                    }}>Delete Project</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -290,7 +314,7 @@ export function Today() {
                 {project.todos.map((todo) => {
                   const dateInfo = todo.dueDate ? formatDate(todo.dueDate) : null
                   return (
-                    <Card key={todo.id} className="p-4 bg-card border-border hover:border-primary/50 transition-colors">
+                    <Card key={todo.id} className="p-4 bg-card border-border hover:border-primary/50 transition-colors" onClick={() => handleTaskClick(todo, project)}>
                       <div className="space-y-3">
                         {/* Todo Header */}
                         <div className="flex items-start gap-3">
@@ -362,6 +386,16 @@ export function Today() {
       />
 
       <NewProjectModal isOpen={isNewProjectModalOpen} onClose={() => setIsNewProjectModalOpen(false)} />
+
+      <DeleteProjectModal
+        isOpen={deleteProjectModal.isOpen}
+        onClose={() => setDeleteProjectModal({ isOpen: false, project: null })}
+        projectName={deleteProjectModal.project?.name || ""}
+        onConfirm={confirmDeleteProject}
+      />
+      {selectedTodo && (
+        <EditTodoModal isOpen={!!selectedTodo} onClose={() => setSelectedTodo(null)} todo={selectedTodo} />
+      )}
     </div>
   )
 }
