@@ -4,8 +4,7 @@ import { Badge } from "@repo/ui/badge"
 import { Button } from "@repo/ui/button"
 import { Card } from "@repo/ui/card"
 import { Checkbox } from "@repo/ui/checkbox"
-import { Input } from "@repo/ui/input"
-import { Flag, MoreVertical, Plus, Search } from "lucide-react"
+import { Flag, MoreVertical, Plus } from "lucide-react"
 import { useState } from "react"
 // import { NewTodoModal } from "@/components/new-todo-modal"
 import {
@@ -79,22 +78,6 @@ export function Inbox() {
           <h1 className="text-3xl font-semibold text-balance">Inbox</h1>
           <p className="text-muted-foreground mt-1">Tasks without project</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
-            </svg>
-            <span className="font-semibold">7</span>
-          </div>
-
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div className="relative w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search inbox..." className="pl-10 bg-card border-border" />
-        </div>
         <Button
           className="bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => setIsNewTodoModalOpen(true)}
@@ -102,6 +85,7 @@ export function Inbox() {
           <Plus className="w-4 h-4 mr-2" />
           New Todo
         </Button>
+
       </div>
 
       {/* Todo List */}
