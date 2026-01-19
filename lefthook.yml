@@ -31,9 +31,9 @@ pre-push:
       run: pnpm run typecheck
 
 commit-msg:
-  scripts:
-    'commit_check':
-      runner: bash
+  commands:
+    commit_check:
+      run: pnpm exec commitlint --edit {1}
 
 #     rubocop:
 #       tags: backend style
