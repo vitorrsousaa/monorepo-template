@@ -7,6 +7,7 @@ import { Inbox } from "@/pages/app/todo/inbox";
 import { Projects } from "@/pages/app/todo/projects";
 import { Today } from "@/pages/app/todo/today";
 import { Signin } from "@/pages/auth/signin";
+import { Signup } from "@/pages/auth/signup";
 import { NotFound } from "@/pages/not-found";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
@@ -16,6 +17,7 @@ export function Router() {
 			<Routes>
 				<Route index element={<Navigate to={ROUTES.SIGNIN} replace />} />
 				<Route path={ROUTES.SIGNIN} element={<Signin />} />
+				<Route path={ROUTES.SIGNUP} element={<Signup />} />
 				<Route path="/" element={<DashboardLayout />}>
 					<Route path="/" element={<TodoLayout />}>
 						<Route path={ROUTES.TODO.DASHBOARD} element={<Dashboard />} />

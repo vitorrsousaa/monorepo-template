@@ -10,6 +10,7 @@ export const TODO_ROUTES = {
 export const ROUTES = {
 	SETTINGS: "/configuracoes",
 	SIGNIN: "/login",
+	SIGNUP: "/signup",
 	GOOGLE_CALLBACK: "/google/callback",
 	GOALS_DASHBOARD: "/goals/dashboard",
 	TODO: TODO_ROUTES,

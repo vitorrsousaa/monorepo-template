@@ -4,6 +4,12 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:spa": "pnpm --filter spa dev",
+    "dev:api": "pnpm --filter api dev",
+    "dev:cli": "pnpm --filter cli dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:front": "pnpm --filter spa --filter @repo/ui dev",
+    "dev:all": "turbo dev",
     "format": "turbo run format --",
     "lint": "turbo run lint --",
     "typecheck": "turbo run typecheck",

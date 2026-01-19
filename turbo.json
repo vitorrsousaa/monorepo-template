@@ -21,8 +21,7 @@
         "^lint"
       ]
     },
-    "format": {
-    },
+    "format": {},
     "typecheck": {
       "dependsOn": [
         "^build"
