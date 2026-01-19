@@ -1,5 +1,3 @@
-import type React from "react";
-
 import { Button } from "@repo/ui/button";
 import {
 	Dialog,
@@ -8,10 +6,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@repo/ui/dialog";
-import { Input } from "@repo/ui/input";
-import { Label } from "@repo/ui/label";
-import { Textarea } from "@repo/ui/textarea";
-import { useState } from "react";
+import { ProjectForm } from "../forms/project";
+import type { TProjectFormSchema } from "../forms/project/project-form.schema";
 
 interface NewProjectModalProps {
 	isOpen: boolean;
@@ -19,16 +15,8 @@ interface NewProjectModalProps {
 }
 
 export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
-	const [name, setName] = useState("");
-	const [description, setDescription] = useState("");
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		// Handle project creation
-		console.log("[v0] Creating project:", { name, description });
-		// Reset form
-		setName("");
-		setDescription("");
+	const handleSubmit = async (data: TProjectFormSchema) => {
+		console.log(data);
 		onClose();
 	};
 
@@ -42,49 +30,20 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 					</DialogDescription>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="space-y-6 mt-4">
-					{/* Project Name */}
-					<div className="space-y-2">
-						<Label htmlFor="project-name">
-							Project Name <span className="text-destructive">*</span>
-						</Label>
-						<Input
-							id="project-name"
-							placeholder="e.g., Work, Personal, Health..."
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-							required
-							className="bg-background"
-						/>
-					</div>
+				<ProjectForm onSubmit={handleSubmit} formId="new-project-form" />
 
-					{/* Project Description */}
-					<div className="space-y-2">
-						<Label htmlFor="project-description">Description (optional)</Label>
-						<Textarea
-							id="project-description"
-							placeholder="Add a description for this project..."
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-							rows={3}
-							className="bg-background resize-none"
-						/>
-					</div>
-
-					{/* Actions */}
-					<div className="flex justify-end gap-3">
-						<Button type="button" variant="outline" onClick={onClose}>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							className="bg-primary text-primary-foreground hover:bg-primary/90"
-							disabled={!name}
-						>
-							Create Project
-						</Button>
-					</div>
-				</form>
+				<div className="flex justify-end gap-3">
+					<Button type="button" variant="outline" onClick={onClose}>
+						Cancel
+					</Button>
+					<Button
+						type="submit"
+						className="bg-primary text-primary-foreground hover:bg-primary/90"
+						form="new-project-form"
+					>
+						Create Project
+					</Button>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);
