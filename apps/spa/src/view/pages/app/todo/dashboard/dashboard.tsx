@@ -1,16 +1,25 @@
-import { Badge } from "@repo/ui/badge"
-import { Button } from "@repo/ui/button"
-import { Card } from "@repo/ui/card"
-import { Activity, CalendarDays, CheckCircle2, Folder, List, Play, Plus, TrendingUp, Zap } from "lucide-react"
-
+import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
+import { Card } from "@repo/ui/card";
+import {
+	Activity,
+	CalendarDays,
+	CheckCircle2,
+	Folder,
+	List,
+	Play,
+	Plus,
+	TrendingUp,
+	Zap,
+} from "lucide-react";
 
 export function Dashboard() {
-
 	const projects = [
 		{
 			id: "1",
 			name: "Study Plan - Automated Tests",
-			description: "Learn to create and run automated tests to ensure software quality.",
+			description:
+				"Learn to create and run automated tests to ensure software quality.",
 			progress: 50,
 			totalTasks: 10,
 			completedTasks: 5,
@@ -27,7 +36,7 @@ export function Dashboard() {
 			dueDate: "2026-01-21",
 			priority: "medium",
 		},
-	]
+	];
 
 	return (
 		<div className="p-8 space-y-6">
@@ -98,8 +107,12 @@ export function Dashboard() {
 					<div className="flex items-center gap-3 mb-6">
 						<List className="w-5 h-5 text-primary" />
 						<div>
-							<h2 className="text-xl font-semibold text-balance">{"Today's Tasks"}</h2>
-							<p className="text-sm text-muted-foreground">Your priorities for today</p>
+							<h2 className="text-xl font-semibold text-balance">
+								{"Today's Tasks"}
+							</h2>
+							<p className="text-sm text-muted-foreground">
+								Your priorities for today
+							</p>
 						</div>
 					</div>
 
@@ -107,9 +120,14 @@ export function Dashboard() {
 						<div className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
 							<div>
 								<div className="font-medium">File Management</div>
-								<div className="text-sm text-muted-foreground">07:00 - 09:00</div>
+								<div className="text-sm text-muted-foreground">
+									07:00 - 09:00
+								</div>
 							</div>
-							<Badge variant="secondary" className="bg-chart-2/20 text-chart-2 hover:bg-chart-2/20">
+							<Badge
+								variant="secondary"
+								className="bg-chart-2/20 text-chart-2 hover:bg-chart-2/20"
+							>
 								Medium
 							</Badge>
 						</div>
@@ -117,9 +135,14 @@ export function Dashboard() {
 						<div className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
 							<div>
 								<div className="font-medium">Modules and Packages</div>
-								<div className="text-sm text-muted-foreground">11:00 - 13:00</div>
+								<div className="text-sm text-muted-foreground">
+									11:00 - 13:00
+								</div>
 							</div>
-							<Badge variant="secondary" className="bg-chart-2/20 text-chart-2 hover:bg-chart-2/20">
+							<Badge
+								variant="secondary"
+								className="bg-chart-2/20 text-chart-2 hover:bg-chart-2/20"
+							>
 								Medium
 							</Badge>
 						</div>
@@ -131,28 +154,41 @@ export function Dashboard() {
 					<div className="flex items-center gap-3 mb-6">
 						<Folder className="w-5 h-5 text-primary" />
 						<div>
-							<h2 className="text-xl font-semibold text-balance">Recent Projects</h2>
-							<p className="text-sm text-muted-foreground">Your most recent projects</p>
+							<h2 className="text-xl font-semibold text-balance">
+								Recent Projects
+							</h2>
+							<p className="text-sm text-muted-foreground">
+								Your most recent projects
+							</p>
 						</div>
 					</div>
 
 					<div className="space-y-4">
-						{
-							projects.map((project) => (
-								<div key={project.id} className="space-y-2 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors">
-									<div className="font-medium">{project.name}</div>
-									<p className="text-sm text-muted-foreground">{project.description}</p>
-									<div className="space-y-1">
-										<div className="flex justify-between text-sm">
-											<span className="text-muted-foreground">{project.completedTasks} of {project.totalTasks} completed ({project.progress}%)</span>
-										</div>
-										<div className="h-2 bg-secondary rounded-full overflow-hidden">
-											<div className="h-full bg-primary w-[20%]" style={{ width: `${project.progress}%` }} />
-										</div>
+						{projects.map((project) => (
+							<div
+								key={project.id}
+								className="space-y-2 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors"
+							>
+								<div className="font-medium">{project.name}</div>
+								<p className="text-sm text-muted-foreground">
+									{project.description}
+								</p>
+								<div className="space-y-1">
+									<div className="flex justify-between text-sm">
+										<span className="text-muted-foreground">
+											{project.completedTasks} of {project.totalTasks} completed
+											({project.progress}%)
+										</span>
+									</div>
+									<div className="h-2 bg-secondary rounded-full overflow-hidden">
+										<div
+											className="h-full bg-primary w-[20%]"
+											style={{ width: `${project.progress}%` }}
+										/>
 									</div>
 								</div>
-							))
-						}
+							</div>
+						))}
 					</div>
 				</Card>
 
@@ -161,7 +197,9 @@ export function Dashboard() {
 					<div className="flex items-center gap-3 mb-6">
 						<Zap className="w-5 h-5 text-primary" />
 						<div>
-							<h2 className="text-xl font-semibold text-balance">Quick Actions</h2>
+							<h2 className="text-xl font-semibold text-balance">
+								Quick Actions
+							</h2>
 						</div>
 					</div>
 
@@ -171,7 +209,10 @@ export function Dashboard() {
 							Start Pomodoro
 						</Button>
 
-						<Button variant="outline" className="w-full h-12 border-border hover:bg-secondary/50 bg-transparent">
+						<Button
+							variant="outline"
+							className="w-full h-12 border-border hover:bg-secondary/50 bg-transparent"
+						>
 							<Plus className="w-5 h-5 mr-2" />
 							New Task
 						</Button>
@@ -190,11 +231,15 @@ export function Dashboard() {
 					<div className="grid grid-cols-3 gap-6">
 						<div className="text-center">
 							<div className="text-3xl font-bold text-chart-2">0h</div>
-							<div className="text-sm text-muted-foreground mt-1">Hours Studied</div>
+							<div className="text-sm text-muted-foreground mt-1">
+								Hours Studied
+							</div>
 						</div>
 						<div className="text-center">
 							<div className="text-3xl font-bold text-chart-3">0</div>
-							<div className="text-sm text-muted-foreground mt-1">Pomodoros</div>
+							<div className="text-sm text-muted-foreground mt-1">
+								Pomodoros
+							</div>
 						</div>
 						<div className="text-center">
 							<div className="text-3xl font-bold text-chart-4">16%</div>
@@ -204,7 +249,7 @@ export function Dashboard() {
 				</Card>
 			</div>
 		</div>
-	)
+	);
 }
 
 function Flame({ className }: { className?: string }) {
@@ -221,7 +266,7 @@ function Flame({ className }: { className?: string }) {
 		>
 			<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
 		</svg>
-	)
+	);
 }
 
 function Settings({ className }: { className?: string }) {
@@ -239,5 +284,5 @@ function Settings({ className }: { className?: string }) {
 			<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
 			<circle cx="12" cy="12" r="3" />
 		</svg>
-	)
+	);
 }

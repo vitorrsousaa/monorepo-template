@@ -15,7 +15,8 @@ import {
 	InboxIcon,
 	SparklesIcon,
 	TagIcon,
-	TrashIcon, XMarkIcon
+	TrashIcon,
+	XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 export interface IconProps {

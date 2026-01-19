@@ -5,7 +5,7 @@ import {
 	GoalIcon,
 	LifeBuoy,
 	Send,
-	SquareTerminal
+	SquareTerminal,
 } from "lucide-react";
 import type * as React from "react";
 
@@ -99,7 +99,6 @@ const data = {
 				},
 			],
 		},
-
 	],
 	navSecondary: [
 		{

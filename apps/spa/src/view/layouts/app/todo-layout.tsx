@@ -2,10 +2,10 @@ import { GlobalAddTaskButton } from "@/modules/todo/components/global-add-task-b
 import { Outlet } from "react-router-dom";
 
 export function TodoLayout() {
-  return (
-    <>
-      <Outlet />
-      <GlobalAddTaskButton />
-    </>
-  )
+	return (
+		<>
+			<Outlet />
+			<GlobalAddTaskButton />
+		</>
+	);
 }

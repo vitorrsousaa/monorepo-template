@@ -16,14 +16,13 @@ export function Router() {
 			<Routes>
 				<Route index element={<Navigate to={ROUTES.SIGNIN} replace />} />
 				<Route path={ROUTES.SIGNIN} element={<Signin />} />
-				<Route path='/' element={<DashboardLayout />} >
-					<Route path='/' element={<TodoLayout />}>
+				<Route path="/" element={<DashboardLayout />}>
+					<Route path="/" element={<TodoLayout />}>
 						<Route path={ROUTES.TODO.DASHBOARD} element={<Dashboard />} />
 						<Route path={ROUTES.TODO.INBOX} element={<Inbox />} />
 						<Route path={ROUTES.TODO.TODAY} element={<Today />} />
 						<Route path={ROUTES.TODO.PROJECTS} element={<Projects />} />
 					</Route>
-
 
 					<Route path={ROUTES.GOALS_DASHBOARD} element={<GoalsDashboard />} />
 				</Route>

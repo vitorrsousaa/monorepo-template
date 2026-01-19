@@ -2,7 +2,7 @@ import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
-	BreadcrumbList
+	BreadcrumbList,
 } from "@repo/ui/breadcrumb";
 import { Separator } from "@repo/ui/separator";
 import {
@@ -13,7 +13,6 @@ import {
 import { ThemeToggle } from "@repo/ui/theme-toggle";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "./sidebar";
-
 
 export function DashboardLayout() {
 	return (
@@ -30,11 +29,8 @@ export function DashboardLayout() {
 						<Breadcrumb>
 							<BreadcrumbList>
 								<BreadcrumbItem className="hidden md:block">
-									<BreadcrumbLink >
-										Artemis
-									</BreadcrumbLink>
+									<BreadcrumbLink>Artemis</BreadcrumbLink>
 								</BreadcrumbItem>
-
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>
@@ -43,7 +39,6 @@ export function DashboardLayout() {
 				<div className="flex flex-1 flex-col min-h-0 overflow-hidden">
 					<Outlet />
 				</div>
-
 			</SidebarInset>
 		</SidebarProvider>
 	);
