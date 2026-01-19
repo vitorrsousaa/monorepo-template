@@ -2,15 +2,20 @@ import {
 	ArrowRightEndOnRectangleIcon,
 	ArrowUturnRightIcon,
 	BellIcon,
+	CalendarIcon,
 	CheckBadgeIcon,
 	ChevronRightIcon,
 	ChevronUpDownIcon,
 	CreditCardIcon,
 	EllipsisHorizontalIcon,
+	ExclamationTriangleIcon,
 	FireIcon,
+	FlagIcon,
 	FolderIcon,
+	InboxIcon,
 	SparklesIcon,
-	TrashIcon
+	TagIcon,
+	TrashIcon, XMarkIcon
 } from "@heroicons/react/24/outline";
 
 export interface IconProps {
@@ -31,6 +36,12 @@ const icons = {
 	ellipsisHorizontal: EllipsisHorizontalIcon,
 	trash: TrashIcon,
 	fire: FireIcon,
+	exclamationTriangle: ExclamationTriangleIcon,
+	calendar: CalendarIcon,
+	inbox: InboxIcon,
+	tag: TagIcon,
+	flag: FlagIcon,
+	x: XMarkIcon,
 } as const;
 
 export function Icon(props: IconProps) {

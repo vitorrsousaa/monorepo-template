@@ -1,7 +1,7 @@
 
 import { Button } from "@repo/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@repo/ui/dialog"
-import { AlertTriangle } from "lucide-react"
+import { Icon } from "@repo/ui/icon"
 
 interface DeleteProjectModalProps {
   isOpen: boolean
@@ -22,7 +22,7 @@ export function DeleteProjectModal({ isOpen, onClose, projectName, onConfirm }: 
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-full bg-destructive/20">
-              <AlertTriangle className="w-5 h-5 text-destructive" />
+              <Icon name="exclamationTriangle" className="w-5 h-5 text-destructive" />
             </div>
             <DialogTitle>Delete Project</DialogTitle>
           </div>
