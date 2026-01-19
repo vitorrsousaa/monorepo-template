@@ -1,5 +1,8 @@
 import {
-	Folder,
+	Copy,
+	Eye,
+	History,
+	Link2,
 	MoreHorizontal,
 	Share,
 	Trash2,
@@ -59,8 +62,20 @@ export function NavProjects({
 								align={isMobile ? "end" : "start"}
 							>
 								<DropdownMenuItem>
-									<Folder className="text-muted-foreground" />
+									<Eye className="text-muted-foreground" />
 									<span>View Project</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Copy className="text-muted-foreground" />
+									<span>Duplicate Project</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Link2 className="text-muted-foreground" />
+									<span>Copy link to Project</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<History className="text-muted-foreground" />
+									<span>Activity Log</span>
 								</DropdownMenuItem>
 								<DropdownMenuItem>
 									<Share className="text-muted-foreground" />
