@@ -38,7 +38,7 @@ const data = {
 			items: [
 				{
 					title: "Dashboard",
-					url: ROUTES.DASHBOARD,
+					url: ROUTES.TODO.DASHBOARD,
 				},
 				{
 					title: "Inbox",
