@@ -12,8 +12,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
-    "serverless-esbuild": "^1.54.6",
-    "typescript": "5.5.4"
+    "serverless-esbuild": "^1.54.6"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
