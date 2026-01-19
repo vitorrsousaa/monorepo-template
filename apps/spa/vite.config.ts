@@ -7,6 +7,7 @@ export default defineConfig({
 	plugins: [react()],
 	build: {
 		minify: "esbuild",
+		chunkSizeWarningLimit: 1000,
 	},
 	resolve: {
 		alias: {
@@ -28,5 +29,6 @@ export default defineConfig({
 	},
 	optimizeDeps: {
 		include: ["react", "react-dom"],
+		exclude: [],
 	},
 });
