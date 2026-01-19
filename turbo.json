@@ -21,9 +21,6 @@
       ]
     },
     "format": {
-      "dependsOn": [
-        "^build"
-      ]
     },
     "typecheck": {
       "dependsOn": [
