@@ -1,0 +1,221 @@
+import { Button } from "@repo/ui/button"
+import { Checkbox } from "@repo/ui/checkbox"
+import { Dialog, DialogContent } from "@repo/ui/dialog"
+import { Input } from "@repo/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/select"
+import { Textarea } from "@repo/ui/textarea"
+import { Bell, Calendar, Flag, Inbox, MapPin, Tag, X } from "lucide-react"
+import type React from "react"
+import { useState } from "react"
+
+interface NewTodoModalProps {
+  isOpen: boolean
+  onClose: () => void
+  projectId: string | null
+}
+
+export function NewTodoModal({ isOpen, onClose, projectId }: NewTodoModalProps) {
+  const [todoData, setTodoData] = useState({
+    title: "",
+    description: "",
+    project: projectId || "inbox",
+    priority: "medium",
+    dueDate: "",
+    completed: false,
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("[v0] Creating todo:", todoData)
+    onClose()
+    setTodoData({
+      title: "",
+      description: "",
+      project: projectId || "inbox",
+      priority: "medium",
+      dueDate: "",
+      completed: false,
+    })
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-5xl p-0 gap-0">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Inbox className="w-4 h-4" />
+            <span>New Task</span>
+          </div>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="flex">
+            {/* Left Side - Main Content */}
+            <div className="flex-[2] p-6 space-y-4">
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  checked={todoData.completed}
+                  onCheckedChange={(checked) => setTodoData({ ...todoData, completed: !!checked })}
+                  className="mt-1"
+                />
+                <div className="flex-1 space-y-2">
+                  <Input
+                    value={todoData.title}
+                    onChange={(e) => setTodoData({ ...todoData, title: e.target.value })}
+                    className="text-lg font-medium border-0 px-0 focus-visible:ring-0"
+                    placeholder="Task name"
+                    required
+                    autoFocus
+                  />
+                  <Textarea
+                    value={todoData.description}
+                    onChange={(e) => setTodoData({ ...todoData, description: e.target.value })}
+                    className="min-h-[60px] border-0 px-0 focus-visible:ring-0 resize-none"
+                    placeholder="Description"
+                  />
+                </div>
+              </div>
+
+              <Button type="button" variant="ghost" className="text-muted-foreground h-8 px-2">
+                <span className="text-sm">+ Add sub-task</span>
+              </Button>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  Create Task
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Side - Metadata */}
+            <div className="w-64 border-l border-border p-6 space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Project</span>
+                </div>
+                <Select
+                  value={todoData.project}
+                  onValueChange={(value: string) => setTodoData({ ...todoData, project: value })}
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="inbox">
+                      <div className="flex items-center gap-2">
+                        <Inbox className="w-3 h-3" />
+                        <span>Inbox</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="1">Python Study Plan</SelectItem>
+                    <SelectItem value="2">Study Plan - Automated Tests</SelectItem>
+                    <SelectItem value="3">Web Development Mastery</SelectItem>
+                    <SelectItem value="4">Database Design Fundamentals</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Date</span>
+                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6">
+                    <Calendar className="w-3 h-3" />
+                  </Button>
+                </div>
+                <Input
+                  type="date"
+                  value={todoData.dueDate}
+                  onChange={(e) => setTodoData({ ...todoData, dueDate: e.target.value })}
+                  className="h-8"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">Deadline</span>
+                    <span>🔥</span>
+                  </div>
+                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6">
+                    <Calendar className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Priority</span>
+                </div>
+                <Select
+                  value={todoData.priority}
+                  onValueChange={(value: string) => setTodoData({ ...todoData, priority: value })}
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">
+                      <div className="flex items-center gap-2">
+                        <Flag className="w-3 h-3" />
+                        <span>P4 - Low</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="medium">
+                      <div className="flex items-center gap-2">
+                        <Flag className="w-3 h-3" />
+                        <span>P3 - Medium</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="high">
+                      <div className="flex items-center gap-2">
+                        <Flag className="w-3 h-3" />
+                        <span>P2 - High</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Labels</span>
+                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6">
+                    <Tag className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Reminders</span>
+                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6">
+                    <Bell className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">Location</span>
+                    <span>🔥</span>
+                  </div>
+                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6">
+                    <MapPin className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}

@@ -45,10 +45,6 @@ const data = {
 					url: ROUTES.TODO.INBOX,
 				},
 				{
-					title: "Projects",
-					url: "#",
-				},
-				{
 					title: "Today",
 					url: ROUTES.TODO.TODAY,
 				},
