@@ -6,6 +6,29 @@ import { Activity, CalendarDays, CheckCircle2, Folder, List, Play, Plus, Trendin
 
 export function Dashboard() {
 
+	const projects = [
+		{
+			id: "1",
+			name: "Study Plan - Automated Tests",
+			description: "Learn to create and run automated tests to ensure software quality.",
+			progress: 50,
+			totalTasks: 10,
+			completedTasks: 5,
+			dueDate: "2026-01-20",
+			priority: "high",
+		},
+		{
+			id: "2",
+			name: "Python Study Plan",
+			description: "Detailed plan to learn Python step by step.",
+			progress: 30,
+			totalTasks: 10,
+			completedTasks: 3,
+			dueDate: "2026-01-21",
+			priority: "medium",
+		},
+	]
+
 	return (
 		<div className="p-8 space-y-6">
 			<div className="flex items-center justify-between">
@@ -114,37 +137,22 @@ export function Dashboard() {
 					</div>
 
 					<div className="space-y-4">
-						<div
-							className="space-y-2 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors"
-						>
-							<div className="font-medium">Study Plan - Automated Tests</div>
-							<p className="text-sm text-muted-foreground">
-								Learn to create and run automated tests to ensure software quality.
-							</p>
-							<div className="space-y-1">
-								<div className="flex justify-between text-sm">
-									<span className="text-muted-foreground">1 of 6 completed (17%)</span>
+						{
+							projects.map((project) => (
+								<div key={project.id} className="space-y-2 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors">
+									<div className="font-medium">{project.name}</div>
+									<p className="text-sm text-muted-foreground">{project.description}</p>
+									<div className="space-y-1">
+										<div className="flex justify-between text-sm">
+											<span className="text-muted-foreground">{project.completedTasks} of {project.totalTasks} completed ({project.progress}%)</span>
+										</div>
+										<div className="h-2 bg-secondary rounded-full overflow-hidden">
+											<div className="h-full bg-primary w-[20%]" style={{ width: `${project.progress}%` }} />
+										</div>
+									</div>
 								</div>
-								<div className="h-2 bg-secondary rounded-full overflow-hidden">
-									<div className="h-full bg-primary w-[17%]" />
-								</div>
-							</div>
-						</div>
-
-						<div
-							className="space-y-2 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors"
-						>
-							<div className="font-medium">Python Study Plan</div>
-							<p className="text-sm text-muted-foreground">Detailed plan to learn Python step by step.</p>
-							<div className="space-y-1">
-								<div className="flex justify-between text-sm">
-									<span className="text-muted-foreground">2 of 10 completed (20%)</span>
-								</div>
-								<div className="h-2 bg-secondary rounded-full overflow-hidden">
-									<div className="h-full bg-primary w-[20%]" />
-								</div>
-							</div>
-						</div>
+							))
+						}
 					</div>
 				</Card>
 
