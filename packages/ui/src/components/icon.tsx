@@ -1,8 +1,12 @@
 import {
 	ArrowRightEndOnRectangleIcon,
+	ArrowTrendingDownIcon,
+	ArrowTrendingUpIcon,
 	ArrowUturnRightIcon,
 	BellIcon,
+	CalendarDaysIcon,
 	CalendarIcon,
+	ChartBarIcon,
 	CheckBadgeIcon,
 	ChevronRightIcon,
 	ChevronUpDownIcon,
@@ -62,6 +66,10 @@ const icons = {
 	eyeOff: EyeSlashIcon,
 	mail: EnvelopeIcon,
 	lockClosed: LockClosedIcon,
+	arrowTrendingUp: ArrowTrendingUpIcon,
+	arrowTrendingDown: ArrowTrendingDownIcon,
+	calendarDays: CalendarDaysIcon,
+	chartBar: ChartBarIcon,
 } as const;
 
 export function Icon(props: IconProps) {

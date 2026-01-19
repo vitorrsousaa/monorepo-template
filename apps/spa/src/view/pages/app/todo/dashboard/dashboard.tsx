@@ -3,8 +3,6 @@ import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Icon } from "@repo/ui/icon";
 import {
-	Activity,
-	CalendarDays,
 	CheckCircle2,
 	Folder,
 	List,
@@ -68,7 +66,7 @@ export function Dashboard() {
 				<Card className="p-6 bg-card border-border">
 					<div className="flex items-center gap-4">
 						<div className="p-3 rounded-full bg-chart-2/10">
-							<Activity className="w-6 h-6 text-chart-2" />
+							<Icon name="chartBar" className="w-6 h-6 text-chart-2" />
 						</div>
 						<div>
 							<div className="text-3xl font-bold">13</div>
@@ -80,7 +78,7 @@ export function Dashboard() {
 				<Card className="p-6 bg-card border-border">
 					<div className="flex items-center gap-4">
 						<div className="p-3 rounded-full bg-destructive/10">
-							<CalendarDays className="w-6 h-6 text-destructive" />
+							<Icon name="calendarDays" className="w-6 h-6 text-destructive" />
 						</div>
 						<div>
 							<div className="text-3xl font-bold">2</div>
@@ -92,7 +90,7 @@ export function Dashboard() {
 				<Card className="p-6 bg-card border-border">
 					<div className="flex items-center gap-4">
 						<div className="p-3 rounded-full bg-chart-4/10">
-							<TrendingUp className="w-6 h-6 text-chart-4" />
+							<Icon name="arrowTrendingUp" className="w-6 h-6 text-chart-4" />
 						</div>
 						<div>
 							<div className="text-3xl font-bold">16%</div>
