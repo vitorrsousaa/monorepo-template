@@ -8,11 +8,15 @@ import {
 	ChevronUpDownIcon,
 	CreditCardIcon,
 	EllipsisHorizontalIcon,
+	EnvelopeIcon,
 	ExclamationTriangleIcon,
+	EyeIcon,
+	EyeSlashIcon,
 	FireIcon,
 	FlagIcon,
 	FolderIcon,
 	InboxIcon,
+	LockClosedIcon,
 	SparklesIcon,
 	TagIcon,
 	TrashIcon,
@@ -54,6 +58,10 @@ const icons = {
 	flag: FlagIcon,
 	x: XMarkIcon,
 	google: GoogleIcon,
+	eye: EyeIcon,
+	eyeOff: EyeSlashIcon,
+	mail: EnvelopeIcon,
+	lockClosed: LockClosedIcon,
 } as const;
 
 export function Icon(props: IconProps) {
