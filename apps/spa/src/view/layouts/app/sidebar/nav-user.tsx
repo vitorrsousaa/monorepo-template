@@ -6,6 +6,7 @@ import {
 	ChevronsUpDown,
 	CreditCard,
 	LogOut,
+	Settings,
 	Sparkles,
 } from "lucide-react";
 
@@ -26,6 +27,9 @@ import {
 	useSidebar,
 } from "@repo/ui/sidebar";
 
+import { ROUTES } from "@/config/routes";
+import { useNavigate } from "react-router-dom";
+
 export function NavUser({
 	user,
 }: {
@@ -36,6 +40,7 @@ export function NavUser({
 	};
 }) {
 	const { isMobile } = useSidebar();
+	const navigate = useNavigate();
 
 	return (
 		<SidebarMenu>
@@ -95,6 +100,10 @@ export function NavUser({
 							<DropdownMenuItem>
 								<Bell />
 								Notifications
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => navigate(ROUTES.SETTINGS)}>
+								<Settings />
+								Settings
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />

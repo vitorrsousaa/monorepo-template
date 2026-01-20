@@ -2,6 +2,7 @@ import { ROUTES } from "@/config/routes";
 import { DashboardLayout } from "@/layouts/app/dashboard-layout";
 import { TodoLayout } from "@/layouts/app/todo-layout";
 import { GoalsDashboard } from "@/pages/app/goals/dashboard";
+import { Settings } from "@/pages/app/settings";
 import { Dashboard } from "@/pages/app/todo/dashboard";
 import { Inbox } from "@/pages/app/todo/inbox";
 import { Projects } from "@/pages/app/todo/projects";
@@ -26,6 +27,7 @@ export function Router() {
 						<Route path={ROUTES.TODO.PROJECTS} element={<Projects />} />
 					</Route>
 
+					<Route path={ROUTES.SETTINGS} element={<Settings />} />
 					<Route path={ROUTES.GOALS_DASHBOARD} element={<GoalsDashboard />} />
 				</Route>
 				<Route path="*" element={<NotFound />} />

@@ -8,7 +8,7 @@ export const TODO_ROUTES = {
 } as const;
 
 export const ROUTES = {
-	SETTINGS: "/configuracoes",
+	SETTINGS: "/settings",
 	SIGNIN: "/login",
 	SIGNUP: "/signup",
 	GOOGLE_CALLBACK: "/google/callback",
