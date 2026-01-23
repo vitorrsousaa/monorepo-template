@@ -1,0 +1,30 @@
+import type { IController } from "@application/interfaces/controller";
+import type { IRequest, IResponse } from "@application/interfaces/http";
+import type { CreateTodoService } from "@application/modules/todo/services/create-todo";
+import { errorHandler } from "@application/utils/error-handler";
+import { missingFields } from "@application/utils/missing-fields";
+import { createTodoSchema } from "./schema";
+
+export class CreateTodoController implements IController {
+	constructor(private readonly createTodoService: CreateTodoService) {}
+
+	async handle(request: IRequest): Promise<IResponse> {
+		try {
+			const [status, parsedBody] = missingFields(
+				createTodoSchema,
+				request.body,
+			);
+
+			if (!status) return parsedBody;
+
+			const service = await this.createTodoService.execute(parsedBody);
+
+			return {
+				statusCode: 201,
+				body: service,
+			};
+		} catch (error) {
+			return errorHandler(error);
+		}
+	}
+}
