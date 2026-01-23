@@ -35,7 +35,11 @@
         "^build"
       ]
     },
-    "ci:test": {},
+    "ci:test": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true
