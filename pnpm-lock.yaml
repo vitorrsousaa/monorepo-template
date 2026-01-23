@@ -58,6 +58,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@repo/vitest-presets':
+        specifier: workspace:*
+        version: link:../../packages/vitest-preset
       '@types/jsonwebtoken':
         specifier: ^9.0.7
         version: 9.0.10

@@ -23,8 +23,11 @@
   "scripts": {
     "generate:component": "turbo gen react-component",
     "lint": "biome lint --write ./src",
+    "ci:lint": "biome lint ./src",
     "typecheck": "tsc --noEmit",
+    "ci:typecheck": "tsc --noEmit",
     "format": "biome format --write ./src",
+    "ci:format": "biome format ./src",
     "build": "tsup",
     "prepublishOnly": "pnpm build",
     "dev": "tsup --watch"
