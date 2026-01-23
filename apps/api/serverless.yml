@@ -9,6 +9,7 @@ package:
 
 plugins:
   - serverless-dotenv-plugin
+  - serverless-offline
 
 provider:
   name: aws
@@ -19,17 +20,21 @@ provider:
   architecture: arm64
 
 custom:
-  dotenv:
-    path: ${file(./.env.${self:provider.stage})}
-  stages:
-    default:
-      resolvers:
-        aws-account-1:
-          type: aws
-          profile: account1-profile-name
-          region: us-east-1
-          accessKeyId: ${env:AWS_ACCESS_KEY_ID}
-          secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY}
+  # dotenv:
+  # path: ${file(./.env.${self:provider.stage})}
+  # stages:
+  #   default:
+  #     resolvers:
+  #       aws-account-1:
+  #         type: aws
+  #         profile: account1-profile-name
+  #         region: us-east-1
+  #         accessKeyId: ${env:AWS_ACCESS_KEY_ID}
+  #         secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY}
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 3002
+    noPrependStageInUrl: true
 
 build:
   esbuild:
@@ -39,14 +44,18 @@ build:
     exclude:
       - "@aws-sdk/*"
     target: node20
-    define:
-      'process.env.NODE_ENV': '"production"'
 
 functions:
-  hello:
-    handler: hello.handler
+  getTodos:
+    handler: src/server/functions/todo/get-todos/index.handler
     events:
       - httpApi:
-          path: /
+          path: /todos
           method: get
 
+  createTodo:
+    handler: src/server/functions/todo/create-todo/index.handler
+    events:
+      - httpApi:
+          path: /todos
+          method: post
