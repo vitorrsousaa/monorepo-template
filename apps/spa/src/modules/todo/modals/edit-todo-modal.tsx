@@ -41,7 +41,7 @@ import { useState } from "react";
 interface EditTodoModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	todo: any;
+	todo: Record<string, string> & { completed: boolean };
 }
 
 export function EditTodoModal({ isOpen, onClose, todo }: EditTodoModalProps) {

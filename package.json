@@ -15,10 +15,10 @@
     "typecheck": "turbo run typecheck",
     "cosmos": "node apps/cli/dist/index.js",
     "ci:build": "turbo build",
-    "ci:lint": "turbo run lint --",
-    "ci:format": "turbo run format --",
-    "ci:typecheck": "turbo run typecheck",
-    "ci:test": "turbo run test --"
+    "ci:lint": "turbo run ci:lint --",
+    "ci:format": "turbo run ci:format --",
+    "ci:typecheck": "turbo run ci:typecheck",
+    "ci:test": "turbo run ci:test --"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

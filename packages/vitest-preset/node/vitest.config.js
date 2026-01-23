@@ -11,7 +11,14 @@ module.exports = defineConfig({
 			"**/html/**",
 			"**/coverage/**",
 		],
-		reporters: ["basic"],
+		reporters: [
+			[
+				"default",
+				{
+					summary: process.env.CI !== "true",
+				},
+			],
+		],
 		coverage: {
 			provider: "v8",
 		},
