@@ -124,10 +124,14 @@ jobs:
             .pnpm-store
           key: ${{ steps.deps-key.outputs.key }}
 
-      - name: Install deps (fallback)
-        if: steps.restore-deps.outputs.cache-hit != 'true'
+      - name: Install deps
         run: |
-          pnpm install --frozen-lockfile
+          if [ "${{ steps.restore-deps.outputs.cache-hit }}" != "true" ] || [ ! -d "node_modules" ]; then
+            echo "Installing dependencies..."
+            pnpm install --frozen-lockfile
+          else
+            echo "Using cached dependencies"
+          fi
 
       - name: Format
         if: matrix.check == 'format'
