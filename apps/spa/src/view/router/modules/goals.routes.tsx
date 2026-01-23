@@ -1,7 +1,16 @@
 import { ROUTES } from "@/config/routes";
-import { GoalsDashboard } from "@/pages/app/goals/dashboard";
-import { Route } from "react-router-dom";
+import { lazy } from "react";
+import type { RouteObject } from "react-router-dom";
 
-export function GoalsRoutes() {
-	return <Route path={ROUTES.GOALS_DASHBOARD} element={<GoalsDashboard />} />;
-}
+const GoalsDashboard = lazy(() =>
+	import("@/pages/app/goals/dashboard").then((module) => ({
+		default: module.GoalsDashboard,
+	})),
+);
+
+export const goalsRoutes: RouteObject[] = [
+	{
+		path: ROUTES.GOALS_DASHBOARD,
+		element: <GoalsDashboard />,
+	},
+];

@@ -1,14 +1,26 @@
 import { ROUTES } from "@/config/routes";
-import { Signin } from "@/pages/auth/signin";
-import { Signup } from "@/pages/auth/signup";
-import { Navigate, Route } from "react-router-dom";
+import { lazy } from "react";
+import { Navigate } from "react-router-dom";
+import type { RouteObject } from "react-router-dom";
 
-export function AuthRoutes() {
-	return (
-		<>
-			<Route index element={<Navigate to={ROUTES.SIGNIN} replace />} />
-			<Route path={ROUTES.SIGNIN} element={<Signin />} />
-			<Route path={ROUTES.SIGNUP} element={<Signup />} />
-		</>
-	);
-}
+const Signin = lazy(() =>
+	import("@/pages/auth/signin").then((module) => ({ default: module.Signin })),
+);
+const Signup = lazy(() =>
+	import("@/pages/auth/signup").then((module) => ({ default: module.Signup })),
+);
+
+export const authRoutes: RouteObject[] = [
+	{
+		index: true,
+		element: <Navigate to={ROUTES.SIGNIN} replace />,
+	},
+	{
+		path: ROUTES.SIGNIN,
+		element: <Signin />,
+	},
+	{
+		path: ROUTES.SIGNUP,
+		element: <Signup />,
+	},
+];

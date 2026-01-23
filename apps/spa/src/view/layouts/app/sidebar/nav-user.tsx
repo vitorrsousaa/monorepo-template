@@ -101,7 +101,7 @@ export function NavUser({
 								<Bell />
 								Notifications
 							</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => navigate(ROUTES.SETTINGS)}>
+							<DropdownMenuItem onClick={() => navigate(ROUTES.USER)}>
 								<Settings />
 								Settings
 							</DropdownMenuItem>
