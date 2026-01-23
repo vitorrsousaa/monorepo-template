@@ -1,24 +1,24 @@
 /**
  * TodoDynamoDBEntity
  *
- * Representa a estrutura da entidade Todo no DynamoDB.
+ * Represents the Todo entity structure in DynamoDB.
  *
- * Características:
- * - Usa snake_case (padrão comum em bancos de dados)
- * - Inclui chaves de partição (PK) e ordenação (SK)
- * - Inclui GSI keys para queries alternativas
- * - Datas armazenadas como ISO string
+ * Characteristics:
+ * - Uses snake_case (common database standard)
+ * - Includes partition (PK) and sort (SK) keys
+ * - Includes GSI keys for alternative queries
+ * - Dates stored as ISO string
  */
 export interface TodoDynamoDBEntity {
-	// Partition Key e Sort Key (Single-Table Design)
-	PK: string; // Formato: "TODO#${id}"
-	SK: string; // Formato: "METADATA"
+	// Partition Key and Sort Key (Single-Table Design)
+	PK: string; // Format: "TODO#${id}"
+	SK: string; // Format: "METADATA"
 
-	// GSI para listar todos os TODOs
-	GSI1PK: string; // Formato: "TODO"
-	GSI1SK: string; // Formato: ISO timestamp (ordenação por data)
+	// GSI to list all TODOs
+	GSI1PK: string; // Format: "TODO"
+	GSI1SK: string; // Format: ISO timestamp (sorted by date)
 
-	// Atributos da entidade (snake_case)
+	// Entity attributes (snake_case)
 	id: string;
 	title: string;
 	description: string;

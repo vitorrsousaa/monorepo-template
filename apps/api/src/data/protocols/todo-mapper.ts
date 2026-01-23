@@ -3,27 +3,27 @@ import type { Todo } from "@core/domain/todo/todo";
 /**
  * TodoMapper
  *
- * Interface agnóstica para mapeamento de dados entre banco de dados e aplicação.
+ * Database-agnostic interface for mapping data between database and application.
  *
- * Responsabilidades:
- * - Transformar dados do banco (ex: snake_case) para domínio (camelCase)
- * - Transformar dados do domínio para formato do banco
- * - Abstrair detalhes de estrutura do banco (PK/SK, GSI, etc)
+ * Responsibilities:
+ * - Transform database data (e.g., snake_case) to domain (camelCase)
+ * - Transform domain data to database format
+ * - Abstract database structure details (PK/SK, GSI, etc)
  *
- * @template TDBEntity - Tipo da entidade no banco de dados
+ * @template TDBEntity - Database entity type
  */
 export interface TodoMapper<TDBEntity = unknown> {
 	/**
-	 * Mapeia entidade do banco de dados para domínio da aplicação
-	 * @param dbEntity - Entidade retornada do banco
-	 * @returns Todo - Entidade de domínio
+	 * Maps database entity to application domain
+	 * @param dbEntity - Entity returned from database
+	 * @returns Todo - Domain entity
 	 */
 	toDomain(dbEntity: TDBEntity): Todo;
 
 	/**
-	 * Mapeia entidade de domínio para formato do banco de dados
-	 * @param todo - Entidade de domínio
-	 * @returns TDBEntity - Entidade no formato do banco
+	 * Maps domain entity to database format
+	 * @param todo - Domain entity
+	 * @returns TDBEntity - Entity in database format
 	 */
 	toDatabase(todo: Todo): TDBEntity;
 }

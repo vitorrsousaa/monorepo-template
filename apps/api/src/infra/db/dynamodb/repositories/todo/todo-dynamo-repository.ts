@@ -6,21 +6,21 @@ import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
 /**
  * TodoDynamoRepository
  *
- * Implementação específica do DynamoDB para o repositório de Todos.
- * Esta classe abstrai toda a lógica de acesso ao DynamoDB, mantendo
- * o resto da aplicação agnóstica à tecnologia de persistência.
+ * DynamoDB-specific implementation for the Todo repository.
+ * This class abstracts all DynamoDB access logic, keeping
+ * the rest of the application agnostic to the persistence technology.
  *
- * Usa um Mapper para converter entre formato do DB e formato da aplicação.
+ * Uses a Mapper to convert between DB format and application format.
  *
- * TODO: Implementar integração real com DynamoDB
- * Por enquanto, mantém dados em memória para desenvolvimento.
+ * TODO: Implement real DynamoDB integration
+ * For now, keeps data in memory for development.
  */
 export class TodoDynamoRepository implements TodoRepository {
-	// TODO: Substituir por client do DynamoDB
+	// TODO: Replace with DynamoDB client
 	// private dynamoClient: DynamoDBDocumentClient;
 	// private tableName: string;
 
-	// Temporário: Simulação em memória (armazena no formato do DynamoDB - snake_case)
+	// Temporary: In-memory simulation (stores in DynamoDB format - snake_case)
 	private dbTodos: TodoDynamoDBEntity[] = [
 		{
 			PK: "TODO#1",
@@ -66,7 +66,7 @@ export class TodoDynamoRepository implements TodoRepository {
 	constructor(private readonly mapper: TodoMapper<TodoDynamoDBEntity>) {}
 
 	async findAll(): Promise<Todo[]> {
-		// TODO: Implementar query no DynamoDB
+		// TODO: Implement DynamoDB query
 		// const result = await this.dynamoClient.query({
 		//   TableName: this.tableName,
 		//   IndexName: 'GSI1',
@@ -75,12 +75,12 @@ export class TodoDynamoRepository implements TodoRepository {
 		// });
 		// return result.Items.map(item => this.mapper.toDomain(item));
 
-		// Simula query e mapeia de DB para Domain
+		// Simulates query and maps from DB to Domain
 		return this.dbTodos.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 
 	async findById(id: string): Promise<Todo | null> {
-		// TODO: Implementar get no DynamoDB
+		// TODO: Implement DynamoDB get
 		// const result = await this.dynamoClient.get({
 		//   TableName: this.tableName,
 		//   Key: { PK: `TODO#${id}`, SK: 'METADATA' }
@@ -94,7 +94,7 @@ export class TodoDynamoRepository implements TodoRepository {
 	async create(
 		data: Omit<Todo, "id" | "createdAt" | "updatedAt">,
 	): Promise<Todo> {
-		// TODO: Implementar put no DynamoDB
+		// TODO: Implement DynamoDB put
 		// const id = crypto.randomUUID();
 		// const now = new Date();
 		// const todo = { ...data, id, createdAt: now, updatedAt: now };
@@ -113,7 +113,7 @@ export class TodoDynamoRepository implements TodoRepository {
 			updatedAt: now,
 		};
 
-		// Converte para formato DB e armazena
+		// Converts to DB format and stores
 		const dbEntity = this.mapper.toDatabase(newTodo);
 		this.dbTodos.push(dbEntity);
 
@@ -121,7 +121,7 @@ export class TodoDynamoRepository implements TodoRepository {
 	}
 
 	async update(id: string, data: Partial<Todo>): Promise<Todo | null> {
-		// TODO: Implementar update no DynamoDB
+		// TODO: Implement DynamoDB update
 		// const updateExpression = this.buildUpdateExpression(data);
 		// const result = await this.dynamoClient.update({
 		//   TableName: this.tableName,
@@ -144,10 +144,10 @@ export class TodoDynamoRepository implements TodoRepository {
 			return null;
 		}
 
-		// Converte DB entity para domain
+		// Converts DB entity to domain
 		const currentTodo = this.mapper.toDomain(currentDbTodo);
 
-		// Aplica updates
+		// Applies updates
 		const updatedTodo: Todo = {
 			id: currentTodo.id,
 			title: data.title ?? currentTodo.title,
@@ -157,7 +157,7 @@ export class TodoDynamoRepository implements TodoRepository {
 			updatedAt: new Date(),
 		};
 
-		// Converte de volta para DB format
+		// Converts back to DB format
 		const updatedDbEntity = this.mapper.toDatabase(updatedTodo);
 		this.dbTodos[todoIndex] = updatedDbEntity;
 
@@ -165,7 +165,7 @@ export class TodoDynamoRepository implements TodoRepository {
 	}
 
 	async delete(id: string): Promise<boolean> {
-		// TODO: Implementar delete no DynamoDB
+		// TODO: Implement DynamoDB delete
 		// await this.dynamoClient.delete({
 		//   TableName: this.tableName,
 		//   Key: { PK: `TODO#${id}`, SK: 'METADATA' }

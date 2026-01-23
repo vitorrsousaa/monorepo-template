@@ -4,10 +4,10 @@ import type { TodoDynamoDBEntity } from "./types";
 
 export class TodoDynamoMapper implements TodoMapper<TodoDynamoDBEntity> {
 	/**
-	 * Mapeia entidade do DynamoDB para domínio
+	 * Maps DynamoDB entity to domain
 	 *
-	 * @param dbEntity - Entidade do DynamoDB (snake_case, com PK/SK)
-	 * @returns Todo - Entidade de domínio (camelCase, limpa)
+	 * @param dbEntity - DynamoDB entity (snake_case, with PK/SK)
+	 * @returns Todo - Domain entity (camelCase, clean)
 	 */
 	toDomain(dbEntity: TodoDynamoDBEntity): Todo {
 		return {
@@ -21,22 +21,22 @@ export class TodoDynamoMapper implements TodoMapper<TodoDynamoDBEntity> {
 	}
 
 	/**
-	 * Mapeia entidade de domínio para DynamoDB
+	 * Maps domain entity to DynamoDB
 	 *
-	 * @param todo - Entidade de domínio (camelCase)
-	 * @returns TodoDynamoDBEntity - Entidade do DynamoDB (snake_case, com PK/SK)
+	 * @param todo - Domain entity (camelCase)
+	 * @returns TodoDynamoDBEntity - DynamoDB entity (snake_case, with PK/SK)
 	 */
 	toDatabase(todo: Todo): TodoDynamoDBEntity {
 		return {
-			// Chaves do DynamoDB (Single-Table Design)
+			// DynamoDB keys (Single-Table Design)
 			PK: `TODO#${todo.id}`,
 			SK: "METADATA",
 
-			// GSI para listar todos os TODOs
+			// GSI to list all TODOs
 			GSI1PK: "TODO",
 			GSI1SK: todo.createdAt.toISOString(),
 
-			// Atributos da entidade (snake_case)
+			// Entity attributes (snake_case)
 			id: todo.id,
 			title: todo.title,
 			description: todo.description,
