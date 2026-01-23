@@ -1,4 +1,5 @@
 import { ROUTES } from "@/config/routes";
+import { UserLayout } from "@/layouts/app/user-layout";
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
@@ -8,9 +9,12 @@ const Settings = lazy(() =>
 	})),
 );
 
-export const userRoutes: RouteObject[] = [
-	{
-		path: ROUTES.USER,
-		element: <Settings />,
-	},
-];
+export const userRoutes: RouteObject = {
+	element: <UserLayout />,
+	children: [
+		{
+			path: ROUTES.USER,
+			element: <Settings />,
+		},
+	],
+};

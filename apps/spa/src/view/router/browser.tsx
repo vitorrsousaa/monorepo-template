@@ -3,14 +3,23 @@ import { DashboardLayout } from "@/layouts/app/dashboard-layout";
 import { NotFound } from "@/pages/not-found";
 import { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { authRoutes, goalsRoutes, userRoutes, todoRoutes } from "./modules";
+import { AuthGuard } from "./auth-guard";
+import { authRoutes, goalsRoutes, todoRoutes, userRoutes } from "./modules";
 
 const router = createBrowserRouter([
-	...authRoutes,
+	{
+		element: <AuthGuard isPrivate={false} />,
+		children: authRoutes,
+	},
 	{
 		path: "/",
-		element: <DashboardLayout />,
-		children: [todoRoutes, ...userRoutes, ...goalsRoutes],
+		element: <AuthGuard isPrivate={true} />,
+		children: [
+			{
+				element: <DashboardLayout />,
+				children: [todoRoutes, userRoutes, goalsRoutes],
+			},
+		],
 	},
 	{
 		path: "*",
