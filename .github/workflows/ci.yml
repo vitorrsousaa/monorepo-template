@@ -53,6 +53,15 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
+      - name: Verify and install deps
+        run: |
+          if [ ! -d "node_modules" ] || [ ! -d "node_modules/.pnpm" ]; then
+            echo "node_modules missing or incomplete, installing..."
+            pnpm install --frozen-lockfile
+          else
+            echo "Dependencies verified from cache"
+          fi
+
       - name: Save install cache
         if: steps.restore-deps.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
