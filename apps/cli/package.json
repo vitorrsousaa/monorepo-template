@@ -9,8 +9,11 @@
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "lint": "biome lint --write ./src",
+    "ci:lint": "biome lint ./src",
     "typecheck": "tsc --noEmit",
-    "format": "biome format --write ./src"
+    "ci:typecheck": "tsc --noEmit",
+    "format": "biome format --write ./src",
+    "ci:format": "biome format ./src"
   },
   "bin": {
     "cosmos": "dist/index.js"

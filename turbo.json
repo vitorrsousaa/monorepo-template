@@ -21,8 +21,25 @@
         "^lint"
       ]
     },
+    "ci:lint": {
+      "dependsOn": [
+        "^ci:lint"
+      ]
+    },
     "format": {},
+    "ci:format": {},
     "typecheck": {},
+    "ci:typecheck": {},
+    "test": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "ci:test": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true

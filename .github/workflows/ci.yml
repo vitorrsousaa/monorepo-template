@@ -49,7 +49,6 @@ jobs:
           key: ${{ steps.deps-key.outputs.key }}
 
       - name: Install deps
-        if: steps.restore-deps.outputs.cache-hit != 'true'
         run: |
           pnpm install --frozen-lockfile
 
@@ -124,8 +123,7 @@ jobs:
             .pnpm-store
           key: ${{ steps.deps-key.outputs.key }}
 
-      - name: Install deps (fallback)
-        if: steps.restore-deps.outputs.cache-hit != 'true'
+      - name: Install deps
         run: |
           pnpm install --frozen-lockfile
 

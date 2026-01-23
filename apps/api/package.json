@@ -3,13 +3,18 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "ci:test": "vitest run",
     "lint": "biome lint --write ./src",
+    "ci:lint": "biome lint ./src",
     "typecheck": "tsc --noEmit",
-    "format": "biome format --write ./src"
+    "ci:typecheck": "tsc --noEmit",
+    "format": "biome format --write ./src",
+    "ci:format": "biome format ./src"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@repo/vitest-presets": "workspace:*",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "serverless-esbuild": "^1.54.6"

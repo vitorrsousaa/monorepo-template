@@ -14,6 +14,7 @@ export interface Todo {
 	tags?: string[];
 	comments?: number;
 	projectId: string;
+	projectName?: string;
 }
 
 export interface Project {
