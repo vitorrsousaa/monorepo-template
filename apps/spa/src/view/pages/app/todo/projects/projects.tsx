@@ -7,11 +7,12 @@ import { Input } from "@repo/ui/input";
 import { Calendar, Flag, GripVertical, Plus } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import type { Todo } from "../today";
 
 export function Projects() {
 	const { id } = useParams();
 	const projectId = id as string;
-	const [selectedTodo, setSelectedTodo] = useState<any>(null);
+	const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
 	const [sections, setSections] = useState([
 		"Backlog",
@@ -33,6 +34,7 @@ export function Projects() {
 	// Mock project data
 	const projects = {
 		"1": {
+			id: "1",
 			name: "Python Study Plan",
 			emoji: "🐍",
 			description: "Detailed plan to learn Python step by step",
@@ -70,6 +72,7 @@ export function Projects() {
 			],
 		},
 		"2": {
+			id: "2",
 			name: "Study Plan - Automated Tests",
 			emoji: "✅",
 			description: "Learn to create and execute automated tests",
@@ -168,11 +171,16 @@ export function Projects() {
 
 								<div className="space-y-2">
 									{sectionTodos.map((todo) => (
-										<div
+										<button
 											key={todo.id}
-											className="group flex items-center gap-4 p-3 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors cursor-pointer"
+											type="button"
+											className="group w-full flex items-center gap-4 p-3 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors cursor-pointer text-left"
 											onClick={() =>
-												setSelectedTodo({ ...todo, project: project.name })
+												setSelectedTodo({
+													...todo,
+													projectName: project.name,
+													projectId: project?.id || "",
+												})
 											}
 										>
 											<Checkbox
@@ -217,7 +225,7 @@ export function Projects() {
 													</Badge>
 												</div>
 											</div>
-										</div>
+										</button>
 									))}
 
 									{sectionTodos.length === 0 && (
@@ -279,7 +287,11 @@ export function Projects() {
 				<EditTodoModal
 					isOpen={!!selectedTodo}
 					onClose={() => setSelectedTodo(null)}
-					todo={selectedTodo}
+					todo={
+						selectedTodo as unknown as Record<string, string> & {
+							completed: boolean;
+						}
+					}
 				/>
 			)}
 
