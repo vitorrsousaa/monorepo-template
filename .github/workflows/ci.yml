@@ -53,15 +53,6 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
-      - name: Verify and install deps
-        run: |
-          if [ ! -d "node_modules" ] || [ ! -d "node_modules/.pnpm" ]; then
-            echo "node_modules missing or incomplete, installing..."
-            pnpm install --frozen-lockfile
-          else
-            echo "Dependencies verified from cache"
-          fi
-
       - name: Save install cache
         if: steps.restore-deps.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -133,17 +124,10 @@ jobs:
             .pnpm-store
           key: ${{ steps.deps-key.outputs.key }}
 
-      - name: Install deps
+      - name: Install deps (fallback)
         if: steps.restore-deps.outputs.cache-hit != 'true'
         run: |
           pnpm install --frozen-lockfile
-
-      - name: Verify node_modules
-        run: |
-          if [ ! -d "node_modules" ] || [ ! -f "node_modules/.pnpm/lock.yaml" ]; then
-            echo "node_modules missing or incomplete, installing..."
-            pnpm install --frozen-lockfile
-          fi
 
       - name: Format
         if: matrix.check == 'format'
