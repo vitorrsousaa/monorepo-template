@@ -125,12 +125,15 @@ jobs:
           key: ${{ steps.deps-key.outputs.key }}
 
       - name: Install deps
+        if: steps.restore-deps.outputs.cache-hit != 'true'
         run: |
-          if [ "${{ steps.restore-deps.outputs.cache-hit }}" != "true" ] || [ ! -d "node_modules" ]; then
-            echo "Installing dependencies..."
+          pnpm install --frozen-lockfile
+
+      - name: Verify node_modules
+        run: |
+          if [ ! -d "node_modules" ] || [ ! -f "node_modules/.pnpm/lock.yaml" ]; then
+            echo "node_modules missing or incomplete, installing..."
             pnpm install --frozen-lockfile
-          else
-            echo "Using cached dependencies"
           fi
 
       - name: Format
