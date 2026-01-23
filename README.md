@@ -1,4 +1,4 @@
-# Monorepo Starter Template
+# Monorepo Starter Template (test)
 
 The purpose of this configuration is to ensure strict coding standards and facilitate coding experience using monorepo.
 
