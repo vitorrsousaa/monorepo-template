@@ -1,4 +1,5 @@
 import { ROUTES } from "@/config/routes";
+import { useAuth } from "@/hooks/auth";
 import type { TSigninFormSchema } from "@/modules/auth/forms/signin";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +7,8 @@ export function useSigninPageHook() {
 	const isSubmitting = false;
 
 	const navigate = useNavigate();
+
+	const { signInWithGoogle, signin } = useAuth();
 
 	const handleSubmit = async (data: TSigninFormSchema) => {
 		// TODO: Implement signin logic
@@ -20,9 +23,8 @@ export function useSigninPageHook() {
 
 	const handleSignInWithGoogle = () => {
 		// TODO: Implement signin with Google logic
-		console.log("Signin with Google");
-
-		redirectToDashboard();
+		signInWithGoogle();
+		signin("accessToken"); // TODO: Implement accessToken generation
 	};
 
 	const redirectToDashboard = () => {
@@ -34,5 +36,6 @@ export function useSigninPageHook() {
 		handleSubmit,
 		handleNavigateToSignup,
 		handleSignInWithGoogle,
+		signInWithGoogle,
 	};
 }

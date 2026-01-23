@@ -1,7 +1,5 @@
 import { LoadingScreen } from "@/components/loading-screen";
-import { env } from "@/config/environment";
 import { tokenStorage } from "@/storage/token-storage";
-import qs from "qs";
 import {
 	createContext,
 	useCallback,
@@ -22,6 +20,7 @@ export interface IAuthContextValue {
 	signInWithGoogle: () => void;
 	signout: () => void;
 	user: Profile;
+	signin: (accessToken: string) => void;
 }
 
 export const AuthContext = createContext({} as IAuthContextValue);
@@ -53,16 +52,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const isSuccess = true;
 
 	const signInWithGoogle = useCallback(() => {
-		const CLIENT_ID = env.VITE_AUTH_GOOGLE_ID;
-		const baseURL = "https://accounts.google.com/o/oauth2/auth";
-		const options = qs.stringify({
-			client_id: CLIENT_ID,
-			redirect_uri: env.VITE_AUTH_REDIRECT_URI,
-			response_type: "code",
-			scope: "email profile",
-		});
+		// const CLIENT_ID = env.VITE_AUTH_GOOGLE_ID;
+		// const baseURL = "https://accounts.google.com/o/oauth2/auth";
+		// const options = qs.stringify({
+		// 	client_id: CLIENT_ID,
+		// 	redirect_uri: env.VITE_AUTH_REDIRECT_URI,
+		// 	response_type: "code",
+		// 	scope: "email profile",
+		// });
 		setSignedIn(true);
-		window.location.href = `${baseURL}?${options}`;
+		// window.location.href = `${baseURL}?${options}`;
 	}, []);
 
 	const signout = useCallback(() => {
@@ -73,11 +72,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setSignedIn(false);
 	}, []);
 
+	const signin = useCallback((accessToken: string) => {
+		tokenStorage.set(accessToken);
+
+		setSignedIn(true);
+	}, []);
+
 	const value = useMemo<IAuthContextValue>(
 		() => ({
 			signedIn: isSuccess && signedIn,
 			signInWithGoogle,
 			signout,
+			signin,
 			user: {
 				name: data?.name || "",
 				email: data?.email || "",
@@ -85,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				picture: data?.picture || "",
 			},
 		}),
-		[signedIn, signInWithGoogle, signout],
+		[signedIn, signInWithGoogle, signout, signin],
 	);
 
 	useEffect(() => {
