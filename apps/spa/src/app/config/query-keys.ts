@@ -1,5 +1,5 @@
 export const TODOS = {
-	ALL: ["todos"],
+	INBOX: ["todos", "inbox"],
 };
 
 export const QUERY_KEYS = {

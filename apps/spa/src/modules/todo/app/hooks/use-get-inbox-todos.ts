@@ -1,11 +1,11 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import { useQuery } from "@tanstack/react-query";
-import { getAllTodos } from "../services/get-all";
+import { getInboxTodos } from "../services/get-inbox";
 
-export function useGetAllTodos() {
+export function useGetInboxTodos() {
 	const { data, isError, isPending, isLoading, isFetching } = useQuery({
-		queryKey: QUERY_KEYS.TODOS.ALL,
-		queryFn: getAllTodos,
+		queryKey: QUERY_KEYS.TODOS.INBOX,
+		queryFn: getInboxTodos,
 	});
 
 	return {
