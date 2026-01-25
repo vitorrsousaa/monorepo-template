@@ -1,4 +1,4 @@
-import { NewTodoModal } from "@/modules/todo/modals/new-todo-modal";
+import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import { Button } from "@repo/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";

@@ -1,6 +1,6 @@
-import { DeleteProjectModal } from "@/modules/todo/modals/delete-project-modal";
-import { EditTodoModal } from "@/modules/todo/modals/edit-todo-modal";
-import { NewTodoModal } from "@/modules/todo/modals/new-todo-modal";
+import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
+import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
+import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import type { Project } from "@/pages/app/todo/today";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";

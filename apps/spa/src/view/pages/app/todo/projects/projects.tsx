@@ -1,5 +1,5 @@
-import { EditTodoModal } from "@/modules/todo/modals/edit-todo-modal";
-import { NewTodoModal } from "@/modules/todo/modals/new-todo-modal";
+import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
+import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
