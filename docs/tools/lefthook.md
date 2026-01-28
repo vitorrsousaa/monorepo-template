@@ -1,6 +1,6 @@
-# Lefthook configuration
+# Lefthook Configuration
 
-The purpose of the `lefthook` is running tasks on certain git actions.
+The purpose of `lefthook` is running tasks on certain git actions.
 
 ## Contents
 
@@ -10,14 +10,14 @@ The purpose of the `lefthook` is running tasks on certain git actions.
 
 ## Prerequisites
 
-- [➡ commitlint](../../packages/commitlint/README.md) - linting commit message
+- [➡ commitlint](./commitlint.md) - linting commit message
 
 ## Setup
 
 - Add workspace reference to `lefthook`:
 
   ```sh
-  yarn add -D -w lefthook
+  pnpm add -D -w lefthook
   ```
 
 - Manually install `lefthook` hooks:
@@ -26,35 +26,35 @@ The purpose of the `lefthook` is running tasks on certain git actions.
   npx lefthook install
   ```
 
-- Add `pre-commit` hook for linting and formatting indexed files using staged-files
+- Add `pre-commit` hook for linting and formatting indexed files:
 
-  ```sh
+  ```yaml
   # lefthook.yml
-  
+
   pre-commit:
-  parallel: true
-  commands:
-    lint:
-      glob: "*.{js,ts,jsx,tsx}"
-      run: yarn lint {staged_files}
+    parallel: true
+    commands:
+      lint:
+        glob: "*.{js,ts,jsx,tsx}"
+        run: pnpm lint {staged_files}
   ```
 
-- Add `commit-msg` hook for linting of commit message using [commitlint](../../tools/commitlint/README.md):
+- Add `commit-msg` hook for commit message linting using [commitlint](./commitlint.md):
 
-  ```sh
+  ```yaml
   # lefthook.yml
-  
+
   commit-msg:
-  scripts:
-    'commit_check':
-      runner: bash
+    scripts:
+      "commit_check":
+        runner: bash
   ```
-  
-- And create a bash script to verify commit message
+
+- And create a bash script to verify commit message:
 
   ```sh
   # .lefthook/commit-msg/commit_check
-  
+
   if ! npx commitlint --edit --verbose; then
     exit 1
   fi
@@ -62,7 +62,7 @@ The purpose of the `lefthook` is running tasks on certain git actions.
 
 ## Usage
 
-- **Automatic** execution and [commitlint](../../tools/commitlint/README.md) on commit.\
-  In case of any failures, commit will be rejected.
+- **Automatic**: Execution of linting and [commitlint](./commitlint.md) on commit.\
+  In case of any failures, the commit will be rejected.
 
 [⬅ Back](../../README.md)

@@ -1,6 +1,6 @@
-# Shared commitlint configuration
+# Shared Commitlint Configuration
 
-The purpose of the `commitlint` is linting of a commit message to conform the following format:
+The purpose of `commitlint` is linting commit messages to conform to the following format:
 
 ```js
 type(scope?): subject
@@ -8,7 +8,6 @@ type(scope?): subject
 
 You can read more about conventional commits in the link below:
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-
 
 ## Contents
 
@@ -18,30 +17,29 @@ You can read more about conventional commits in the link below:
 
 ## Setup
 
-- Add workspace reference to `@commitlint` and its peer dependencies:
+- Add workspace reference to `commitlint` and its dependencies:
 
   ```sh
-  yarn add -D -w @@commitlint/config-conventional @commitlint/cli
+  pnpm add -D -w @commitlint/config-conventional @commitlint/cli
   ```
 
 - Add commitlint configuration file:
 
-  ```js
-  // .commitlintrc.js
+  ```json
+  // .commitlintrc
 
   {
-	  "extends": ["@commitlint/config-conventional"]
+    "extends": ["@commitlint/config-conventional"]
   }
   ```
 
 ## Automation
 
-- Setup [➡ lefthook](../../docs/tools/lefthook.md) to schedule `commitlint` execution on commit.
+- Setup [➡ lefthook](./lefthook.md) to execute `commitlint` on commit.
 
 ## Usage
 
-- **Automatic** validation of commit message with `commitlint` on commit.\
-  In case of invalid message, commit will be rejected.
-
+- **Automatic**: Commit message validation with `commitlint` on commit.\
+  In case of invalid message, the commit will be rejected.
 
 [⬅ Back](../../README.md)

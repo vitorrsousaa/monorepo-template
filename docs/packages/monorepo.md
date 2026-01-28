@@ -1,65 +1,104 @@
-# Package configuration
+# Monorepo
 
-The purpose of the **[package ↗](https://docs.npmjs.com/about-packages-and-modules)** is keeping app/lib information (version, name, description, dependencies, scripts etc.).
+This project uses a monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces) and [Turborepo](https://turbo.build/).
 
 ## Contents
 
-- [Prerequisites](#prerequisites)
-- [Setup](#setup)
+- [Structure](#structure)
+- [Package Management](#package-management)
+- [Scripts](#scripts)
 
-## Prerequisites
+## Structure
 
-- [➡ yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable) - management package
+```
+artemis/
+├── apps/          # Applications (API, Web, CLI, etc.)
+├── packages/      # Shared packages
+└── docs/          # Documentation
+```
 
-## Setup
+### Apps
 
-- Create `package.json` file:
+Complete applications that can run independently:
 
-  ```jsonc
-  // package.json
+- `api` - Serverless API (AWS Lambda)
+- `web` - Next.js application
+- `spa` - Single Page Application
+- `cli` - CLI tool
 
-  {
-    // Package info
+### Packages
 
-    "name": "monorepo-template",
-    "private": true,
-    "description": "...",
-    "author": "...",
-    "license": "MIT",
+Shared reusable packages across apps:
 
-    // Common scripts
+- `@repo/logger` - Shared logging system
+- `@repo/ui` - Shared React components
+- `@repo/typescript-config` - Shared TypeScript configurations
+- `@repo/vitest-presets` - Shared Vitest configurations
 
-    "scripts": {
-      "clean": "rimraf \"**/node_modules\" && pnpm -r clean",
-      "fresh": "pnpm clean && pnpm i",
-      "nuke": "rimraf pnpm-lock.yaml && pnpm fresh"
-    },
+## Package Management
 
-    // Prevent using other package managers except pnpm
+### Installation
 
-    "engines": {
-      "node": ">=18",
-    },
-    "packageManager": "yarn@1.22.17",
+```sh
+# Install all dependencies
+pnpm install
+
+# Install dependency in a specific package/app
+pnpm --filter @repo/logger add <package>
+
+# Install dependency in all packages
+pnpm -r add <package>
+```
+
+### Workspace Protocol
+
+To reference internal packages, use the `workspace:*` protocol:
+
+```json
+{
+  "dependencies": {
+    "@repo/logger": "workspace:*"
   }
-  ```
+}
+```
 
-- Add npm configuration file:
+## Scripts
 
-  ```yaml
-  # .npmrc
+### Build
 
-  auto-install-peers = true
-  ```
+```sh
+# Build all packages and apps
+pnpm build
 
-- Add vitest workspace file:
+# Build a specific package/app
+pnpm --filter @repo/logger build
+```
 
-  ```yaml
-  # vitest.workspace.ts
+### Development
 
-  export default ["packages/*", "apps/*"];
-  ```
+```sh
+# Run all dev servers
+pnpm dev
 
+# Run specific dev server
+pnpm dev:api    # API
+pnpm dev:web    # Next.js
+pnpm dev:spa    # SPA
+pnpm dev:cli    # CLI
+pnpm dev:front  # SPA + UI package
+```
 
+### Linting and Formatting
+
+```sh
+# Lint all packages
+pnpm lint
+
+# Format all packages
+pnpm format
+
+# Typecheck all packages
+pnpm typecheck
+```
 
 [⬅ Back](../../README.md)

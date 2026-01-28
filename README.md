@@ -29,16 +29,22 @@ This monorepo consist in these packages:
 
 ### Monorepo
 
-- [Monorepo](docs/packages/monorepo.md)
-- [Biome](/tools/biome.md)
-- [CommitLint](/tools/commitlint.md)
-- [LintStaged](/docs/tools/lint-staged.md)
-- [Lefthook](/docs/tools/lefthook.md)
+- [Monorepo](/docs/packages/monorepo.md)
 
-### Lib
+### Packages
 
-- [Typescript](/packages/typescript.md)
-- [Vitest](/packages/vitest.md)
+- [@repo/logger](/docs/packages/logger.md) - Sistema de logging compartilhado
+- [@repo/ui](/docs/packages/ui.md) - Componentes React compartilhados
+- [@repo/typescript-config](/docs/packages/typescript-config.md) - Configurações TypeScript compartilhadas
+- [@repo/vitest-presets](/docs/packages/vitest-presets.md) - Configurações Vitest compartilhadas
+
+### Tools
+
+- [Biome](/docs/tools/biome.md) - Linting e formatação
+- [CommitLint](/docs/tools/commitlint.md) - Validação de commits
+- [Lefthook](/docs/tools/lefthook.md) - Git hooks
+- [TypeScript](/docs/tools/typescript.md) - Configuração TypeScript
+- [Vitest](/docs/tools/vitest.md) - Configuração de testes
 
 ### Lib | `react`
 
