@@ -1,6 +1,7 @@
 import type { Todo } from "@core/domain/todo/todo";
 
 export interface TodoRepository {
+	findInboxTodos(userId: string): Promise<Todo[]>;
 	findAll(): Promise<Todo[]>;
 	findById(id: string): Promise<Todo | null>;
 	create(data: Omit<Todo, "id" | "createdAt" | "updatedAt">): Promise<Todo>;
