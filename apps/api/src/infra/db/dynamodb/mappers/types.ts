@@ -2,30 +2,31 @@
  * TodoDynamoDBEntity
  *
  * Represents the Todo entity structure in DynamoDB.
+ * Aligned with docs/database-design.md: all access by user (PK includes USER#userId).
  *
- * Characteristics:
- * - Uses snake_case (common database standard)
- * - Includes partition (PK) and sort (SK) keys
- * - Includes GSI keys for alternative queries
- * - Dates stored as ISO string
+ * - Inbox: PK = USER#userId, SK = TODO#INBOX#PENDING#order#todoId | TODO#INBOX#COMPLETED#completedAt#todoId
+ * - Project: PK = USER#userId#PROJECT#projectId, SK = TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
  */
 export interface TodoDynamoDBEntity {
-	// Partition Key and Sort Key (Single-Table Design)
-	PK: string; // Format: "TODO#${id}"
-	SK: string; // Format: "METADATA"
+	// Partition Key: always scoped by user (enables "buscar todos pelo usuário")
+	PK: string; // USER#userId (inbox) | USER#userId#PROJECT#projectId (project)
+	SK: string; // TODO#INBOX#PENDING#order#todoId | TODO#INBOX#COMPLETED#completedAt#todoId | TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
 
-	// GSI to list all TODOs
-	GSI1PK: string; // Format: "TODO"
-	GSI1SK: string; // Format: ISO timestamp (sorted by date)
+	// GSI1: DueDateIndex (docs)
+	GSI1PK?: string; // USER#userId#DUE_DATE#YYYY-MM-DD
+	GSI1SK?: string; // TODO#PENDING#priority#todoId | TODO#COMPLETED#completedAt#todoId
 
 	// Entity attributes (snake_case)
 	id: string;
+	user_id: string;
+	project_id?: string | null;
 	title: string;
 	description: string;
 	completed: boolean;
-	created_at: string; // ISO 8601 string
-	updated_at: string; // ISO 8601 string
+	order?: number;
+	created_at: string; // ISO 8601
+	updated_at: string; // ISO 8601
+	completed_at?: string | null; // ISO 8601
 
-	// Metadata
 	entity_type: string; // "TODO"
 }

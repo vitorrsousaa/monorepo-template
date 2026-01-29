@@ -1,6 +1,7 @@
 # Design de Banco de Dados - Artemis (DynamoDB)
 
 ## 📋 Índice
+
 1. [Visão Geral](#visão-geral)
 2. [Entidades Principais](#entidades-principais)
 3. [Relacionamentos](#relacionamentos)
@@ -22,9 +23,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ## Entidades Principais
 
 ### 1. User (Usuário)
+
 **Descrição**: Representa um usuário do sistema. Futuramente será usado para autenticação e isolamento de dados.
 
 **Propriedades**:
+
 - `id` (string, PK): Identificador único do usuário
 - `email` (string): Email do usuário (único)
 - `name` (string): Nome completo do usuário
@@ -36,9 +39,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 2. Project (Projeto/Grupo)
+
 **Descrição**: Representa um projeto ou grupo de contexto para organizar tarefas. Equivalente a "Groups" no documento de ideias.
 
 **Propriedades**:
+
 - `id` (string): Identificador único do projeto
 - `userId` (string): ID do usuário proprietário (FK)
 - `name` (string): Nome do projeto
@@ -52,9 +57,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 3. Section (Seção)
+
 **Descrição**: Representa uma seção dentro de um projeto (ex: Backlog, In Progress, Review, Done). Usado para organizar tarefas em colunas/estados.
 
 **Propriedades**:
+
 - `id` (string): Identificador único da seção
 - `projectId` (string): ID do projeto (FK)
 - `userId` (string): ID do usuário proprietário (FK)
@@ -67,9 +74,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 4. Todo/Task (Tarefa)
+
 **Descrição**: A entidade central do sistema. Representa uma tarefa que pode estar associada a um projeto, seção, meta e tags.
 
 **Propriedades**:
+
 - `id` (string): Identificador único da tarefa
 - `userId` (string): ID do usuário proprietário (FK)
 - `title` (string): Título da tarefa
@@ -87,10 +96,12 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 - `updatedAt` (ISO8601): Data da última atualização
 
 **Campos adicionais observados no código**:
+
 - `tags` (array de strings, opcional): Tags/labels da tarefa
 - `comments` (number, opcional): Contador de comentários
 
 **Campos para Tarefas Recorrentes**:
+
 - `isRecurring` (boolean): Indica se a tarefa é recorrente
 - `recurrenceTemplateId` (string, opcional): ID do template de recorrência (FK para RecurrenceTemplate)
 - `parentTodoId` (string, opcional): ID da tarefa pai (para tarefas geradas automaticamente)
@@ -99,9 +110,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 5. Goal (Meta)
+
 **Descrição**: Representa uma meta de longo prazo que pode ter tarefas associadas para rastrear progresso.
 
 **Propriedades**:
+
 - `id` (string): Identificador único da meta
 - `userId` (string): ID do usuário proprietário (FK)
 - `name` (string): Nome da meta
@@ -118,9 +131,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 6. Tag (Tag/Label)
+
 **Descrição**: Representa uma tag ou label que pode ser associada a tarefas para categorização.
 
 **Propriedades**:
+
 - `id` (string): Identificador único da tag
 - `userId` (string): ID do usuário proprietário (FK)
 - `name` (string): Nome da tag
@@ -132,9 +147,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 7. TodoTag (Associação Todo-Tag)
+
 **Descrição**: Tabela de associação muitos-para-muitos entre Todo e Tag.
 
 **Propriedades**:
+
 - `todoId` (string): ID da tarefa (FK)
 - `tagId` (string): ID da tag (FK)
 - `userId` (string): ID do usuário (FK)
@@ -142,9 +159,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 8. Comment (Comentário)
+
 **Descrição**: Comentários associados a tarefas.
 
 **Propriedades**:
+
 - `id` (string): Identificador único do comentário
 - `todoId` (string): ID da tarefa (FK)
 - `userId` (string): ID do usuário que criou (FK)
@@ -156,9 +175,11 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 ---
 
 ### 9. RecurrenceTemplate (Template de Recorrência)
+
 **Descrição**: Define as regras de recorrência para tarefas. Armazena a configuração de recorrência que será usada para gerar novas instâncias da tarefa.
 
 **Propriedades**:
+
 - `id` (string): Identificador único do template
 - `userId` (string): ID do usuário proprietário (FK)
 - `todoId` (string): ID da tarefa original que criou este template (FK)
@@ -176,6 +197,7 @@ A aplicação Artemis é um sistema de gerenciamento de tarefas (todo) e metas (
 - `updatedAt` (ISO8601): Data da última atualização
 
 **Exemplos de configuração**:
+
 - A cada 15 dias: `recurrenceType: "custom"`, `recurrenceInterval: 15`, `recurrenceUnit: "days"`
 - Toda segunda-feira: `recurrenceType: "weekly"`, `recurrenceDaysOfWeek: [1]`
 - Todo dia 1º do mês: `recurrenceType: "monthly"`, `recurrenceDayOfMonth: 1`
@@ -210,6 +232,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ```
 
 **Resumo dos relacionamentos**:
+
 - Um usuário pode ter múltiplos projetos, tarefas, metas, tags, seções e templates de recorrência
 - Um projeto pode ter múltiplas seções e tarefas
 - Uma seção pertence a um projeto e pode ter múltiplas tarefas
@@ -224,11 +247,13 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ## Rotas da Aplicação
 
 ### Autenticação
+
 - `POST /auth/signin` - Login do usuário
 - `POST /auth/signup` - Registro de novo usuário
 - `GET /auth/google/callback` - Callback OAuth Google
 
 ### Todo (Tarefas)
+
 - `GET /todo/dashboard` - Dashboard principal com estatísticas
 - `GET /todo/inbox` - Lista de tarefas sem projeto
 - `GET /todo/today` - Tarefas do dia atual
@@ -243,6 +268,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `PATCH /todo/:id/complete` - Marcar tarefa como completa/incompleta
 
 ### Projects (Projetos)
+
 - `GET /projects` - Listar todos os projetos do usuário
 - `GET /projects/:id` - Obter detalhes de um projeto
 - `POST /projects` - Criar novo projeto
@@ -252,6 +278,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `DELETE /projects/:id/permanent` - Deletar projeto permanentemente (hard delete)
 
 ### Sections (Seções)
+
 - `GET /projects/:projectId/sections` - Listar seções de um projeto
 - `POST /projects/:projectId/sections` - Criar nova seção
 - `PUT /sections/:id` - Atualizar seção
@@ -261,6 +288,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `PATCH /sections/:id/reorder` - Reordenar seções
 
 ### Goals (Metas)
+
 - `GET /goals/dashboard` - Dashboard de metas
 - `GET /goals` - Listar todas as metas do usuário
 - `GET /goals/:id` - Obter detalhes de uma meta
@@ -271,6 +299,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `DELETE /goals/:id/permanent` - Deletar meta permanentemente (hard delete)
 
 ### Tags
+
 - `GET /tags` - Listar todas as tags do usuário
 - `POST /tags` - Criar nova tag
 - `PUT /tags/:id` - Atualizar tag
@@ -279,6 +308,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `DELETE /tags/:id/permanent` - Deletar tag permanentemente (hard delete)
 
 ### Comments
+
 - `GET /todo/:todoId/comments` - Listar comentários de uma tarefa
 - `POST /todo/:todoId/comments` - Criar comentário
 - `PUT /comments/:id` - Atualizar comentário
@@ -287,6 +317,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `DELETE /comments/:id/permanent` - Deletar comentário permanentemente (hard delete)
 
 ### Trash (Lixeira)
+
 - `GET /trash` - Listar todos os itens deletados do usuário
 - `GET /trash/projects` - Listar projetos deletados
 - `GET /trash/todos` - Listar tarefas deletadas
@@ -294,6 +325,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 - `POST /trash/empty` - Limpar lixeira (hard delete de todos os itens deletados)
 
 ### Recurrence (Recorrência)
+
 - `GET /todo/:todoId/recurrence` - Obter template de recorrência de uma tarefa
 - `POST /todo/:todoId/recurrence` - Criar/atualizar template de recorrência
 - `DELETE /todo/:todoId/recurrence` - Remover recorrência de uma tarefa
@@ -306,9 +338,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ## Métodos de Busca Necessários
 
 ### 1. Buscar Projetos do Usuário
+
 **Descrição**: Listar todos os projetos de um usuário, possivelmente ordenados por nome ou data de criação.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK begins_with PROJECT#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir**
 - Ordenação: Por `name` (alfabética) ou `createdAt` (mais recente primeiro)
@@ -318,9 +352,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 2. Buscar Projeto com Tarefas por Seção
+
 **Descrição**: Obter um projeto específico com todas as suas tarefas agrupadas por seção. Usado na página de detalhes do projeto.
 
-**Query**: 
+**Query**:
+
 - Projeto: `PK = USER#userId AND SK = PROJECT#projectId` (GetItem - pode retornar deletado para permitir restauração)
 - Seções: `PK = USER#userId#PROJECT#projectId AND SK begins_with SECTION#` + `FilterExpression: attribute_not_exists(deletedAt)`
 - Tarefas: `GSI3PK = USER#userId#PROJECT#projectId#SECTION#sectionId` + `FilterExpression: attribute_not_exists(deletedAt)` (ordenadas por `order`)
@@ -330,9 +366,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 3. Buscar Tarefas do Dia (Today)
+
 **Descrição**: Listar todas as tarefas com `dueDate` igual à data atual, agrupadas por projeto.
 
-**Query**: 
+**Query**:
+
 - GSI1: `GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD AND GSI1SK begins_with TODO#`
 - FilterExpression: `attribute_not_exists(deletedAt) AND completed = false` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `priority` (high > medium > low) e depois por `dueDate`
@@ -342,9 +380,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 4. Buscar Tarefas da Inbox
+
 **Descrição**: Listar tarefas sem projeto (`projectId IS NULL`).
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK begins_with TODO#INBOX#`
 - FilterExpression: `attribute_not_exists(deletedAt) AND completed = false` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `createdAt` (mais recente primeiro) ou `priority`
@@ -354,9 +394,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 5. Buscar Tarefas Futuras (Upcoming)
+
 **Descrição**: Listar tarefas com `dueDate` maior que hoje.
 
-**Query**: 
+**Query**:
+
 - GSI1: `GSI1PK begins_with USER#userId#DUE_DATE#` (com range query para datas futuras)
 - FilterExpression: `attribute_not_exists(deletedAt) AND completed = false` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `dueDate` (ascendente)
@@ -366,9 +408,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 6. Buscar Tarefas Concluídas
+
 **Descrição**: Listar tarefas marcadas como concluídas.
 
-**Query**: 
+**Query**:
+
 - GSI4: `GSI4PK = USER#userId#COMPLETED#true`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `completedAt` (mais recente primeiro)
@@ -378,9 +422,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 7. Buscar Tarefas por Projeto
+
 **Descrição**: Listar todas as tarefas de um projeto específico.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId#PROJECT#projectId AND SK begins_with TODO#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `sectionId` (ordem da seção) e depois por `order` dentro da seção
@@ -390,9 +436,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 8. Buscar Tarefas por Meta
+
 **Descrição**: Listar todas as tarefas associadas a uma meta.
 
-**Query**: 
+**Query**:
+
 - GSI2: `GSI2PK = USER#userId#GOAL#goalId AND GSI2SK begins_with TODO#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `dueDate` ou `priority`
@@ -402,9 +450,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 9. Buscar Tarefas por Prioridade
+
 **Descrição**: Filtrar tarefas por nível de prioridade.
 
-**Query**: 
+**Query**:
+
 - GSI4: `GSI4PK = USER#userId#COMPLETED#false`
 - FilterExpression: `attribute_not_exists(deletedAt) AND priority = :priority` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `dueDate` (ascendente)
@@ -414,9 +464,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 10. Buscar Tarefas por Tag
+
 **Descrição**: Listar tarefas que possuem uma tag específica.
 
-**Query**: 
+**Query**:
+
 - GSI5: `GSI5PK = USER#userId#TAG#tagId AND GSI5SK begins_with TODO#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `dueDate`
@@ -426,9 +478,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 11. Buscar Metas do Usuário
+
 **Descrição**: Listar todas as metas de um usuário.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK begins_with GOAL#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `deadline` (ascendente) ou `createdAt` (mais recente primeiro)
@@ -438,9 +492,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 12. Buscar Meta com Tarefas
+
 **Descrição**: Obter uma meta específica com todas as suas tarefas associadas.
 
 **Query**:
+
 - Meta: `PK = USER#userId AND SK = GOAL#goalId` (GetItem - pode retornar deletado)
 - Tarefas: `GSI2PK = USER#userId#GOAL#goalId` + `FilterExpression: attribute_not_exists(deletedAt)`
 
@@ -449,9 +505,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 13. Buscar Seções de um Projeto
+
 **Descrição**: Listar todas as seções de um projeto ordenadas.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId#PROJECT#projectId AND SK begins_with SECTION#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `order` (ascendente)
@@ -461,9 +519,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 14. Buscar Tags do Usuário
+
 **Descrição**: Listar todas as tags criadas por um usuário.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK begins_with TAG#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `name` (alfabética)
@@ -473,9 +533,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 15. Buscar Comentários de uma Tarefa
+
 **Descrição**: Listar comentários de uma tarefa específica.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId#TODO#todoId AND SK begins_with COMMENT#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `createdAt` (mais antigo primeiro)
@@ -485,9 +547,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 16. Buscar Estatísticas do Dashboard
+
 **Descrição**: Agregar dados para o dashboard (total de tarefas completas, em progresso, hoje, etc.).
 
 **Queries** (todas com `FilterExpression: attribute_not_exists(deletedAt)`):
+
 - Total completas: GSI4 `GSI4PK = USER#userId#COMPLETED#true` + filtro deletedAt
 - Total em progresso: GSI4 `GSI4PK = USER#userId#COMPLETED#false` + filtro deletedAt
 - Total hoje: GSI1 `GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD` + filtro deletedAt
@@ -498,11 +562,13 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 17. Buscar Tarefas com Filtros Múltiplos
+
 **Descrição**: Buscar tarefas com múltiplos filtros (projeto, seção, prioridade, data, tags).
 
 **Query**: Combinar filtros conforme necessário, **sempre incluindo** `attribute_not_exists(deletedAt)`
 
 **Exemplos**:
+
 - Projeto + Seção: GSI3 `GSI3PK = USER#userId#PROJECT#projectId#SECTION#sectionId` + `FilterExpression: attribute_not_exists(deletedAt)`
 - Projeto + Prioridade: `PK = USER#userId#PROJECT#projectId` + `FilterExpression: attribute_not_exists(deletedAt) AND priority = :priority`
 - Data + Prioridade: GSI1 `GSI1PK = USER#userId#DUE_DATE#date` + `FilterExpression: attribute_not_exists(deletedAt) AND priority = :priority`
@@ -512,9 +578,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 18. Buscar Template de Recorrência de uma Tarefa
+
 **Descrição**: Obter o template de recorrência associado a uma tarefa.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK = RECURRENCE#recurrenceTemplateId`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 
@@ -523,9 +591,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 19. Buscar Todas as Instâncias de uma Recorrência
+
 **Descrição**: Listar todas as tarefas geradas por um template de recorrência.
 
-**Query**: 
+**Query**:
+
 - GSI7: `GSI7PK = USER#userId#RECURRENCE#recurrenceTemplateId AND GSI7SK begins_with TODO#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `dueDate` (ascendente)
@@ -535,9 +605,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 20. Buscar Tarefas Filhas de uma Tarefa Pai
+
 **Descrição**: Listar todas as tarefas geradas a partir de uma tarefa recorrente original.
 
-**Query**: 
+**Query**:
+
 - GSI8: `GSI8PK = USER#userId#PARENT#parentTodoId AND GSI8SK begins_with TODO#`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `recurrenceSequence` (ascendente)
@@ -547,9 +619,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 21. Buscar Todas as Tarefas Recorrentes do Usuário
+
 **Descrição**: Listar todas as tarefas que são recorrentes (originais ou geradas).
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK begins_with TODO#` (ou usar GSI apropriado)
 - FilterExpression: `attribute_not_exists(deletedAt) AND isRecurring = :true` ← **SEMPRE incluir deletedAt**
 
@@ -558,9 +632,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 ---
 
 ### 22. Buscar Templates de Recorrência Ativos
+
 **Descrição**: Listar todos os templates de recorrência ativos do usuário.
 
-**Query**: 
+**Query**:
+
 - KeyCondition: `PK = USER#userId AND SK begins_with RECURRENCE#`
 - FilterExpression: `attribute_not_exists(deletedAt) AND isActive = :true` ← **SEMPRE incluir deletedAt**
 
@@ -575,7 +651,8 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primárias (PK) e de classificação (SK), além de Global Secondary Indexes (GSI) para suportar diferentes padrões de acesso.
 
 **Princípios**:
-1. **Isolamento por usuário**: Todas as entidades terão `userId` como parte da chave primária
+
+1. **Isolamento por usuário**: Todas as entidades terão `userId` como parte da chave primária. **Todas as tasks são sempre buscadas pelo usuário** — a PK inclui `USER#userId` (inbox) ou `USER#userId#PROJECT#projectId` (tarefa em projeto), nunca apenas o id da tarefa.
 2. **Single Table Design**: Considerar usar uma única tabela com diferentes tipos de entidade
 3. **GSIs para queries complexas**: Criar GSIs para padrões de acesso frequentes
 4. **Ordenação**: Usar SK ou campos de ordenação para manter ordem
@@ -599,6 +676,7 @@ O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primária
 - **SK para tarefas concluídas**: `TODO#COMPLETED#completedAt#todoId`
 
 **Vantagens**:
+
 - ✅ Não precisa ler itens concluídos quando busca apenas pendentes
 - ✅ Reduz custos de leitura (não lê dados desnecessários)
 - ✅ Melhor performance (filtro na chave, não em memória)
@@ -615,38 +693,42 @@ O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primária
 #### Tabela Principal: `artemis-data`
 
 **Estrutura de Chaves**:
+
 - **PK (Partition Key)**: `userId#entityType` ou `userId#entityType#entityId`
 - **SK (Sort Key)**: Varia conforme o tipo de entidade, incluindo status quando relevante
 
 #### 📊 Tabela Master: Todas as Entidades com PK e SK
 
-| Entidade | PK (Partition Key) | SK (Sort Key) | Descrição | Status na SK? |
-|----------|-------------------|---------------|-----------|---------------|
-| **User** | `USER#userId` | `METADATA` | Dados do usuário | ❌ |
-| **Project** | `USER#userId` | `PROJECT#projectId` | Dados do projeto | ❌ |
-| **Section** | `USER#userId#PROJECT#projectId` | `SECTION#sectionId` | Dados da seção | ❌ |
-| **Todo (Pendente)** | `USER#userId#PROJECT#projectId` | `TODO#PENDING#order#todoId` | Tarefa pendente em projeto | ✅ |
-| **Todo (Concluída)** | `USER#userId#PROJECT#projectId` | `TODO#COMPLETED#completedAt#todoId` | Tarefa concluída em projeto | ✅ |
-| **Todo Inbox (Pendente)** | `USER#userId` | `TODO#INBOX#PENDING#order#todoId` | Tarefa pendente sem projeto | ✅ |
-| **Todo Inbox (Concluída)** | `USER#userId` | `TODO#INBOX#COMPLETED#completedAt#todoId` | Tarefa concluída sem projeto | ✅ |
-| **Goal** | `USER#userId` | `GOAL#goalId` | Dados da meta | ❌ |
-| **Tag** | `USER#userId` | `TAG#tagId` | Dados da tag | ❌ |
-| **TodoTag** | `USER#userId#TODO#todoId` | `TAG#tagId` | Associação Todo-Tag | ❌ |
-| **Comment** | `USER#userId#TODO#todoId` | `COMMENT#commentId` | Comentário em tarefa | ❌ |
-| **RecurrenceTemplate** | `USER#userId` | `RECURRENCE#recurrenceTemplateId` | Template de recorrência | ❌ |
+| Entidade                   | PK (Partition Key)              | SK (Sort Key)                             | Descrição                    | Status na SK? |
+| -------------------------- | ------------------------------- | ----------------------------------------- | ---------------------------- | ------------- |
+| **User**                   | `USER#userId`                   | `METADATA`                                | Dados do usuário             | ❌            |
+| **Project**                | `USER#userId`                   | `PROJECT#projectId`                       | Dados do projeto             | ❌            |
+| **Section**                | `USER#userId#PROJECT#projectId` | `SECTION#sectionId`                       | Dados da seção               | ❌            |
+| **Todo (Pendente)**        | `USER#userId#PROJECT#projectId` | `TODO#PENDING#order#todoId`               | Tarefa pendente em projeto   | ✅            |
+| **Todo (Concluída)**       | `USER#userId#PROJECT#projectId` | `TODO#COMPLETED#completedAt#todoId`       | Tarefa concluída em projeto  | ✅            |
+| **Todo Inbox (Pendente)**  | `USER#userId`                   | `TODO#INBOX#PENDING#order#todoId`         | Tarefa pendente sem projeto  | ✅            |
+| **Todo Inbox (Concluída)** | `USER#userId`                   | `TODO#INBOX#COMPLETED#completedAt#todoId` | Tarefa concluída sem projeto | ✅            |
+| **Goal**                   | `USER#userId`                   | `GOAL#goalId`                             | Dados da meta                | ❌            |
+| **Tag**                    | `USER#userId`                   | `TAG#tagId`                               | Dados da tag                 | ❌            |
+| **TodoTag**                | `USER#userId#TODO#todoId`       | `TAG#tagId`                               | Associação Todo-Tag          | ❌            |
+| **Comment**                | `USER#userId#TODO#todoId`       | `COMMENT#commentId`                       | Comentário em tarefa         | ❌            |
+| **RecurrenceTemplate**     | `USER#userId`                   | `RECURRENCE#recurrenceTemplateId`         | Template de recorrência      | ❌            |
 
 **Notas sobre a SK**:
+
 - **Status na SK**: `PENDING` ou `COMPLETED` permite filtrar na chave (mais eficiente)
 - **Order**: Número para ordenação dentro da seção/projeto (ex: `1`, `2`, `3`)
 - **completedAt**: Timestamp ISO8601 para ordenar concluídas por data (ex: `2025-01-15T14:30:00Z`)
 - **todoId**: ID único da tarefa
 
 **Exemplos de SK**:
+
 - Tarefa pendente: `TODO#PENDING#1#task-123` (primeira posição)
 - Tarefa concluída: `TODO#COMPLETED#2025-01-15T14:30:00Z#task-123`
 - Tarefa inbox pendente: `TODO#INBOX#PENDING#1#task-456`
 
 **Atributos Adicionais**:
+
 - `entityType` (string): Tipo da entidade (USER, PROJECT, TODO, GOAL, etc.)
 - `GSI1PK`, `GSI1SK`: Para GSI1 (DueDateIndex)
 - `GSI2PK`, `GSI2SK`: Para GSI2 (GoalIndex)
@@ -663,12 +745,14 @@ O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primária
 #### Global Secondary Indexes (GSI)
 
 ##### GSI1: DueDateIndex - Busca por Data de Vencimento
+
 **Uso**: Buscar tarefas por data (Today, Upcoming)
 
 - **GSI1PK**: `USER#userId#DUE_DATE#YYYY-MM-DD` (para Today) ou `USER#userId#DUE_DATE#FUTURE` (para Upcoming)
 - **GSI1SK**: `TODO#PENDING#priority#todoId` (para pendentes) ou `TODO#COMPLETED#completedAt#todoId` (para concluídas)
 
 **Exemplo**:
+
 - Tarefa pendente com dueDate = 2025-01-15: `GSI1PK = USER#123#DUE_DATE#2025-01-15`, `GSI1SK = TODO#PENDING#1#task-456`
 - Tarefa concluída: `GSI1PK = USER#123#DUE_DATE#2025-01-15`, `GSI1SK = TODO#COMPLETED#2025-01-15T14:30:00Z#task-456`
 
@@ -677,24 +761,28 @@ O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primária
 ---
 
 ##### GSI2: GoalIndex - Busca por Meta
+
 **Uso**: Buscar tarefas associadas a uma meta
 
 - **GSI2PK**: `USER#userId#GOAL#goalId`
 - **GSI2SK**: `TODO#PENDING#priority#dueDate#todoId` (pendentes) ou `TODO#COMPLETED#completedAt#todoId` (concluídas)
 
 **Exemplo**:
+
 - Tarefa pendente associada à meta: `GSI2PK = USER#123#GOAL#goal-789`, `GSI2SK = TODO#PENDING#2#2025-01-20#task-456`
 - Tarefa concluída: `GSI2PK = USER#123#GOAL#goal-789`, `GSI2SK = TODO#COMPLETED#2025-01-20T10:00:00Z#task-456`
 
 ---
 
 ##### GSI3: SectionIndex - Busca por Seção
+
 **Uso**: Buscar tarefas por seção dentro de um projeto
 
 - **GSI3PK**: `USER#userId#PROJECT#projectId#SECTION#sectionId`
 - **GSI3SK**: `TODO#PENDING#order#todoId` (pendentes) ou `TODO#COMPLETED#completedAt#todoId` (concluídas)
 
 **Exemplo**:
+
 - Tarefa pendente na seção "In Progress": `GSI3PK = USER#123#PROJECT#proj-1#SECTION#section-2`, `GSI3SK = TODO#PENDING#1#task-456`
 - Tarefa concluída: `GSI3PK = USER#123#PROJECT#proj-1#SECTION#section-2`, `GSI3SK = TODO#COMPLETED#2025-01-15T14:30:00Z#task-456`
 
@@ -703,12 +791,14 @@ O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primária
 ---
 
 ##### GSI4: CompletedIndex - Busca por Status (Completas/Pendentes)
+
 **Uso**: Buscar tarefas por status de conclusão
 
 - **GSI4PK**: `USER#userId#COMPLETED#PENDING` ou `USER#userId#COMPLETED#COMPLETED`
 - **GSI4SK**: `TODO#dueDate#priority#todoId` (para pendentes) ou `TODO#completedAt#todoId` (para concluídas)
 
 **Exemplo**:
+
 - Tarefa pendente: `GSI4PK = USER#123#COMPLETED#PENDING`, `GSI4SK = TODO#2025-01-20#1#task-456`
 - Tarefa concluída: `GSI4PK = USER#123#COMPLETED#COMPLETED`, `GSI4SK = TODO#2025-01-15T14:30:00Z#task-456`
 
@@ -717,23 +807,27 @@ O DynamoDB é um banco NoSQL que requer um design cuidadoso das chaves primária
 ---
 
 ##### GSI5: TagIndex - Busca por Tag
+
 **Uso**: Buscar tarefas por tag
 
 - **GSI5PK**: `USER#userId#TAG#tagId`
 - **GSI5SK**: `TODO#PENDING#dueDate#todoId` (pendentes) ou `TODO#COMPLETED#completedAt#todoId` (concluídas)
 
 **Exemplo**:
+
 - Tarefa pendente com tag: `GSI5PK = USER#123#TAG#tag-789`, `GSI5SK = TODO#PENDING#2025-01-20#task-456`
 
 ---
 
 ##### GSI6: ProjectNameIndex - Busca de Projetos
+
 **Uso**: Listar projetos ordenados por nome
 
 - **GSI6PK**: `USER#userId`
 - **GSI6SK**: `PROJECT#name#projectId` (para ordenação alfabética)
 
 **Exemplo**:
+
 - Projeto: `GSI6PK = USER#123`, `GSI6SK = PROJECT#Python Study Plan#proj-456`
 
 ---
@@ -758,6 +852,7 @@ Cada tabela teria suas próprias GSIs conforme necessário.
 ## Padrões de Acesso
 
 ### 1. Listar Projetos do Usuário
+
 ```
 Query na tabela principal:
 PK = USER#userId
@@ -772,6 +867,7 @@ FilterExpression: attribute_not_exists(deletedAt)
 ---
 
 ### 2. Buscar Projeto com Tarefas por Seção - Apenas Pendentes
+
 ```
 1. Buscar projeto:
    PK = USER#userId
@@ -796,6 +892,7 @@ FilterExpression: attribute_not_exists(deletedAt)
 ---
 
 ### 3. Buscar Tarefas do Dia (Today) - Apenas Pendentes
+
 ```
 GSI1:
 GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD (data de hoje)
@@ -809,6 +906,7 @@ FilterExpression: attribute_not_exists(deletedAt)
 ---
 
 ### 4. Buscar Tarefas da Inbox - Apenas Pendentes
+
 ```
 Query na tabela principal:
 PK = USER#userId
@@ -821,6 +919,7 @@ FilterExpression: attribute_not_exists(deletedAt)
 ---
 
 ### 5. Buscar Tarefas Futuras (Upcoming)
+
 ```
 GSI1:
 GSI1PK = USER#userId#DUE_DATE#FUTURE
@@ -833,6 +932,7 @@ GSI1SK begins_with TODO#
 ---
 
 ### 6. Buscar Tarefas Concluídas
+
 ```
 GSI4:
 GSI4PK = USER#userId#COMPLETED#COMPLETED
@@ -846,6 +946,7 @@ FilterExpression: attribute_not_exists(deletedAt)
 ---
 
 ### 7. Buscar Tarefas por Meta
+
 ```
 GSI2:
 GSI2PK = USER#userId#GOAL#goalId
@@ -856,6 +957,7 @@ GSI2SK begins_with TODO#
 ---
 
 ### 8. Buscar Tarefas por Tag
+
 ```
 GSI5:
 GSI5PK = USER#userId#TAG#tagId
@@ -866,6 +968,7 @@ GSI5SK begins_with TODO#
 ---
 
 ### 9. Buscar Estatísticas do Dashboard
+
 ```
 1. Total completas:
    GSI4: GSI4PK = USER#userId#COMPLETED#true
@@ -887,6 +990,7 @@ GSI5SK begins_with TODO#
 ---
 
 ### 10. Criar Nova Tarefa
+
 ```
 PutItem na tabela principal:
 PK = USER#userId#PROJECT#projectId (ou USER#userId se inbox)
@@ -905,6 +1009,7 @@ Também atualizar todos os GSIs:
 ---
 
 ### 11. Marcar Tarefa como Concluída (Mudança de Status na SK)
+
 ```
 IMPORTANTE: Quando uma tarefa é concluída, a SK muda de PENDING para COMPLETED.
 
@@ -939,6 +1044,7 @@ IMPORTANTE: Quando uma tarefa é concluída, a SK muda de PENDING para COMPLETED
 ---
 
 ### 12. Atualizar Tarefa (mover entre seções, mudar prioridade, etc.)
+
 ```
 1. Buscar tarefa atual (GetItem)
 2. Atualizar campos necessários
@@ -952,6 +1058,7 @@ IMPORTANTE: Quando uma tarefa é concluída, a SK muda de PENDING para COMPLETED
 ---
 
 ### 12. Completar Tarefa Recorrente e Gerar Próxima Instância
+
 ```
 1. Marcar tarefa como completa (mudar SK de PENDING para COMPLETED):
    - Buscar tarefa: GetItem com SK = TODO#PENDING#order#todoId
@@ -988,7 +1095,9 @@ IMPORTANTE: Quando uma tarefa é concluída, a SK muda de PENDING para COMPLETED
 ## Considerações de Ordenação
 
 ### Ordenação por Prioridade
+
 Usar valores numéricos no SK:
+
 - `high` → `1`
 - `medium` → `2`
 - `low` → `3`
@@ -996,11 +1105,13 @@ Usar valores numéricos no SK:
 Exemplo: `GSI1SK = TODO#1#task-456` (prioridade alta)
 
 ### Ordenação por Data
+
 Usar formato ISO8601 no SK: `YYYY-MM-DD` ou timestamp
 
 Exemplo: `GSI1SK = TODO#2025-01-15#task-456`
 
 ### Ordenação por Ordem Customizada
+
 Usar campo numérico `order` no SK
 
 Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
@@ -1010,6 +1121,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 ## Exemplos de Itens no DynamoDB
 
 ### Exemplo 1: Projeto
+
 ```json
 {
   "PK": "USER#user-123",
@@ -1029,6 +1141,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 ```
 
 ### Exemplo 2: Seção
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -1046,6 +1159,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 ```
 
 ### Exemplo 3: Tarefa Pendente
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -1079,6 +1193,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 **Nota**: A SK inclui `PENDING` e o `order` (1) para ordenação dentro da seção.
 
 ### Exemplo 3b: Tarefa Concluída (mesma tarefa após conclusão)
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -1113,6 +1228,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 **Nota**: Quando concluída, a SK muda para `COMPLETED#completedAt`. O item antigo (PENDING) é deletado e este novo item é criado.
 
 ### Exemplo 4: Tarefa na Inbox Pendente (sem projeto)
+
 ```json
 {
   "PK": "USER#user-123",
@@ -1138,6 +1254,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 **Nota**: Tarefas da inbox também incluem status na SK: `INBOX#PENDING#order#todoId`
 
 ### Exemplo 5: Meta
+
 ```json
 {
   "PK": "USER#user-123",
@@ -1159,6 +1276,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 ```
 
 ### Exemplo 6: Tarefa Deletada (Soft Delete)
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -1189,6 +1307,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 **Nota**: O campo `ttl` (Time To Live) está definido para que o DynamoDB delete automaticamente este item após 90 dias da data de exclusão.
 
 ### Exemplo 7: Template de Recorrência
+
 ```json
 {
   "PK": "USER#user-123",
@@ -1215,6 +1334,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 **Nota**: Este template define uma recorrência "a cada 15 dias" para a tarefa `task-101`.
 
 ### Exemplo 8: Tarefa Recorrente (Original) - Pendente
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -1251,6 +1371,7 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 **Nota**: Esta é a tarefa original que criou o template de recorrência. `parentTodoId` é `null` porque é a tarefa pai. Status `PENDING` na SK.
 
 ### Exemplo 9: Tarefa Recorrente (Instância Gerada) - Pendente
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -1292,16 +1413,16 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 
 ## Resumo das GSIs
 
-| GSI | Nome | PK | SK | Uso Principal | Status na SK? |
-|-----|------|----|----|---------------|---------------|
-| GSI1 | DueDateIndex | `USER#userId#DUE_DATE#YYYY-MM-DD` | `TODO#PENDING#priority#todoId` ou `TODO#COMPLETED#completedAt#todoId` | Buscar tarefas por data (Today, Upcoming) | ✅ |
-| GSI2 | GoalIndex | `USER#userId#GOAL#goalId` | `TODO#PENDING#priority#dueDate#todoId` ou `TODO#COMPLETED#completedAt#todoId` | Buscar tarefas por meta | ✅ |
-| GSI3 | SectionIndex | `USER#userId#PROJECT#projectId#SECTION#sectionId` | `TODO#PENDING#order#todoId` ou `TODO#COMPLETED#completedAt#todoId` | Buscar tarefas por seção | ✅ |
-| GSI4 | CompletedIndex | `USER#userId#COMPLETED#PENDING` ou `USER#userId#COMPLETED#COMPLETED` | `TODO#dueDate#priority#todoId` (pendentes) ou `TODO#completedAt#todoId` (concluídas) | Buscar tarefas por status | ✅ |
-| GSI5 | TagIndex | `USER#userId#TAG#tagId` | `TODO#PENDING#dueDate#todoId` ou `TODO#COMPLETED#completedAt#todoId` | Buscar tarefas por tag | ✅ |
-| GSI6 | ProjectNameIndex | `USER#userId` | `PROJECT#name#projectId` | Listar projetos ordenados | ❌ |
-| GSI7 | RecurrenceTemplateIndex | `USER#userId#RECURRENCE#recurrenceTemplateId` | `TODO#PENDING#dueDate#todoId` ou `TODO#COMPLETED#completedAt#todoId` | Buscar instâncias de recorrência | ✅ |
-| GSI8 | ParentTodoIndex | `USER#userId#PARENT#parentTodoId` | `TODO#PENDING#recurrenceSequence#todoId` ou `TODO#COMPLETED#completedAt#todoId` | Buscar tarefas filhas | ✅ |
+| GSI  | Nome                    | PK                                                                   | SK                                                                                   | Uso Principal                             | Status na SK? |
+| ---- | ----------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------- | ------------- |
+| GSI1 | DueDateIndex            | `USER#userId#DUE_DATE#YYYY-MM-DD`                                    | `TODO#PENDING#priority#todoId` ou `TODO#COMPLETED#completedAt#todoId`                | Buscar tarefas por data (Today, Upcoming) | ✅            |
+| GSI2 | GoalIndex               | `USER#userId#GOAL#goalId`                                            | `TODO#PENDING#priority#dueDate#todoId` ou `TODO#COMPLETED#completedAt#todoId`        | Buscar tarefas por meta                   | ✅            |
+| GSI3 | SectionIndex            | `USER#userId#PROJECT#projectId#SECTION#sectionId`                    | `TODO#PENDING#order#todoId` ou `TODO#COMPLETED#completedAt#todoId`                   | Buscar tarefas por seção                  | ✅            |
+| GSI4 | CompletedIndex          | `USER#userId#COMPLETED#PENDING` ou `USER#userId#COMPLETED#COMPLETED` | `TODO#dueDate#priority#todoId` (pendentes) ou `TODO#completedAt#todoId` (concluídas) | Buscar tarefas por status                 | ✅            |
+| GSI5 | TagIndex                | `USER#userId#TAG#tagId`                                              | `TODO#PENDING#dueDate#todoId` ou `TODO#COMPLETED#completedAt#todoId`                 | Buscar tarefas por tag                    | ✅            |
+| GSI6 | ProjectNameIndex        | `USER#userId`                                                        | `PROJECT#name#projectId`                                                             | Listar projetos ordenados                 | ❌            |
+| GSI7 | RecurrenceTemplateIndex | `USER#userId#RECURRENCE#recurrenceTemplateId`                        | `TODO#PENDING#dueDate#todoId` ou `TODO#COMPLETED#completedAt#todoId`                 | Buscar instâncias de recorrência          | ✅            |
+| GSI8 | ParentTodoIndex         | `USER#userId#PARENT#parentTodoId`                                    | `TODO#PENDING#recurrenceSequence#todoId` ou `TODO#COMPLETED#completedAt#todoId`      | Buscar tarefas filhas                     | ✅            |
 
 ---
 
@@ -1310,15 +1431,17 @@ Exemplo: `GSI3SK = TODO#1#task-456` (primeira posição)
 ### ⚡ Resumo Rápido (TL;DR)
 
 **Como funciona**:
+
 1. ✅ Campo `deletedAt` (timestamp) em todas as entidades
 2. ✅ **TODAS** as queries de listagem/busca **automaticamente** excluem itens com `deletedAt` definido
 3. ✅ Usar `FilterExpression: 'attribute_not_exists(deletedAt)'` em **todas** as queries normais
 4. ✅ Apenas queries de lixeira ou busca por ID específico podem retornar itens deletados
 
 **Padrão de implementação**:
+
 ```javascript
 // ✅ CORRETO: Sempre incluir este filtro
-FilterExpression: 'attribute_not_exists(deletedAt)'
+FilterExpression: "attribute_not_exists(deletedAt)";
 
 // ❌ ERRADO: Esquecer o filtro (retornará itens deletados)
 // Sem FilterExpression
@@ -1355,6 +1478,7 @@ O sistema implementa **Soft Delete** para todas as entidades principais, permiti
    - Garante consistência em toda a aplicação
 
 **Alternativas menos comuns**:
+
 - Campo booleano `isDeleted` (menos preciso, não guarda quando foi deletado)
 - Tabela separada para itens deletados (mais complexo, raramente usado)
 - Incluir status na chave primária (mais eficiente no DynamoDB, mas mais complexo)
@@ -1384,9 +1508,9 @@ Todas as entidades (exceto User, que pode ter regras especiais) possuem o campo 
 async function queryActiveItems(params) {
   return await dynamodb.query({
     ...params,
-    FilterExpression: params.FilterExpression 
+    FilterExpression: params.FilterExpression
       ? `${params.FilterExpression} AND attribute_not_exists(deletedAt)`
-      : 'attribute_not_exists(deletedAt)'
+      : "attribute_not_exists(deletedAt)",
   });
 }
 
@@ -1401,7 +1525,7 @@ async function queryDeletedItems(params) {
     ...params,
     FilterExpression: params.FilterExpression
       ? `${params.FilterExpression} AND attribute_exists(deletedAt)`
-      : 'attribute_exists(deletedAt)'
+      : "attribute_exists(deletedAt)",
   });
 }
 ```
@@ -1415,16 +1539,16 @@ Ao invés de usar `DeleteItem`, usar `UpdateItem` para definir `deletedAt`:
 ```javascript
 // Exemplo: Deletar uma tarefa
 await dynamodb.update({
-  TableName: 'artemis-data',
+  TableName: "artemis-data",
   Key: {
-    PK: 'USER#user-123#PROJECT#proj-456',
-    SK: 'TODO#task-101'
+    PK: "USER#user-123#PROJECT#proj-456",
+    SK: "TODO#task-101",
   },
-  UpdateExpression: 'SET deletedAt = :deletedAt, updatedAt = :updatedAt',
+  UpdateExpression: "SET deletedAt = :deletedAt, updatedAt = :updatedAt",
   ExpressionAttributeValues: {
-    ':deletedAt': new Date().toISOString(),
-    ':updatedAt': new Date().toISOString()
-  }
+    ":deletedAt": new Date().toISOString(),
+    ":updatedAt": new Date().toISOString(),
+  },
 });
 ```
 
@@ -1434,15 +1558,15 @@ Para restaurar um item deletado, definir `deletedAt` como `null`:
 
 ```javascript
 await dynamodb.update({
-  TableName: 'artemis-data',
+  TableName: "artemis-data",
   Key: {
-    PK: 'USER#user-123#PROJECT#proj-456',
-    SK: 'TODO#task-101'
+    PK: "USER#user-123#PROJECT#proj-456",
+    SK: "TODO#task-101",
   },
-  UpdateExpression: 'REMOVE deletedAt SET updatedAt = :updatedAt',
+  UpdateExpression: "REMOVE deletedAt SET updatedAt = :updatedAt",
   ExpressionAttributeValues: {
-    ':updatedAt': new Date().toISOString()
-  }
+    ":updatedAt": new Date().toISOString(),
+  },
 });
 ```
 
@@ -1452,11 +1576,11 @@ Para deletar fisicamente (hard delete), usar `DeleteItem` normalmente:
 
 ```javascript
 await dynamodb.delete({
-  TableName: 'artemis-data',
+  TableName: "artemis-data",
   Key: {
-    PK: 'USER#user-123#PROJECT#proj-456',
-    SK: 'TODO#task-101'
-  }
+    PK: "USER#user-123#PROJECT#proj-456",
+    SK: "TODO#task-101",
+  },
 });
 ```
 
@@ -1488,17 +1612,18 @@ Usar `FilterExpression` para excluir itens deletados. **Esta é a abordagem padr
 ```javascript
 // Padrão: Sempre incluir este filtro em queries de listagem
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-  FilterExpression: 'attribute_not_exists(deletedAt)', // ← SEMPRE incluir
+  TableName: "artemis-data",
+  KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+  FilterExpression: "attribute_not_exists(deletedAt)", // ← SEMPRE incluir
   ExpressionAttributeValues: {
-    ':pk': 'USER#user-123',
-    ':sk': 'PROJECT#'
-  }
+    ":pk": "USER#user-123",
+    ":sk": "PROJECT#",
+  },
 });
 ```
 
 **Vantagens**:
+
 - ✅ Simples de implementar
 - ✅ Funciona com todas as queries e GSIs
 - ✅ Não requer mudanças na estrutura de chaves existentes
@@ -1506,11 +1631,13 @@ const result = await dynamodb.query({
 - ✅ Fácil de manter e entender
 
 **Desvantagens**:
+
 - ⚠️ O DynamoDB ainda lê os itens deletados (custo de leitura)
 - ⚠️ Itens deletados ainda contam para o limite de 1MB por query
 - ⚠️ Se você tem muitos itens deletados (ex: 80% deletados), pode ser ineficiente
 
 **Quando usar**: Use esta abordagem se:
+
 - Você tem uma proporção razoável de itens ativos vs deletados (< 50% deletados)
 - Simplicidade é mais importante que otimização de custos
 - Você está começando o projeto (pode migrar depois se necessário)
@@ -1529,11 +1656,13 @@ GSI1PK = USER#userId#DUE_DATE#2025-01-15#DELETED
 ```
 
 **Vantagens**:
+
 - ✅ Não lê itens deletados (mais eficiente)
 - ✅ Reduz custos de leitura significativamente
 - ✅ Melhor performance em queries grandes
 
 **Desvantagens**:
+
 - ❌ Requer migração de dados existentes
 - ❌ Queries precisam sempre especificar o status (ACTIVE)
 - ❌ Mais complexo de gerenciar
@@ -1541,6 +1670,7 @@ GSI1PK = USER#userId#DUE_DATE#2025-01-15#DELETED
 - ❌ Mais propenso a erros (esquecer de incluir ACTIVE)
 
 **Quando usar**: Use esta abordagem apenas se:
+
 - Você tem uma proporção muito alta de itens deletados (> 50%)
 - Custos de leitura são uma preocupação crítica
 - Você tem volume muito alto de queries
@@ -1555,17 +1685,20 @@ GSI1PK = USER#userId#DUE_DATE#2025-01-15#DELETED
 **Decisão Final**: ✅ **SIM, incluir status (`PENDING`/`COMPLETED`) na SK**
 
 **Por quê?**
+
 1. **Performance**: Queries que buscam apenas pendentes não precisam ler concluídas (reduz custos)
 2. **Filtragem eficiente**: Usar `begins_with TODO#PENDING#` na SK é mais rápido que FilterExpression
 3. **Escalabilidade**: Com muitas tarefas concluídas, a diferença de performance é significativa
 4. **Padrão comum**: Empresas como GitHub, Linear usam abordagens similares
 
 **Como funciona**:
+
 - Tarefa pendente: `SK = TODO#PENDING#order#todoId`
 - Tarefa concluída: `SK = TODO#COMPLETED#completedAt#todoId`
 - Ao completar: Deletar item com SK `PENDING`, criar novo item com SK `COMPLETED`
 
 **Trade-offs**:
+
 - ✅ Vantagem: Melhor performance e menor custo
 - ⚠️ Desvantagem: Requer operação de "mover" item ao completar (DeleteItem + PutItem)
 
@@ -1580,13 +1713,13 @@ GSI1PK = USER#userId#DUE_DATE#2025-01-15#DELETED
 ```javascript
 // ✅ CORRETO: Filtro automático de itens deletados
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-  FilterExpression: 'attribute_not_exists(deletedAt)', // ← SEMPRE incluir
+  TableName: "artemis-data",
+  KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+  FilterExpression: "attribute_not_exists(deletedAt)", // ← SEMPRE incluir
   ExpressionAttributeValues: {
-    ':pk': 'USER#user-123',
-    ':sk': 'PROJECT#'
-  }
+    ":pk": "USER#user-123",
+    ":sk": "PROJECT#",
+  },
 });
 ```
 
@@ -1595,14 +1728,14 @@ const result = await dynamodb.query({
 ```javascript
 // ✅ CORRETO: Filtro automático mesmo em GSIs
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  IndexName: 'GSI1',
-  KeyConditionExpression: 'GSI1PK = :gsi1pk AND begins_with(GSI1SK, :gsi1sk)',
-  FilterExpression: 'attribute_not_exists(deletedAt)', // ← SEMPRE incluir
+  TableName: "artemis-data",
+  IndexName: "GSI1",
+  KeyConditionExpression: "GSI1PK = :gsi1pk AND begins_with(GSI1SK, :gsi1sk)",
+  FilterExpression: "attribute_not_exists(deletedAt)", // ← SEMPRE incluir
   ExpressionAttributeValues: {
-    ':gsi1pk': 'USER#user-123#DUE_DATE#2025-01-15',
-    ':gsi1sk': 'TODO#'
-  }
+    ":gsi1pk": "USER#user-123#DUE_DATE#2025-01-15",
+    ":gsi1sk": "TODO#",
+  },
 });
 ```
 
@@ -1611,11 +1744,11 @@ const result = await dynamodb.query({
 ```javascript
 // ✅ CORRETO: GetItem não precisa de filtro (permite restaurar)
 const result = await dynamodb.get({
-  TableName: 'artemis-data',
+  TableName: "artemis-data",
   Key: {
-    PK: 'USER#user-123',
-    SK: 'PROJECT#proj-456'
-  }
+    PK: "USER#user-123",
+    SK: "PROJECT#proj-456",
+  },
 });
 
 // Verificar se está deletado na aplicação
@@ -1629,13 +1762,13 @@ if (result.Item?.deletedAt) {
 ```javascript
 // ✅ CORRETO: Query específica para lixeira
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-  FilterExpression: 'attribute_exists(deletedAt)', // ← Apenas deletados
+  TableName: "artemis-data",
+  KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+  FilterExpression: "attribute_exists(deletedAt)", // ← Apenas deletados
   ExpressionAttributeValues: {
-    ':pk': 'USER#user-123',
-    ':sk': 'PROJECT#'
-  }
+    ":pk": "USER#user-123",
+    ":sk": "PROJECT#",
+  },
 });
 ```
 
@@ -1644,14 +1777,14 @@ const result = await dynamodb.query({
 ```javascript
 // ✅ CORRETO: Combinar filtros (sempre incluir deletedAt)
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  IndexName: 'GSI4',
-  KeyConditionExpression: 'GSI4PK = :gsi4pk',
-  FilterExpression: 'attribute_not_exists(deletedAt) AND priority = :priority', // ← Combinar filtros
+  TableName: "artemis-data",
+  IndexName: "GSI4",
+  KeyConditionExpression: "GSI4PK = :gsi4pk",
+  FilterExpression: "attribute_not_exists(deletedAt) AND priority = :priority", // ← Combinar filtros
   ExpressionAttributeValues: {
-    ':gsi4pk': 'USER#user-123#COMPLETED#false',
-    ':priority': 'high'
-  }
+    ":gsi4pk": "USER#user-123#COMPLETED#false",
+    ":priority": "high",
+  },
 });
 ```
 
@@ -1694,7 +1827,7 @@ await softDeleteGoal(goalId);
 
 // 2. Remover referência da meta nas tarefas
 await dynamodb.update({
-  UpdateExpression: 'REMOVE goalId SET updatedAt = :updatedAt',
+  UpdateExpression: "REMOVE goalId SET updatedAt = :updatedAt",
   // ... outras condições
 });
 ```
@@ -1705,10 +1838,12 @@ Se uma seção tem tarefas ativas, impedir a deleção ou mover as tarefas:
 
 ```javascript
 // Verificar se há tarefas ativas
-const activeTodos = await getTodosBySection(sectionId, { excludeDeleted: true });
+const activeTodos = await getTodosBySection(sectionId, {
+  excludeDeleted: true,
+});
 
 if (activeTodos.length > 0) {
-  throw new Error('Cannot delete section with active tasks');
+  throw new Error("Cannot delete section with active tasks");
 }
 
 // Ou mover tarefas para outra seção antes de deletar
@@ -1727,10 +1862,10 @@ Manter `deletedAt` no item principal. O FilterExpression funcionará tanto na ta
 ```javascript
 // Query no GSI com filtro
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  IndexName: 'GSI1',
-  KeyConditionExpression: 'GSI1PK = :gsi1pk',
-  FilterExpression: 'attribute_not_exists(deletedAt)',
+  TableName: "artemis-data",
+  IndexName: "GSI1",
+  KeyConditionExpression: "GSI1PK = :gsi1pk",
+  FilterExpression: "attribute_not_exists(deletedAt)",
   // ...
 });
 ```
@@ -1763,25 +1898,26 @@ ttlDate.setDate(ttlDate.getDate() + 90); // 90 dias
 const ttlTimestamp = Math.floor(ttlDate.getTime() / 1000);
 
 await dynamodb.update({
-  UpdateExpression: 'SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt',
+  UpdateExpression:
+    "SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt",
   ExpressionAttributeValues: {
-    ':deletedAt': new Date().toISOString(),
-    ':ttl': ttlTimestamp,
-    ':updatedAt': new Date().toISOString()
-  }
+    ":deletedAt": new Date().toISOString(),
+    ":ttl": ttlTimestamp,
+    ":updatedAt": new Date().toISOString(),
+  },
 });
 ```
 
 #### Períodos Recomendados de Retenção
 
-| Entidade | Período de Retenção | Justificativa |
-|----------|---------------------|---------------|
-| Todo | 90 dias | Tarefas podem ser recuperadas rapidamente |
-| Project | 180 dias | Projetos podem ser restaurados por mais tempo |
-| Goal | 180 dias | Metas são importantes para histórico |
-| Section | 30 dias | Seções são menos críticas |
-| Tag | 90 dias | Tags podem ser reutilizadas |
-| Comment | 30 dias | Comentários são menos críticos |
+| Entidade | Período de Retenção | Justificativa                                 |
+| -------- | ------------------- | --------------------------------------------- |
+| Todo     | 90 dias             | Tarefas podem ser recuperadas rapidamente     |
+| Project  | 180 dias            | Projetos podem ser restaurados por mais tempo |
+| Goal     | 180 dias            | Metas são importantes para histórico          |
+| Section  | 30 dias             | Seções são menos críticas                     |
+| Tag      | 90 dias             | Tags podem ser reutilizadas                   |
+| Comment  | 30 dias             | Comentários são menos críticos                |
 
 ### Queries para Itens Deletados
 
@@ -1792,13 +1928,13 @@ Para permitir que usuários vejam e restaurem itens deletados, criar queries esp
 ```javascript
 // Listar projetos deletados
 const result = await dynamodb.query({
-  TableName: 'artemis-data',
-  KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-  FilterExpression: 'attribute_exists(deletedAt)',
+  TableName: "artemis-data",
+  KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+  FilterExpression: "attribute_exists(deletedAt)",
   ExpressionAttributeValues: {
-    ':pk': 'USER#user-123',
-    ':sk': 'PROJECT#'
-  }
+    ":pk": "USER#user-123",
+    ":sk": "PROJECT#",
+  },
 });
 ```
 
@@ -1808,11 +1944,11 @@ Para buscar um item específico independente do status de deleção, não usar F
 
 ```javascript
 const result = await dynamodb.get({
-  TableName: 'artemis-data',
+  TableName: "artemis-data",
   Key: {
-    PK: 'USER#user-123#PROJECT#proj-456',
-    SK: 'TODO#task-101'
-  }
+    PK: "USER#user-123#PROJECT#proj-456",
+    SK: "TODO#task-101",
+  },
 });
 
 // Verificar se está deletado
@@ -1832,70 +1968,73 @@ async function softDeleteProject(userId, projectId) {
 
   // 1. Deletar projeto
   await dynamodb.update({
-    TableName: 'artemis-data',
+    TableName: "artemis-data",
     Key: {
       PK: `USER#${userId}`,
-      SK: `PROJECT#${projectId}`
+      SK: `PROJECT#${projectId}`,
     },
-    UpdateExpression: 'SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt',
+    UpdateExpression:
+      "SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt",
     ExpressionAttributeValues: {
-      ':deletedAt': timestamp,
-      ':ttl': ttlTimestamp,
-      ':updatedAt': timestamp
-    }
+      ":deletedAt": timestamp,
+      ":ttl": ttlTimestamp,
+      ":updatedAt": timestamp,
+    },
   });
 
   // 2. Buscar e deletar seções
   const sections = await dynamodb.query({
-    TableName: 'artemis-data',
-    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-    FilterExpression: 'attribute_not_exists(deletedAt)',
+    TableName: "artemis-data",
+    KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    FilterExpression: "attribute_not_exists(deletedAt)",
     ExpressionAttributeValues: {
-      ':pk': `USER#${userId}#PROJECT#${projectId}`,
-      ':sk': 'SECTION#'
-    }
+      ":pk": `USER#${userId}#PROJECT#${projectId}`,
+      ":sk": "SECTION#",
+    },
   });
 
   for (const section of sections.Items) {
     await dynamodb.update({
-      TableName: 'artemis-data',
+      TableName: "artemis-data",
       Key: {
         PK: section.PK,
-        SK: section.SK
+        SK: section.SK,
       },
-      UpdateExpression: 'SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt',
+      UpdateExpression:
+        "SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt",
       ExpressionAttributeValues: {
-        ':deletedAt': timestamp,
-        ':ttl': ttlTimestamp,
-        ':updatedAt': timestamp
-      }
+        ":deletedAt": timestamp,
+        ":ttl": ttlTimestamp,
+        ":updatedAt": timestamp,
+      },
     });
   }
 
   // 3. Buscar e deletar tarefas
   const todos = await dynamodb.query({
-    TableName: 'artemis-data',
-    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-    FilterExpression: 'attribute_not_exists(deletedAt)',
+    TableName: "artemis-data",
+    KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    FilterExpression: "attribute_not_exists(deletedAt)",
     ExpressionAttributeValues: {
-      ':pk': `USER#${userId}#PROJECT#${projectId}`,
-      ':sk': 'TODO#'
-    }
+      ":pk": `USER#${userId}#PROJECT#${projectId}`,
+      ":sk": "TODO#",
+    },
   });
 
   for (const todo of todos.Items) {
     await dynamodb.update({
-      TableName: 'artemis-data',
+      TableName: "artemis-data",
       Key: {
         PK: todo.PK,
-        SK: todo.SK
+        SK: todo.SK,
       },
-      UpdateExpression: 'SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt',
+      UpdateExpression:
+        "SET deletedAt = :deletedAt, ttl = :ttl, updatedAt = :updatedAt",
       ExpressionAttributeValues: {
-        ':deletedAt': timestamp,
-        ':ttl': ttlTimestamp,
-        ':updatedAt': timestamp
-      }
+        ":deletedAt": timestamp,
+        ":ttl": ttlTimestamp,
+        ":updatedAt": timestamp,
+      },
     });
 
     // 4. Atualizar GSIs (remover ou marcar como deletado)
@@ -1923,6 +2062,7 @@ async function softDeleteProject(userId, projectId) {
 O sistema suporta **tarefas recorrentes** que se repetem automaticamente em intervalos definidos. A abordagem é **lazy generation** (geração sob demanda): ao invés de criar todas as instâncias futuras de uma vez, criamos apenas a próxima instância quando a tarefa atual é completada.
 
 **Princípios**:
+
 - ✅ Criar apenas quando necessário (quando completar a tarefa atual)
 - ✅ Não criar milhões de tarefas futuras
 - ✅ Manter histórico de tarefas geradas
@@ -1953,11 +2093,12 @@ const recurrenceTemplate = {
   recurrenceInterval: 15,
   recurrenceUnit: "days",
   recurrenceEndDate: null, // Sem fim
-  isActive: true
+  isActive: true,
 };
 ```
 
 **No DynamoDB**:
+
 - A tarefa é armazenada normalmente na tabela principal
 - O template de recorrência é armazenado separadamente
 - A tarefa referencia o template via `recurrenceTemplateId`
@@ -1970,32 +2111,32 @@ Quando o usuário completa uma tarefa recorrente:
 async function completeRecurringTodo(todoId) {
   // 1. Marcar tarefa como completa
   await markTodoAsCompleted(todoId);
-  
+
   // 2. Buscar template de recorrência
   const template = await getRecurrenceTemplateByTodoId(todoId);
-  
+
   if (!template || !template.isActive) {
     return; // Não é recorrente ou está pausado
   }
-  
+
   // 3. Verificar se deve gerar próxima instância
   if (shouldGenerateNextInstance(template)) {
     // 4. Calcular próxima data
     const nextDueDate = calculateNextDueDate(
       template,
-      todo.dueDate // Data da tarefa completada
+      todo.dueDate, // Data da tarefa completada
     );
-    
+
     // 5. Criar nova tarefa
     const nextTodo = await createNextRecurringTodo(
       template,
       todo, // Tarefa original como referência
-      nextDueDate
+      nextDueDate,
     );
-    
+
     // 6. Atualizar template
     await updateRecurrenceTemplate(template.id, {
-      lastGeneratedDate: new Date().toISOString()
+      lastGeneratedDate: new Date().toISOString(),
     });
   }
 }
@@ -2008,7 +2149,7 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
   // Buscar última sequência
   const lastSequence = await getLastRecurrenceSequence(template.id);
   const nextSequence = (lastSequence || 0) + 1;
-  
+
   // Criar nova tarefa baseada na original
   const newTodo = {
     id: generateTodoId(),
@@ -2026,14 +2167,14 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
     recurrenceSequence: nextSequence,
     completed: false,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
-  
+
   // Copiar tags se necessário
   if (parentTodo.tags) {
     newTodo.tags = [...parentTodo.tags];
   }
-  
+
   return await createTodo(newTodo);
 }
 ```
@@ -2041,6 +2182,7 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
 ### Tipos de Recorrência Suportados
 
 #### 1. Diária (Daily)
+
 ```javascript
 {
   recurrenceType: "daily",
@@ -2048,18 +2190,22 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
   recurrenceUnit: "days"
 }
 ```
+
 **Exemplo**: Tarefa que se repete todo dia.
 
 #### 2. Semanal (Weekly)
+
 ```javascript
 {
   recurrenceType: "weekly",
   recurrenceDaysOfWeek: [1, 3, 5] // Segunda, quarta, sexta
 }
 ```
+
 **Exemplo**: Tarefa que se repete toda segunda, quarta e sexta.
 
 #### 3. Quinzenal (Biweekly)
+
 ```javascript
 {
   recurrenceType: "biweekly",
@@ -2067,18 +2213,22 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
   recurrenceUnit: "weeks"
 }
 ```
+
 **Exemplo**: Tarefa que se repete a cada 2 semanas.
 
 #### 4. Mensal (Monthly)
+
 ```javascript
 {
   recurrenceType: "monthly",
   recurrenceDayOfMonth: 1 // Todo dia 1º do mês
 }
 ```
+
 **Exemplo**: Tarefa que se repete todo dia 1º de cada mês.
 
 #### 5. Customizada (Custom)
+
 ```javascript
 {
   recurrenceType: "custom",
@@ -2086,6 +2236,7 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
   recurrenceUnit: "days"
 }
 ```
+
 **Exemplo**: Tarefa que se repete a cada 15 dias (como no seu caso).
 
 ### Cálculo da Próxima Data
@@ -2094,12 +2245,12 @@ async function createNextRecurringTodo(template, parentTodo, nextDueDate) {
 function calculateNextDueDate(template, currentDueDate) {
   const current = new Date(currentDueDate);
   let next = new Date(current);
-  
+
   switch (template.recurrenceType) {
     case "daily":
       next.setDate(next.getDate() + template.recurrenceInterval);
       break;
-      
+
     case "weekly":
       // Encontrar próximo dia da semana válido
       const daysOfWeek = template.recurrenceDaysOfWeek || [current.getDay()];
@@ -2109,30 +2260,30 @@ function calculateNextDueDate(template, currentDueDate) {
       }
       next.setDate(next.getDate() + daysToAdd);
       break;
-      
+
     case "biweekly":
-      next.setDate(next.getDate() + (template.recurrenceInterval * 7));
+      next.setDate(next.getDate() + template.recurrenceInterval * 7);
       break;
-      
+
     case "monthly":
       next.setMonth(next.getMonth() + 1);
       if (template.recurrenceDayOfMonth) {
         next.setDate(template.recurrenceDayOfMonth);
       }
       break;
-      
+
     case "custom":
       if (template.recurrenceUnit === "days") {
         next.setDate(next.getDate() + template.recurrenceInterval);
       } else if (template.recurrenceUnit === "weeks") {
-        next.setDate(next.getDate() + (template.recurrenceInterval * 7));
+        next.setDate(next.getDate() + template.recurrenceInterval * 7);
       } else if (template.recurrenceUnit === "months") {
         next.setMonth(next.getMonth() + template.recurrenceInterval);
       }
       break;
   }
-  
-  return next.toISOString().split('T')[0]; // Retornar apenas a data (YYYY-MM-DD)
+
+  return next.toISOString().split("T")[0]; // Retornar apenas a data (YYYY-MM-DD)
 }
 ```
 
@@ -2144,7 +2295,7 @@ function shouldGenerateNextInstance(template) {
   if (!template.isActive) {
     return false;
   }
-  
+
   // Verificar data final
   if (template.recurrenceEndDate) {
     const endDate = new Date(template.recurrenceEndDate);
@@ -2153,7 +2304,7 @@ function shouldGenerateNextInstance(template) {
       return false;
     }
   }
-  
+
   // Verificar número máximo de ocorrências
   if (template.recurrenceCount) {
     const generatedCount = await countGeneratedTodos(template.id);
@@ -2161,7 +2312,7 @@ function shouldGenerateNextInstance(template) {
       return false;
     }
   }
-  
+
   return true;
 }
 ```
@@ -2169,6 +2320,7 @@ function shouldGenerateNextInstance(template) {
 ### Estrutura no DynamoDB
 
 #### Tarefa Original (Recorrente)
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -2189,6 +2341,7 @@ function shouldGenerateNextInstance(template) {
 ```
 
 #### Template de Recorrência
+
 ```json
 {
   "PK": "USER#user-123",
@@ -2211,6 +2364,7 @@ function shouldGenerateNextInstance(template) {
 ```
 
 #### Tarefa Gerada (Instância)
+
 ```json
 {
   "PK": "USER#user-123#PROJECT#proj-456",
@@ -2233,65 +2387,72 @@ function shouldGenerateNextInstance(template) {
 ### Queries Relacionadas
 
 #### Buscar Template por Tarefa
+
 ```javascript
 // Buscar template de recorrência de uma tarefa
 const template = await dynamodb.query({
-  TableName: 'artemis-data',
-  KeyConditionExpression: 'PK = :pk AND SK = :sk',
+  TableName: "artemis-data",
+  KeyConditionExpression: "PK = :pk AND SK = :sk",
   ExpressionAttributeValues: {
-    ':pk': 'USER#user-123',
-    ':sk': 'RECURRENCE#recurrence-001'
-  }
+    ":pk": "USER#user-123",
+    ":sk": "RECURRENCE#recurrence-001",
+  },
 });
 ```
 
 #### Buscar Todas as Instâncias de uma Recorrência
+
 ```javascript
 // Buscar todas as tarefas geradas por um template
 const instances = await dynamodb.query({
-  TableName: 'artemis-data',
-  IndexName: 'GSI7', // Novo GSI para recorrência
-  KeyConditionExpression: 'GSI7PK = :gsi7pk',
-  FilterExpression: 'attribute_not_exists(deletedAt)',
+  TableName: "artemis-data",
+  IndexName: "GSI7", // Novo GSI para recorrência
+  KeyConditionExpression: "GSI7PK = :gsi7pk",
+  FilterExpression: "attribute_not_exists(deletedAt)",
   ExpressionAttributeValues: {
-    ':gsi7PK': 'USER#user-123#RECURRENCE#recurrence-001'
-  }
+    ":gsi7PK": "USER#user-123#RECURRENCE#recurrence-001",
+  },
 });
 ```
 
 #### Buscar Histórico de Tarefas (Pai → Filhas)
+
 ```javascript
 // Buscar todas as tarefas filhas de uma tarefa pai
 const children = await dynamodb.query({
-  TableName: 'artemis-data',
-  IndexName: 'GSI8', // Novo GSI para parentTodoId
-  KeyConditionExpression: 'GSI8PK = :gsi8pk',
-  FilterExpression: 'attribute_not_exists(deletedAt)',
+  TableName: "artemis-data",
+  IndexName: "GSI8", // Novo GSI para parentTodoId
+  KeyConditionExpression: "GSI8PK = :gsi8pk",
+  FilterExpression: "attribute_not_exists(deletedAt)",
   ExpressionAttributeValues: {
-    ':gsi8PK': 'USER#user-123#PARENT#todo-001'
-  }
+    ":gsi8PK": "USER#user-123#PARENT#todo-001",
+  },
 });
 ```
 
 ### Novos GSIs Necessários
 
 #### GSI7: RecurrenceTemplateIndex - Busca por Template de Recorrência
+
 **Uso**: Buscar todas as instâncias geradas por um template
 
 - **GSI7PK**: `USER#userId#RECURRENCE#recurrenceTemplateId`
 - **GSI7SK**: `TODO#PENDING#dueDate#todoId` (pendentes) ou `TODO#COMPLETED#completedAt#todoId` (concluídas)
 
 **Exemplo**:
+
 - Instância pendente: `GSI7PK = USER#user-123#RECURRENCE#recurrence-001`, `GSI7SK = TODO#PENDING#2025-01-30#todo-002`
 - Instância concluída: `GSI7PK = USER#user-123#RECURRENCE#recurrence-001`, `GSI7SK = TODO#COMPLETED#2025-01-30T14:30:00Z#todo-002`
 
 #### GSI8: ParentTodoIndex - Busca por Tarefa Pai
+
 **Uso**: Buscar todas as tarefas filhas de uma tarefa pai (histórico de recorrência)
 
 - **GSI8PK**: `USER#userId#PARENT#parentTodoId`
 - **GSI8SK**: `TODO#PENDING#recurrenceSequence#todoId` (pendentes) ou `TODO#COMPLETED#completedAt#todoId` (concluídas)
 
 **Exemplo**:
+
 - Tarefa filha pendente: `GSI8PK = USER#user-123#PARENT#todo-001`, `GSI8SK = TODO#PENDING#1#todo-002`
 - Tarefa filha concluída: `GSI8PK = USER#user-123#PARENT#todo-001`, `GSI8SK = TODO#COMPLETED#2025-01-30T14:30:00Z#todo-002`
 
@@ -2320,30 +2481,35 @@ const children = await dynamodb.query({
 ### Casos Especiais
 
 #### 1. Editar Tarefa Recorrente
+
 - **Editar instância única**: Editar apenas a tarefa atual (não afeta template)
 - **Editar todas as futuras**: Atualizar template e aplicar mudanças nas próximas instâncias
 - **Editar todas (passadas e futuras)**: Atualizar template e todas as instâncias existentes
 
 #### 2. Deletar Tarefa Recorrente
+
 - **Deletar instância única**: Deletar apenas a tarefa atual (próxima será gerada normalmente)
 - **Deletar todas as futuras**: Marcar template como `isActive: false` ou deletar template
 - **Deletar todas**: Deletar template e todas as instâncias (soft delete)
 
 #### 3. Pausar/Retomar Recorrência
+
 ```javascript
 // Pausar
 await updateRecurrenceTemplate(templateId, {
-  isActive: false
+  isActive: false,
 });
 
 // Retomar
 await updateRecurrenceTemplate(templateId, {
-  isActive: true
+  isActive: true,
 });
 ```
 
 #### 4. Tarefa Atrasada
+
 Se uma tarefa recorrente está atrasada e o usuário completa:
+
 - Calcular próxima data a partir da data de vencimento original (não da data de conclusão)
 - Ou calcular a partir da data de conclusão (configurável)
 

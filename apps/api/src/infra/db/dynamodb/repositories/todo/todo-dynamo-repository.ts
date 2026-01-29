@@ -1,6 +1,6 @@
-import type { TodoRepository } from "@data/protocols/todo-repository";
-import type { TodoMapper } from "@data/protocols/todo-mapper";
 import type { Todo } from "@core/domain/todo/todo";
+import type { TodoMapper } from "@data/protocols/todo-mapper";
+import type { TodoRepository } from "@data/protocols/todo-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
 
 /**
@@ -20,50 +20,66 @@ export class TodoDynamoRepository implements TodoRepository {
 	// private dynamoClient: DynamoDBDocumentClient;
 	// private tableName: string;
 
-	// Temporary: In-memory simulation (stores in DynamoDB format - snake_case)
+	// Temporary: In-memory simulation (DynamoDB format per docs/database-design.md)
+	// PK = USER#userId (inbox) so all tasks are queryable by user
 	private dbTodos: TodoDynamoDBEntity[] = [
 		{
-			PK: "TODO#1",
-			SK: "METADATA",
-			GSI1PK: "TODO",
-			GSI1SK: "2026-01-23T10:00:00.000Z",
+			PK: "USER#user-1",
+			SK: "TODO#INBOX#PENDING#1#1",
 			id: "1",
+			user_id: "user-1",
+			project_id: null,
 			title: "Implementar arquitetura Clean",
 			description: "Seguir o padrão proposto do Grypp",
 			completed: false,
+			order: 1,
 			created_at: "2026-01-23T10:00:00.000Z",
 			updated_at: "2026-01-23T10:00:00.000Z",
+			completed_at: null,
 			entity_type: "TODO",
 		},
 		{
-			PK: "TODO#2",
-			SK: "METADATA",
-			GSI1PK: "TODO",
-			GSI1SK: "2026-01-23T11:00:00.000Z",
+			PK: "USER#user-1",
+			SK: "TODO#INBOX#PENDING#2#2",
 			id: "2",
+			user_id: "user-1",
+			project_id: null,
 			title: "Criar módulo de autenticação",
 			description: "Implementar signin, signup e refresh token",
 			completed: false,
+			order: 2,
 			created_at: "2026-01-23T11:00:00.000Z",
 			updated_at: "2026-01-23T11:00:00.000Z",
+			completed_at: null,
 			entity_type: "TODO",
 		},
 		{
-			PK: "TODO#3",
-			SK: "METADATA",
-			GSI1PK: "TODO",
-			GSI1SK: "2026-01-23T09:00:00.000Z",
+			PK: "USER#user-1",
+			SK: "TODO#INBOX#COMPLETED#2026-01-23T12:00:00.000Z#3",
 			id: "3",
+			user_id: "user-1",
+			project_id: null,
 			title: "Adicionar testes unitários",
 			description: "Garantir cobertura de pelo menos 80%",
 			completed: true,
+			order: 0,
 			created_at: "2026-01-23T09:00:00.000Z",
 			updated_at: "2026-01-23T12:00:00.000Z",
+			completed_at: "2026-01-23T12:00:00.000Z",
 			entity_type: "TODO",
 		},
 	];
 
 	constructor(private readonly mapper: TodoMapper<TodoDynamoDBEntity>) {}
+
+	async findInboxTodos(userId: string): Promise<Todo[]> {
+		// Docs: PK = USER#userId AND SK begins_with TODO#INBOX#
+		// TODO: DynamoDB Query KeyConditionExpression: PK = :pk AND begins_with(SK, 'TODO#INBOX#')
+		const pk = `USER#${userId}`;
+		return this.dbTodos
+			.filter((t) => t.PK === pk && t.SK.startsWith("TODO#INBOX#"))
+			.map((dbTodo) => this.mapper.toDomain(dbTodo));
+	}
 
 	async findAll(): Promise<Todo[]> {
 		// TODO: Implement DynamoDB query
@@ -94,29 +110,16 @@ export class TodoDynamoRepository implements TodoRepository {
 	async create(
 		data: Omit<Todo, "id" | "createdAt" | "updatedAt">,
 	): Promise<Todo> {
-		// TODO: Implement DynamoDB put
-		// const id = crypto.randomUUID();
-		// const now = new Date();
-		// const todo = { ...data, id, createdAt: now, updatedAt: now };
-		// const dbEntity = this.mapper.toDatabase(todo);
-		// await this.dynamoClient.put({
-		//   TableName: this.tableName,
-		//   Item: dbEntity
-		// });
-		// return todo;
-
 		const now = new Date();
 		const newTodo: Todo = {
-			id: String(this.dbTodos.length + 1),
+			id: crypto.randomUUID(),
 			...data,
 			createdAt: now,
 			updatedAt: now,
 		};
 
-		// Converts to DB format and stores
 		const dbEntity = this.mapper.toDatabase(newTodo);
 		this.dbTodos.push(dbEntity);
-
 		return newTodo;
 	}
 
@@ -147,14 +150,24 @@ export class TodoDynamoRepository implements TodoRepository {
 		// Converts DB entity to domain
 		const currentTodo = this.mapper.toDomain(currentDbTodo);
 
-		// Applies updates
+		const updatedAt = new Date();
+		const completedAt =
+			data.completed === true
+				? updatedAt
+				: data.completed === false
+					? undefined
+					: currentTodo.completedAt;
 		const updatedTodo: Todo = {
 			id: currentTodo.id,
+			userId: currentTodo.userId,
+			projectId: currentTodo.projectId,
 			title: data.title ?? currentTodo.title,
 			description: data.description ?? currentTodo.description,
 			completed: data.completed ?? currentTodo.completed,
+			order: data.order ?? currentTodo.order,
 			createdAt: currentTodo.createdAt,
-			updatedAt: new Date(),
+			updatedAt,
+			completedAt: completedAt ?? currentTodo.completedAt,
 		};
 
 		// Converts back to DB format
