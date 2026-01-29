@@ -399,8 +399,11 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 
 **Query**:
 
-- GSI1: `GSI1PK begins_with USER#userId#DUE_DATE#` (com range query para datas futuras)
-- FilterExpression: `attribute_not_exists(deletedAt) AND completed = false` ← **SEMPRE incluir deletedAt**
+- No DynamoDB, a **partition key exige igualdade** — não é possível usar `begins_with` em PK. O GSI1 está definido com `GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD` (uma partição por data).
+- **Opções**:
+  1. **Múltiplas queries**: Para cada data futura (hoje+1, hoje+2, … até um horizonte), executar `GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD` e `GSI1SK begins_with TODO#PENDING#`. Agrupar resultados e ordenar por `dueDate`.
+  2. **GSI alternativo** (se Upcoming for muito usado): Criar um índice com `GSI1PK = USER#userId` e `GSI1SK = DUE_DATE#YYYY-MM-DD#TODO#...` para permitir uma única query com `SK > DUE_DATE#hoje`.
+- FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir**
 - Ordenação: Por `dueDate` (ascendente)
 
 **Nota**: Tarefas deletadas são **automaticamente excluídas**.
@@ -413,7 +416,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 
 **Query**:
 
-- GSI4: `GSI4PK = USER#userId#COMPLETED#true`
+- GSI4: `GSI4PK = USER#userId#COMPLETED#COMPLETED`
 - FilterExpression: `attribute_not_exists(deletedAt)` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `completedAt` (mais recente primeiro)
 
@@ -455,7 +458,7 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 
 **Query**:
 
-- GSI4: `GSI4PK = USER#userId#COMPLETED#false`
+- GSI4: `GSI4PK = USER#userId#COMPLETED#PENDING`
 - FilterExpression: `attribute_not_exists(deletedAt) AND priority = :priority` ← **SEMPRE incluir deletedAt**
 - Ordenação: Por `dueDate` (ascendente)
 
@@ -552,8 +555,8 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 
 **Queries** (todas com `FilterExpression: attribute_not_exists(deletedAt)`):
 
-- Total completas: GSI4 `GSI4PK = USER#userId#COMPLETED#true` + filtro deletedAt
-- Total em progresso: GSI4 `GSI4PK = USER#userId#COMPLETED#false` + filtro deletedAt
+- Total completas: GSI4 `GSI4PK = USER#userId#COMPLETED#COMPLETED` + filtro deletedAt
+- Total em progresso: GSI4 `GSI4PK = USER#userId#COMPLETED#PENDING` + filtro deletedAt
 - Total hoje: GSI1 `GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD` + filtro deletedAt
 - Total de projetos: `PK = USER#userId AND SK begins_with PROJECT#` + filtro deletedAt
 
@@ -624,8 +627,10 @@ Todo (1) ──< (N) Todo (tarefa pai → tarefas filhas geradas)
 
 **Query**:
 
-- KeyCondition: `PK = USER#userId AND SK begins_with TODO#` (ou usar GSI apropriado)
-- FilterExpression: `attribute_not_exists(deletedAt) AND isRecurring = :true` ← **SEMPRE incluir deletedAt**
+- **Limitação**: Tarefas em projeto têm `PK = USER#userId#PROJECT#projectId`, não `USER#userId`. Uma query `PK = USER#userId AND SK begins_with TODO#` **só retorna tarefas da Inbox** (que usam `USER#userId`).
+- **Opções**:
+  1. **Inbox apenas**: `PK = USER#userId AND SK begins_with TODO#INBOX#` + FilterExpression `attribute_not_exists(deletedAt) AND isRecurring = true`.
+  2. **Todas (inbox + projetos)**: Usar **GSI7** (por template) — listar todos os `RECURRENCE#` do usuário e, para cada template, query GSI7 `GSI7PK = USER#userId#RECURRENCE#recurrenceTemplateId`; depois, para tarefas filhas, usar **GSI8** por `parentTodoId`. Ou criar um **GSI** com PK = `USER#userId` e SK contendo tipo/status para agregar todas as tarefas do usuário (se esse acesso for frequente).
 
 **Nota**: Útil para dashboard ou configurações de recorrência.
 
@@ -921,13 +926,15 @@ FilterExpression: attribute_not_exists(deletedAt)
 ### 5. Buscar Tarefas Futuras (Upcoming)
 
 ```
-GSI1:
-GSI1PK = USER#userId#DUE_DATE#FUTURE
-GSI1SK begins_with TODO#
-(ou usar range query com GSI1PK começando com datas futuras)
+GSI1 (estrutura atual: uma partição por data):
+- Para cada data futura no horizonte desejado (ex.: próximos 30 dias):
+  GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD
+  GSI1SK begins_with TODO#PENDING#
+  FilterExpression: attribute_not_exists(deletedAt)
+- Concatenar resultados e ordenar por dueDate no aplicativo.
 ```
 
-**Nota**: Para buscar tarefas futuras, pode ser necessário usar `Query` com `GSI1PK begins_with USER#userId#DUE_DATE#` e filtrar por `GSI1PK > USER#userId#DUE_DATE#YYYY-MM-DD` (data de hoje).
+**Nota**: O DynamoDB exige **igualdade** na partition key; não suporta `begins_with` ou range em PK. Por isso Upcoming exige múltiplas queries (uma por data) com o GSI1 atual. Se for crítico ter uma única query, considerar um GSI com PK = `USER#userId` e SK = `DUE_DATE#YYYY-MM-DD#...` para usar range em SK.
 
 ---
 
@@ -971,11 +978,11 @@ GSI5SK begins_with TODO#
 
 ```
 1. Total completas:
-   GSI4: GSI4PK = USER#userId#COMPLETED#true
+   GSI4: GSI4PK = USER#userId#COMPLETED#COMPLETED
    (contar itens)
 
 2. Total em progresso:
-   GSI4: GSI4PK = USER#userId#COMPLETED#false
+   GSI4: GSI4PK = USER#userId#COMPLETED#PENDING
    (contar itens)
 
 3. Total hoje:
@@ -1040,6 +1047,24 @@ IMPORTANTE: Quando uma tarefa é concluída, a SK muda de PENDING para COMPLETED
 ```
 
 **Alternativa (mais simples)**: Usar UpdateItem para atualizar apenas o campo `completed` e `completedAt`, mantendo a mesma SK. Use esta abordagem se preferir simplicidade sobre otimização de performance.
+
+---
+
+### Revisão de consistência (PK/SK e queries)
+
+**O que foi verificado**:
+
+- Alinhamento entre a **Tabela Master** (PK/SK e GSIs) e as queries em **Métodos de Busca Necessários** e **Padrões de Acesso**.
+- Uso correto do DynamoDB: partition key sempre com **igualdade** (não `begins_with` em PK).
+- Queries que dependem de `USER#userId` como PK: só retornam itens cuja PK é exatamente `USER#userId` (ex.: projetos, metas, tags, inbox, recurrence); tarefas em projeto ficam em `USER#userId#PROJECT#projectId`.
+
+**Ajustes realizados**:
+
+1. **GSI4 (CompletedIndex)**: O índice usa `PENDING` e `COMPLETED` na PK. Todas as referências foram unificadas para `GSI4PK = USER#userId#COMPLETED#PENDING` e `USER#userId#COMPLETED#COMPLETED` (removido uso de `true`/`false` em Métodos de Busca, Padrões de Acesso e Dashboard).
+2. **Upcoming (Tarefas futuras)**: Em DynamoDB a partition key exige igualdade. Com GSI1 por data (`GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD`), não é possível uma única query “todas as datas futuras”. Documentado que é necessário múltiplas queries (uma por data) ou um GSI alternativo com PK = `USER#userId` e SK por data para range em SK.
+3. **Query 21 (Todas as tarefas recorrentes)**: `PK = USER#userId AND SK begins_with TODO#` só atinge tarefas da Inbox (PK do usuário). Tarefas em projeto têm PK `USER#userId#PROJECT#projectId`. Documentadas as opções: filtrar só inbox ou usar GSI7/GSI8 (por template/parent) para agregar todas as recorrentes.
+
+**Resumo**: As PKs e SKs da Tabela Master e dos GSIs estão coerentes entre si. As queries passam a seguir essa convenção (PENDING/COMPLETED no GSI4) e as limitações de Upcoming e “todas as tarefas recorrentes” ficam explícitas no texto.
 
 ---
 
