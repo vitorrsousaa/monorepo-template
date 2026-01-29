@@ -10,10 +10,10 @@ export class CreateTodoController implements IController {
 
 	async handle(request: IRequest): Promise<IResponse> {
 		try {
-			const [status, parsedBody] = missingFields(
-				createTodoSchema,
-				request.body,
-			);
+			const [status, parsedBody] = missingFields(createTodoSchema, {
+				...request.body,
+				userId: request.userId ?? "",
+			});
 
 			if (!status) return parsedBody;
 

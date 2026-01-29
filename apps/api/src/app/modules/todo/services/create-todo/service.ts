@@ -9,6 +9,8 @@ export class CreateTodoService
 
 	async execute(input: CreateTodoInput): Promise<CreateTodoOutput> {
 		const todo = await this.todoRepository.create({
+			userId: input.userId,
+			projectId: input.projectId ?? null,
 			title: input.title,
 			description: input.description,
 			completed: false,
@@ -17,6 +19,8 @@ export class CreateTodoService
 		return {
 			todo: {
 				id: todo.id,
+				userId: todo.userId,
+				projectId: todo.projectId,
 				title: todo.title,
 				description: todo.description,
 				completed: todo.completed,

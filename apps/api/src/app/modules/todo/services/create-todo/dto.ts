@@ -8,11 +8,12 @@ import { z } from "zod";
  * Defines only essential fields: title and description.
  */
 export const CreateTodoInputDTO = z.object({
+	userId: z.string().uuid("userId must be a valid UUID"),
+	projectId: z.string().uuid().nullable().optional(),
 	title: z
 		.string()
 		.min(1, "Title cannot be empty")
 		.max(100, "Title must have at most 100 characters"),
-
 	description: z
 		.string()
 		.min(1, "Description cannot be empty")
