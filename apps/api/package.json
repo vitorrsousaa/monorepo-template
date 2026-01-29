@@ -11,7 +11,8 @@
     "ci:typecheck": "tsc --noEmit",
     "format": "biome format --write ./src",
     "ci:format": "biome format ./src",
-    "dev": "pnpm exec serverless offline",
+    "dev": "nodemon --watch src --ext ts,js,json,yml --exec \"pnpm exec serverless offline\"",
+    "dev:no-watch": "pnpm exec serverless offline",
     "deploy:dev": "pnpm exec serverless deploy --stage dev",
     "deploy:prod": "pnpm exec serverless deploy --stage prod",
     "serverless": "pnpm exec serverless",
@@ -23,10 +24,12 @@
     "@types/aws-lambda": "^8.10.160",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
+    "nodemon": "^3.1.9",
     "serverless-esbuild": "^1.54.6",
     "serverless-offline": "^14.4.0"
   },
   "dependencies": {
+    "@repo/logger": "workspace:*",
     "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
     "serverless": "^4.31.0",
