@@ -2,8 +2,8 @@ import { LoggerInstrumentor, LogLevel } from "@repo/logger";
 
 const instrumentor = new LoggerInstrumentor({
 	logger: {
-		prettyPrint: process.env.NODE_ENV === "development",
-		minLevel: LogLevel.INFO,
+		prettyPrint: true,
+		minLevel: LogLevel.DEBUG,
 	},
 });
 
