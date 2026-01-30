@@ -5,7 +5,10 @@ import { getControllerTemplate } from "./templates/controller";
 import { getServiceTemplate } from "./templates/service";
 
 export async function createModule(moduleName: string, serviceName: string) {
-	const targetDir = path.resolve(__dirname, "../../../../api/src/app/modules");
+	const targetDir = path.resolve(
+		__dirname,
+		"../../../../../apps/api/src/app/modules",
+	);
 
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
 	if (fs.existsSync(moduleDir)) {

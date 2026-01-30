@@ -1,37 +1,18 @@
-import { toCamelCase, toPascalCase } from "../../../utils";
+import { toPascalCase } from "../../../utils";
 
-export function getServiceTemplate(input: string) {
+export function getServiceTemplate(serviceName: string) {
+	const pascal = toPascalCase(serviceName);
 	return `import type { IService } from "@application/interfaces/service";
-import * as z from 'zod';
+import type { ${pascal}Input, ${pascal}Output } from "./dto";
 
-export const ${toPascalCase(input)}InputServiceSchema = z.object({
-  userId: z.string().uuid(),
-});
+export interface I${pascal}Service extends IService<${pascal}Input, ${pascal}Output> {}
 
-export type T${toPascalCase(input)} = z.infer<typeof ${toPascalCase(
-		input,
-	)}InputServiceSchema>;
-
-export type I${toPascalCase(input)}Input = T${toPascalCase(input)};
-
-export type I${toPascalCase(input)}Output = {
-  name: string;
-}
-
-export type I${toPascalCase(input)}Service = IService<I${toPascalCase(
-		input,
-	)}Input, I${toPascalCase(input)}Output>;
-
-export class ${toPascalCase(input)}Service implements I${toPascalCase(
-		input,
-	)}Service {
+export class ${pascal}Service implements I${pascal}Service {
   constructor() {}
 
-  async execute(${toCamelCase(input)}Input: I${toPascalCase(
-		input,
-	)}Input): Promise<I${toPascalCase(input)}Output> {
+  async execute(data: ${pascal}Input): Promise<${pascal}Output> {
     return {
-      name: ${toCamelCase(input)}Input.name,
+      success: true,
     };
   }
 }

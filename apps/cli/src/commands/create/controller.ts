@@ -7,7 +7,10 @@ export async function createController(
 	moduleName: string,
 	controllerName: string,
 ) {
-	const targetDir = path.resolve(__dirname, "../../../../api/src/app/modules");
+	const targetDir = path.resolve(
+		__dirname,
+		"../../../../../apps/api/src/app/modules",
+	);
 
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
 

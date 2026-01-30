@@ -1,16 +1,21 @@
 import * as fs from "fs-extra";
 import * as path from "node:path";
 import { toKebabCase } from "../../utils";
+import { getDtoTemplate } from "./templates/dto";
 import { getServiceTemplate } from "./templates/service";
 
 export async function createService(moduleName: string, serviceName: string) {
-	const targetDir = path.resolve(__dirname, "../../../../api/src/app/modules");
+	const targetDir = path.resolve(
+		__dirname,
+		"../../../apps/api/src/app/modules",
+	);
 
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
+	console.log(moduleDir);
 
 	const moduleExists = fs.existsSync(moduleDir);
 	if (!moduleExists) {
-		console.log(`O módulo '${moduleName}' nao existe.`);
+		console.log(`O módulo '${moduleName}' não existe.`);
 		return;
 	}
 
@@ -26,14 +31,16 @@ export async function createService(moduleName: string, serviceName: string) {
 	try {
 		await fs.ensureDir(serviceDir);
 
+		const dtoFile = path.join(serviceDir, "dto.ts");
 		const serviceFile = path.join(serviceDir, "service.ts");
-		const indexServiceFile = path.join(serviceDir, "index.ts");
+		const indexFile = path.join(serviceDir, "index.ts");
 
-		await fs.outputFile(indexServiceFile, `export * from "./service";`);
-		await fs.outputFile(serviceFile, getServiceTemplate(moduleName));
+		await fs.outputFile(dtoFile, getDtoTemplate(serviceName));
+		await fs.outputFile(serviceFile, getServiceTemplate(serviceName));
+		await fs.outputFile(indexFile, `export * from "./service";\n`);
 
-		console.log("Service create with successfull!");
+		console.log("Service criado com sucesso!");
 	} catch (err) {
-		console.error("Erro ao criar o módulo:", err);
+		console.error("Erro ao criar o service:", err);
 	}
 }
