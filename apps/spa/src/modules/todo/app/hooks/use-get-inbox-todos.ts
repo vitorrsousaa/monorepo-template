@@ -11,7 +11,10 @@ export function useGetInboxTodos() {
 	);
 
 	return {
-		todos: data || [],
+		inboxTodos: data || {
+			todos: [],
+			total: 0,
+		},
 		isErrorInboxTodos: isError,
 		isFetchingTodos: isFetching || isPending || isLoading,
 		refetchTodos: refetch,

@@ -78,7 +78,7 @@ const inboxTodos: Todo[] = [
 ];
 
 export function useInboxHook() {
-	const { todos, isErrorInboxTodos, isFetchingTodos, refetchTodos } =
+	const { inboxTodos, isErrorInboxTodos, isFetchingTodos, refetchTodos } =
 		useGetInboxTodos();
 
 	const shouldRenderInboxTodos = useMemo(
@@ -88,7 +88,7 @@ export function useInboxHook() {
 
 	return {
 		shouldRenderInboxTodos,
-		inboxTodos: todos ?? [],
+		inboxTodos: inboxTodos.todos ?? [],
 		isFetchingTodos,
 		isErrorInboxTodos,
 		refetchInboxTodos: refetchTodos,
