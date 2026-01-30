@@ -44,7 +44,7 @@ export function Inbox() {
 			<RenderIf
 				condition={shouldRenderInboxTodos}
 				render={
-					<div className="space-y-2">
+					<div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto px-24">
 						{inboxTodos.map((todo) => (
 							<InboxTodoCard key={todo.id} todo={todo} />
 						))}
