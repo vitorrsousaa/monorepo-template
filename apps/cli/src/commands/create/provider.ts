@@ -1,14 +1,11 @@
 import * as fs from "fs-extra";
 import * as path from "node:path";
+import { getApiProvidersPath } from "../../lib/paths";
 import { toKebabCase } from "../../utils";
-import { getProviderTemplate } from "./templates/provider";
+import { getProviderTemplate } from "./templates";
 
 export async function createProvider(providerName: string) {
-	const targetDir = path.resolve(
-		__dirname,
-		"../../../../api/src/app/providers",
-	);
-
+	const targetDir = getApiProvidersPath(__dirname);
 	const providerDir = path.join(targetDir, toKebabCase(providerName));
 
 	const providerAlreadyExists = fs.existsSync(providerDir);
@@ -31,7 +28,7 @@ export async function createProvider(providerName: string) {
 		await fs.outputFile(indexProviderFile, providerOutput.index);
 		await fs.outputFile(providerTypefile, providerOutput.types);
 
-		console.log("Provider created with successful");
+		console.log("Provider criado com sucesso!");
 	} catch (err) {
 		console.error("Erro ao criar o provider:", err);
 	}

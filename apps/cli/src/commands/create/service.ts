@@ -1,16 +1,13 @@
 import * as fs from "fs-extra";
 import * as path from "node:path";
+import { getApiModulesPath } from "../../lib/paths";
 import { toKebabCase } from "../../utils";
-import { getDtoTemplate } from "./templates/dto";
-import { getServiceTemplate } from "./templates/service";
+import { getDtoTemplate, getServiceTemplate } from "./templates";
 
 export async function createService(moduleName: string, serviceName: string) {
-	const targetDir = path.resolve(
-		__dirname,
-		"../../../apps/api/src/app/modules",
-	);
-
+	const targetDir = getApiModulesPath(__dirname);
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
+
 	console.log(moduleDir);
 
 	const moduleExists = fs.existsSync(moduleDir);

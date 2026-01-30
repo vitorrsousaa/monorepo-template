@@ -1,15 +1,11 @@
 import * as fs from "fs-extra";
 import * as path from "node:path";
+import { getApiModulesPath } from "../../lib/paths";
 import { toKebabCase } from "../../utils";
-import { getControllerTemplate } from "./templates/controller";
-import { getServiceTemplate } from "./templates/service";
+import { getControllerTemplate, getServiceTemplate } from "./templates";
 
 export async function createModule(moduleName: string, serviceName: string) {
-	const targetDir = path.resolve(
-		__dirname,
-		"../../../../../apps/api/src/app/modules",
-	);
-
+	const targetDir = getApiModulesPath(__dirname);
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
 	if (fs.existsSync(moduleDir)) {
 		console.log(`O módulo '${moduleName}' já existe.`);

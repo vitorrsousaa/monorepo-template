@@ -1,18 +1,17 @@
 import * as fs from "fs-extra";
 import * as path from "node:path";
+import { getApiModulesPath } from "../../lib/paths";
 import { toKebabCase } from "../../utils";
-import { getControllerTemplate } from "./templates/controller";
-import { getControllerSchemaTemplate } from "./templates/controller-schema";
+import {
+	getControllerSchemaTemplate,
+	getControllerTemplate,
+} from "./templates";
 
 export async function createController(
 	moduleName: string,
 	controllerName: string,
 ) {
-	const targetDir = path.resolve(
-		__dirname,
-		"../../../apps/api/src/app/modules",
-	);
-
+	const targetDir = getApiModulesPath(__dirname);
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
 
 	const moduleExists = fs.existsSync(moduleDir);
