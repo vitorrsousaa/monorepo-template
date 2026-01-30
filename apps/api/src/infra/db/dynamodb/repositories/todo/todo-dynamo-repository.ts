@@ -1,6 +1,6 @@
 import type { Todo } from "@core/domain/todo/todo";
-import type { TodoMapper } from "@data/protocols/todo-mapper";
-import type { TodoRepository } from "@data/protocols/todo-repository";
+import type { TodoMapper } from "@data/protocols/todo/todo-mapper";
+import type { TodoRepository } from "@data/protocols/todo/todo-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
 import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
 

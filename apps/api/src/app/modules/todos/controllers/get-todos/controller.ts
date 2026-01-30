@@ -1,6 +1,6 @@
 import type { IController } from "@application/interfaces/controller";
 import type { IRequest, IResponse } from "@application/interfaces/http";
-import type { IGetTodosService } from "@application/modules/todo/services/get-todos";
+import type { IGetTodosService } from "@application/modules/todos/services/get-todos";
 import { errorHandler } from "@application/utils/error-handler";
 import { createLogger } from "@application/utils/logger";
 

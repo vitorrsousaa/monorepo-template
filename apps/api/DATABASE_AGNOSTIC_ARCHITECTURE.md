@@ -73,7 +73,7 @@ src/
 │                   └── todo-in-memory-repository.ts
 │
 ├── 📁 app/                               # APPLICATION LAYER
-│   └── modules/todo/
+│   └── modules/todos/
 │       ├── services/                     # Usa interface, não implementação
 │       │   └── get-todos/
 │       │       └── service.ts            # Depende de TodoRepository (interface)
@@ -175,7 +175,7 @@ export function makeTodoRepository(): TodoRepository {
 - ✅ Centraliza criação
 - ✅ Facilita injeção de dependências
 
-### 4. Service - `app/modules/todo/services/get-todos/service.ts`
+### 4. Service - `app/modules/todos/services/get-todos/service.ts`
 
 ```typescript
 import type { TodoRepository } from "@data/protocols/todo-repository";
@@ -199,7 +199,7 @@ export class GetTodosService {
 ### 5. Factory do Service - `factories/services/todo/get-todos.ts`
 
 ```typescript
-import { GetTodosService } from "@application/modules/todo/services/get-todos";
+import { GetTodosService } from "@application/modules/todos/services/get-todos";
 import { makeTodoRepository } from "@infra/db/dynamodb/factories/todo-repository-factory";
 
 export function makeGetTodosService(): GetTodosService {

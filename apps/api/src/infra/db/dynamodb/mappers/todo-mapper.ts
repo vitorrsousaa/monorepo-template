@@ -1,5 +1,5 @@
 import type { Todo } from "@core/domain/todo/todo";
-import type { TodoMapper } from "@data/protocols/todo-mapper";
+import type { TodoMapper } from "@data/protocols/todo/todo-mapper";
 import type { TodoDynamoDBEntity } from "./types";
 
 const USER_PREFIX = "USER#";

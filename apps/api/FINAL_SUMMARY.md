@@ -30,7 +30,7 @@ src/
 │   └── factories/
 │       └── todo-repository-factory.ts   # 🔄 Injeta mapper
 │
-├── 📁 app/modules/todo/                 # APPLICATION LAYER
+├── 📁 app/modules/todos/                # APPLICATION LAYER
 │   ├── services/
 │   │   ├── get-todos/
 │   │   │   └── service.ts               # ✅ Buscar todos

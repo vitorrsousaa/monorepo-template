@@ -259,7 +259,7 @@ Criar endpoint para criação de TODOs com:
 ### 📁 Estrutura de Arquivos
 
 ```
-app/modules/todo/
+app/modules/todos/
 ├── services/create-todo/
 │   ├── dto.ts                    # ✨ DTOs + Schema Zod
 │   ├── service.ts                # ✨ Lógica de negócio

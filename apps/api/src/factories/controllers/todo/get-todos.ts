@@ -1,4 +1,4 @@
-import { GetTodosController } from "@application/modules/todo/controllers/get-todos";
+import { GetTodosController } from "@application/modules/todos/controllers/get-todos";
 import { makeGetTodosService } from "@factories/services/todo/get-todos";
 
 export function makeGetTodosController(): GetTodosController {

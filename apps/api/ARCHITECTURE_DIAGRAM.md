@@ -17,7 +17,7 @@
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        APPLICATION LAYER                            │
-│  📁 app/modules/todo/                                               │
+│  📁 app/modules/todos/                                              │
 │    ├── controllers/                                                 │
 │    │   └── get-todos/                                               │
 │    │       └── controller.ts   ← Validação e orquestração          │
@@ -328,7 +328,7 @@ export class TodoDynamoRepository implements TodoRepository {
 }
 ```
 
-### 4️⃣ Application Service (`app/modules/todo/services/get-todos/service.ts`)
+### 4️⃣ Application Service (`app/modules/todos/services/get-todos/service.ts`)
 
 ```typescript
 export class GetTodosService {

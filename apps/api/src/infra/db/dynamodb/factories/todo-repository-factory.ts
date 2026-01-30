@@ -1,4 +1,4 @@
-import type { TodoRepository } from "@data/protocols/todo-repository";
+import type { TodoRepository } from "@data/protocols/todo/todo-repository";
 import { TodoDynamoMapper } from "@infra/db/dynamodb/mappers/todo-mapper";
 import { TodoDynamoRepository } from "@infra/db/dynamodb/repositories/todo/todo-dynamo-repository";
 

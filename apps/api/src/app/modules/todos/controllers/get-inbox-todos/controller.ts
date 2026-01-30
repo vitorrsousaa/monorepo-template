@@ -2,7 +2,7 @@ import type { IController } from "@application/interfaces/controller";
 import type { IRequest, IResponse } from "@application/interfaces/http";
 import { errorHandler } from "@application/utils/error-handler";
 import { missingFields } from "@application/utils/missing-fields";
-import type { IGetInboxTodosService } from "@application/modules/todo/services/get-inbox-todos";
+import type { IGetInboxTodosService } from "@application/modules/todos/services/get-inbox-todos";
 import { getInboxTodosSchema } from "./schema";
 
 export class GetInboxTodosController implements IController {

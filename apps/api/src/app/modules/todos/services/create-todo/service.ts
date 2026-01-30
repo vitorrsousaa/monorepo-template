@@ -1,5 +1,5 @@
 import type { IService } from "@application/interfaces/service";
-import type { TodoRepository } from "@data/protocols/todo-repository";
+import type { TodoRepository } from "@data/protocols/todo/todo-repository";
 import type { CreateTodoInput, CreateTodoOutput } from "./dto";
 
 export interface ICreateTodoService

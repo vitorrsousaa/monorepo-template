@@ -1,6 +1,6 @@
 import type { IController } from "@application/interfaces/controller";
 import type { IRequest, IResponse } from "@application/interfaces/http";
-import type { ICreateTodoService } from "@application/modules/todo/services/create-todo";
+import type { ICreateTodoService } from "@application/modules/todos/services/create-todo";
 import { errorHandler } from "@application/utils/error-handler";
 import { missingFields } from "@application/utils/missing-fields";
 import { createTodoSchema } from "./schema";

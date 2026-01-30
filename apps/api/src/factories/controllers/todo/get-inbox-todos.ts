@@ -1,4 +1,4 @@
-import { GetInboxTodosController } from "@application/modules/todo/controllers/get-inbox-todos";
+import { GetInboxTodosController } from "@application/modules/todos/controllers/get-inbox-todos";
 import { makeGetInboxTodosService } from "@factories/services/todo/get-inbox-todos";
 
 export function makeGetInboxTodosController(): GetInboxTodosController {
