@@ -58,6 +58,12 @@ functions:
       - httpApi:
           path: /todos/inbox
           method: get
+  getAllProjectsByUser:
+    handler: src/server/functions/projects/get-all-projects-by-user/index.handler
+    events:
+      - httpApi:
+          path: /projects
+          method: get
 
   createTodo:
     handler: src/server/functions/todo/create-todo/index.handler
