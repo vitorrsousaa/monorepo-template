@@ -27,6 +27,8 @@ export interface TodoDynamoDBEntity {
 	created_at: string; // ISO 8601
 	updated_at: string; // ISO 8601
 	completed_at?: string | null; // ISO 8601
+	due_date?: string | null; // ISO 8601 - data limite para conclusão da task
+	priority?: "low" | "medium" | "high" | null;
 
 	entity_type: string; // "TODO"
 }

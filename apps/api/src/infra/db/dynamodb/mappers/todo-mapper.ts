@@ -50,6 +50,8 @@ export class TodoDynamoMapper implements TodoMapper<TodoDynamoDBEntity> {
 			completedAt: dbEntity.completed_at
 				? new Date(dbEntity.completed_at)
 				: undefined,
+			dueDate: dbEntity.due_date ? new Date(dbEntity.due_date) : undefined,
+			priority: dbEntity.priority ?? undefined,
 		};
 	}
 
@@ -75,6 +77,8 @@ export class TodoDynamoMapper implements TodoMapper<TodoDynamoDBEntity> {
 			created_at: todo.createdAt.toISOString(),
 			updated_at: todo.updatedAt.toISOString(),
 			completed_at: todo.completedAt?.toISOString() ?? null,
+			due_date: todo.dueDate?.toISOString() ?? null,
+			priority: todo.priority ?? null,
 			entity_type: "TODO",
 		};
 	}

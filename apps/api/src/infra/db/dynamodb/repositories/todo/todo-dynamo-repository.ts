@@ -123,6 +123,9 @@ export class TodoDynamoRepository implements TodoRepository {
 			createdAt: currentTodo.createdAt,
 			updatedAt,
 			completedAt: completedAt ?? currentTodo.completedAt,
+			dueDate: data.dueDate !== undefined ? data.dueDate : currentTodo.dueDate,
+			priority:
+				data.priority !== undefined ? data.priority : currentTodo.priority,
 		};
 
 		// Converts back to DB format
