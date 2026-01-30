@@ -2,6 +2,7 @@ import type { Todo } from "@core/domain/todo/todo";
 import type { TodoMapper } from "@data/protocols/todo-mapper";
 import type { TodoRepository } from "@data/protocols/todo-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
+import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
 
 /**
  * TodoDynamoRepository
@@ -13,62 +14,15 @@ import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
  * Uses a Mapper to convert between DB format and application format.
  *
  * TODO: Implement real DynamoDB integration
- * For now, keeps data in memory for development.
+ * For now, keeps data in memory for development (see todo-dynamo-repository.mocks.ts).
  */
 export class TodoDynamoRepository implements TodoRepository {
 	// TODO: Replace with DynamoDB client
 	// private dynamoClient: DynamoDBDocumentClient;
 	// private tableName: string;
 
-	// Temporary: In-memory simulation (DynamoDB format per docs/database-design.md)
-	// PK = USER#userId (inbox) so all tasks are queryable by user
-	private dbTodos: TodoDynamoDBEntity[] = [
-		{
-			PK: "USER#user-1",
-			SK: "TODO#INBOX#PENDING#1#1",
-			id: "1",
-			user_id: "user-1",
-			project_id: null,
-			title: "Implementar arquitetura Clean",
-			description: "Seguir o padrão proposto do Grypp",
-			completed: false,
-			order: 1,
-			created_at: "2026-01-23T10:00:00.000Z",
-			updated_at: "2026-01-23T10:00:00.000Z",
-			completed_at: null,
-			entity_type: "TODO",
-		},
-		{
-			PK: "USER#user-1",
-			SK: "TODO#INBOX#PENDING#2#2",
-			id: "2",
-			user_id: "user-1",
-			project_id: null,
-			title: "Criar módulo de autenticação",
-			description: "Implementar signin, signup e refresh token",
-			completed: false,
-			order: 2,
-			created_at: "2026-01-23T11:00:00.000Z",
-			updated_at: "2026-01-23T11:00:00.000Z",
-			completed_at: null,
-			entity_type: "TODO",
-		},
-		{
-			PK: "USER#user-1",
-			SK: "TODO#INBOX#COMPLETED#2026-01-23T12:00:00.000Z#3",
-			id: "3",
-			user_id: "user-1",
-			project_id: null,
-			title: "Adicionar testes unitários",
-			description: "Garantir cobertura de pelo menos 80%",
-			completed: true,
-			order: 0,
-			created_at: "2026-01-23T09:00:00.000Z",
-			updated_at: "2026-01-23T12:00:00.000Z",
-			completed_at: "2026-01-23T12:00:00.000Z",
-			entity_type: "TODO",
-		},
-	];
+	// Temporary: In-memory simulation using shared mocks (PK = USER#userId per docs/database-design.md)
+	private dbTodos: TodoDynamoDBEntity[] = [...TODO_DYNAMO_MOCKS];
 
 	constructor(private readonly mapper: TodoMapper<TodoDynamoDBEntity>) {}
 

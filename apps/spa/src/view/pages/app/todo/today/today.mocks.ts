@@ -1,8 +1,15 @@
+/**
+ * Fake userId aligned with API MOCK_USER_ID (used while auth is not implemented).
+ * Same UUID as apps/api src/app/config/mock-user.ts
+ */
+export const MOCK_USER_ID = "aaaaaaaa-bbbb-4ccc-d000-000000000000" as const;
+
 export const PROJECTS_MOCKS = [
 	{
 		id: "1",
 		name: "Casa",
 		emoji: "🏠",
+		userId: MOCK_USER_ID,
 		todos: [
 			{
 				id: "1",
@@ -12,6 +19,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Casa 🏠", "Compras"],
 				projectId: "1",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "2",
@@ -21,6 +29,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Casa 🏠", "Compras"],
 				projectId: "1",
+				userId: MOCK_USER_ID,
 			},
 		],
 	},
@@ -28,6 +37,7 @@ export const PROJECTS_MOCKS = [
 		id: "2",
 		name: "Estudos",
 		emoji: "🎓",
+		userId: MOCK_USER_ID,
 		todos: [
 			{
 				id: "3",
@@ -37,6 +47,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Estudos 🎓", "Inglês"],
 				projectId: "2",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "4",
@@ -46,6 +57,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Estudos 🎓", "Inglês"],
 				projectId: "2",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "5",
@@ -55,6 +67,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Estudos 🎓", "Inglês"],
 				projectId: "2",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "6",
@@ -63,6 +76,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Estudos 🎓"],
 				projectId: "2",
+				userId: MOCK_USER_ID,
 			},
 		],
 	},
@@ -70,6 +84,7 @@ export const PROJECTS_MOCKS = [
 		id: "3",
 		name: "Pessoal",
 		emoji: "😊",
+		userId: MOCK_USER_ID,
 		todos: [
 			{
 				id: "7",
@@ -79,6 +94,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Pessoal 😊"],
 				projectId: "3",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "8",
@@ -88,6 +104,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Pessoal 😊", "Hábitos"],
 				projectId: "3",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "9",
@@ -97,6 +114,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Pessoal 😊", "Rotinas 📆"],
 				projectId: "3",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "10",
@@ -106,6 +124,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Pessoal 😊", "Hábitos"],
 				projectId: "3",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "11",
@@ -115,6 +134,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Pessoal 😊", "Finanças"],
 				projectId: "3",
+				userId: MOCK_USER_ID,
 			},
 		],
 	},
@@ -122,6 +142,7 @@ export const PROJECTS_MOCKS = [
 		id: "4",
 		name: "Profissional",
 		emoji: "💼",
+		userId: MOCK_USER_ID,
 		todos: [
 			{
 				id: "12",
@@ -131,6 +152,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Profissional 💼", "NodeJS"],
 				projectId: "4",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "13",
@@ -140,6 +162,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Profissional 💼", "NodeJS"],
 				projectId: "4",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "14",
@@ -148,6 +171,7 @@ export const PROJECTS_MOCKS = [
 				completed: false,
 				tags: ["Profissional 💼"],
 				projectId: "4",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "15",
@@ -157,6 +181,7 @@ export const PROJECTS_MOCKS = [
 				tags: ["Profissional 💼", "Conteúdos q..."],
 				comments: 3,
 				projectId: "4",
+				userId: MOCK_USER_ID,
 			},
 			{
 				id: "16",
@@ -167,6 +192,7 @@ export const PROJECTS_MOCKS = [
 				tags: ["Profissional 💼"],
 				comments: 3,
 				projectId: "4",
+				userId: MOCK_USER_ID,
 			},
 		],
 	},
