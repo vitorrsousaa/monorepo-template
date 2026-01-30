@@ -56,7 +56,7 @@ functions:
     handler: src/server/functions/todo/get-inbox-todos/index.handler
     events:
       - httpApi:
-          path: /inbox/todos
+          path: /todos/inbox
           method: get
 
   createTodo:

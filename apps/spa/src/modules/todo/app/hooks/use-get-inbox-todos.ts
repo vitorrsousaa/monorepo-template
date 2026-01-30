@@ -10,8 +10,6 @@ export function useGetInboxTodos() {
 		},
 	);
 
-	console.log({ isError });
-
 	return {
 		todos: data || [],
 		isErrorInboxTodos: isError,
