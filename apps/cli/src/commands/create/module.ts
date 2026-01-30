@@ -44,7 +44,10 @@ export async function createModule(moduleName: string, serviceName: string) {
 
 		// Add content for files
 		await fs.outputFile(indexControllerFile, `export * from "./controller";`);
-		await fs.outputFile(controllerFile, getControllerTemplate(serviceName));
+		await fs.outputFile(
+			controllerFile,
+			getControllerTemplate(moduleName, serviceName),
+		);
 
 		await fs.outputFile(serviceFile, getServiceTemplate(serviceName));
 		await fs.outputFile(indexServiceFile, `export * from "./service";`);
