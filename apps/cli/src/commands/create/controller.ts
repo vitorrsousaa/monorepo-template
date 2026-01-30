@@ -7,10 +7,14 @@ import {
 	getControllerTemplate,
 } from "./templates";
 
+export type CreateControllerOptions = { skipSuccessLog?: boolean };
+
 export async function createController(
 	moduleName: string,
 	controllerName: string,
+	options: CreateControllerOptions = {},
 ) {
+	const { skipSuccessLog = false } = options;
 	const targetDir = getApiModulesPath(__dirname);
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
 
@@ -50,7 +54,9 @@ export async function createController(
 		);
 		await fs.outputFile(indexFile, `export * from "./controller";\n`);
 
-		console.log("Controller criado com sucesso!");
+		if (!skipSuccessLog) {
+			console.log("Controller criado com sucesso!");
+		}
 	} catch (err) {
 		console.error("Erro ao criar o controller:", err);
 	}

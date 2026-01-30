@@ -4,11 +4,16 @@ import { getApiModulesPath } from "../../lib/paths";
 import { toKebabCase } from "../../utils";
 import { getDtoTemplate, getServiceTemplate } from "./templates";
 
-export async function createService(moduleName: string, serviceName: string) {
+export type CreateServiceOptions = { skipSuccessLog?: boolean };
+
+export async function createService(
+	moduleName: string,
+	serviceName: string,
+	options: CreateServiceOptions = {},
+) {
+	const { skipSuccessLog = false } = options;
 	const targetDir = getApiModulesPath(__dirname);
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
-
-	console.log(moduleDir);
 
 	const moduleExists = fs.existsSync(moduleDir);
 	if (!moduleExists) {
@@ -36,7 +41,9 @@ export async function createService(moduleName: string, serviceName: string) {
 		await fs.outputFile(serviceFile, getServiceTemplate(serviceName));
 		await fs.outputFile(indexFile, `export * from "./service";\n`);
 
-		console.log("Service criado com sucesso!");
+		if (!skipSuccessLog) {
+			console.log("Service criado com sucesso!");
+		}
 	} catch (err) {
 		console.error("Erro ao criar o service:", err);
 	}
