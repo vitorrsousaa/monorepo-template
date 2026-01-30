@@ -1,7 +1,10 @@
 export const TODOS = {
 	INBOX: ["todos", "inbox"],
+	PROJECTS: ["projects"],
 };
 
-export const QUERY_KEYS = {
-	TODOS,
-} as const;
+export const PROJECTS = {
+	ALL: ["projects", "all"],
+};
+
+export const QUERY_KEYS = { TODOS, PROJECTS } as const;

@@ -1,7 +1,6 @@
 import {
 	CalendarIcon,
 	Command,
-	Frame,
 	GoalIcon,
 	LifeBuoy,
 	Send,
@@ -112,14 +111,6 @@ const data = {
 			icon: Send,
 		},
 	],
-	projects: [
-		{
-			id: "1",
-			name: "Design Engineering",
-			url: ROUTES.TODO.PROJECTS.replace(":id", "1"),
-			icon: Frame,
-		},
-	],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -144,7 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
-				<NavProjects projects={data.projects} />
+				<NavProjects />
 				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>
