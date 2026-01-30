@@ -9,11 +9,12 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			staleTime: Number.POSITIVE_INFINITY, // Always stale
-			refetchInterval: 1000 * 60 * 45, // 45 minutes
+			staleTime: Number.POSITIVE_INFINITY, // Data never goes stale - manual refetch only
+			gcTime: 1000 * 60 * 60, // 1 hour - Keep unused data in cache
 			retry: false,
 			refetchOnWindowFocus: false,
-			gcTime: 1000 * 60 * 60 * 1, // 1 hours
+			refetchOnMount: false, // CRITICAL: Don't refetch when component mounts
+			refetchOnReconnect: false,
 		},
 	},
 });

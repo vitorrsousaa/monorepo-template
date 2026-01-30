@@ -8,7 +8,11 @@ import {
 	Share,
 	Trash2,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
+import { ProjectListEmptyState } from "@/layouts/app/sidebar/components/project-list-empty-state";
+import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-error";
+import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import {
 	DropdownMenu,
@@ -27,9 +31,6 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@repo/ui/sidebar";
-import { ProjectListEmptyState } from "@/layouts/app/sidebar/components/project-list-empty-state";
-import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-error";
-import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 
 export function NavProjects() {
 	const { isMobile } = useSidebar();
@@ -75,10 +76,10 @@ export function NavProjects() {
 							{projects.map((item) => (
 								<SidebarMenuItem key={item.id}>
 									<SidebarMenuButton asChild>
-										<a href={`/projects/${item.id}`}>
+										<Link to={`/projects/${item.id}`}>
 											<Frame />
 											<span>{item.name}</span>
-										</a>
+										</Link>
 									</SidebarMenuButton>
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>

@@ -36,6 +36,15 @@ Clean Architecture principles:
 - Mapper pattern for data transformation
 - Dependency injection with factories
 
+### 5. **react-query-patterns.mdc** (Hooks and Services)
+React Query data fetching and caching:
+- Cache configuration (staleTime, gcTime)
+- Recommended cache times by data type
+- Query keys structure
+- Hook return patterns
+- Manual cache invalidation
+- Common issues and solutions
+
 ## 🚀 How Rules Work
 
 ### Automatic Application

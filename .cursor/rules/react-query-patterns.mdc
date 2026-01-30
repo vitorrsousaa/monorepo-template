@@ -1,0 +1,253 @@
+---
+description: React Query cache and data fetching patterns
+globs: **/*{hook,service}*.ts
+alwaysApply: false
+---
+
+# React Query Patterns
+
+Best practices for data fetching and caching with React Query.
+
+## Cache Configuration
+
+### Global Defaults (query.tsx)
+
+```typescript
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Number.POSITIVE_INFINITY, // Data never goes stale
+      gcTime: 1000 * 60 * 60, // 1 hour - Keep unused data in cache
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false, // CRITICAL: Don't refetch when component mounts
+      refetchOnReconnect: false,
+    },
+  },
+});
+```
+
+**Important Notes:**
+- `staleTime: Infinity` means data is **always fresh** and never refetches automatically
+- Only refetch when you explicitly call `refetch()` or invalidate the query
+- `refetchOnMount: false` is **CRITICAL** - prevents refetch when component remounts
+
+### Understanding Cache Times
+
+- **staleTime**: How long data is considered "fresh"
+  - During this time, no refetch will happen
+  - Default: 5 minutes for most queries
+
+- **gcTime** (Garbage Collection Time): How long unused data stays in cache
+  - Data without active observers is kept for this duration
+  - Default: 30 minutes
+
+### Query-Specific Configuration
+
+Override defaults for specific queries when needed:
+
+```typescript
+// ✅ GOOD - Projects don't change frequently, cache longer
+export function useGetAllProjects() {
+  const { data, isError, isFetching, refetch } = useQuery({
+    queryKey: QUERY_KEYS.PROJECTS.ALL,
+    queryFn: getAllProjects,
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
+  });
+
+  return {
+    projects: data || [],
+    isErrorProjects: isError,
+    isFetchingProjects: isFetching,
+    refetchProjects: refetch,
+  };
+}
+
+// ✅ GOOD - Real-time data needs shorter cache
+export function useGetNotifications() {
+  const { data } = useQuery({
+    queryKey: QUERY_KEYS.NOTIFICATIONS,
+    queryFn: getNotifications,
+    staleTime: 1000 * 30, // 30 seconds
+    gcTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  return { notifications: data || [] };
+}
+```
+
+## Recommended Cache Times by Data Type
+
+| Data Type | staleTime | gcTime | Reasoning |
+|-----------|-----------|--------|-----------|
+| **Projects** | 10 minutes | 1 hour | Rarely change, used across app |
+| **User Profile** | 15 minutes | 1 hour | Rarely changes during session |
+| **Todo Lists** | 5 minutes | 30 minutes | Can change frequently |
+| **Notifications** | 30 seconds | 5 minutes | Need to be fresh |
+| **Search Results** | 2 minutes | 10 minutes | Context-dependent |
+| **Static Data** | Infinity | 24 hours | Never changes (configs, etc) |
+
+## Query Keys Structure
+
+Always use a consistent structure for query keys:
+
+```typescript
+// ✅ GOOD - Hierarchical structure
+export const QUERY_KEYS = {
+  PROJECTS: {
+    ALL: ["projects", "all"],
+    DETAIL: (id: string) => ["projects", "detail", id],
+    BY_USER: (userId: string) => ["projects", "by-user", userId],
+  },
+  TODOS: {
+    ALL: ["todos", "all"],
+    INBOX: ["todos", "inbox"],
+    BY_PROJECT: (projectId: string) => ["todos", "by-project", projectId],
+  },
+};
+
+// ❌ BAD - Inconsistent structure
+const projectsKey = "projects";
+const todoKey = ["todo"];
+```
+
+## Hook Return Pattern
+
+Always return a consistent object structure:
+
+```typescript
+// ✅ GOOD - Descriptive names with entity prefix
+export function useGetProjects() {
+  const { data, isError, isFetching, refetch } = useQuery({
+    queryKey: QUERY_KEYS.PROJECTS.ALL,
+    queryFn: getAllProjects,
+  });
+
+  return {
+    projects: data || [],
+    isErrorProjects: isError,
+    isFetchingProjects: isFetching,
+    refetchProjects: refetch,
+  };
+}
+
+// ❌ BAD - Generic names that can clash
+export function useGetProjects() {
+  const { data, isError, isLoading } = useQuery(...);
+  
+  return {
+    data, // Too generic
+    error: isError, // Inconsistent naming
+    loading: isLoading, // Different from other hooks
+  };
+}
+```
+
+## Manual Cache Invalidation
+
+Invalidate cache after mutations:
+
+```typescript
+// ✅ GOOD - Invalidate related queries after mutation
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createProject,
+    onSuccess: () => {
+      // Invalidate projects list to refetch
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.PROJECTS.ALL,
+      });
+    },
+  });
+}
+
+// ✅ GOOD - Optimistic updates
+export function useUpdateProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateProject,
+    onMutate: async (newProject) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: QUERY_KEYS.PROJECTS.DETAIL(newProject.id),
+      });
+
+      // Snapshot previous value
+      const previousProject = queryClient.getQueryData(
+        QUERY_KEYS.PROJECTS.DETAIL(newProject.id)
+      );
+
+      // Optimistically update
+      queryClient.setQueryData(
+        QUERY_KEYS.PROJECTS.DETAIL(newProject.id),
+        newProject
+      );
+
+      return { previousProject };
+    },
+    onError: (err, newProject, context) => {
+      // Rollback on error
+      queryClient.setQueryData(
+        QUERY_KEYS.PROJECTS.DETAIL(newProject.id),
+        context?.previousProject
+      );
+    },
+    onSettled: (data, error, variables) => {
+      // Always refetch after mutation
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.PROJECTS.DETAIL(variables.id),
+      });
+    },
+  });
+}
+```
+
+## Common Issues
+
+### Issue: Query refetches on every navigation
+
+**Problem**: Data is refetched when navigating between pages
+
+**Solution**: 
+1. Ensure `refetchOnMount: false` in global config
+2. Set appropriate `staleTime` (5+ minutes)
+3. Make sure query keys are consistent
+
+### Issue: Stale data shown to user
+
+**Problem**: User sees outdated data
+
+**Solution**:
+1. Reduce `staleTime` for that specific query
+2. Manually invalidate after mutations
+3. Use `refetchInterval` for real-time data
+
+### Issue: Too many network requests
+
+**Problem**: Same data fetched multiple times
+
+**Solution**:
+1. Increase `staleTime`
+2. Ensure query keys are identical across usages
+3. Check if components are unnecessarily remounting
+
+## DevTools
+
+Always include React Query DevTools in development:
+
+```typescript
+<QueryClientProvider>
+  {children}
+  <ReactQueryDevtools initialIsOpen={false} />
+</QueryClientProvider>
+```
+
+Use DevTools to:
+- Inspect query cache
+- See query states (fetching, stale, fresh)
+- Manually trigger refetches
+- Debug cache issues
