@@ -32,6 +32,7 @@ export class TodoDynamoRepository implements TodoRepository {
 		const pk = `USER#${userId}`;
 		return this.dbTodos
 			.filter((t) => t.PK === pk && t.SK.startsWith("TODO#INBOX#"))
+			.filter((t) => t.completed === false)
 			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 
