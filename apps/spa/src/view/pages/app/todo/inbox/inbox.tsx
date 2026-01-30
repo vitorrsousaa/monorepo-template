@@ -4,6 +4,7 @@ import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { InboxEmptyState } from "./components/inbox-empty-state";
 import { InboxErrorState } from "./components/inbox-error-state";
 import { InboxLoadingSkeleton } from "./components/inbox-loading";
 import { useInboxHook } from "./inbox.hook";
@@ -41,6 +42,12 @@ export function Inbox() {
 			<RenderIf
 				condition={isErrorInboxTodos}
 				render={<InboxErrorState onRetry={() => refetchInboxTodos()} />}
+			/>
+			<RenderIf
+				condition={!shouldRenderInboxTodos}
+				render={
+					<InboxEmptyState onCreateTodo={() => setIsNewTodoModalOpen(true)} />
+				}
 			/>
 			<RenderIf
 				condition={shouldRenderInboxTodos}
