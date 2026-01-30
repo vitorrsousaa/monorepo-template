@@ -1,4 +1,5 @@
 import type { Todo } from "@/modules/todo/app/entities/todo";
+import { useGetInboxTodos } from "@/modules/todo/app/hooks/use-get-inbox-todos";
 import { useMemo } from "react";
 
 const now = new Date();
@@ -77,19 +78,19 @@ const inboxTodos: Todo[] = [
 ];
 
 export function useInboxHook() {
-	const isLoadingInboxTodos = true;
-	const isErrorInboxTodos = false;
+	const { todos, isErrorInboxTodos, isFetchingTodos, refetchTodos } =
+		useGetInboxTodos();
 
 	const shouldRenderInboxTodos = useMemo(
-		() => Boolean(!isLoadingInboxTodos && !isErrorInboxTodos),
-		[],
+		() => Boolean(!isFetchingTodos && !isErrorInboxTodos),
+		[isFetchingTodos, isErrorInboxTodos],
 	);
 
 	return {
 		shouldRenderInboxTodos,
-		inboxTodos,
-		isLoadingInboxTodos,
+		inboxTodos: todos ?? [],
+		isFetchingTodos,
 		isErrorInboxTodos,
-		refetchInboxTodos: () => {},
+		refetchInboxTodos: refetchTodos,
 	};
 }

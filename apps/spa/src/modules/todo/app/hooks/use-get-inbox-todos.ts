@@ -3,15 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { getInboxTodos } from "../services/get-inbox";
 
 export function useGetInboxTodos() {
-	const { data, isError, isPending, isLoading, isFetching } = useQuery({
-		queryKey: QUERY_KEYS.TODOS.INBOX,
-		queryFn: getInboxTodos,
-	});
+	const { data, isError, isPending, isFetching, isLoading, refetch } = useQuery(
+		{
+			queryKey: QUERY_KEYS.TODOS.INBOX,
+			queryFn: getInboxTodos,
+		},
+	);
+
+	console.log({ isError });
 
 	return {
-		todos: data,
-		isErrorTodos: isError,
-		isLoadingTodos: isLoading || isPending,
-		isFetchingTodos: isFetching,
+		todos: data || [],
+		isErrorInboxTodos: isError,
+		isFetchingTodos: isFetching || isPending || isLoading,
+		refetchTodos: refetch,
 	};
 }

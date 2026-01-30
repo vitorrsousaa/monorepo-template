@@ -10,7 +10,7 @@ import { useInboxHook } from "./inbox.hook";
 export function Inbox() {
 	const {
 		inboxTodos,
-		isLoadingInboxTodos,
+		isFetchingTodos,
 		isErrorInboxTodos,
 		shouldRenderInboxTodos,
 		refetchInboxTodos,
@@ -28,7 +28,7 @@ export function Inbox() {
 				<Button
 					className="bg-primary text-primary-foreground hover:bg-primary/90"
 					onClick={() => setIsNewTodoModalOpen(true)}
-					disabled={isLoadingInboxTodos}
+					disabled={isFetchingTodos}
 					type="button"
 				>
 					<Plus className="w-4 h-4 mr-2" />
@@ -36,10 +36,7 @@ export function Inbox() {
 				</Button>
 			</div>
 
-			<RenderIf
-				condition={isLoadingInboxTodos}
-				render={<InboxLoadingSkeleton />}
-			/>
+			<RenderIf condition={isFetchingTodos} render={<InboxLoadingSkeleton />} />
 			<RenderIf
 				condition={isErrorInboxTodos}
 				render={<InboxErrorState onRetry={() => refetchInboxTodos()} />}
