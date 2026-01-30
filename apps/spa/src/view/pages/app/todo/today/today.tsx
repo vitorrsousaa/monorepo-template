@@ -15,6 +15,7 @@ export interface Todo {
 	comments?: number;
 	projectId: string;
 	projectName?: string;
+	userId?: string;
 }
 
 export interface Project {
@@ -22,6 +23,7 @@ export interface Project {
 	name: string;
 	emoji: string;
 	todos: Todo[];
+	userId?: string;
 }
 
 export function Today() {
