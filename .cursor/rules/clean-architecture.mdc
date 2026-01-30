@@ -1,0 +1,154 @@
+---
+description: Clean Architecture patterns for API and SPA modules
+globs: apps/{api,spa}/src/**/*.ts
+alwaysApply: false
+---
+
+# Clean Architecture Patterns
+
+Follow Clean Architecture principles to keep the codebase maintainable and testable.
+
+## Layer Separation
+
+### Domain Layer (Core)
+Pure business logic, no dependencies on frameworks:
+
+```typescript
+// ✅ GOOD - Pure domain entity
+export interface Project {
+  id: string;
+  userId: string;
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### Application Layer (Use Cases)
+```typescript
+// ✅ GOOD - Service with clear dependencies
+export class GetAllProjectsService {
+  constructor(private readonly projectRepository: ProjectRepository) {}
+
+  async execute(userId: string): Promise<Project[]> {
+    return await this.projectRepository.getAllProjectsByUser(userId);
+  }
+}
+```
+
+### Infrastructure Layer
+Database-specific implementations:
+
+```typescript
+// ✅ GOOD - Repository implementation
+export class ProjectDynamoRepository implements ProjectRepository {
+  constructor(private readonly mapper: ProjectMapper) {}
+
+  async getAllProjectsByUser(userId: string): Promise<Project[]> {
+    // DynamoDB specific code here
+  }
+}
+```
+
+## API Module Structure
+
+```
+module/
+├── controllers/          # HTTP handlers
+│   └── get-all-projects/
+│       ├── controller.ts
+│       ├── schema.ts     # Validation schemas
+│       └── index.ts
+├── services/            # Business logic
+│   └── get-all-projects/
+│       ├── service.ts
+│       ├── dto.ts       # Data Transfer Objects
+│       └── index.ts
+└── entities/            # Domain entities
+    └── project.ts
+```
+
+## SPA Module Structure
+
+```
+module/
+├── app/
+│   ├── entities/        # Domain entities
+│   ├── hooks/          # React Query hooks
+│   └── services/       # API calls
+└── view/
+    ├── components/     # UI components
+    ├── modals/        # Modal components
+    └── pages/         # Page components
+```
+
+## Dependency Rule
+
+**Dependencies flow inward**: outer layers can depend on inner layers, never the reverse.
+
+```
+View Layer → App Layer → Domain Layer
+     ↓            ↓            ↑
+Controllers → Services → Entities
+     ↓            ↓
+Infrastructure (DB, HTTP, etc.)
+```
+
+## Data Transformation
+
+Use mappers to convert between layers:
+
+```typescript
+// ✅ GOOD - Mapper pattern
+export class ProjectMapper {
+  toDomain(dbEntity: ProjectDynamoDBEntity): Project {
+    return {
+      id: dbEntity.id,
+      userId: dbEntity.user_id,
+      name: dbEntity.name,
+      // ... convert from DB format to domain
+    };
+  }
+
+  toDatabase(project: Project): ProjectDynamoDBEntity {
+    return {
+      PK: `USER#${project.userId}`,
+      SK: `PROJECT#${project.id}`,
+      user_id: project.userId,
+      // ... convert from domain to DB format
+    };
+  }
+}
+```
+
+## Dependency Injection
+
+Use factories to construct dependencies:
+
+```typescript
+// ✅ GOOD - Factory pattern
+export function makeGetAllProjectsService(): GetAllProjectsService {
+  const repository = makeProjectRepository();
+  return new GetAllProjectsService(repository);
+}
+
+export function makeProjectRepository(): ProjectRepository {
+  const mapper = new ProjectMapper();
+  return new ProjectDynamoRepository(mapper);
+}
+```
+
+## Testing Benefits
+
+This structure makes testing easier:
+
+```typescript
+// ✅ Easy to test with mocks
+const mockRepository: ProjectRepository = {
+  getAllProjectsByUser: jest.fn().mockResolvedValue([]),
+};
+
+const service = new GetAllProjectsService(mockRepository);
+const result = await service.execute("user-123");
+```

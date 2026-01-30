@@ -1,0 +1,94 @@
+---
+description: General project coding standards and conventions
+alwaysApply: true
+---
+
+# Artemis Project Standards
+
+Core coding standards that apply across the entire Artemis project.
+
+## Naming Conventions
+
+### Files and Folders
+- Use **kebab-case** for file names: `project-list-error.tsx`, `use-get-all-projects.ts`
+- Use **PascalCase** for component files when exporting a single component
+- Use **camelCase** for utility/hook files: `useAuth.ts`, `formatDate.ts`
+
+### Code
+- **Components**: PascalCase - `ProjectListError`, `NavProjects`
+- **Hooks**: camelCase with `use` prefix - `useGetAllProjects`, `useAuth`
+- **Functions**: camelCase - `getAllProjects`, `formatDate`
+- **Constants**: UPPER_SNAKE_CASE - `MOCK_USER_ID`, `API_BASE_URL`
+- **Interfaces/Types**: PascalCase - `Project`, `TodoEntity`
+
+## Code Organization
+
+### Monorepo Structure
+```
+artemis/
+├── apps/
+│   ├── api/          # Backend API (Lambda functions)
+│   └── spa/          # Frontend SPA (Next.js)
+└── packages/
+    ├── ui/           # Shared UI components
+    ├── logger/       # Shared logging utilities
+    └── typescript-config/  # Shared TS configs
+```
+
+### Module Structure (Clean Architecture)
+```
+module/
+├── app/
+│   ├── entities/     # Domain entities
+│   ├── hooks/        # React Query hooks
+│   └── services/     # API services
+└── view/
+    ├── components/   # UI components
+    └── modals/       # Modal components
+```
+
+## Import Order
+
+1. External packages (React, Next.js, etc.)
+2. Internal packages (`@repo/*`)
+3. Local absolute imports (`@/`)
+4. Types/Interfaces
+5. Styles/Assets
+
+```typescript
+// 1. External
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+// 2. Internal packages
+import { Button } from "@repo/ui/button";
+import { RenderIf } from "@repo/ui/render-if";
+
+// 3. Local absolute
+import { useGetAllProjects } from "@/modules/projects/app/hooks/use-get-all-projects";
+import { QUERY_KEYS } from "@/config/query-keys";
+
+// 4. Types
+import type { Project } from "@/modules/projects/app/entities/project";
+```
+
+## Component Patterns
+
+- Use **functional components** exclusively
+- Extract logic into **custom hooks**
+- Use **RenderIf** component for conditional rendering
+- Prefer **composition** over complex conditionals
+- Keep components **small and focused** (< 200 lines)
+
+## Error Handling
+
+- Always handle errors in API calls
+- Show user-friendly error messages
+- Provide retry mechanisms where appropriate
+- Log errors for debugging
+
+## State Management
+
+- Use **React Query** for server state
+- Use **useState/useReducer** for local UI state
+- Avoid prop drilling - use context or composition

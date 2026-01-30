@@ -27,9 +27,9 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@repo/ui/sidebar";
-import { ProjectListEmptyState } from "./components/project-list-empty-state";
-import { ProjectListError } from "./components/project-list-error";
-import { ProjectListSkeleton } from "./components/project-list-skeleton";
+import { ProjectListEmptyState } from "@/layouts/app/sidebar/components/project-list-empty-state";
+import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-error";
+import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 
 export function NavProjects() {
 	const { isMobile } = useSidebar();

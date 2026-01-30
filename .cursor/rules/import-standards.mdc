@@ -1,0 +1,61 @@
+---
+description: Import path standards - always use @ aliases instead of relative paths
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Import Path Standards
+
+Always use absolute imports with `@` alias instead of relative paths (`./` or `../`).
+
+## Rules
+
+### ✅ GOOD - Use @ alias
+```typescript
+import { Button } from "@repo/ui/button";
+import { useGetAllProjects } from "@/modules/projects/app/hooks/use-get-all-projects";
+import { ProjectListError } from "@/view/layouts/app/sidebar/components/project-list-error";
+```
+
+### ❌ BAD - Don't use relative paths
+```typescript
+import { Button } from "../../../../packages/ui/src/components/button";
+import { useGetAllProjects } from "../../../modules/projects/app/hooks/use-get-all-projects";
+import { ProjectListError } from "./components/project-list-error";
+```
+
+## Available Aliases (SPA App)
+
+- `@/pages/*` - Points to `src/view/pages/*`
+- `@/layouts/*` - Points to `src/view/layouts/*`
+- `@/components/*` - Points to `src/view/components/*`
+- `@/ui/*` - Points to `src/view/ui/*`
+- `@/utils/*` - Points to `src/app/utils/*`
+- `@/services/*` - Points to `src/app/services/*`
+- `@/hooks/*` - Points to `src/app/hooks/*`
+- `@/contexts/*` - Points to `src/app/contexts/*`
+- `@/storage/*` - Points to `src/app/storage/*`
+- `@/config/*` - Points to `src/app/config/*`
+- `@/libs/*` - Points to `src/app/libs/*`
+- `@/entities/*` - Points to `src/app/entities/*`
+- `@/modules/*` - Points to `src/modules/*`
+
+## Shared Packages
+
+- `@repo/ui` - Shared UI components package
+- `@repo/typescript-config` - Shared TypeScript configs
+- `@repo/logger` - Shared logger package
+
+## Why This Matters
+
+- **Maintainability**: Easier to move files without breaking imports
+- **Readability**: Clear where imports are coming from
+- **Consistency**: Same pattern across the entire codebase
+- **Refactoring**: IDEs can better track and update imports
+
+## Migration Guide
+
+When you see a relative import:
+1. Identify the full path from `src/`
+2. Replace with `@/` + the path from src
+3. For shared packages, use the appropriate `@repo/*` alias

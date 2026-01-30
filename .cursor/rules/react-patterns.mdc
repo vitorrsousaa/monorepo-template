@@ -1,0 +1,198 @@
+---
+description: React and Next.js component patterns and best practices
+globs: **/*.{tsx,jsx}
+alwaysApply: false
+---
+
+# React Component Patterns
+
+React and Next.js specific patterns for the Artemis project.
+
+## Component Structure
+
+### Functional Components
+Always use functional components with TypeScript:
+
+```typescript
+// ✅ GOOD
+interface ProjectListErrorProps {
+  onRetry: () => void;
+}
+
+export const ProjectListError = ({ onRetry }: ProjectListErrorProps) => {
+  return (
+    <div>
+      <button onClick={onRetry}>Try Again</button>
+    </div>
+  );
+};
+
+// ❌ BAD - Class components
+export class ProjectListError extends React.Component {
+  // Don't use class components
+}
+```
+
+## Conditional Rendering
+
+### Use RenderIf Component
+```typescript
+// ✅ GOOD - Clean and readable
+<RenderIf
+  condition={isLoading}
+  render={<LoadingSkeleton />}
+/>
+
+<RenderIf
+  condition={hasProjects}
+  render={
+    <>
+      {projects.map(project => (
+        <ProjectCard key={project.id} project={project} />
+      ))}
+    </>
+  }
+/>
+
+// ❌ BAD - Messy ternaries
+{isLoading ? <LoadingSkeleton /> : null}
+{isError ? <ErrorMessage /> : hasProjects ? <ProjectList /> : <EmptyState />}
+```
+
+## State Management
+
+### React Query for Server State
+```typescript
+// ✅ GOOD - Use React Query hooks
+export function useGetAllProjects() {
+  const { data, isError, isFetching, refetch } = useQuery({
+    queryKey: QUERY_KEYS.PROJECTS.ALL,
+    queryFn: getAllProjects,
+  });
+
+  return {
+    projects: data || [],
+    isErrorProjects: isError,
+    isFetchingProjects: isFetching,
+    refetchProjects: refetch,
+  };
+}
+```
+
+### Local UI State
+```typescript
+// ✅ GOOD - useState for local UI
+const [isOpen, setIsOpen] = useState(false);
+const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+```
+
+## Loading & Error States
+
+Always handle all states explicitly:
+
+```typescript
+// ✅ GOOD - All states covered
+export function ProjectsList() {
+  const { projects, isError, isLoading, refetch } = useGetAllProjects();
+
+  const shouldShowList = !isLoading && !isError && projects.length > 0;
+  const shouldShowEmpty = !isLoading && !isError && projects.length === 0;
+
+  return (
+    <>
+      <RenderIf condition={isLoading} render={<LoadingSkeleton />} />
+      <RenderIf condition={isError} render={<ErrorState onRetry={refetch} />} />
+      <RenderIf condition={shouldShowEmpty} render={<EmptyState />} />
+      <RenderIf condition={shouldShowList} render={<List items={projects} />} />
+    </>
+  );
+}
+```
+
+## Component Organization
+
+### Extract Sub-components
+When a component grows beyond 150 lines, extract parts into sub-components:
+
+```typescript
+// ✅ GOOD - Extracted into separate files
+import { ProjectListSkeleton } from "@/view/components/project-list-skeleton";
+import { ProjectListError } from "@/view/components/project-list-error";
+import { ProjectListEmpty } from "@/view/components/project-list-empty";
+
+// Each component in its own file with focused responsibility
+```
+
+## Props & Types
+
+### Always type props explicitly and use named props
+```typescript
+// ✅ GOOD - Named props, destructure in body
+interface ProjectCardProps {
+  project: Project;
+  onDelete?: (id: string) => void;
+  className?: string;
+}
+
+export const ProjectCard = (props: ProjectCardProps) => {
+  const { project, onDelete, className } = props;
+  
+  // Now you can use project, onDelete, className
+  return (
+    <div className={className}>
+      {project.name}
+    </div>
+  );
+};
+
+// ❌ BAD - Destructuring in parameters
+export const ProjectCard = ({ project, onDelete, className }: ProjectCardProps) => {
+  // Less clear, harder to refactor
+};
+
+// ❌ BAD - No types
+export const ProjectCard = (props) => {
+  // Missing types
+};
+```
+
+### Why Use Named Props?
+
+**Benefits:**
+- **Clearer intent**: Easy to see what `props` contains
+- **Easier refactoring**: Change prop names without touching the signature
+- **Better for testing**: Can easily spread `props` in tests
+- **Cleaner diffs**: Adding/removing props doesn't change the function signature line
+
+```typescript
+// ✅ Example with benefits
+export const UserCard = (props: UserCardProps) => {
+  const { user, onEdit, onDelete, isLoading } = props;
+  
+  // Easy to add conditional destructuring
+  const { name, email } = user;
+  
+  // Easy to pass all props down
+  return <BaseCard {...props} />;
+};
+```
+
+## Event Handlers
+
+```typescript
+// ✅ GOOD - Named handlers
+const handleRetry = () => {
+  refetch();
+};
+
+const handleDelete = (id: string) => {
+  deleteProject(id);
+};
+
+<Button onClick={handleRetry}>Try Again</Button>
+
+// ❌ BAD - Inline anonymous functions for complex logic
+<Button onClick={() => {
+  // lots of logic here
+}}>
+```
