@@ -5,4 +5,6 @@ export type Todo = {
 	completed: boolean;
 	createdAt: Date;
 	updatedAt: Date;
+	priority: "low" | "medium" | "high";
+	project: string | null;
 };
