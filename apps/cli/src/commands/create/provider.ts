@@ -11,7 +11,7 @@ export async function createProvider(providerName: string) {
 	const providerAlreadyExists = fs.existsSync(providerDir);
 
 	if (providerAlreadyExists) {
-		console.log(`O provider '${providerName}' já existe.`);
+		console.log(`Provider '${providerName}' already exists.`);
 		return;
 	}
 
@@ -28,8 +28,8 @@ export async function createProvider(providerName: string) {
 		await fs.outputFile(indexProviderFile, providerOutput.index);
 		await fs.outputFile(providerTypefile, providerOutput.types);
 
-		console.log("Provider criado com sucesso!");
+		console.log("Provider created successfully!");
 	} catch (err) {
-		console.error("Erro ao criar o provider:", err);
+		console.error("Error creating provider:", err);
 	}
 }

@@ -17,7 +17,7 @@ export async function createService(
 
 	const moduleExists = fs.existsSync(moduleDir);
 	if (!moduleExists) {
-		console.log(`O módulo '${moduleName}' não existe.`);
+		console.log(`Module '${moduleName}' does not exist.`);
 		return;
 	}
 
@@ -26,7 +26,7 @@ export async function createService(
 	const serviceAlreadyExists = fs.existsSync(serviceDir);
 
 	if (serviceAlreadyExists) {
-		console.log(`O service '${serviceName}' já existe.`);
+		console.log(`Service '${serviceName}' already exists.`);
 		return;
 	}
 
@@ -42,9 +42,9 @@ export async function createService(
 		await fs.outputFile(indexFile, `export * from "./service";\n`);
 
 		if (!skipSuccessLog) {
-			console.log("Service criado com sucesso!");
+			console.log("Service created successfully!");
 		}
 	} catch (err) {
-		console.error("Erro ao criar o service:", err);
+		console.error("Error creating service:", err);
 	}
 }

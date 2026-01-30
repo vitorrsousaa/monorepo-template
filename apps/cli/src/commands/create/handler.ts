@@ -9,15 +9,15 @@ export async function createHandler() {
 		{
 			type: "list",
 			name: "type",
-			message: "O que você deseja criar?",
+			message: "What do you want to create?",
 			choices: ["module", "controller", "service", "provider"],
 		},
 		{
 			type: "input",
 			name: "name",
-			message: "Qual o nome do recurso que você deseja criar?",
+			message: "What is the name of the resource you want to create?",
 			validate: (input: string) =>
-				input.length > 0 ? true : "O nome do recurso não pode ser vazio.",
+				input.length > 0 ? true : "Resource name cannot be empty.",
 		},
 	]);
 
@@ -26,9 +26,9 @@ export async function createHandler() {
 			{
 				type: "input",
 				name: "serviceName",
-				message: "Qual o nome do service default?",
+				message: "What is the name of the default service?",
 				validate: (input: string) =>
-					input.length > 0 ? true : "O nome do service não pode ser vazio.",
+					input.length > 0 ? true : "Service name cannot be empty.",
 			},
 		]);
 		await createModule(name, serviceName);
@@ -40,9 +40,10 @@ export async function createHandler() {
 			{
 				type: "input",
 				name: "moduleName",
-				message: "Qual o nome do módulo onde o controller será inserido?",
+				message:
+					"What is the name of the module where the controller will be added?",
 				validate: (input: string) =>
-					input.length > 0 ? true : "O nome do módulo não pode ser vazio.",
+					input.length > 0 ? true : "Module name cannot be empty.",
 			},
 		]);
 		await createController(moduleName, name);
@@ -54,9 +55,10 @@ export async function createHandler() {
 			{
 				type: "input",
 				name: "moduleName",
-				message: "Qual o nome do módulo onde o service será inserido?",
+				message:
+					"What is the name of the module where the service will be added?",
 				validate: (input: string) =>
-					input.length > 0 ? true : "O nome do módulo não pode ser vazio.",
+					input.length > 0 ? true : "Module name cannot be empty.",
 			},
 		]);
 		await createService(moduleName, name);

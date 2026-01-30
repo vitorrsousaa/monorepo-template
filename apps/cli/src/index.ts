@@ -7,12 +7,12 @@ const program = new Command();
 
 program
 	.command("create")
-	.description("Cria um novo módulo, controller, service ou provider")
+	.description("Create a new module, controller, service or provider")
 	.action(createHandler);
 
 program
 	.command("add <component>")
-	.description("Adiciona um componente do shadcn/ui ao pacote @repo/ui")
+	.description("Add a shadcn/ui component to the @repo/ui package")
 	.action(addHandler);
 
 program.parse(process.argv);

@@ -20,7 +20,7 @@ export async function createController(
 
 	const moduleExists = fs.existsSync(moduleDir);
 	if (!moduleExists) {
-		console.log(`O módulo '${moduleName}' não existe.`);
+		console.log(`Module '${moduleName}' does not exist.`);
 		return;
 	}
 
@@ -33,7 +33,7 @@ export async function createController(
 	const controllerAlreadyExists = fs.existsSync(controllerDir);
 
 	if (controllerAlreadyExists) {
-		console.log(`O controller '${controllerName}' já existe.`);
+		console.log(`Controller '${controllerName}' already exists.`);
 		return;
 	}
 
@@ -55,9 +55,9 @@ export async function createController(
 		await fs.outputFile(indexFile, `export * from "./controller";\n`);
 
 		if (!skipSuccessLog) {
-			console.log("Controller criado com sucesso!");
+			console.log("Controller created successfully!");
 		}
 	} catch (err) {
-		console.error("Erro ao criar o controller:", err);
+		console.error("Error creating controller:", err);
 	}
 }

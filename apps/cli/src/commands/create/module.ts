@@ -10,7 +10,7 @@ export async function createModule(moduleName: string, serviceName: string) {
 	const moduleDir = path.join(targetDir, toKebabCase(moduleName));
 
 	if (fs.existsSync(moduleDir)) {
-		console.log(`O módulo '${moduleName}' já existe.`);
+		console.log(`Module '${moduleName}' already exists.`);
 		return;
 	}
 
@@ -23,8 +23,8 @@ export async function createModule(moduleName: string, serviceName: string) {
 		await createService(moduleName, serviceName, opts);
 		await createController(moduleName, serviceName, opts);
 
-		console.log("Módulo criado com sucesso!");
+		console.log("Module created successfully!");
 	} catch (err) {
-		console.error("Erro ao criar o módulo:", err);
+		console.error("Error creating module:", err);
 	}
 }
