@@ -7,7 +7,9 @@ export interface GetTodosOutput {
 	total: number;
 }
 
-export class GetTodosService implements IService<void, GetTodosOutput> {
+export interface IGetTodosService extends IService<void, GetTodosOutput> {}
+
+export class GetTodosService implements IGetTodosService {
 	constructor(private readonly todoRepository: TodoRepository) {}
 
 	async execute(): Promise<GetTodosOutput> {
