@@ -6,6 +6,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@repo/ui/dialog";
+import { useCreateProject } from "../../app/hooks/use-create-project";
 import { ProjectForm } from "../forms/project";
 import type { TProjectFormSchema } from "../forms/project/project-form.schema";
 
@@ -15,8 +16,14 @@ interface NewProjectModalProps {
 }
 
 export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
+	const { createProject } = useCreateProject();
+
 	const handleSubmit = async (data: TProjectFormSchema) => {
 		console.log(data);
+		createProject({
+			name: data.name,
+			description: data.description,
+		});
 		onClose();
 	};
 
