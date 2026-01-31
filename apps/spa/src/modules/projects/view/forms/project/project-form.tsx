@@ -64,7 +64,6 @@ export function ProjectForm(props: ProjectFormProps) {
 									placeholder="Add a description for this project..."
 									rows={3}
 									className="bg-background resize-none"
-									required
 									disabled={isSubmitting}
 									{...field}
 								/>
