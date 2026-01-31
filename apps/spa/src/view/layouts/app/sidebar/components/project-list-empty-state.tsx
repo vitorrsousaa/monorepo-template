@@ -1,8 +1,15 @@
+import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
 import { FolderPlus, Plus } from "lucide-react";
 
 import { Button } from "@repo/ui/button";
+import { useReducer } from "react";
 
 export const ProjectListEmptyState = () => {
+	const [isNewProjectModalOpen, toggleNewProjectModal] = useReducer(
+		(state) => !state,
+		false,
+	);
+
 	return (
 		<div className="px-2 py-4 space-y-3">
 			<div className="flex flex-col items-center justify-center gap-2 text-center">
@@ -16,10 +23,20 @@ export const ProjectListEmptyState = () => {
 					</p>
 				</div>
 			</div>
-			<Button variant="outline" size="sm" className="w-full h-8 text-xs">
+			<Button
+				variant="outline"
+				size="sm"
+				className="w-full h-8 text-xs"
+				onClick={toggleNewProjectModal}
+			>
 				<Plus className="h-3 w-3 mr-1.5" />
 				New Project
 			</Button>
+
+			<NewProjectModal
+				isOpen={isNewProjectModalOpen}
+				onClose={toggleNewProjectModal}
+			/>
 		</div>
 	);
 };

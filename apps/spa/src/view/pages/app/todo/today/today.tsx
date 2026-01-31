@@ -1,5 +1,5 @@
+import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
 import { ProjectColumn } from "@/modules/todo/view/components/project-column";
-import { NewProjectModal } from "@/modules/todo/view/modals/new-project-modal";
 import { Button } from "@repo/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
