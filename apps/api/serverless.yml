@@ -64,6 +64,12 @@ functions:
       - httpApi:
           path: /projects
           method: get
+  createProject:
+    handler: src/server/functions/projects/create-project/index.handler
+    events:
+      - httpApi:
+          path: /projects
+          method: post
 
   createTodo:
     handler: src/server/functions/todo/create-todo/index.handler

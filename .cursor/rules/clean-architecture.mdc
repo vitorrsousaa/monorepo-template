@@ -124,18 +124,119 @@ export class ProjectMapper {
 
 ## Dependency Injection
 
-Use factories to construct dependencies:
+Use factories to construct and inject dependencies. Factories are pure functions that create and wire up instances.
+
+### Factory Function Pattern
+
+**ALWAYS follow this exact pattern:**
 
 ```typescript
-// ✅ GOOD - Factory pattern
-export function makeGetAllProjectsService(): GetAllProjectsService {
-  const repository = makeProjectRepository();
-  return new GetAllProjectsService(repository);
+// ✅ GOOD - Standard factory pattern
+export function makeCreateProjectService(): ICreateProjectService {
+  const projectRepository = makeProjectDynamoRepository();
+
+  return new CreateProjectService(projectRepository);
+}
+```
+
+### Factory Rules
+
+1. **Naming Convention:**
+   - Always start with `make` prefix
+   - Use camelCase after `make`
+   - Example: `makeCreateProjectService`, `makeProjectDynamoRepository`
+
+2. **Return Type:**
+   - ALWAYS specify explicit return type
+   - Use interface type (e.g., `ICreateProjectService`) when available
+   - Use concrete type if no interface exists
+
+3. **Structure:**
+   ```typescript
+   export function make[Name](): [Type] {
+     // 1. Inject dependencies (call other factories)
+     const dependency = makeDependency();
+     
+     // 2. Empty line for readability
+     
+     // 3. Return new instance with dependencies
+     return new [Class](dependency);
+   }
+   ```
+
+4. **Dependency Order:**
+   - Infrastructure first (repositories, mappers)
+   - Services next
+   - Controllers last
+
+### Examples
+
+#### Service Factory
+
+```typescript
+// ✅ GOOD - Service factory
+export function makeGetAllProjectsByUserService(): IGetAllProjectsByUserService {
+  const projectRepository = makeProjectDynamoRepository();
+
+  return new GetAllProjectsByUserService(projectRepository);
+}
+```
+
+#### Controller Factory
+
+```typescript
+// ✅ GOOD - Controller factory
+export function makeGetAllProjectsByUserController(): IGetAllProjectsByUserController {
+  const getAllProjectsByUserService = makeGetAllProjectsByUserService();
+
+  return new GetAllProjectsByUserController(getAllProjectsByUserService);
+}
+```
+
+#### Repository Factory
+
+```typescript
+// ✅ GOOD - Repository factory
+export function makeProjectDynamoRepository(): ProjectRepository {
+  const mapper = new ProjectDynamoMapper();
+
+  return new ProjectDynamoRepository(mapper);
+}
+```
+
+### Factory Benefits
+
+1. **Centralized Dependency Management:** All wiring in one place
+2. **Easy to Test:** Mock factories return test doubles
+3. **Type Safety:** Explicit return types catch errors early
+4. **Consistent Pattern:** Same structure everywhere
+5. **Refactoring Friendly:** Change implementation in one place
+
+### Bad Examples
+
+```typescript
+// ❌ BAD - No return type
+export function makeCreateProjectService() {
+  return new CreateProjectService(makeProjectDynamoRepository());
 }
 
-export function makeProjectRepository(): ProjectRepository {
-  const mapper = new ProjectMapper();
-  return new ProjectDynamoRepository(mapper);
+// ❌ BAD - Inline dependency creation
+export function makeCreateProjectService(): ICreateProjectService {
+  return new CreateProjectService(
+    new ProjectDynamoRepository(new ProjectDynamoMapper())
+  );
+}
+
+// ❌ BAD - Wrong naming convention
+export function createProjectServiceFactory(): ICreateProjectService {
+  const projectRepository = makeProjectDynamoRepository();
+  return new CreateProjectService(projectRepository);
+}
+
+// ❌ BAD - No empty line for readability
+export function makeCreateProjectService(): ICreateProjectService {
+  const projectRepository = makeProjectDynamoRepository();
+  return new CreateProjectService(projectRepository);
 }
 ```
 

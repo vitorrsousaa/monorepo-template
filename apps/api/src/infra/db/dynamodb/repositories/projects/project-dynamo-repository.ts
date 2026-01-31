@@ -2,6 +2,7 @@ import type { Project } from "@core/domain/project/project";
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
 import type { ProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ProjectDynamoDBEntity } from "@infra/db/dynamodb/mappers/projects/types";
+import { randomUUID } from "node:crypto";
 import { PROJECT_DYNAMO_MOCKS } from "./project-dynamo-repository-mocks";
 
 /**
@@ -35,5 +36,38 @@ export class ProjectDynamoRepository implements ProjectRepository {
 			.filter((p) => p.PK === pk && p.SK.startsWith("PROJECT#"))
 			.filter((p) => !p.deleted_at) // Exclude soft-deleted projects
 			.map((dbProject) => this.mapper.toDomain(dbProject));
+	}
+
+	async create(
+		data: Omit<Project, "id" | "createdAt" | "updatedAt" | "deletedAt">,
+	): Promise<Project> {
+		// Generate unique ID and timestamps
+		const projectId = randomUUID();
+		const now = new Date();
+
+		// Build complete Project domain entity
+		const project: Project = {
+			id: projectId,
+			userId: data.userId,
+			name: data.name,
+			description: data.description,
+			deletedAt: undefined,
+			createdAt: now,
+			updatedAt: now,
+		};
+
+		// Convert to DynamoDB entity using mapper
+		const dbEntity = this.mapper.toDatabase(project);
+
+		// TODO: Replace with DynamoDB PutItem
+		// await this.dynamoClient.put({
+		//   TableName: this.tableName,
+		//   Item: dbEntity,
+		// });
+
+		// Temporary: Add to in-memory array
+		this.dbProjects.push(dbEntity);
+
+		return project;
 	}
 }

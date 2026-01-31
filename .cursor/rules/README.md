@@ -34,7 +34,7 @@ Clean Architecture principles:
 - Module structure for API and SPA
 - Dependency Rule
 - Mapper pattern for data transformation
-- Dependency injection with factories
+- **Factory pattern for dependency injection** (standard format, naming, structure)
 
 ### 5. **react-query-patterns.mdc** (Hooks and Services)
 React Query data fetching and caching:
