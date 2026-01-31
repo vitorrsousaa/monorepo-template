@@ -1,12 +1,17 @@
 import { QUERY_KEYS } from "@/config/query-keys";
+import type { Project } from "@/modules/projects/app/entitites/project";
+import { getAllProjectsByUser } from "@/modules/projects/app/services/get-all-projects-by-user";
+import type { WithOptimisticState } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProjectsByUser } from "../services/get-all-projects-by-user";
 
 export function useGetAllProjectsByUser() {
 	const { data, isError, isPending, isFetching, isLoading, refetch } = useQuery(
 		{
 			queryKey: QUERY_KEYS.PROJECTS.ALL,
-			queryFn: getAllProjectsByUser,
+			queryFn: async () => {
+				const projects = await getAllProjectsByUser();
+				return projects as WithOptimisticState<Project>[];
+			},
 		},
 	);
 

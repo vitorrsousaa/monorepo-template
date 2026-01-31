@@ -1,40 +1,20 @@
-import {
-	Copy,
-	Eye,
-	Frame,
-	History,
-	Link2,
-	MoreHorizontal,
-	Share,
-	Trash2,
-} from "lucide-react";
-import { Link } from "react-router-dom";
+import { MoreHorizontal } from "lucide-react";
 
 import { ProjectListEmptyState } from "@/layouts/app/sidebar/components/project-list-empty-state";
 import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-error";
 import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@repo/ui/dropdown-menu";
 import { RenderIf } from "@repo/ui/render-if";
 import {
 	SidebarGroup,
 	SidebarGroupLabel,
 	SidebarMenu,
-	SidebarMenuAction,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from "@repo/ui/sidebar";
+import { ProjectListItem } from "./components/project-list-item";
 
 export function NavProjects() {
-	const { isMobile } = useSidebar();
-
 	const { projects, isErrorProjects, isFetchingProjects, refetchProjects } =
 		useGetAllProjectsByUser();
 
@@ -74,53 +54,10 @@ export function NavProjects() {
 					render={
 						<>
 							{projects.map((item) => (
-								<SidebarMenuItem key={item.id}>
-									<SidebarMenuButton asChild>
-										<Link to={`/projects/${item.id}`}>
-											<Frame />
-											<span>{item.name}</span>
-										</Link>
-									</SidebarMenuButton>
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<SidebarMenuAction showOnHover>
-												<MoreHorizontal />
-												<span className="sr-only">More</span>
-											</SidebarMenuAction>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent
-											className="w-48"
-											side={isMobile ? "bottom" : "right"}
-											align={isMobile ? "end" : "start"}
-										>
-											<DropdownMenuItem>
-												<Eye className="text-muted-foreground" />
-												<span>View Project</span>
-											</DropdownMenuItem>
-											<DropdownMenuItem>
-												<Copy className="text-muted-foreground" />
-												<span>Duplicate Project</span>
-											</DropdownMenuItem>
-											<DropdownMenuItem>
-												<Link2 className="text-muted-foreground" />
-												<span>Copy link to Project</span>
-											</DropdownMenuItem>
-											<DropdownMenuItem>
-												<History className="text-muted-foreground" />
-												<span>Activity Log</span>
-											</DropdownMenuItem>
-											<DropdownMenuItem>
-												<Share className="text-muted-foreground" />
-												<span>Share Project</span>
-											</DropdownMenuItem>
-											<DropdownMenuSeparator />
-											<DropdownMenuItem>
-												<Trash2 className="text-muted-foreground" />
-												<span>Delete Project</span>
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								</SidebarMenuItem>
+								<ProjectListItem
+									key={`project-list-item-${item.id}-${Math.random().toString(36).substring(2, 15)}`}
+									project={item}
+								/>
 							))}
 							<SidebarMenuItem>
 								<SidebarMenuButton className="text-sidebar-foreground/70">
