@@ -4,7 +4,10 @@ export const TODO_ROUTES = {
 	TODAY: "/todo/today",
 	UPCOMING: "/todo/upcoming",
 	COMPLETED: "/todo/completed",
-	PROJECTS: "/todo/projects/:id",
+} as const;
+
+export const PROJECTS_ROUTES = {
+	PROJECT_DETAILS: "/projects/:id",
 } as const;
 
 export const ROUTES = {
@@ -14,4 +17,5 @@ export const ROUTES = {
 	GOOGLE_CALLBACK: "/google/callback",
 	GOALS_DASHBOARD: "/goals/dashboard",
 	TODO: TODO_ROUTES,
+	PROJECTS: PROJECTS_ROUTES,
 } as const;

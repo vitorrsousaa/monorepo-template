@@ -13,11 +13,6 @@ const Inbox = lazy(() =>
 		default: module.Inbox,
 	})),
 );
-const Projects = lazy(() =>
-	import("@/pages/app/todo/projects").then((module) => ({
-		default: module.Projects,
-	})),
-);
 const Today = lazy(() =>
 	import("@/pages/app/todo/today").then((module) => ({
 		default: module.Today,
@@ -39,10 +34,6 @@ export const todoRoutes: RouteObject = {
 		{
 			path: ROUTES.TODO.TODAY,
 			element: <Today />,
-		},
-		{
-			path: ROUTES.TODO.PROJECTS,
-			element: <Projects />,
 		},
 	],
 };

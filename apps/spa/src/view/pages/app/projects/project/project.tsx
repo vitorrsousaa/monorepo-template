@@ -7,7 +7,7 @@ import { Input } from "@repo/ui/input";
 import { Calendar, Flag, GripVertical, Plus } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import type { Todo } from "../today";
+import type { Todo } from "../../todo/today";
 
 export function Projects() {
 	const { id } = useParams();
