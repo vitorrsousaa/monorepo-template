@@ -1,12 +1,12 @@
 import type { IService } from "@application/interfaces/service";
-import type { TodoRepository } from "@data/protocols/todo/todo-repository";
+import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
 import type { CreateTodoInput, CreateTodoOutput } from "./dto";
 
 export interface ICreateTodoService
 	extends IService<CreateTodoInput, CreateTodoOutput> {}
 
 export class CreateTodoService implements ICreateTodoService {
-	constructor(private readonly todoRepository: TodoRepository) {}
+	constructor(private readonly todoRepository: ITodoRepository) {}
 
 	async execute(input: CreateTodoInput): Promise<CreateTodoOutput> {
 		const todo = await this.todoRepository.create({

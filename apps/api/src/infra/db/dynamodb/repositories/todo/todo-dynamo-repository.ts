@@ -1,6 +1,6 @@
 import type { Todo } from "@core/domain/todo/todo";
 import type { TodoMapper } from "@data/protocols/todo/todo-mapper";
-import type { TodoRepository } from "@data/protocols/todo/todo-repository";
+import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
 import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
 
@@ -16,7 +16,7 @@ import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
  * TODO: Implement real DynamoDB integration
  * For now, keeps data in memory for development (see todo-dynamo-repository.mocks.ts).
  */
-export class TodoDynamoRepository implements TodoRepository {
+export class TodoDynamoRepository implements ITodoRepository {
 	// TODO: Replace with DynamoDB client
 	// private dynamoClient: DynamoDBDocumentClient;
 	// private tableName: string;
@@ -151,5 +151,34 @@ export class TodoDynamoRepository implements TodoRepository {
 
 		this.dbTodos.splice(todoIndex, 1);
 		return true;
+	}
+
+	async getAllBySection(
+		sectionId: string,
+		projectId: string,
+		userId: string,
+	): Promise<Todo[]> {
+		// Docs: GSI3PK = USER#userId#PROJECT#projectId#SECTION#sectionId
+		//       GSI3SK begins_with TODO#PENDING# (for pending todos only)
+		// TODO: DynamoDB Query on GSI3
+		// KeyConditionExpression: GSI3PK = :gsi3pk AND begins_with(GSI3SK, 'TODO#PENDING#')
+		// FilterExpression: attribute_not_exists(deletedAt)
+
+		// Simulating GSI3 query by filtering in-memory
+		// In real DynamoDB, this would be indexed and much faster
+		return this.dbTodos
+			.filter((t) => {
+				// Check if todo belongs to the section
+				// In real implementation, we'd query GSI3 directly
+				const todo = this.mapper.toDomain(t);
+				return (
+					todo.sectionId === sectionId &&
+					todo.projectId === projectId &&
+					todo.userId === userId &&
+					!todo.completed // Only pending todos
+				);
+			})
+			.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
+			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 }

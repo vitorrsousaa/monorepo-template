@@ -20,6 +20,7 @@ export interface TodoDynamoDBEntity {
 	id: string;
 	user_id: string;
 	project_id?: string | null;
+	section_id?: string | null;
 	title: string;
 	description: string;
 	completed: boolean;
