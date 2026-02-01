@@ -38,6 +38,19 @@ export class ProjectDynamoRepository implements IProjectRepository {
 			.map((dbProject) => this.mapper.toDomain(dbProject));
 	}
 
+	async getById(projectId: string, userId: string): Promise<Project | null> {
+		// Docs: PK = USER#userId AND SK = PROJECT#projectId
+		// TODO: DynamoDB GetItem with PK and SK
+		const pk = `USER#${userId}`;
+		const sk = `PROJECT#${projectId}`;
+
+		const dbProject = this.dbProjects.find(
+			(p) => p.PK === pk && p.SK === sk && !p.deleted_at,
+		);
+
+		return dbProject ? this.mapper.toDomain(dbProject) : null;
+	}
+
 	async create(
 		data: Omit<Project, "id" | "createdAt" | "updatedAt" | "deletedAt">,
 	): Promise<Project> {
