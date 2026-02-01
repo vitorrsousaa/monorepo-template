@@ -44,7 +44,9 @@ export function Inbox() {
 				render={<InboxErrorState onRetry={() => refetchInboxTodos()} />}
 			/>
 			<RenderIf
-				condition={!shouldRenderInboxTodos && !isFetchingTodos}
+				condition={
+					!shouldRenderInboxTodos && !isFetchingTodos && !isErrorInboxTodos
+				}
 				render={
 					<InboxEmptyState onCreateTodo={() => setIsNewTodoModalOpen(true)} />
 				}

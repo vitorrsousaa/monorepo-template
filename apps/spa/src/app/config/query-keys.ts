@@ -5,6 +5,7 @@ export const TODOS = {
 
 export const PROJECTS = {
 	ALL: ["projects", "all"],
+	DETAIL: (projectId: string) => ["projects", "detail", projectId],
 };
 
 export const QUERY_KEYS = { TODOS, PROJECTS } as const;

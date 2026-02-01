@@ -59,6 +59,52 @@ export class ProjectListError extends React.Component {
 {isError ? <ErrorMessage /> : hasProjects ? <ProjectList /> : <EmptyState />}
 ```
 
+## Lists and Keys
+
+### Never use array index as key
+
+Using the array index as `key` causes bugs when the list reorders, and can break component state and performance. Always use a **stable, unique identifier** from the data, or predefined stable keys for static/placeholder lists.
+
+```typescript
+// ✅ GOOD - Use unique id from data
+{projects.map((project) => (
+  <ProjectCard key={project.id} project={project} />
+))}
+
+{items.map((item) => (
+  <ItemRow key={item.uuid} item={item} />
+))}
+
+// ✅ GOOD - Static/placeholder list: use predefined stable keys (not index)
+const SKELETON_KEYS = ["skeleton-a", "skeleton-b", "skeleton-c"] as const;
+{SKELETON_KEYS.map((key) => (
+  <SkeletonCard key={key} />
+))}
+
+// ❌ BAD - Using array index as key
+{items.map((item, index) => (
+  <ItemRow key={index} item={item} />
+))}
+{Array.from({ length: 5 }).map((_, i) => (
+  <Placeholder key={i} />
+))}
+{list.map((x, idx) => (
+  <div key={`row-${idx}`}>...</div>
+))}
+```
+
+### Why avoid index as key?
+
+- **Reordering**: If the list is reordered, React reuses DOM by key. With index keys, components get wrong props and state is mixed up.
+- **Performance**: React can't correctly reconcile which item moved; it may re-render or unmount/remount incorrectly.
+- **State bugs**: Input focus, selection, or local state can "stick" to the wrong item after reorder or filter.
+
+### How to fix when you don't have an id
+
+1. **Data from API**: Prefer `item.id`, `item.uuid`, or another unique field from the backend.
+2. **Static placeholder/skeleton lists**: Define a constant array of stable string keys and iterate over it (e.g. `["skeleton-a", "skeleton-b", "skeleton-c"]`), then use `key={key}`.
+3. **Generated list that never reorders**: If the list is truly static and will never reorder, you can use a stable key generator (e.g. `key={\`item-${item.name}\`}` only if `name` is unique). Prefer a real id when available.
+
 ## State Management
 
 ### React Query for Server State
@@ -176,6 +222,72 @@ export const UserCard = (props: UserCardProps) => {
   return <BaseCard {...props} />;
 };
 ```
+
+## Custom Hooks
+
+### Always use `params` as parameter name and destructure in body
+
+```typescript
+// ✅ GOOD - Use "params" and destructure inside
+interface UseGetProjectDetailParams {
+  projectId: string;
+  enabled?: boolean;
+}
+
+export function useGetProjectDetail(params: UseGetProjectDetailParams) {
+  const { projectId, enabled = true } = params;
+  
+  // Hook logic here
+  return { projectDetail, isLoading };
+}
+
+// ❌ BAD - Destructuring in parameters
+export function useGetProjectDetail({ projectId, enabled = true }: UseGetProjectDetailParams) {
+  // Less clear, harder to refactor
+}
+
+// ❌ BAD - Different parameter name
+export function useGetProjectDetail(options: UseGetProjectDetailParams) {
+  // Use "params" consistently
+}
+```
+
+### Why Use Named Params?
+
+**Benefits:**
+- **Consistency**: All hooks follow the same pattern
+- **Clearer intent**: Easy to see what parameters the hook accepts
+- **Easier refactoring**: Change param names without touching the signature
+- **Better for testing**: Can easily spread `params` in tests
+- **Cleaner diffs**: Adding/removing params doesn't change the function signature line
+
+```typescript
+// ✅ Example with conditional destructuring
+export function useGetData(params: UseGetDataParams) {
+  const { id, enabled = true, options } = params;
+  
+  // Easy to add conditional destructuring
+  const { retry, refetchInterval } = options || {};
+  
+  // Easy to pass all params to helper functions
+  const queryKey = buildQueryKey(params);
+  
+  return useQuery({
+    queryKey,
+    queryFn: () => fetchData(id),
+    enabled,
+  });
+}
+```
+
+### Hook Parameter Pattern Summary
+
+| Pattern | Use Case | Example |
+|---------|----------|---------|
+| `params: ParamsType` | Always for hooks | `useGetUser(params: UseGetUserParams)` |
+| `props: PropsType` | Always for components | `UserCard(props: UserCardProps)` |
+
+**Note:** This pattern applies to ALL custom hooks, not just data-fetching hooks.
 
 ## Event Handlers
 
