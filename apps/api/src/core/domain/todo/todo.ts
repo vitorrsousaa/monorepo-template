@@ -2,6 +2,7 @@ export interface Todo {
 	id: string;
 	userId: string;
 	projectId?: string | null;
+	sectionId?: string | null;
 	title: string;
 	description: string;
 	completed: boolean;
