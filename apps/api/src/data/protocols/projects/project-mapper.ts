@@ -13,17 +13,17 @@ import type { Project } from "@core/domain/project/project";
  * @template TDBEntity - Database entity type
  */
 export interface ProjectMapper<TDBEntity = unknown> {
-  /**
-   * Maps database entity to application domain
-   * @param dbEntity - Entity returned from database
-   * @returns :Project - Domain entity
-   */
-  toDomain(dbEntity: TDBEntity): Project;
+	/**
+	 * Maps database entity to application domain
+	 * @param dbEntity - Entity returned from database
+	 * @returns :Project - Domain entity
+	 */
+	toDomain(dbEntity: TDBEntity): Project;
 
-  /**
-   * Maps domain entity to database format
-   * @param project - Domain entity
-   * @returns TDBEntity - Entity in database format
-   */
-  toDatabase(todo: Project): TDBEntity;
+	/**
+	 * Maps domain entity to database format
+	 * @param project - Domain entity
+	 * @returns TDBEntity - Entity in database format
+	 */
+	toDatabase(todo: Project): TDBEntity;
 }
