@@ -1,6 +1,6 @@
 import type { Project } from "@core/domain/project/project";
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
-import type { ProjectRepository } from "@data/protocols/projects/project-repository";
+import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ProjectDynamoDBEntity } from "@infra/db/dynamodb/mappers/projects/types";
 import { randomUUID } from "node:crypto";
 import { PROJECT_DYNAMO_MOCKS } from "./project-dynamo-repository-mocks";
@@ -17,7 +17,7 @@ import { PROJECT_DYNAMO_MOCKS } from "./project-dynamo-repository-mocks";
  * TODO: Implement real DynamoDB integration
  * For now, keeps data in memory for development (see project-dynamo-repository-mocks.ts).
  */
-export class ProjectDynamoRepository implements ProjectRepository {
+export class ProjectDynamoRepository implements IProjectRepository {
 	// TODO: Replace with DynamoDB client
 	// private dynamoClient: DynamoDBDocumentClient;
 	// private tableName: string;
