@@ -8,13 +8,17 @@
  * - Project: PK = USER#userId#PROJECT#projectId, SK = TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
  */
 export interface TodoDynamoDBEntity {
-	// Partition Key: always scoped by user (enables "buscar todos pelo usuário")
+	// Partition Key: always scoped by user
 	PK: string; // USER#userId (inbox) | USER#userId#PROJECT#projectId (project)
 	SK: string; // TODO#INBOX#PENDING#order#todoId | TODO#INBOX#COMPLETED#completedAt#todoId | TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
 
-	// GSI1: DueDateIndex (docs)
+	// GSI1: DueDateIndex - Search by due date (Today, Upcoming)
 	GSI1PK?: string; // USER#userId#DUE_DATE#YYYY-MM-DD
 	GSI1SK?: string; // TODO#PENDING#priority#todoId | TODO#COMPLETED#completedAt#todoId
+
+	// GSI3: SectionIndex - Search todos by section within a project
+	GSI3PK?: string; // USER#userId#PROJECT#projectId#SECTION#sectionId
+	GSI3SK?: string; // TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
 
 	// Entity attributes (snake_case)
 	id: string;

@@ -1,5 +1,5 @@
 import { MOCK_USER_ID } from "@application/config/mock-user";
-import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/types";
+import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/todo/types";
 
 const USER_PK = `USER#${MOCK_USER_ID}`;
 
