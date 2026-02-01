@@ -249,6 +249,10 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 	{
 		PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}`,
 		SK: "TODO#PENDING#1#todo-python-backlog-1",
+		GSI1PK: `USER#${MOCK_USER_ID}#DUE_DATE#2026-02-10`,
+		GSI1SK: "TODO#PENDING#high#todo-python-backlog-1",
+		GSI3PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}#SECTION#sec-python-001`,
+		GSI3SK: "TODO#PENDING#1#todo-python-backlog-1",
 		id: "todo-python-backlog-1",
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
@@ -267,6 +271,10 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 	{
 		PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}`,
 		SK: "TODO#PENDING#2#todo-python-backlog-2",
+		GSI1PK: `USER#${MOCK_USER_ID}#DUE_DATE#2026-02-15`,
+		GSI1SK: "TODO#PENDING#medium#todo-python-backlog-2",
+		GSI3PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}#SECTION#sec-python-001`,
+		GSI3SK: "TODO#PENDING#2#todo-python-backlog-2",
 		id: "todo-python-backlog-2",
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
@@ -287,6 +295,10 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 	{
 		PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}`,
 		SK: "TODO#PENDING#3#todo-python-progress-1",
+		GSI1PK: `USER#${MOCK_USER_ID}#DUE_DATE#2026-02-05`,
+		GSI1SK: "TODO#PENDING#high#todo-python-progress-1",
+		GSI3PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}#SECTION#sec-python-002`,
+		GSI3SK: "TODO#PENDING#1#todo-python-progress-1",
 		id: "todo-python-progress-1",
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
@@ -305,6 +317,8 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 	{
 		PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}`,
 		SK: "TODO#PENDING#4#todo-python-progress-2",
+		GSI3PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}#SECTION#sec-python-002`,
+		GSI3SK: "TODO#PENDING#2#todo-python-progress-2",
 		id: "todo-python-progress-2",
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
@@ -363,6 +377,8 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 	{
 		PK: `USER#${MOCK_USER_ID}#PROJECT#${PERSONAL_GOALS_PROJECT_ID}`,
 		SK: "TODO#PENDING#1#todo-health-1",
+		GSI3PK: `USER#${MOCK_USER_ID}#PROJECT#${PERSONAL_GOALS_PROJECT_ID}#SECTION#sec-goals-001`,
+		GSI3SK: "TODO#PENDING#1#todo-health-1",
 		id: "todo-health-1",
 		user_id: MOCK_USER_ID,
 		project_id: PERSONAL_GOALS_PROJECT_ID,

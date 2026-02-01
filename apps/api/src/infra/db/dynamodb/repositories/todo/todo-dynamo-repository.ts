@@ -158,27 +158,27 @@ export class TodoDynamoRepository implements ITodoRepository {
 		projectId: string,
 		userId: string,
 	): Promise<Todo[]> {
-		// Docs: GSI3PK = USER#userId#PROJECT#projectId#SECTION#sectionId
-		//       GSI3SK begins_with TODO#PENDING# (for pending todos only)
-		// TODO: DynamoDB Query on GSI3
+		// Docs: Use GSI3 (SectionIndex) to query todos by section
+		// Real DynamoDB Query:
+		// IndexName: 'GSI3-SectionIndex'
 		// KeyConditionExpression: GSI3PK = :gsi3pk AND begins_with(GSI3SK, 'TODO#PENDING#')
-		// FilterExpression: attribute_not_exists(deletedAt)
+		// FilterExpression: attribute_not_exists(deleted_at)
 
-		// Simulating GSI3 query by filtering in-memory
-		// In real DynamoDB, this would be indexed and much faster
+		const gsi3pk = `USER#${userId}#PROJECT#${projectId}#SECTION#${sectionId}`;
+
+		// Simulating GSI3 query (orders by GSI3SK which includes order)
 		return this.dbTodos
-			.filter((t) => {
-				// Check if todo belongs to the section
-				// In real implementation, we'd query GSI3 directly
-				const todo = this.mapper.toDomain(t);
-				return (
-					todo.sectionId === sectionId &&
-					todo.projectId === projectId &&
-					todo.userId === userId &&
-					!todo.completed // Only pending todos
-				);
+			.filter(
+				(t) => t.GSI3PK === gsi3pk && t.GSI3SK?.startsWith("TODO#PENDING#"),
+			)
+			.filter((t) => !t.completed) // Additional safety check
+			.sort((a, b) => {
+				// GSI3SK format: TODO#PENDING#order#todoId
+				// Sorting by GSI3SK gives correct order
+				const skA = a.GSI3SK || "";
+				const skB = b.GSI3SK || "";
+				return skA.localeCompare(skB);
 			})
-			.sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by order
 			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 }

@@ -28,13 +28,25 @@ export class ProjectDynamoRepository implements IProjectRepository {
 	constructor(private readonly mapper: ProjectMapper<ProjectDynamoDBEntity>) {}
 
 	async getAllProjectsByUser(userId: string): Promise<Project[]> {
-		// Docs: PK = USER#userId AND SK begins_with PROJECT#
-		// TODO: DynamoDB Query KeyConditionExpression: PK = :pk AND begins_with(SK, 'PROJECT#')
-		// FilterExpression: attribute_not_exists(deletedAt) - ALWAYS exclude soft-deleted items
-		const pk = `USER#${userId}`;
+		// Docs: Use GSI6 (ProjectNameIndex) for alphabetical ordering by name
+		// Real DynamoDB Query:
+		// IndexName: 'GSI6-ProjectNameIndex'
+		// KeyConditionExpression: GSI6PK = :gsi6pk AND begins_with(GSI6SK, 'PROJECT#')
+		// FilterExpression: attribute_not_exists(deleted_at)
+
+		const gsi6pk = `USER#${userId}`;
+
+		// Simulating GSI6 query (ordered by name via GSI6SK)
 		return this.dbProjects
-			.filter((p) => p.PK === pk && p.SK.startsWith("PROJECT#"))
+			.filter((p) => p.GSI6PK === gsi6pk && p.GSI6SK?.startsWith("PROJECT#"))
 			.filter((p) => !p.deleted_at) // Exclude soft-deleted projects
+			.sort((a, b) => {
+				// GSI6SK format: PROJECT#name#projectId
+				// Sorting by GSI6SK gives alphabetical order by name
+				const nameA = a.GSI6SK || "";
+				const nameB = b.GSI6SK || "";
+				return nameA.localeCompare(nameB);
+			})
 			.map((dbProject) => this.mapper.toDomain(dbProject));
 	}
 

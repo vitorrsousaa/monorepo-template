@@ -13,8 +13,8 @@ export class GetProjectDetailController implements IController {
 	async handle(request: IRequest): Promise<IResponse> {
 		try {
 			const [status, parsedBody] = missingFields(getProjectDetailSchema, {
-				...request.body,
 				userId: request.userId || "",
+				projectId: (request.params.projectId as string) || "",
 			});
 
 			if (!status) return parsedBody;

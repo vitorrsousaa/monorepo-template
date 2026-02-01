@@ -70,6 +70,12 @@ functions:
       - httpApi:
           path: /projects
           method: post
+  getProjectDetail:
+    handler: src/server/functions/projects/get-project-detail/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/detail
+          method: get
 
   createTodo:
     handler: src/server/functions/todo/create-todo/index.handler
