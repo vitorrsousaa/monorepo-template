@@ -1,4 +1,5 @@
 import type { IService } from "@application/interfaces/service";
+import { ProjectNotFound } from "@application/modules/projects/errors/project-not-found";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
 import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
@@ -39,7 +40,7 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 		]);
 
 		if (!project) {
-			throw new Error("Project not found");
+			throw new ProjectNotFound();
 		}
 
 		// Query 3-N: Fetch todos for each section in parallel
