@@ -29,7 +29,6 @@ export class SectionDynamoMapper
 			userId: dbEntity.user_id,
 			projectId: dbEntity.project_id,
 			name: dbEntity.name,
-			description: dbEntity.description ?? undefined,
 			order: dbEntity.order,
 			deletedAt: dbEntity.deleted_at
 				? new Date(dbEntity.deleted_at)
@@ -56,7 +55,6 @@ export class SectionDynamoMapper
 			user_id: section.userId,
 			project_id: section.projectId,
 			name: section.name,
-			description: section.description ?? null,
 			order: section.order,
 			deleted_at: section.deletedAt?.toISOString() ?? null,
 			created_at: section.createdAt.toISOString(),

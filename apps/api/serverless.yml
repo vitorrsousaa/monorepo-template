@@ -76,6 +76,12 @@ functions:
       - httpApi:
           path: /projects/{projectId}/detail
           method: get
+  createSection:
+    handler: src/server/functions/sections/create-section/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sections
+          method: post
 
   createTodo:
     handler: src/server/functions/todo/create-todo/index.handler

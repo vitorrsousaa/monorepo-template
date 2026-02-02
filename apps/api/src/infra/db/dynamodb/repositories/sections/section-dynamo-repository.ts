@@ -74,7 +74,6 @@ export class SectionDynamoRepository implements ISectionRepository {
 			userId: data.userId,
 			projectId: data.projectId,
 			name: data.name,
-			description: data.description,
 			order: data.order,
 			deletedAt: undefined,
 			createdAt: now,
@@ -112,6 +111,7 @@ export class SectionDynamoRepository implements ISectionRepository {
 
 		if (index === -1) return null;
 
+		// biome-ignore lint/style/noNonNullAssertion: index validated above
 		const existingSection = this.mapper.toDomain(this.dbSections[index]!);
 
 		// Merge changes
@@ -154,6 +154,7 @@ export class SectionDynamoRepository implements ISectionRepository {
 		if (index === -1) return false;
 
 		// Set deleted_at
+		// biome-ignore lint/style/noNonNullAssertion: index validated above
 		this.dbSections[index]!.deleted_at = new Date().toISOString();
 
 		// TODO: Replace with DynamoDB UpdateItem

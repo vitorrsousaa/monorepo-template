@@ -33,7 +33,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
 		name: "Backlog",
-		description: "Topics and modules to learn",
 		order: 1,
 		deleted_at: null,
 		created_at: new Date(
@@ -49,7 +48,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
 		name: "In Progress",
-		description: "Currently studying",
 		order: 2,
 		deleted_at: null,
 		created_at: new Date(
@@ -65,7 +63,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: PYTHON_PROJECT_ID,
 		name: "Completed",
-		description: "Finished modules",
 		order: 3,
 		deleted_at: null,
 		created_at: new Date(
@@ -83,7 +80,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: PERSONAL_GOALS_PROJECT_ID,
 		name: "Health & Fitness",
-		description: "Physical and mental health goals",
 		order: 1,
 		deleted_at: null,
 		created_at: new Date(
@@ -99,7 +95,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: PERSONAL_GOALS_PROJECT_ID,
 		name: "Career & Learning",
-		description: "Professional development goals",
 		order: 2,
 		deleted_at: null,
 		created_at: new Date(
@@ -115,7 +110,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: PERSONAL_GOALS_PROJECT_ID,
 		name: "Personal & Social",
-		description: "Relationships and personal growth",
 		order: 3,
 		deleted_at: null,
 		created_at: new Date(
@@ -133,7 +127,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: HOME_IMPROVEMENT_PROJECT_ID,
 		name: "To Do",
-		description: "Pending home tasks",
 		order: 1,
 		deleted_at: null,
 		created_at: new Date(
@@ -149,7 +142,6 @@ export const SECTION_DYNAMO_MOCKS: SectionDynamoDBEntity[] = [
 		user_id: MOCK_USER_ID,
 		project_id: HOME_IMPROVEMENT_PROJECT_ID,
 		name: "Done",
-		description: "Completed home improvements",
 		order: 2,
 		deleted_at: null,
 		created_at: new Date(

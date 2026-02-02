@@ -17,7 +17,6 @@ export interface SectionDynamoDBEntity {
 	user_id: string;
 	project_id: string;
 	name: string;
-	description?: string | null;
 	order: number;
 	deleted_at?: string | null; // ISO 8601 - soft delete timestamp
 	created_at: string; // ISO 8601
