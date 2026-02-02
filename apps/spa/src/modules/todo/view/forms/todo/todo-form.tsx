@@ -29,11 +29,7 @@ export function TodoForm(props: TodoFormProps) {
 	const { methods, projects, handleSubmit } = useTodoFormHook();
 
 	const [todoData, setTodoData] = useState({
-		title: "",
-		description: "",
-		project: "inbox",
 		section: "",
-		priority: "medium",
 		dueDate: "",
 		completed: false,
 	});
@@ -104,35 +100,41 @@ export function TodoForm(props: TodoFormProps) {
 					{/* Right Side - Metadata */}
 					<div className="w-64 border-l border-border p-6 space-y-4">
 						<div className="space-y-3">
-							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Project</span>
-							</div>
-							<Select
-								value={todoData.project}
-								onValueChange={(value) =>
-									setTodoData({ ...todoData, project: value })
-								}
-							>
-								<SelectTrigger className="h-8">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="inbox">
-										<div className="flex items-center gap-2">
-											<Icon name="inbox" className="w-3 h-3" />
-											<span>Inbox</span>
+							<FormField
+								control={methods.control}
+								name="project"
+								render={({ field }) => (
+									<FormItem>
+										<div className="flex items-center justify-between text-sm">
+											<span className="text-muted-foreground">Project</span>
 										</div>
-									</SelectItem>
-									{projects.map((project) => (
-										<SelectItem key={project.id} value={project.id}>
-											<div className="flex items-center gap-2">
-												<Icon name="folder" className="w-3 h-3" />
-												<span>{project.name}</span>
-											</div>
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+										<Select value={field.value} onValueChange={field.onChange}>
+											<FormControl>
+												<SelectTrigger className="h-8">
+													<SelectValue placeholder="Select project" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectItem value="inbox">
+													<div className="flex items-center gap-2">
+														<Icon name="inbox" className="w-3 h-3" />
+														<span>Inbox</span>
+													</div>
+												</SelectItem>
+												{projects.map((project) => (
+													<SelectItem key={project.id} value={project.id}>
+														<div className="flex items-center gap-2">
+															<Icon name="folder" className="w-3 h-3" />
+															<span>{project.name}</span>
+														</div>
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 						</div>
 
 						<div className="space-y-3">
@@ -181,39 +183,51 @@ export function TodoForm(props: TodoFormProps) {
 						</div>
 
 						<div className="space-y-3">
-							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Priority</span>
-							</div>
-							<Select
-								value={todoData.priority}
-								onValueChange={(value) =>
-									setTodoData({ ...todoData, priority: value })
-								}
-							>
-								<SelectTrigger className="h-8">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="low">
-										<div className="flex items-center gap-2">
-											<Icon name="flag" className="w-3 h-3" />
-											<span>P4 - Low</span>
+							<FormField
+								control={methods.control}
+								name="priority"
+								render={({ field }) => (
+									<FormItem>
+										<div className="flex items-center justify-between text-sm">
+											<span className="text-muted-foreground">Priority</span>
 										</div>
-									</SelectItem>
-									<SelectItem value="medium">
-										<div className="flex items-center gap-2">
-											<Icon name="flag" className="w-3 h-3" />
-											<span>P3 - Medium</span>
-										</div>
-									</SelectItem>
-									<SelectItem value="high">
-										<div className="flex items-center gap-2">
-											<Icon name="flag" className="w-3 h-3" />
-											<span>P2 - High</span>
-										</div>
-									</SelectItem>
-								</SelectContent>
-							</Select>
+										<Select value={field.value} onValueChange={field.onChange}>
+											<FormControl>
+												<SelectTrigger className="h-8">
+													<SelectValue placeholder="Select priority" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectItem value="none">
+													<div className="flex items-center gap-2">
+														<Icon name="flag" className="w-3 h-3" />
+														<span>No priority</span>
+													</div>
+												</SelectItem>
+												<SelectItem value="low">
+													<div className="flex items-center gap-2">
+														<Icon name="flag" className="w-3 h-3" />
+														<span>P4 - Low</span>
+													</div>
+												</SelectItem>
+												<SelectItem value="medium">
+													<div className="flex items-center gap-2">
+														<Icon name="flag" className="w-3 h-3" />
+														<span>P3 - Medium</span>
+													</div>
+												</SelectItem>
+												<SelectItem value="high">
+													<div className="flex items-center gap-2">
+														<Icon name="flag" className="w-3 h-3" />
+														<span>P2 - High</span>
+													</div>
+												</SelectItem>
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 						</div>
 
 						<div className="space-y-3">

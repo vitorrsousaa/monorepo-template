@@ -1,3 +1,6 @@
+export const PRIORITY_VALUES = ["none", "low", "medium", "high"] as const;
+export type PriorityValue = (typeof PRIORITY_VALUES)[number];
+
 export type Todo = {
 	id: string;
 	title: string;
