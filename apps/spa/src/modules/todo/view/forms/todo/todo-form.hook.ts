@@ -15,8 +15,9 @@ export const useTodoFormHook = () => {
 	const handleSubmit = hookFormSubmit(async (data) => {
 		const projectId = data.project === "inbox" ? undefined : data.project;
 		const priority = data.priority === "none" ? undefined : data.priority;
+		const dueDate = data.dueDate;
 
-		console.log({ ...data, projectId, priority });
+		console.log({ ...data, projectId, priority, dueDate });
 	});
 
 	return {

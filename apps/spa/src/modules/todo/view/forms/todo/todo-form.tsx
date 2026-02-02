@@ -1,4 +1,5 @@
 import { Button } from "@repo/ui/button";
+import { DatePicker } from "@repo/ui/date-picker";
 import {
 	Form,
 	FormControl,
@@ -30,7 +31,6 @@ export function TodoForm(props: TodoFormProps) {
 
 	const [todoData, setTodoData] = useState({
 		section: "",
-		dueDate: "",
 		completed: false,
 	});
 
@@ -161,24 +161,25 @@ export function TodoForm(props: TodoFormProps) {
 						</div>
 
 						<div className="space-y-3">
-							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Date</span>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									className="h-6 w-6"
-								>
-									<Icon name="calendar" className="w-3 h-3" />
-								</Button>
-							</div>
-							<Input
-								type="date"
-								value={todoData.dueDate}
-								onChange={(e) =>
-									setTodoData({ ...todoData, dueDate: e.target.value })
-								}
-								className="h-8"
+							<FormField
+								control={methods.control}
+								name="dueDate"
+								render={({ field }) => (
+									<FormItem>
+										<div className="flex items-center justify-between text-sm">
+											<span className="text-muted-foreground">Date</span>
+										</div>
+										<FormControl>
+											<DatePicker
+												value={field.value}
+												onChange={field.onChange}
+												placeholder="No due date"
+												className="h-8"
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
 							/>
 						</div>
 
