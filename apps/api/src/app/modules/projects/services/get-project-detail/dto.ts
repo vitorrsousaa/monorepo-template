@@ -17,11 +17,13 @@ export interface SectionWithTodos extends Section {
  * ProjectDetailDTO
  *
  * DTO for the GET /projects/:id/details endpoint response.
- * Composes Project + Sections + Tasks in a single structure.
+ * Composes Project + Sections + Tasks + todos without section in a single structure.
  */
 export interface ProjectDetailDTO {
 	project: Project;
 	sections: SectionWithTodos[];
+	/** Todos that belong to this project but have no section assigned */
+	todosWithoutSection: Todo[];
 }
 
 /**

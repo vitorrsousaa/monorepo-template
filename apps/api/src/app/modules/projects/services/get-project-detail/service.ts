@@ -43,19 +43,20 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 			throw new ProjectNotFound();
 		}
 
-		// Query 3-N: Fetch todos for each section in parallel
-		const sectionsWithTodos: SectionWithTodos[] = await Promise.all(
-			sections.map(async (section) => {
-				const todos = await this.todoRepository.getAllBySection(
-					section.id,
-					projectId,
-					userId,
-				);
+		// Query 3: Fetch todos without section + todos per section in parallel
+		const [todosWithoutSection, ...sectionsWithTodosArrays] = await Promise.all(
+			[
+				this.todoRepository.getTodosByProjectWithoutSection(projectId, userId),
+				...sections.map((section) =>
+					this.todoRepository.getAllBySection(section.id, projectId, userId),
+				),
+			],
+		);
 
-				return {
-					...section,
-					todos,
-				};
+		const sectionsWithTodos: SectionWithTodos[] = sections.map(
+			(section, index) => ({
+				...section,
+				todos: sectionsWithTodosArrays[index] ?? [],
 			}),
 		);
 
@@ -63,6 +64,7 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 			data: {
 				project,
 				sections: sectionsWithTodos,
+				todosWithoutSection,
 			},
 		};
 	}

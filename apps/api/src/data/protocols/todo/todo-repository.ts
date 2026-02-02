@@ -29,4 +29,15 @@ export interface ITodoRepository {
 		projectId: string,
 		userId: string,
 	): Promise<Todo[]>;
+
+	/**
+	 * Get all todos for a project that have no section assigned
+	 * @param projectId - Project ID
+	 * @param userId - User ID (for multi-tenancy)
+	 * @returns Array of todos ordered by 'order' field
+	 */
+	getTodosByProjectWithoutSection(
+		projectId: string,
+		userId: string,
+	): Promise<Todo[]>;
 }

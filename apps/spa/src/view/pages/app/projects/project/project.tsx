@@ -1,4 +1,5 @@
 import { ProjectSection } from "@/modules/projects/view/components/project-section";
+import { ProjectTodoWithoutSection } from "@/modules/projects/view/components/project-todo-without-section";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { GripVertical, Plus } from "lucide-react";
@@ -84,6 +85,12 @@ export function Projects() {
 			{/* Tasks grouped by sections - Scrollable */}
 			<div className="flex-1 min-h-0 overflow-y-auto">
 				<div className="p-8 space-y-6">
+					<div className="space-y-2">
+						{projectDetail.todosWithoutSection.map((todo) => (
+							<ProjectTodoWithoutSection key={todo.id} todo={todo} />
+						))}
+					</div>
+
 					{projectDetail.sections.map((section) => (
 						<ProjectSection
 							key={section.id}

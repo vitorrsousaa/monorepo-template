@@ -181,4 +181,26 @@ export class TodoDynamoRepository implements ITodoRepository {
 			})
 			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
+
+	async getTodosByProjectWithoutSection(
+		projectId: string,
+		userId: string,
+	): Promise<Todo[]> {
+		// Docs: PK = USER#userId#PROJECT#projectId, todos without section have no GSI3PK / section_id null
+		const pk = `USER#${userId}#PROJECT#${projectId}`;
+
+		return this.dbTodos
+			.filter(
+				(t) =>
+					t.PK === pk &&
+					(t.section_id === null || t.section_id === undefined) &&
+					!t.SK.startsWith("TODO#INBOX#"),
+			)
+			.sort((a, b) => {
+				const skA = a.SK || "";
+				const skB = b.SK || "";
+				return skA.localeCompare(skB);
+			})
+			.map((dbTodo) => this.mapper.toDomain(dbTodo));
+	}
 }
