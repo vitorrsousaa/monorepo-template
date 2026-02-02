@@ -37,11 +37,13 @@ export class SectionDynamoRepository implements ISectionRepository {
 		// FilterExpression: attribute_not_exists(deletedAt) - ALWAYS exclude soft-deleted items
 		const pk = `USER#${userId}#PROJECT#${projectId}`;
 
-		return this.dbSections
+		const sections = this.dbSections
 			.filter((s) => s.PK === pk && s.SK.startsWith("SECTION#"))
 			.filter((s) => !s.deleted_at) // Exclude soft-deleted sections
 			.sort((a, b) => a.order - b.order) // Sort by order
 			.map((dbSection) => this.mapper.toDomain(dbSection));
+
+		return sections;
 	}
 
 	async getById(
