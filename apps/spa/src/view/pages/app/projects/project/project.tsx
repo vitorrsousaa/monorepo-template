@@ -1,33 +1,26 @@
-import { useGetProjectDetail } from "@/modules/projects/app/hooks/use-get-project-detail";
 import { ProjectSection } from "@/modules/projects/view/components/project-section";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { GripVertical, Plus } from "lucide-react";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { ProjectErrorState } from "./components/project-error-state";
 import { ProjectLoadingSkeleton } from "./components/project-loading-skeleton";
+import { useProjectHook } from "./project.hook";
 
 export function Projects() {
-	const { id } = useParams();
-	const projectId = id ?? "";
-
 	const {
+		projectId,
 		projectDetail,
 		isErrorProjectDetail,
 		isFetchingProjectDetail,
+		openInputToAddSection,
+		newSectionName,
 		refetchProjectDetail,
-	} = useGetProjectDetail({ projectId });
-
-	const [isAddingSection, setIsAddingSection] = useState(false);
-	const [newSectionName, setNewSectionName] = useState("");
-
-	const handleAddSection = () => {
-		if (newSectionName.trim()) {
-			setNewSectionName("");
-			setIsAddingSection(false);
-		}
-	};
+		handleAddSection,
+		toggleInputToAddSection,
+		handleCloseInputToAddSection,
+		handleKeyDownInputToAddSection,
+		handleChangeInputToAddSection,
+	} = useProjectHook();
 
 	// Loading state
 	if (isFetchingProjectDetail) {
@@ -103,22 +96,16 @@ export function Projects() {
 					})}
 
 					{/* Add New Section */}
-					{isAddingSection ? (
+					{openInputToAddSection ? (
 						<div className="flex items-center gap-2">
 							<GripVertical className="w-4 h-4 text-muted-foreground" />
 							<Input
 								value={newSectionName}
-								onChange={(e) => setNewSectionName(e.target.value)}
+								onChange={handleChangeInputToAddSection}
 								placeholder="Section name"
 								className="h-9"
 								autoFocus
-								onKeyDown={(e) => {
-									if (e.key === "Enter") handleAddSection();
-									if (e.key === "Escape") {
-										setIsAddingSection(false);
-										setNewSectionName("");
-									}
-								}}
+								onKeyDown={handleKeyDownInputToAddSection}
 							/>
 							<Button size="sm" onClick={handleAddSection}>
 								Add
@@ -126,10 +113,7 @@ export function Projects() {
 							<Button
 								size="sm"
 								variant="ghost"
-								onClick={() => {
-									setIsAddingSection(false);
-									setNewSectionName("");
-								}}
+								onClick={handleCloseInputToAddSection}
 							>
 								Cancel
 							</Button>
@@ -138,7 +122,7 @@ export function Projects() {
 						<Button
 							variant="ghost"
 							className="w-full justify-start"
-							onClick={() => setIsAddingSection(true)}
+							onClick={toggleInputToAddSection}
 						>
 							<Plus className="w-4 h-4 mr-2" />
 							Add Section
