@@ -65,7 +65,6 @@ export function Inbox() {
 			<NewTodoModal
 				isOpen={isNewTodoModalOpen}
 				onClose={() => setIsNewTodoModalOpen(false)}
-				projectId={null}
 			/>
 		</div>
 	);

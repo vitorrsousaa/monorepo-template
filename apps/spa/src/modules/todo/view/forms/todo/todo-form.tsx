@@ -18,9 +18,11 @@ import {
 } from "@repo/ui/select";
 import { Textarea } from "@repo/ui/textarea";
 import { useTodoFormHook } from "./todo-form.hook";
+import type { TTodoFormSchema } from "./todo-form.schema";
 
 export interface TodoFormProps {
 	onCancel?: () => void;
+	initialValues?: Partial<TTodoFormSchema>;
 }
 
 export function TodoForm(props: TodoFormProps) {
@@ -33,7 +35,7 @@ export function TodoForm(props: TodoFormProps) {
 		isFetchingSections,
 		isProjectSelected,
 		handleSubmit,
-	} = useTodoFormHook();
+	} = useTodoFormHook(props);
 
 	return (
 		<Form {...methods}>

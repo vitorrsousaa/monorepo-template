@@ -14,11 +14,7 @@ export function GlobalAddTaskButton() {
 			>
 				<Plus className="w-6 h-6" />
 			</Button>
-			<NewTodoModal
-				isOpen={isOpen}
-				onClose={() => setIsOpen(false)}
-				projectId={null}
-			/>
+			<NewTodoModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
 		</>
 	);
 }

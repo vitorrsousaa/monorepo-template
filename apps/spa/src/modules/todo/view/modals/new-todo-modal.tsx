@@ -1,3 +1,4 @@
+import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
 import { Icon } from "@repo/ui/icon";
 import { TodoForm } from "../forms/todo";
@@ -5,14 +6,17 @@ import { TodoForm } from "../forms/todo";
 interface NewTodoModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	projectId: string | null;
+	projectId?: string;
+	sectionId?: string;
 }
 
-export function NewTodoModal({
-	isOpen,
-	onClose,
-	projectId,
-}: NewTodoModalProps) {
+export function NewTodoModal(props: NewTodoModalProps) {
+	const { isOpen, onClose, projectId, sectionId } = props;
+	const initialValues: Partial<TTodoFormSchema> = {
+		project: projectId,
+		section: sectionId,
+	};
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="max-w-5xl p-0 gap-0">
@@ -24,7 +28,7 @@ export function NewTodoModal({
 					</div>
 				</div>
 
-				<TodoForm onCancel={onClose} />
+				<TodoForm onCancel={onClose} initialValues={initialValues} />
 			</DialogContent>
 		</Dialog>
 	);

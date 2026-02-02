@@ -52,7 +52,7 @@ export function useProjectColumnHook() {
 
 	const handleViewProjectDetails = (projectId: string) => {
 		console.log("projectId", projectId);
-		navigate(ROUTES.TODO.PROJECTS.replace(":id", projectId));
+		navigate(ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", projectId));
 	};
 
 	const formatDate = (dateString: string) => {

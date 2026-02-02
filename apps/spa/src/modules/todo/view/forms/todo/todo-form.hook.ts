@@ -1,17 +1,24 @@
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get-all-sections-by-project";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { defaultInitialValues, TodoFormSchema } from "./todo-form.schema";
+import type { TodoFormProps } from "./todo-form";
+import { getTodoFormValues, TodoFormSchema } from "./todo-form.schema";
 
-export const useTodoFormHook = () => {
+export const useTodoFormHook = (props: TodoFormProps) => {
+	const { initialValues } = props;
 	const { projects } = useGetAllProjectsByUser();
 
 	const methods = useForm({
 		resolver: zodResolver(TodoFormSchema),
-		defaultValues: defaultInitialValues,
+		defaultValues: getTodoFormValues(initialValues),
 	});
+
+	// When initialValues change (e.g. modal opened from another section), reset form so project/section show correctly
+	useEffect(() => {
+		methods.reset(getTodoFormValues(initialValues));
+	}, [initialValues, methods.reset]);
 
 	const selectedProjectId = methods.watch("project");
 	const isProjectSelected =
@@ -23,10 +30,18 @@ export const useTodoFormHook = () => {
 			enabled: isProjectSelected,
 		});
 
+	// Only reset section to "none" when the user *changes* the project in the dropdown,
+	// not on initial mount (so initialValues.section from NewTodoModal is preserved).
+	const previousProjectIdRef = useRef<string | undefined>(undefined);
+
 	useEffect(() => {
-		if (!selectedProjectId) return;
-		methods.setValue("section", "none");
-	}, [selectedProjectId, methods]);
+		const previous = previousProjectIdRef.current;
+		previousProjectIdRef.current = selectedProjectId;
+
+		if (previous !== undefined && previous !== selectedProjectId) {
+			methods.setValue("section", "none");
+		}
+	}, [methods, selectedProjectId]);
 
 	const { handleSubmit: hookFormSubmit } = methods;
 
@@ -44,8 +59,8 @@ export const useTodoFormHook = () => {
 		projects,
 		sections,
 		isFetchingSections,
-		refetchSections,
 		isProjectSelected,
+		refetchSections,
 		handleSubmit,
 	};
 };

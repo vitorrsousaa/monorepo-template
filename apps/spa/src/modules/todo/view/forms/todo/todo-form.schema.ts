@@ -20,3 +20,16 @@ export const defaultInitialValues: TTodoFormSchema = {
 	priority: "none",
 	dueDate: undefined,
 };
+
+/**
+ * Returns complete todo form values by merging defaults with optional overrides.
+ * Use when you need full TTodoFormSchema (e.g. defaultValues for useForm).
+ */
+export function getTodoFormValues(
+	overrides?: Partial<TTodoFormSchema>,
+): TTodoFormSchema {
+	return {
+		...defaultInitialValues,
+		...overrides,
+	};
+}

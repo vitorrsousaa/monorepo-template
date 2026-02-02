@@ -1,9 +1,13 @@
-import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
 import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
-import { OptimisticState } from "@/utils/types";
+import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
 import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import type { Todo } from "@/pages/app/todo/today";
+import { OptimisticState } from "@/utils/types";
+import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
+import { Checkbox } from "@repo/ui/checkbox";
+import { cn } from "@repo/ui/utils";
 import {
 	AlertCircle,
 	Calendar,
@@ -12,10 +16,6 @@ import {
 	Loader2,
 	Plus,
 } from "lucide-react";
-import { Badge } from "@repo/ui/badge";
-import { Button } from "@repo/ui/button";
-import { Checkbox } from "@repo/ui/checkbox";
-import { cn } from "@repo/ui/utils";
 import { useState } from "react";
 
 export type ProjectSectionProps = {
@@ -141,6 +141,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				isOpen={isNewTodoModalOpen}
 				onClose={() => setIsNewTodoModalOpen(false)}
 				projectId={projectId}
+				sectionId={section.id}
 			/>
 
 			{selectedTodo && (

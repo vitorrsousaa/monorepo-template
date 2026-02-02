@@ -126,7 +126,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 			<NewTodoModal
 				isOpen={isNewTodoModalOpen}
 				onClose={() => setIsNewTodoModalOpen(false)}
-				projectId={selectedProjectId}
+				projectId={selectedProjectId ?? undefined}
 			/>
 
 			<DeleteProjectModal
@@ -139,7 +139,11 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 				<EditTodoModal
 					isOpen={!!selectedTodo}
 					onClose={() => setSelectedTodo(null)}
-					todo={selectedTodo}
+					todo={
+						selectedTodo as unknown as Record<string, string> & {
+							completed: boolean;
+						} & { dueDate: string }
+					}
 				/>
 			)}
 		</>
