@@ -17,7 +17,6 @@ import {
 	SelectValue,
 } from "@repo/ui/select";
 import { Textarea } from "@repo/ui/textarea";
-import { useState } from "react";
 import { useTodoFormHook } from "./todo-form.hook";
 
 export interface TodoFormProps {
@@ -27,12 +26,14 @@ export interface TodoFormProps {
 export function TodoForm(props: TodoFormProps) {
 	const { onCancel } = props;
 
-	const { methods, projects, handleSubmit } = useTodoFormHook();
-
-	const [todoData, setTodoData] = useState({
-		section: "",
-		completed: false,
-	});
+	const {
+		methods,
+		projects,
+		sections,
+		isFetchingSections,
+		isProjectSelected,
+		handleSubmit,
+	} = useTodoFormHook();
 
 	return (
 		<Form {...methods}>
@@ -138,26 +139,45 @@ export function TodoForm(props: TodoFormProps) {
 						</div>
 
 						<div className="space-y-3">
-							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Section</span>
-							</div>
-							<Select
-								value={todoData.section}
-								onValueChange={(value) =>
-									setTodoData({ ...todoData, section: value })
-								}
-							>
-								<SelectTrigger className="h-8">
-									<SelectValue placeholder="No section" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="none">No section</SelectItem>
-									<SelectItem value="backlog">Backlog</SelectItem>
-									<SelectItem value="in-progress">In Progress</SelectItem>
-									<SelectItem value="review">Review</SelectItem>
-									<SelectItem value="done">Done</SelectItem>
-								</SelectContent>
-							</Select>
+							<FormField
+								control={methods.control}
+								name="section"
+								render={({ field }) => (
+									<FormItem>
+										<div className="flex items-center justify-between text-sm">
+											<span className="text-muted-foreground">Section</span>
+										</div>
+										<Select
+											value={field.value}
+											onValueChange={field.onChange}
+											disabled={!isProjectSelected || isFetchingSections}
+										>
+											<FormControl>
+												<SelectTrigger className="h-8">
+													<SelectValue
+														placeholder={
+															!isProjectSelected
+																? "Select a project first"
+																: isFetchingSections
+																	? "Loading sections..."
+																	: "No section"
+														}
+													/>
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectItem value="none">No section</SelectItem>
+												{sections.map((section) => (
+													<SelectItem key={section.id} value={section.id}>
+														{section.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 						</div>
 
 						<div className="space-y-3">
