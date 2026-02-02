@@ -1,7 +1,6 @@
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get-all-sections-by-project";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import type { TodoFormProps } from "./todo-form";
 import { getTodoFormValues, TodoFormSchema } from "./todo-form.schema";
@@ -15,11 +14,6 @@ export const useTodoFormHook = (props: TodoFormProps) => {
 		defaultValues: getTodoFormValues(initialValues),
 	});
 
-	// When initialValues change (e.g. modal opened from another section), reset form so project/section show correctly
-	useEffect(() => {
-		methods.reset(getTodoFormValues(initialValues));
-	}, [initialValues, methods.reset]);
-
 	const selectedProjectId = methods.watch("project");
 	const isProjectSelected =
 		!!selectedProjectId && selectedProjectId !== "inbox";
@@ -30,18 +24,10 @@ export const useTodoFormHook = (props: TodoFormProps) => {
 			enabled: isProjectSelected,
 		});
 
-	// Only reset section to "none" when the user *changes* the project in the dropdown,
-	// not on initial mount (so initialValues.section from NewTodoModal is preserved).
-	const previousProjectIdRef = useRef<string | undefined>(undefined);
-
-	useEffect(() => {
-		const previous = previousProjectIdRef.current;
-		previousProjectIdRef.current = selectedProjectId;
-
-		if (previous !== undefined && previous !== selectedProjectId) {
-			methods.setValue("section", "none");
-		}
-	}, [methods, selectedProjectId]);
+	const handleProjectChange = (value: string) => {
+		methods.setValue("project", value);
+		methods.setValue("section", "none");
+	};
 
 	const { handleSubmit: hookFormSubmit } = methods;
 
@@ -61,6 +47,7 @@ export const useTodoFormHook = (props: TodoFormProps) => {
 		isFetchingSections,
 		isProjectSelected,
 		refetchSections,
+		handleProjectChange,
 		handleSubmit,
 	};
 };

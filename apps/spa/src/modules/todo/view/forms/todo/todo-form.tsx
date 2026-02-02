@@ -34,6 +34,7 @@ export function TodoForm(props: TodoFormProps) {
 		sections,
 		isFetchingSections,
 		isProjectSelected,
+		handleProjectChange,
 		handleSubmit,
 	} = useTodoFormHook(props);
 
@@ -111,7 +112,10 @@ export function TodoForm(props: TodoFormProps) {
 										<div className="flex items-center justify-between text-sm">
 											<span className="text-muted-foreground">Project</span>
 										</div>
-										<Select value={field.value} onValueChange={field.onChange}>
+										<Select
+											value={field.value}
+											onValueChange={handleProjectChange}
+										>
 											<FormControl>
 												<SelectTrigger className="h-8">
 													<SelectValue placeholder="Select project" />
