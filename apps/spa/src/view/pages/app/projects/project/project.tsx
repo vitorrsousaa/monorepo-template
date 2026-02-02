@@ -84,16 +84,14 @@ export function Projects() {
 			{/* Tasks grouped by sections - Scrollable */}
 			<div className="flex-1 min-h-0 overflow-y-auto">
 				<div className="p-8 space-y-6">
-					{projectDetail.sections.map((section) => {
-						return (
-							<ProjectSection
-								key={`section-${section.id}-${Math.random().toString(36).substring(2, 15)}`}
-								section={section}
-								projectId={projectId}
-								projectName={projectDetail.project.name}
-							/>
-						);
-					})}
+					{projectDetail.sections.map((section) => (
+						<ProjectSection
+							key={section.id}
+							section={section}
+							projectId={projectId}
+							projectName={projectDetail.project.name}
+						/>
+					))}
 
 					{/* Add New Section */}
 					{openInputToAddSection ? (

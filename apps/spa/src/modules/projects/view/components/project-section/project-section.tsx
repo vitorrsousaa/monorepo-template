@@ -1,16 +1,24 @@
+import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
 import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
 import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import type { Todo } from "@/pages/app/todo/today";
+import {
+	AlertCircle,
+	Calendar,
+	Flag,
+	GripVertical,
+	Loader2,
+	Plus,
+} from "lucide-react";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { cn } from "@repo/ui/utils";
-import { Calendar, Flag, GripVertical, Plus } from "lucide-react";
 import { useState } from "react";
 
 export type ProjectSectionProps = {
-	section: SectionWithTodos;
+	section: SectionWithTodos | SectionWithOptimisticState;
 	projectId: string;
 	projectName: string;
 };
@@ -18,26 +26,47 @@ export type ProjectSectionProps = {
 export const ProjectSection = (props: ProjectSectionProps) => {
 	const { section, projectId, projectName } = props;
 	const sectionTodos = section.todos;
+	const optimisticState =
+		"optimisticState" in section ? section.optimisticState : undefined;
+	const isPending = optimisticState === "pending";
+	const isError = optimisticState === "error";
 
 	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
 	const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
 	return (
-		<div>
+		<div
+			className={cn(
+				"rounded-lg transition-opacity",
+				isPending && "opacity-60 pointer-events-none",
+				isError && "border-2 border-destructive bg-destructive/5 p-3",
+			)}
+		>
+			{isError && (
+				<div className="flex items-center gap-2 text-destructive text-sm mb-3">
+					<AlertCircle className="w-4 h-4 shrink-0" />
+					<span>Something went wrong while creating this section.</span>
+				</div>
+			)}
 			<div className="flex items-center gap-3 mb-3">
 				<GripVertical className="w-4 h-4 text-muted-foreground" />
 				<h2 className="font-semibold text-lg">{section.name}</h2>
 				<Badge variant="secondary" className="rounded-full">
 					{sectionTodos.length}
 				</Badge>
-				<Button
-					variant="ghost"
-					size="sm"
-					className="ml-auto h-8"
-					onClick={() => setIsNewTodoModalOpen(true)}
-				>
-					<Plus className="w-4 h-4" />
-				</Button>
+				{isPending && (
+					<Loader2 className="ml-auto h-5 w-5 animate-spin text-muted-foreground" />
+				)}
+				{!isPending && !isError && (
+					<Button
+						variant="ghost"
+						size="sm"
+						className="ml-auto h-8"
+						onClick={() => setIsNewTodoModalOpen(true)}
+					>
+						<Plus className="w-4 h-4" />
+					</Button>
+				)}
 			</div>
 
 			<div className="space-y-2">
