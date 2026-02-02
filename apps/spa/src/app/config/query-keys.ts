@@ -8,4 +8,8 @@ export const PROJECTS = {
 	DETAIL: (projectId: string) => ["projects", "detail", projectId],
 };
 
-export const QUERY_KEYS = { TODOS, PROJECTS } as const;
+export const SECTIONS = {
+	BY_PROJECT: (projectId: string) => ["sections", "by-project", projectId],
+};
+
+export const QUERY_KEYS = { TODOS, PROJECTS, SECTIONS } as const;
