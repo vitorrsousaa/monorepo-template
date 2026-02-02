@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import type { Project } from "@/modules/projects/app/entitites/project";
 import { createProject as createProjectService } from "@/modules/projects/app/services/create-project";
-import type { WithOptimisticState } from "@/utils/types";
+import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type ProjectWithOptimisticState = WithOptimisticState<Partial<Project>>;
@@ -20,7 +20,7 @@ export function useCreateProject() {
 				(oldData) =>
 					oldData?.concat({
 						id: tempId,
-						optimisticState: "pending",
+						optimisticState: OptimisticState.PENDING,
 						name,
 						description,
 					}),
@@ -34,7 +34,7 @@ export function useCreateProject() {
 				(oldData) =>
 					oldData?.map((project) =>
 						project.id === context?.tempId
-							? { ...project, optimisticState: "error" }
+							? { ...project, optimisticState: OptimisticState.ERROR }
 							: project,
 					),
 			);
@@ -55,7 +55,7 @@ export function useCreateProject() {
 				(oldData) =>
 					oldData?.map((project) =>
 						project.id === context?.tempId
-							? { ...projectResponse, optimisticState: "synced" }
+							? { ...projectResponse, optimisticState: OptimisticState.SYNCED }
 							: project,
 					),
 			);

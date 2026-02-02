@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
 import { createSection as createSectionService } from "@/modules/sections/app/services/create-section";
-import type { WithOptimisticState } from "@/utils/types";
+import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Section } from "../entities/section";
 import type { SectionWithTodos } from "../entities/section-with-todos";
@@ -39,7 +39,7 @@ export function useCreateSection() {
 								projectId,
 								name,
 								order: order ?? sections.length + 1,
-								optimisticState: "pending" as const,
+								optimisticState: OptimisticState.PENDING,
 								todos: [],
 							},
 						],
@@ -59,7 +59,7 @@ export function useCreateSection() {
 						...oldData,
 						sections: oldData.sections.map((section) =>
 							section.id === context?.tempId
-								? { ...section, optimisticState: "error" as const }
+								? { ...section, optimisticState: OptimisticState.ERROR }
 								: section,
 						),
 					};
@@ -88,7 +88,7 @@ export function useCreateSection() {
 								? {
 										...sectionResponse,
 										todos: [],
-										optimisticState: "synced" as const,
+										optimisticState: OptimisticState.SYNCED,
 									}
 								: section,
 						),

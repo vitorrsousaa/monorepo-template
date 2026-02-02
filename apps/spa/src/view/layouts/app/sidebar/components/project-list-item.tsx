@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 
 import type { Project } from "@/modules/projects/app/entitites/project";
-import type { WithOptimisticState } from "@/utils/types";
+import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -38,10 +38,11 @@ export function ProjectListItem(props: ProjectListItemProps) {
 	const { project } = props;
 	const { isMobile } = useSidebar();
 
-	const isPending = project.optimisticState === "pending";
-	const isError = project.optimisticState === "error";
+	const isPending = project.optimisticState === OptimisticState.PENDING;
+	const isError = project.optimisticState === OptimisticState.ERROR;
 	const shouldShowDropdown =
-		project.optimisticState === "synced" || !project.optimisticState;
+		project.optimisticState === OptimisticState.SYNCED ||
+		!project.optimisticState;
 
 	return (
 		<SidebarMenuItem>

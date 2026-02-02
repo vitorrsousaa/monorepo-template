@@ -1,5 +1,6 @@
 import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
 import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
+import { OptimisticState } from "@/utils/types";
 import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import type { Todo } from "@/pages/app/todo/today";
@@ -28,8 +29,8 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 	const sectionTodos = section.todos;
 	const optimisticState =
 		"optimisticState" in section ? section.optimisticState : undefined;
-	const isPending = optimisticState === "pending";
-	const isError = optimisticState === "error";
+	const isPending = optimisticState === OptimisticState.PENDING;
+	const isError = optimisticState === OptimisticState.ERROR;
 
 	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
 	const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
