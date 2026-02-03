@@ -1,18 +1,17 @@
 import {
 	AlertCircle,
-	Copy,
 	Eye,
 	Frame,
 	History,
-	Link2,
 	Loader2,
 	MoreHorizontal,
-	Share,
 	Trash2,
 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import type { Project } from "@/modules/projects/app/entitites/project";
+import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import {
 	DropdownMenu,
@@ -32,11 +31,13 @@ import { cn } from "@repo/ui/utils";
 
 interface ProjectListItemProps {
 	project: WithOptimisticState<Project>;
+	onDeleteProject?: (project: Project) => void;
 }
 
 export function ProjectListItem(props: ProjectListItemProps) {
-	const { project } = props;
+	const { project, onDeleteProject } = props;
 	const { isMobile } = useSidebar();
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
 	const isPending = project.optimisticState === OptimisticState.PENDING;
 	const isError = project.optimisticState === OptimisticState.ERROR;
@@ -98,34 +99,31 @@ export function ProjectListItem(props: ProjectListItemProps) {
 							side={isMobile ? "bottom" : "right"}
 							align={isMobile ? "end" : "start"}
 						>
-							<DropdownMenuItem>
-								<Eye className="text-muted-foreground" />
-								<span>View Project</span>
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Copy className="text-muted-foreground" />
-								<span>Duplicate Project</span>
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Link2 className="text-muted-foreground" />
-								<span>Copy link to Project</span>
+							<DropdownMenuItem asChild>
+								<Link to={`/projects/${project.id}`}>
+									<Eye className="text-muted-foreground" />
+									<span>View Project</span>
+								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem>
 								<History className="text-muted-foreground" />
 								<span>Activity Log</span>
 							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Share className="text-muted-foreground" />
-								<span>Share Project</span>
-							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem>
+							<DropdownMenuItem onSelect={() => setIsDeleteModalOpen(true)}>
 								<Trash2 className="text-muted-foreground" />
 								<span>Delete Project</span>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				}
+			/>
+
+			<DeleteProjectModal
+				isOpen={isDeleteModalOpen}
+				onClose={() => setIsDeleteModalOpen(false)}
+				projectName={project.name}
+				onConfirm={() => onDeleteProject?.(project)}
 			/>
 		</SidebarMenuItem>
 	);
