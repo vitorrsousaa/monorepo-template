@@ -1,6 +1,6 @@
-import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import * as React from "react";
 
 import { cn } from "@/utils/index";
 
@@ -10,10 +10,15 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
+interface SelectTriggerProps
+	extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {
+	loading?: boolean;
+}
+
 const SelectTrigger = React.forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Trigger>,
-	React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+	SelectTriggerProps
+>(({ className, children, loading, ...props }, ref) => (
 	<SelectPrimitive.Trigger
 		ref={ref}
 		className={cn(
@@ -24,7 +29,11 @@ const SelectTrigger = React.forwardRef<
 	>
 		{children}
 		<SelectPrimitive.Icon asChild>
-			<ChevronDown className="h-4 w-4 opacity-50" />
+			{loading ? (
+				<Loader2 className="h-4 w-4 opacity-50 animate-spin" />
+			) : (
+				<ChevronDown className="h-4 w-4 opacity-50" />
+			)}
 		</SelectPrimitive.Icon>
 	</SelectPrimitive.Trigger>
 ));
@@ -145,13 +154,13 @@ SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export {
 	Select,
-	SelectGroup,
-	SelectValue,
-	SelectTrigger,
 	SelectContent,
-	SelectLabel,
+	SelectGroup,
 	SelectItem,
-	SelectSeparator,
-	SelectScrollUpButton,
+	SelectLabel,
 	SelectScrollDownButton,
+	SelectScrollUpButton,
+	SelectSeparator,
+	SelectTrigger,
+	SelectValue,
 };

@@ -159,7 +159,10 @@ export function TodoForm(props: TodoFormProps) {
 											disabled={!isProjectSelected || isFetchingSections}
 										>
 											<FormControl>
-												<SelectTrigger className="h-8">
+												<SelectTrigger
+													className="h-8"
+													loading={isFetchingSections}
+												>
 													<SelectValue
 														placeholder={
 															!isProjectSelected
