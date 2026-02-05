@@ -104,10 +104,7 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-48">
-						<DropdownMenuItem>Edit</DropdownMenuItem>
-						<DropdownMenuItem>Set Due Date</DropdownMenuItem>
 						<DropdownMenuItem>Assign to Project</DropdownMenuItem>
-						<DropdownMenuItem>Change Priority</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem className="text-destructive">
 							Delete
