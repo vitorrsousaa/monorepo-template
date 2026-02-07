@@ -10,6 +10,10 @@ export const PROJECTS_ROUTES = {
 	PROJECT_DETAILS: "/projects/:id",
 } as const;
 
+export const SETTINGS_ROUTES = {
+	SETTINGS: "/settings",
+} as const;
+
 export const ROUTES = {
 	USER: "/settings",
 	SIGNIN: "/login",
@@ -18,4 +22,5 @@ export const ROUTES = {
 	GOALS_DASHBOARD: "/goals/dashboard",
 	TODO: TODO_ROUTES,
 	PROJECTS: PROJECTS_ROUTES,
+	SETTINGS: SETTINGS_ROUTES,
 } as const;

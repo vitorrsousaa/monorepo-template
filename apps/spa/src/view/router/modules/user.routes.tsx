@@ -13,7 +13,7 @@ export const userRoutes: RouteObject = {
 	element: <UserLayout />,
 	children: [
 		{
-			path: ROUTES.USER,
+			path: ROUTES.SETTINGS.SETTINGS,
 			element: <Settings />,
 		},
 	],
