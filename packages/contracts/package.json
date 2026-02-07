@@ -1,0 +1,30 @@
+{
+	"name": "@repo/contracts",
+	"version": "1.0.0",
+	"type": "module",
+	"private": true,
+	"exports": {
+		"./*": {
+			"types": "./dist/*/index.d.ts",
+			"import": "./dist/*/index.js"
+		}
+	},
+	"scripts": {
+		"lint": "biome lint --write ./src",
+		"ci:lint": "biome lint ./src",
+		"typecheck": "tsc --noEmit",
+		"ci:typecheck": "tsc --noEmit",
+		"format": "biome format --write ./src",
+		"ci:format": "biome format ./src",
+		"build": "tsup",
+		"dev": "tsup --watch"
+	},
+	"devDependencies": {
+		"@repo/typescript-config": "workspace:*",
+		"tsup": "^8.0.1",
+		"typescript": "~5.9.3"
+	},
+	"files": [
+		"dist"
+	]
+}

@@ -29,6 +29,7 @@
     "serverless-offline": "^14.4.0"
   },
   "dependencies": {
+    "@repo/contracts": "workspace:*",
     "@repo/logger": "workspace:*",
     "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",

@@ -1,5 +1,5 @@
-import type { Todo } from "@/modules/todo/app/entities/todo";
 import { truncateText } from "@/utils/truncate-text";
+import type { TodoDto } from "@repo/contracts/todo/inbox";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
@@ -16,10 +16,10 @@ import { Calendar, Flag, MoreVertical } from "lucide-react";
 const DESCRIPTION_MAX_LENGTH = 100;
 
 type InboxTodoCardProps = {
-	todo: Todo;
+	todo: TodoDto;
 };
 
-function formatDueDate(dueDate: string | Date | null | undefined): {
+function formatDueDate(dueDate: string | null | undefined): {
 	text: string;
 	isOverdue: boolean;
 } | null {
