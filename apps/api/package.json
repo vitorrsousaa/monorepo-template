@@ -23,7 +23,6 @@
     "@repo/vitest-presets": "workspace:*",
     "@types/aws-lambda": "^8.10.160",
     "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^20",
     "nodemon": "^3.1.9",
     "serverless-esbuild": "^1.54.6",
     "serverless-offline": "^14.4.0"
@@ -34,7 +33,6 @@
     "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
     "serverless": "^4.31.0",
-    "serverless-dotenv-plugin": "^6.0.0",
-    "zod": "^3.24.1"
+    "serverless-dotenv-plugin": "^6.0.0"
   }
 }
