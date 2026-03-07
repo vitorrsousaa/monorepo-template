@@ -1,0 +1,476 @@
+---
+description: Domain model definitions, rules, and examples for LifeOS entities (Task, Project, Section, Inbox)
+globs: apps/{api,spa}/src/**/*.ts
+alwaysApply: true
+---
+
+# LifeOS – Domain Rules
+
+Este documento é a fonte de verdade do modelo de domínio. Qualquer dúvida sobre "quando usar o quê" deve ser respondida aqui. Consulte antes de criar, renomear ou modificar entidades.
+
+---
+
+## Visão geral das entidades
+
+```
+Project (container + goal unificado)
+└── Section (agrupamento lógico dentro do projeto)
+    └── Task (ação atômica)
+
+Task sem Project → Inbox (view especial)
+Task sem Section → aparece no projeto, sem agrupamento
+```
+
+---
+
+## Task
+
+**O quê:** A unidade central do sistema. Representa uma ação concreta a ser realizada.
+
+**Regra fundamental:** Uma Task deve ser algo que pode ser marcado como "feito". Se não pode ser concluído, não é uma Task.
+
+### Campos
+
+```typescript
+interface Task {
+  id: string
+  userId: string
+  title: string           // Obrigatório. Ação concreta. Ex: "Ligar para o banco"
+  description?: string    // Contexto adicional, não obrigatório
+
+  projectId?: string      // null = Inbox (sem projeto atribuído)
+  sectionId?: string      // null = sem seção (task solta dentro do projeto)
+
+  completed: boolean
+  completedAt?: Date
+  dueDate?: Date          // Opcional. Quando deve ser feito.
+  priority?: 'low' | 'medium' | 'high'
+  order: number           // Posição dentro da section ou do projeto
+
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### Regras
+
+- Uma Task pertence a **no máximo um Project** e a **no máximo uma Section**.
+- Uma Task **pode existir sem Project** → cai no Inbox.
+- Uma Task **pode existir em um Project sem Section** → aparece no topo do projeto, antes das sections, em um grupo implícito "Sem seção".
+- Sub-tasks são v2. Não adicionar `parentId` no MVP sem implementar a estrutura completa de SubTask.
+- `dueDate` é opcional. Não forçar data. Tasks sem data são válidas.
+- `priority` é opcional. Task sem prioridade é válida.
+- Tags são v2. Não adicionar `tags` à Task no MVP.
+
+### ✅ DO — bons exemplos de Tasks
+
+```
+"Comprar remédio para o cachorro"
+"Revisar PR do João"
+"Pagar fatura do cartão"
+"Ler capítulo 3 do livro X"
+"Marcar consulta com dentista"
+```
+
+### ❌ DON'T — o que não é uma Task
+
+```
+"Saúde"                   → isso é um Project, não uma Task
+"Trabalho"                → isso é um Project, não uma Task
+"Guardar dinheiro"        → isso é um objetivo/Goal dentro de um Project
+"Ficar saudável"          → isso é um objetivo, não uma ação concreta
+```
+
+---
+
+## Project
+
+**O quê:** Um container que agrupa Tasks relacionadas. Pode ser simples (só organização) ou orientado a objetivo (quando tem `targetValue`/`deadline` preenchidos).
+
+**Regra fundamental:** Project e Goal são a mesma entidade. A diferença é só se os campos de objetivo foram preenchidos. Não existe entidade `Goal` separada.
+
+### Campos
+
+```typescript
+interface Project {
+  id: string
+  userId: string
+  name: string
+  description?: string
+  color?: string
+  icon?: string
+
+  // Campos de objetivo (opcionais)
+  // Se preenchidos, o projeto se comporta como uma Goal
+  targetValue?: number    // Ex: 20000 (dinheiro), 5 (km), 10 (livros)
+  currentValue?: number   // Valor atual. Atualizado manualmente ou via tasks.
+  unit?: string           // Ex: "R$", "km", "kg", "livros", "páginas"
+  deadline?: Date         // Prazo para atingir o objetivo
+
+  // Status
+  status: 'active' | 'completed' | 'archived'
+  completedAt?: Date
+
+  createdAt: Date
+  updatedAt: Date
+  deletedAt?: Date        // Soft delete
+}
+```
+
+### Dois modos do mesmo Project
+
+**Modo organizacional** (sem campos de objetivo):
+- Serve para agrupar Tasks de um contexto ou área
+- Não tem barra de progresso automática
+- Não tem prazo obrigatório
+- Dura indefinidamente (área contínua da vida)
+
+**Modo objetivo** (com `targetValue` ou `deadline`):
+- Tem progresso rastreável
+- O UI exibe barra de progresso
+- Pode ter data de conclusão
+- Quando concluído, usuário decide: arquivar ou manter ativo
+
+### Regras
+
+- Um usuário pode ter múltiplos Projects ativos simultaneamente.
+- **Ao deletar um Project, todas as suas Tasks e Sections são deletadas em cascata (hard delete).** O usuário deve ser avisado na UI antes de confirmar.
+- Um Project arquivado (`status: 'archived'`) não aparece na sidebar principal, mas pode ser consultado em "Arquivados".
+- Um Project completado (`status: 'completed'`) exibe data de conclusão e vai para "Concluídos".
+
+### Cálculo de progresso
+
+```
+Se targetValue está preenchido:
+  progress = currentValue / targetValue
+  Exemplo: R$ 12.000 / R$ 20.000 = 60%
+
+Se targetValue não está preenchido:
+  progress = tasksCompleted / tasksTotal
+  Exemplo: 7 tasks concluídas de 10 = 70%
+```
+
+### ✅ DO — bons exemplos de Project (modo organizacional)
+
+```
+"Trabalho"            → agrupa tasks do trabalho
+"Casa"                → agrupa tasks domésticas
+"Saúde"               → agrupa tasks de saúde
+"Dev – App LifeOS"    → agrupa tasks de um projeto de software
+"Estudos"             → agrupa tasks de aprendizado
+```
+
+### ✅ DO — bons exemplos de Project (modo objetivo/goal)
+
+```
+"Juntar R$ 20.000"    → targetValue: 20000, unit: "R$", deadline: dez/2026
+"Ler 12 livros em 2026" → targetValue: 12, unit: "livros", deadline: dez/2026
+"Correr 5km"          → targetValue: 5, unit: "km", sem deadline
+"Emagrecer 5kg"       → targetValue: 5, unit: "kg", deadline: jun/2026
+```
+
+### ❌ DON'T — o que não é um Project
+
+```
+"Comprar leite"       → isso é uma Task, não um Project
+"Ligar para o banco"  → isso é uma Task
+"To Do"               → isso é uma Section dentro de um Project
+"Urgente"             → isso é priority: 'high' na Task, não um Project
+```
+
+### ❌ DON'T — erros de modelagem
+
+```typescript
+// ERRADO: criar entidade Goal separada
+interface Goal { id, title, targetValue... }  // ❌ Não existe
+
+// ERRADO: usar Project para categorizar prioridade
+const project = { name: "Urgente" }  // ❌ use priority na Task
+
+// ERRADO: criar Project para um grupo de uma única Task
+const project = { name: "Comprar remédio" }  // ❌ crie uma Task no Inbox
+```
+
+---
+
+## Section
+
+**O quê:** Um agrupamento lógico de Tasks dentro de um Project. Serve para organizar tasks por critério relevante ao contexto do projeto.
+
+**Regra fundamental:** Section NÃO é obrigatoriamente um status Kanban. Pode ser qualquer forma de agrupamento que faça sentido para aquele projeto específico.
+
+### Campos
+
+```typescript
+interface Section {
+  id: string
+  userId: string
+  projectId: string     // Sempre vinculada a um Project. Obrigatório.
+  name: string          // Nome do agrupamento. Ex: "Frontend", "Semana 1", "Em andamento"
+  order: number         // Posição relativa entre sections do mesmo projeto
+
+  createdAt: Date
+  updatedAt: Date
+  deletedAt?: Date
+}
+```
+
+### Regras
+
+- Toda Section pertence obrigatoriamente a um Project. Não existe Section sem Project.
+- Tasks dentro de uma Section são ordenadas pelo campo `order`.
+- Tasks podem existir em um Project **sem Section** — são exibidas no **topo** da view, antes das Sections, em um grupo implícito "Sem seção".
+- Uma Section não tem prazo, prioridade ou status próprio. Ela é só um agrupador.
+- Sections são ordenadas entre si pelo campo `order` dentro do Project.
+
+### Formas válidas de usar Section
+
+**Como categorias de área:**
+```
+Project "Trabalho"
+├── Section "Frontend"
+│   ├── Task "Criar componente de header"
+│   └── Task "Corrigir bug no login"
+└── Section "Backend"
+    ├── Task "Criar endpoint de usuários"
+    └── Task "Configurar autenticação JWT"
+```
+
+**Como etapas/fases:**
+```
+Project "Lançar App LifeOS"
+├── Section "Planejamento"
+│   └── Task "Definir MVP"
+├── Section "Desenvolvimento"
+│   ├── Task "Criar tela de inbox"
+│   └── Task "Implementar API de projetos"
+└── Section "Lançamento"
+    └── Task "Publicar na App Store"
+```
+
+**Como Kanban (status-based — também válido):**
+```
+Project "Trabalho"
+├── Section "Backlog"
+├── Section "Em andamento"
+└── Section "Concluído"
+```
+
+**Como divisão temporal:**
+```
+Project "Estudos TypeScript"
+├── Section "Semana 1 – Fundamentos"
+├── Section "Semana 2 – Generics"
+└── Section "Semana 3 – Patterns"
+```
+
+**Como subdivisão de objetivo (Project modo goal):**
+```
+Project "Juntar R$ 20.000"  (targetValue: 20000)
+├── Section "Reserva de emergência"
+│   └── Task "Guardar R$ 500 esse mês"
+├── Section "Investimentos"
+│   └── Task "Abrir conta na corretora"
+└── Section "Cortar gastos"
+    └── Task "Cancelar assinatura X"
+```
+
+### ✅ DO — bons nomes de Section
+
+```
+"Frontend", "Backend", "Design"           → categorias técnicas
+"Semana 1", "Semana 2", "Semana 3"        → fases temporais
+"Em andamento", "Backlog", "Revisão"      → status Kanban
+"Compras", "Limpeza", "Reformas"          → categorias domésticas
+"Capítulo 1", "Capítulo 2"               → divisão de conteúdo
+```
+
+### ❌ DON'T — maus usos de Section
+
+```typescript
+// ERRADO: Section sem Project
+const section = { projectId: undefined }  // ❌ Inválido
+
+// ERRADO: usar Section como Task
+const section = { name: "Comprar leite" }  // ❌ isso é uma Task
+
+// ERRADO: criar Section para um único item
+// Se só tem uma Task, não precisa de Section — use task solta no projeto
+```
+
+---
+
+## Inbox
+
+**O quê:** Não é uma entidade. É uma **view** que exibe todas as Tasks com `projectId === null`.
+
+**Regra fundamental:** Inbox é a caixa de entrada. Tasks chegam aqui antes de serem organizadas. É válido deixar tasks no Inbox permanentemente se não precisam de organização.
+
+### Comportamento
+
+- Tasks criadas sem `projectId` caem automaticamente no Inbox.
+- Tasks movidas de um Project para o Inbox têm `projectId` setado para `null`.
+- Tasks completas no Inbox **não aparecem** na view de Inbox (só incompletas).
+- Tasks completas do Inbox podem ser consultadas na view "Concluídas".
+- Inbox não tem Sections. Tasks são listadas em ordem plana.
+
+### ✅ DO — o que vai para o Inbox
+
+```
+"Comprar leite"                     → task pontual, não precisa de projeto
+"Ligar para a operadora"            → rápida e sem contexto de projeto
+"Pesquisar sobre investimentos"     → ainda não sabe onde classificar
+"Ideia: criar feature X no app"     → captura rápida, decidir depois
+```
+
+### ❌ DON'T — o que não vai ficar no Inbox para sempre
+
+```
+Tasks de projetos ativos            → devem estar no Project correto
+Tasks vinculadas a um objetivo      → devem estar no Project com goal
+```
+
+---
+
+## Decisões tomadas
+
+| Decisão | Regra |
+|---|---|
+| Deletar Project | Hard delete em cascata: deleta Tasks e Sections junto. UI deve pedir confirmação. |
+| View "Hoje" | `dueDate <= hoje` AND `completed = false`. Atrasadas aparecem no topo, separadas. |
+| Tasks sem Section no Project | Exibidas no topo do projeto, antes das Sections (grupo implícito "Sem seção"). |
+| View "Próximos dias" | Definição pendente — não implementar ainda. |
+| Sub-tasks | Estrutura pensada (ver seção abaixo), implementação é v2. |
+| Tags | Estrutura pensada (ver seção abaixo), implementação é v2. |
+| Tarefas recorrentes | v2. Não implementar no MVP. |
+
+---
+
+## Estruturas v2 (não implementar ainda — só referência de design)
+
+### Sub-tasks
+
+Sub-tasks são tarefas filhas vinculadas a uma Task principal. Apenas **1 nível de profundidade**: uma Task pode ter SubTasks, mas uma SubTask não pode ter SubTasks.
+
+**Por que entidade separada e não `parentId` na Task:**
+- SubTask tem menos campos (sem `projectId`, `sectionId`, `priority` — herda do pai)
+- Evita self-joins e queries recursivas
+- Torna explícito que SubTask é um conceito diferente de Task
+- Facilita validação do limite de 1 nível
+
+```typescript
+// v2 — NÃO implementar no MVP
+interface SubTask {
+  id: string
+  userId: string
+  parentTaskId: string    // Sempre vinculada a uma Task. Obrigatório.
+
+  title: string
+  completed: boolean
+  completedAt?: Date
+  order: number           // Posição entre as subtasks do mesmo pai
+
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+**Regras de SubTask (para quando implementar):**
+- SubTask não tem `projectId`, `sectionId`, `dueDate`, `priority` — herda do pai.
+- Uma Task pode ter N SubTasks, sem limite definido (mas UI deve desencorajar exagero).
+- SubTask deletada não afeta a Task pai.
+- Task pai deletada deleta SubTasks em cascata.
+- Progress de uma Task com SubTasks: `subTasksCompleted / subTasksTotal`.
+
+**Como exibir:**
+```
+Task "Implementar autenticação"
+  ☐ Criar endpoint de login         ← SubTask
+  ☐ Validar JWT no middleware        ← SubTask
+  ✅ Configurar variáveis de ambiente ← SubTask (concluída)
+```
+
+---
+
+### Tags
+
+Tags permitem classificar Tasks de forma transversal, independente de Project ou Section. Exemplo: marcar tasks de `#urgente`, `#aguardando-resposta`, `#pessoal`.
+
+**Por que entidade `Tag` separada e não `string[]` na Task:**
+- Renomear uma tag atualiza em todas as tasks de uma vez
+- Suporte a cor sem duplicar dado
+- Queries eficientes por tag (`GET /todos?tagId=xyz`)
+- Evita inconsistência de nomes (ex: "Urgente" vs "urgente" vs "URGENTE")
+
+```typescript
+// v2 — NÃO implementar no MVP
+interface Tag {
+  id: string
+  userId: string          // Tags são por usuário, não globais
+  name: string            // Ex: "urgente", "aguardando", "pessoal"
+  color: string           // Hex. Ex: "#ef4444"
+  createdAt: Date
+  updatedAt: Date
+}
+
+// Task passa a ter:
+interface Task {
+  // ... campos atuais
+  tagIds?: string[]       // IDs das Tags associadas
+}
+```
+
+**Regras de Tag (para quando implementar):**
+- Tags são do usuário, não do Project. Uma tag pode aparecer em tasks de qualquer Project ou do Inbox.
+- Uma Task pode ter múltiplas Tags.
+- Tag deletada é removida das Tasks que a referenciavam.
+- Limite sugerido: máx. 10 tags por Task (UX — evitar abuso).
+- Nome da Tag: máx. 30 chars, sem espaços (usar hífen: "em-andamento").
+
+**Como exibir:**
+```
+Task "Revisar proposta comercial"
+  📅 amanhã  🔴 alta  🏷 urgente  🏷 aguardando-cliente
+```
+
+**O que remover do MVP:**
+- O mock de `tags: string[]` no frontend deve ser removido ou substituído por `// @v2: tags`
+- Não adicionar `tags` ao `TodoDto` até a implementação real
+
+---
+
+## Decisões pendentes (ainda abertas)
+
+**Não implementar** sem alinhar primeiro:
+
+### View "Próximos dias" — janela de tempo
+- Quantos dias mostrar? 7? 14? 30?
+- Excluir hoje ou incluir?
+- **Status:** pendente.
+
+### Progresso em Projects simples (sem targetValue)
+- Mostrar barra de progresso baseada em tasks completas?
+- Ou só mostrar progresso quando tem `targetValue`?
+- **Status:** pendente.
+
+---
+
+## Convenções de nomenclatura no código
+
+| Conceito | Nome no domínio | Nome na API (rota) | Nome no banco |
+|---|---|---|---|
+| Ação a ser feita | `Task` / `Todo` | `/todos` | `TODO#` |
+| Container/objetivo | `Project` | `/projects` | `PROJECT#` |
+| Agrupamento interno | `Section` | `/projects/:id/sections` | `SECTION#` |
+| Tasks sem projeto | Inbox | `/todos/inbox` | `TODO#INBOX#` |
+
+> **Nota:** o termo `Todo` é usado internamente (código, banco) por legado. Nos contratos públicos e na UI, usar `Task`. Não misturar os dois em contextos novos.
+
+---
+
+## Referências
+
+- Design de domínio: `docs/plans/2026-03-06-domain-design.md`
+- Visão de produto: `docs/plans/2026-03-06-product-vision.md`
+- Arquitetura da API: `docs/api-architecture-proposal.md`
+- Banco de dados: `docs/database-design.md`
