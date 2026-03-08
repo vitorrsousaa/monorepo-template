@@ -60,12 +60,6 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 						</p>
 					)}
 					<div className="flex items-center gap-3 mt-1 flex-wrap">
-						<Badge
-							variant="secondary"
-							className="bg-secondary/50 text-muted-foreground text-xs"
-						>
-							No Project
-						</Badge>
 						{todo.priority != null && (
 							<Badge
 								variant="secondary"
