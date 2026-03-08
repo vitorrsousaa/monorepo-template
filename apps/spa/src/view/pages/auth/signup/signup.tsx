@@ -1,6 +1,6 @@
 import type { TSignupFormSchema } from "@/modules/auth/forms/signup";
 import { SignupForm } from "@/modules/auth/forms/signup";
-import { GalleryVerticalEnd } from "lucide-react";
+import { AuthLayout } from "@/layouts/auth-layout";
 
 export function Signup() {
 	const handleSubmit = async (data: TSignupFormSchema) => {
@@ -9,31 +9,26 @@ export function Signup() {
 	};
 
 	return (
-		<div className="grid min-h-svh lg:grid-cols-2">
-			<div className="flex flex-col gap-4 p-6 md:p-10">
-				<div className="flex justify-center gap-2 md:justify-start">
-					<a href="#" className="flex items-center gap-2 font-medium">
-						<div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-							<GalleryVerticalEnd className="size-4" />
-						</div>
-						Acme Inc.
-					</a>
+		<AuthLayout>
+			<div className="mx-auto w-full max-w-[420px] px-6">
+				{/* Glass card */}
+				<div
+					className="animate-in fade-in slide-in-from-bottom-4 duration-700 rounded-2xl border border-white/[0.08] p-8 shadow-2xl backdrop-blur-xl sm:p-10"
+					style={{
+						background:
+							"linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
+						boxShadow:
+							"0 0 0 1px rgba(255,255,255,0.03) inset, 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 80px -20px hsl(262 83% 58% / 0.1)",
+					}}
+				>
+					<SignupForm onSubmit={handleSubmit} />
 				</div>
-				<div className="flex flex-1 items-center justify-center">
-					<div className="w-full max-w-xs">
-						<SignupForm onSubmit={handleSubmit} />
-					</div>
-				</div>
+
+				{/* Bottom subtle text */}
+				<p className="animate-in fade-in duration-700 delay-700 mt-6 text-center text-xs text-white/20">
+					Protected by enterprise-grade security
+				</p>
 			</div>
-			<div className="bg-muted relative hidden lg:block">
-				<img
-					src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-					alt=""
-					aria-label="Signup-image"
-					className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-					aria-hidden="true"
-				/>
-			</div>
-		</div>
+		</AuthLayout>
 	);
 }
