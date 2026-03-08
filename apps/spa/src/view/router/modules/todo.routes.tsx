@@ -18,6 +18,11 @@ const Today = lazy(() =>
 		default: module.Today,
 	})),
 );
+const Upcoming = lazy(() =>
+	import("@/pages/app/todo/upcoming").then((module) => ({
+		default: module.Upcoming,
+	})),
+);
 
 export const todoRoutes: RouteObject = {
 	path: "/",
@@ -34,6 +39,10 @@ export const todoRoutes: RouteObject = {
 		{
 			path: ROUTES.TODO.TODAY,
 			element: <Today />,
+		},
+		{
+			path: ROUTES.TODO.UPCOMING,
+			element: <Upcoming />,
 		},
 	],
 };

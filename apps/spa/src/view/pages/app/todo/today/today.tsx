@@ -39,8 +39,13 @@ export function Today() {
 					<div>
 						<h1 className="text-2xl font-semibold text-balance">Today</h1>
 						<p className="text-sm text-muted-foreground mt-1">
-							{projects.reduce((acc, project) => acc + project.todos.length, 0)}{" "}
-							tasks
+							{new Date().toLocaleDateString("pt-BR", {
+								weekday: "long",
+								day: "numeric",
+								month: "long",
+							})}{" "}
+							· {projects.reduce((acc, project) => acc + project.todos.length, 0)}{" "}
+							tarefas
 						</p>
 					</div>
 					<Button

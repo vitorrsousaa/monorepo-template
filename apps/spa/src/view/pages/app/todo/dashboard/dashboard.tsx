@@ -1,252 +1,241 @@
-import { Badge } from "@repo/ui/badge";
-import { Button } from "@repo/ui/button";
-import { Card } from "@repo/ui/card";
-import { Icon } from "@repo/ui/icon";
-import {
-	CheckCircle2,
-	Folder,
-	List,
-	Play,
-	Plus,
-	TrendingUp,
-	Zap,
-} from "lucide-react";
+import { ROUTES } from "@/config/routes";
+import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { cn } from "@repo/ui/utils";
+import { ArrowRight, Calendar, CheckCircle2, Clock, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { PROJECTS_MOCK, TASKS_MOCK } from "./dashboard.mocks";
+import { TaskCard } from "./task-card";
+
+function ProgressBar({ value, max, color = "bg-primary" }: { value: number; max: number; color?: string }) {
+	const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0
+	return (
+		<div className="h-1.5 bg-muted rounded-full overflow-hidden">
+			<div
+				className={cn("h-full rounded-full transition-all duration-500", color)}
+				style={{ width: `${pct}%` }}
+			/>
+		</div>
+	)
+}
 
 export function Dashboard() {
-	const projects = [
+	const navigate = useNavigate();
+	const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+
+	// Mock data - substituir por hooks da API quando integrar
+	const [tasks] = useState(TASKS_MOCK);
+	const [projects] = useState(PROJECTS_MOCK);
+
+	const today = new Date().toISOString().split("T")[0];
+
+	const setView = (view: "hoje" | { type: "projeto"; id: string }) => {
+		if (view === "hoje") {
+			navigate(ROUTES.TODO.TODAY);
+		} else if (view.type === "projeto") {
+			navigate(ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", view.id));
+		}
+	};
+
+	const completed = tasks.filter((t) => t.status === "concluida").length
+	const inProgress = tasks.filter((t) => t.status === "pendente").length
+	const todayTasks = tasks.filter((t) => t.dueDate === today)
+	const todayDone = todayTasks.filter((t) => t.status === "concluida").length
+	const efficiency = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0
+
+	const stats = [
 		{
-			id: "1",
-			name: "Study Plan - Automated Tests",
-			description:
-				"Learn to create and run automated tests to ensure software quality.",
-			progress: 50,
-			totalTasks: 10,
-			completedTasks: 5,
-			dueDate: "2026-01-20",
-			priority: "high",
+			label: "Concluídas",
+			value: completed,
+			icon: CheckCircle2,
+			iconBg: "bg-emerald-100 dark:bg-emerald-900/30",
+			iconColor: "text-emerald-600 dark:text-emerald-400",
+			trend: "+2 hoje",
 		},
 		{
-			id: "2",
-			name: "Python Study Plan",
-			description: "Detailed plan to learn Python step by step.",
-			progress: 30,
-			totalTasks: 10,
-			completedTasks: 3,
-			dueDate: "2026-01-21",
-			priority: "medium",
+			label: "Em andamento",
+			value: inProgress,
+			icon: Clock,
+			iconBg: "bg-blue-100 dark:bg-blue-900/30",
+			iconColor: "text-blue-600 dark:text-blue-400",
+			trend: `${todayTasks.length} para hoje`,
 		},
-	];
+		{
+			label: "Para hoje",
+			value: todayTasks.length,
+			icon: Calendar,
+			iconBg: "bg-orange-100 dark:bg-orange-900/30",
+			iconColor: "text-orange-600 dark:text-orange-400",
+			trend: `${todayDone} concluídas`,
+		},
+		{
+			label: "Eficiência",
+			value: `${efficiency}%`,
+			icon: TrendingUp,
+			iconBg: "bg-violet-100 dark:bg-violet-900/30",
+			iconColor: "text-violet-600 dark:text-violet-400",
+			trend: "geral",
+		},
+	]
+
+	const recentProjects = projects.slice(0, 4)
+
+	const weekStats = [
+		{ label: "Tarefas concluídas", value: completed + 3 },
+		{ label: "Horas focadas", value: "12h 40m" },
+		{ label: "Metas em andamento", value: projects.filter((p) => p.isGoal && p.status === "ativo").length },
+	]
 
 	return (
-		<div className="p-8 space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-3xl font-semibold text-balance">Dashboard</h1>
-				<div className="flex items-center gap-4">
-					<div className="flex items-center gap-2">
-						<Icon name="fire" className="w-5 h-5 text-primary" />
-						<span className="font-semibold">7</span>
+		<div className="p-6 space-y-6 max-w-6xl mx-auto">
+			{/* Greeting */}
+			<div>
+				<h2 className="text-2xl font-bold text-foreground text-balance">Bom dia, Marcos</h2>
+				<p className="text-muted-foreground mt-1">
+					Você tem <span className="font-semibold text-foreground">{todayTasks.filter(t => t.status === "pendente").length} tarefas</span> para concluir hoje.
+				</p>
+			</div>
+
+			{/* Stats Cards */}
+			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+				{stats.map(({ label, value, icon: Icon, iconBg, iconColor, trend }) => (
+					<div key={label} className="bg-card border border-border rounded-xl p-4 space-y-3">
+						<div className={cn("flex items-center justify-center w-10 h-10 rounded-lg", iconBg)}>
+							<Icon className={cn("w-5 h-5", iconColor)} />
+						</div>
+						<div>
+							<div className="text-2xl font-bold text-foreground">{value}</div>
+							<div className="text-sm text-muted-foreground">{label}</div>
+						</div>
+						<div className="text-xs text-muted-foreground/70">{trend}</div>
+					</div>
+				))}
+			</div>
+
+			{/* Main grid */}
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				{/* Tarefas de hoje */}
+				<div className="lg:col-span-2 space-y-3">
+					<div className="flex items-center justify-between">
+						<h3 className="font-semibold text-foreground">Tarefas de Hoje</h3>
+						<button
+							onClick={() => setView("hoje")}
+							className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+						>
+							Ver kanban <ArrowRight className="w-3 h-3" />
+						</button>
+					</div>
+
+					{todayTasks.length === 0 ? (
+						<div className="flex flex-col items-center justify-center py-12 bg-card border border-border rounded-xl text-center">
+							<CheckCircle2 className="w-10 h-10 text-muted-foreground/40 mb-3" />
+							<p className="font-medium text-muted-foreground">Nada para hoje!</p>
+							<p className="text-sm text-muted-foreground/60 mt-1">Aproveite o dia ou crie uma nova tarefa</p>
+							<button
+								onClick={() => setIsNewTaskOpen(true)}
+								className="mt-4 text-sm text-primary font-medium hover:underline"
+							>
+								Criar tarefa
+							</button>
+						</div>
+					) : (
+						<div className="space-y-2">
+							{todayTasks.map((t) => (
+								<TaskCard key={t.id} task={t} />
+							))}
+						</div>
+					)}
+				</div>
+
+				{/* Projetos recentes */}
+				<div className="space-y-3">
+					<div className="flex items-center justify-between">
+						<h3 className="font-semibold text-foreground">Projetos</h3>
+						<button
+							onClick={() => navigate(ROUTES.PROJECTS.LIST)}
+							className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+						>
+							Ver todos
+						</button>
+					</div>
+
+					<div className="space-y-3">
+						{recentProjects.map((p) => {
+							const projectTasks = tasks.filter((t) => t.projectId === p.id)
+							const doneTasks = projectTasks.filter((t) => t.status === "concluida").length
+							const pct = projectTasks.length > 0 ? Math.round((doneTasks / projectTasks.length) * 100) : 0
+
+							const statusLabels: Record<string, string> = {
+								ativo: "Ativo",
+								concluido: "Concluído",
+								arquivado: "Arquivado",
+							}
+							const statusColors: Record<string, string> = {
+								ativo: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+								concluido: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+								arquivado: "bg-muted text-muted-foreground",
+							}
+
+							return (
+								<button
+									key={p.id}
+									onClick={() => setView({ type: "projeto", id: p.id })}
+									className="w-full text-left bg-card border border-border rounded-xl p-4 hover:border-primary/40 transition-colors space-y-3"
+								>
+									<div className="flex items-start justify-between gap-2">
+										<div className="flex items-center gap-2">
+											<span className="text-xl">{p.emoji}</span>
+											<div>
+												<p className="text-sm font-medium text-foreground leading-none">{p.name}</p>
+												{p.description && (
+													<p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{p.description}</p>
+												)}
+											</div>
+										</div>
+										<span className={cn("text-[10px] px-1.5 py-0.5 rounded-full font-medium shrink-0", statusColors[p.status])}>
+											{statusLabels[p.status]}
+										</span>
+									</div>
+									<div className="space-y-1">
+										<div className="flex justify-between text-xs text-muted-foreground">
+											<span>
+												{projectTasks.length > 0
+													? `${doneTasks}/${projectTasks.length} tarefas`
+													: "Sem tarefas"}
+											</span>
+											<span>{pct}%</span>
+										</div>
+										<ProgressBar value={doneTasks} max={Math.max(projectTasks.length, 1)} />
+									</div>
+									{p.isGoal && p.targetValue && (
+										<div className="text-xs text-muted-foreground">
+											Meta: {p.currentValue ?? 0} / {p.targetValue} {p.unit}
+										</div>
+									)}
+								</button>
+							)
+						})}
 					</div>
 				</div>
 			</div>
 
-			{/* Stats Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-4">
-						<div className="p-3 rounded-full bg-primary/10">
-							<CheckCircle2 className="w-6 h-6 text-primary" />
+			{/* Resumo da semana */}
+			<div className="bg-card border border-border rounded-xl p-5">
+				<h3 className="font-semibold text-foreground mb-4">Resumo da semana</h3>
+				<div className="grid grid-cols-3 gap-4">
+					{weekStats.map(({ label, value }) => (
+						<div key={label} className="text-center">
+							<div className="text-2xl font-bold text-foreground">{value}</div>
+							<div className="text-xs text-muted-foreground mt-1">{label}</div>
 						</div>
-						<div>
-							<div className="text-3xl font-bold">3</div>
-							<div className="text-sm text-muted-foreground">Completed</div>
-						</div>
-					</div>
-				</Card>
-
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-4">
-						<div className="p-3 rounded-full bg-chart-2/10">
-							<Icon name="chartBar" className="w-6 h-6 text-chart-2" />
-						</div>
-						<div>
-							<div className="text-3xl font-bold">13</div>
-							<div className="text-sm text-muted-foreground">In Progress</div>
-						</div>
-					</div>
-				</Card>
-
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-4">
-						<div className="p-3 rounded-full bg-destructive/10">
-							<Icon name="calendarDays" className="w-6 h-6 text-destructive" />
-						</div>
-						<div>
-							<div className="text-3xl font-bold">2</div>
-							<div className="text-sm text-muted-foreground">Today</div>
-						</div>
-					</div>
-				</Card>
-
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-4">
-						<div className="p-3 rounded-full bg-chart-4/10">
-							<Icon name="arrowTrendingUp" className="w-6 h-6 text-chart-4" />
-						</div>
-						<div>
-							<div className="text-3xl font-bold">16%</div>
-							<div className="text-sm text-muted-foreground">Efficiency</div>
-						</div>
-					</div>
-				</Card>
+					))}
+				</div>
 			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{/* Today's Tasks */}
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-3 mb-6">
-						<List className="w-5 h-5 text-primary" />
-						<div>
-							<h2 className="text-xl font-semibold text-balance">
-								{"Today's Tasks"}
-							</h2>
-							<p className="text-sm text-muted-foreground">
-								Your priorities for today
-							</p>
-						</div>
-					</div>
-
-					<div className="space-y-4">
-						<div className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
-							<div>
-								<div className="font-medium">File Management</div>
-								<div className="text-sm text-muted-foreground">
-									07:00 - 09:00
-								</div>
-							</div>
-							<Badge
-								variant="secondary"
-								className="bg-chart-2/20 text-chart-2 hover:bg-chart-2/20"
-							>
-								Medium
-							</Badge>
-						</div>
-
-						<div className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
-							<div>
-								<div className="font-medium">Modules and Packages</div>
-								<div className="text-sm text-muted-foreground">
-									11:00 - 13:00
-								</div>
-							</div>
-							<Badge
-								variant="secondary"
-								className="bg-chart-2/20 text-chart-2 hover:bg-chart-2/20"
-							>
-								Medium
-							</Badge>
-						</div>
-					</div>
-				</Card>
-
-				{/* Recent Groups */}
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-3 mb-6">
-						<Folder className="w-5 h-5 text-primary" />
-						<div>
-							<h2 className="text-xl font-semibold text-balance">
-								Recent Projects
-							</h2>
-							<p className="text-sm text-muted-foreground">
-								Your most recent projects
-							</p>
-						</div>
-					</div>
-
-					<div className="space-y-4">
-						{projects.map((project) => (
-							<div
-								key={project.id}
-								className="space-y-2 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors"
-							>
-								<div className="font-medium">{project.name}</div>
-								<p className="text-sm text-muted-foreground">
-									{project.description}
-								</p>
-								<div className="space-y-1">
-									<div className="flex justify-between text-sm">
-										<span className="text-muted-foreground">
-											{project.completedTasks} of {project.totalTasks} completed
-											({project.progress}%)
-										</span>
-									</div>
-									<div className="h-2 bg-secondary rounded-full overflow-hidden">
-										<div
-											className="h-full bg-primary w-[20%]"
-											style={{ width: `${project.progress}%` }}
-										/>
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-				</Card>
-
-				{/* Quick Actions */}
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-3 mb-6">
-						<Zap className="w-5 h-5 text-primary" />
-						<div>
-							<h2 className="text-xl font-semibold text-balance">
-								Quick Actions
-							</h2>
-						</div>
-					</div>
-
-					<div className="space-y-3">
-						<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-14 text-base">
-							<Play className="w-5 h-5 mr-2" />
-							Start Pomodoro
-						</Button>
-
-						<Button
-							variant="outline"
-							className="w-full h-12 border-border hover:bg-secondary/50 bg-transparent"
-						>
-							<Plus className="w-5 h-5 mr-2" />
-							New Task
-						</Button>
-					</div>
-				</Card>
-
-				{/* This Week */}
-				<Card className="p-6 bg-card border-border">
-					<div className="flex items-center gap-3 mb-6">
-						<TrendingUp className="w-5 h-5 text-primary" />
-						<div>
-							<h2 className="text-xl font-semibold text-balance">This Week</h2>
-						</div>
-					</div>
-
-					<div className="grid grid-cols-3 gap-6">
-						<div className="text-center">
-							<div className="text-3xl font-bold text-chart-2">0h</div>
-							<div className="text-sm text-muted-foreground mt-1">
-								Hours Studied
-							</div>
-						</div>
-						<div className="text-center">
-							<div className="text-3xl font-bold text-chart-3">0</div>
-							<div className="text-sm text-muted-foreground mt-1">
-								Pomodoros
-							</div>
-						</div>
-						<div className="text-center">
-							<div className="text-3xl font-bold text-chart-4">16%</div>
-							<div className="text-sm text-muted-foreground mt-1">Goals</div>
-						</div>
-					</div>
-				</Card>
-			</div>
+			<NewTodoModal
+				isOpen={isNewTaskOpen}
+				onClose={() => setIsNewTaskOpen(false)}
+			/>
 		</div>
 	);
 }

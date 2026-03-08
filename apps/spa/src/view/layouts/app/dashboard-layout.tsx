@@ -49,7 +49,7 @@ export function DashboardLayout() {
 						<ThemeToggle />
 					</div>
 				</header>
-				<div className="flex flex-1 flex-col min-h-0 overflow-hidden">
+				<div className="flex flex-1 flex-col min-h-0 overflow-y-auto">
 					<Outlet />
 				</div>
 			</SidebarInset>
