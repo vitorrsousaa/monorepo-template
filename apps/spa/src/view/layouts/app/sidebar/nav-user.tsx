@@ -28,9 +28,13 @@ export function NavUser() {
 	const navigate = useNavigate();
 	const { signout } = useAuth();
 
+	const handleNavigateToProfile = () => {
+		navigate(ROUTES.USER.PROFILE);
+	};
+
 	const handleNavigateToSettings = () => {
-		navigate(ROUTES.SETTINGS.SETTINGS);
-	}
+		navigate(ROUTES.USER.SETTINGS);
+	};
 
 	return (
 		<SidebarMenu>
@@ -52,15 +56,15 @@ export function NavUser() {
 					<DropdownMenuContent align="end"
 						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg w-52"
 						side={isMobile ? "bottom" : "right"}>
-						<DropdownMenuItem >
+						<DropdownMenuItem onSelect={handleNavigateToProfile}>
 							<BadgeCheck className="w-4 h-4 mr-2" />
-							Account
+							Perfil
 						</DropdownMenuItem>
 						<DropdownMenuItem>
 							<Bell className="w-4 h-4 mr-2" />
 							Notifications
 						</DropdownMenuItem>
-						<DropdownMenuItem onClick={handleNavigateToSettings}>
+						<DropdownMenuItem onSelect={handleNavigateToSettings}>
 							<Settings className="w-4 h-4 mr-2" />
 							Settings
 						</DropdownMenuItem>

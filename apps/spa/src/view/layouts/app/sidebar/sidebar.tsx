@@ -2,11 +2,12 @@ import {
 	CalendarClock,
 	CalendarDays,
 	CheckSquare,
+	HelpCircle,
 	Inbox,
 	LayoutDashboard,
-	LifeBuoy,
-	Send,
-	Target
+	Settings,
+	Target,
+	User,
 } from "lucide-react";
 import type * as React from "react";
 import { Link } from "react-router-dom";
@@ -40,16 +41,9 @@ const data = {
 		{ url: ROUTES.GOALS_DASHBOARD, label: "Metas", icon: Target },
 	],
 	navSecondary: [
-		{
-			title: "Support",
-			url: "#",
-			icon: LifeBuoy,
-		},
-		{
-			title: "Feedback",
-			url: "#",
-			icon: Send,
-		},
+		{ title: "Perfil", url: ROUTES.USER.PROFILE, icon: User },
+		{ title: "Configurações", url: ROUTES.USER.SETTINGS, icon: Settings },
+		{ title: "Suporte", url: ROUTES.USER.SUPPORT, icon: HelpCircle },
 	],
 };
 

@@ -1,16 +1,7 @@
-import { SettingsNotificationsTab } from "@/modules/settings/view/components/tabs/notifications-tab";
-import { SettingsProfileTab } from "@/modules/settings/view/components/tabs/profile-tab";
-import { SettingsSecurityTab } from "@/modules/settings/view/components/tabs/security-tab";
-import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@repo/ui/card";
+import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
+import { useTheme } from "@repo/ui/providers";
 import {
 	Select,
 	SelectContent,
@@ -18,259 +9,327 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@repo/ui/select";
+import { Separator } from "@repo/ui/separator";
 import { Switch } from "@repo/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
-import { CreditCard, Download, Save, Trash2 } from "lucide-react";
+import { cn } from "@repo/ui/utils";
+import { AlertTriangle, Monitor, Moon, Sun } from "lucide-react";
+import { useState } from "react";
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+	return (
+		<h3 className="text-base font-semibold text-foreground mb-4">
+			{children}
+		</h3>
+	);
+}
+
+function SettingRow({
+	label,
+	description,
+	children,
+}: {
+	label: string;
+	description?: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="flex items-center justify-between gap-4 py-3">
+			<div className="flex-1">
+				<p className="text-sm font-medium text-foreground">{label}</p>
+				{description && (
+					<p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+				)}
+			</div>
+			<div className="shrink-0">{children}</div>
+		</div>
+	);
+}
 
 export function Settings() {
+	const { theme, setTheme } = useTheme();
+	const [notifs, setNotifs] = useState({
+		email: true,
+		push: false,
+		tarefas: true,
+		metas: true,
+		resumo: false,
+	});
+
+	const toggleNotif = (key: keyof typeof notifs) =>
+		setNotifs((n) => ({ ...n, [key]: !n[key] }));
+
 	return (
-		<div className="flex-1 p-8">
-			<div className="space-y-8">
-				{/* Header */}
-				<div className="flex items-center justify-between">
-					<div>
-						<h1 className="text-2xl font-semibold text-balance">Settings</h1>
-						<p className="mt-1 text-muted-foreground">
-							Manage your account preferences and configuration
-						</p>
+		<div className="flex-1 p-6 max-w-4xl mx-auto space-y-6 w-full">
+			<div>
+				<h2 className="text-xl font-bold text-foreground">Configurações</h2>
+				<p className="text-sm text-muted-foreground mt-0.5">
+					Notificações, segurança, assinatura e preferências
+				</p>
+			</div>
+
+			<Tabs defaultValue="notificacoes" className="space-y-6 w-full">
+				<TabsList className="flex h-auto gap-1 w-full">
+					<TabsTrigger value="notificacoes" className="flex-1">
+						Notificações
+					</TabsTrigger>
+					<TabsTrigger value="seguranca" className="flex-1">
+						Segurança
+					</TabsTrigger>
+					<TabsTrigger value="assinatura" className="flex-1">
+						Assinatura
+					</TabsTrigger>
+					<TabsTrigger value="preferencias" className="flex-1">
+						Preferências
+					</TabsTrigger>
+				</TabsList>
+
+				{/* Notificações */}
+				<TabsContent value="notificacoes" className="space-y-4">
+					<div className="bg-card border border-border rounded-xl p-6 space-y-1 divide-y divide-border">
+						<SectionTitle>Canais</SectionTitle>
+						<SettingRow
+							label="Notificações por email"
+							description="Receba atualizações no seu email"
+						>
+							<Switch checked={notifs.email} onCheckedChange={() => toggleNotif("email")} />
+						</SettingRow>
+						<SettingRow
+							label="Notificações push"
+							description="Notificações no navegador"
+						>
+							<Switch checked={notifs.push} onCheckedChange={() => toggleNotif("push")} />
+						</SettingRow>
+
+						<div className="pt-4">
+							<SectionTitle>Eventos</SectionTitle>
+						</div>
+						<SettingRow
+							label="Vencimento de tarefas"
+							description="Alertas quando uma tarefa está prestes a vencer"
+						>
+							<Switch checked={notifs.tarefas} onCheckedChange={() => toggleNotif("tarefas")} />
+						</SettingRow>
+						<SettingRow
+							label="Atualização de metas"
+							description="Acompanhamento do progresso de metas"
+						>
+							<Switch checked={notifs.metas} onCheckedChange={() => toggleNotif("metas")} />
+						</SettingRow>
+						<SettingRow
+							label="Resumo semanal"
+							description="Resumo de produtividade toda segunda-feira"
+						>
+							<Switch checked={notifs.resumo} onCheckedChange={() => toggleNotif("resumo")} />
+						</SettingRow>
 					</div>
-				</div>
+				</TabsContent>
 
-				<Tabs
-					defaultValue="profile"
-					className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto pb-16"
-				>
-					<TabsList className="grid w-full grid-cols-5">
-						<TabsTrigger value="profile">Profile</TabsTrigger>
-						<TabsTrigger value="notifications">Notifications</TabsTrigger>
-						<TabsTrigger value="security">Security</TabsTrigger>
-						<TabsTrigger value="billing">Billing</TabsTrigger>
-						<TabsTrigger value="preferences">Preferences</TabsTrigger>
-					</TabsList>
+				{/* Segurança */}
+				<TabsContent value="seguranca" className="space-y-4">
+					<div className="bg-card border border-border rounded-xl p-6 space-y-4">
+						<SectionTitle>Alterar senha</SectionTitle>
+						<div className="space-y-3">
+							<div className="space-y-1.5">
+								<Label htmlFor="current-pw">Senha atual</Label>
+								<Input id="current-pw" type="password" />
+							</div>
+							<div className="space-y-1.5">
+								<Label htmlFor="new-pw">Nova senha</Label>
+								<Input id="new-pw" type="password" />
+							</div>
+							<div className="space-y-1.5">
+								<Label htmlFor="confirm-pw">Confirmar nova senha</Label>
+								<Input id="confirm-pw" type="password" />
+							</div>
+							<div className="flex justify-end pt-1">
+								<Button>Atualizar senha</Button>
+							</div>
+						</div>
+					</div>
 
-					<TabsContent value="profile" className="space-y-6">
-						<SettingsProfileTab />
-					</TabsContent>
+					<div className="bg-card border border-border rounded-xl p-6 divide-y divide-border space-y-1">
+						<SectionTitle>Segurança adicional</SectionTitle>
+						<SettingRow
+							label="Autenticação em dois fatores"
+							description="Adicione uma camada extra de segurança"
+						>
+							<Button variant="outline" size="sm">
+								Ativar 2FA
+							</Button>
+						</SettingRow>
+						<SettingRow label="Sessões ativas" description="1 dispositivo logado">
+							<Button variant="outline" size="sm">
+								Gerenciar
+							</Button>
+						</SettingRow>
+					</div>
+				</TabsContent>
 
-					<TabsContent value="notifications" className="space-y-6">
-						<SettingsNotificationsTab />
-					</TabsContent>
+				{/* Assinatura */}
+				<TabsContent value="assinatura" className="space-y-4">
+					<div className="bg-card border border-border rounded-xl p-6 space-y-4">
+						<SectionTitle>Plano atual</SectionTitle>
+						<div className="flex items-center justify-between p-4 bg-primary/10 border border-primary/20 rounded-lg">
+							<div>
+								<p className="font-semibold text-foreground">Plano Free</p>
+								<p className="text-sm text-muted-foreground">
+									Projetos ilimitados, até 5 metas
+								</p>
+							</div>
+							<Button size="sm">Fazer upgrade</Button>
+						</div>
 
-					<TabsContent value="security" className="space-y-6">
-						<SettingsSecurityTab />
-					</TabsContent>
-
-					<TabsContent value="billing" className="space-y-6">
-						<Card>
-							<CardHeader>
-								<CardTitle>Billing & Subscription</CardTitle>
-								<CardDescription>
-									Manage your subscription and billing information
-								</CardDescription>
-							</CardHeader>
-							<CardContent className="space-y-6">
-								<div className="space-y-4">
-									<h3 className="font-medium ">Current Plan</h3>
-									<div className="p-4 border ounded-lg">
-										<div className="flex items-center justify-between mb-2">
-											<div className="font-medium text-lg">Pro Plan</div>
-											<Badge
-												variant="secondary"
-												className="bg-purple-100 text-purple-700"
-											>
-												Active
-											</Badge>
-										</div>
-										<div className="text-sm text-muted-foreground mb-4">
-											$29/month • Billed monthly • Next billing: Jan 15, 2025
-										</div>
-										<div className="flex gap-2">
-											<Button variant="outline" size="sm">
-												Change Plan
-											</Button>
-											<Button variant="outline" size="sm">
-												Cancel Subscription
-											</Button>
-										</div>
-									</div>
-								</div>
-
-								<div className="space-y-4">
-									<h3 className="font-medium ">Payment Method</h3>
-									<div className="p-4 border rounded-lg">
-										<div className="flex items-center gap-3 mb-2">
-											<CreditCard className="w-5 h-5 text-gray-400" />
-											<div className="font-medium">•••• •••• •••• 4242</div>
-											<Badge variant="secondary">Default</Badge>
-										</div>
-										<div className="text-sm text-muted-foreground mb-4">
-											Expires 12/2027
-										</div>
-										<div className="flex gap-2">
-											<Button variant="outline" size="sm">
-												Update Card
-											</Button>
-											<Button variant="outline" size="sm">
-												Add Payment Method
-											</Button>
-										</div>
-									</div>
-								</div>
-
-								<div className="space-y-4">
-									<h3 className="font-medium ">Billing History</h3>
-									<div className="space-y-2">
-										<div className="flex items-center justify-between p-3 border rounded-lg">
-											<div>
-												<div className="font-medium">Dec 15, 2024</div>
-												<div className="text-sm text-muted-foreground">
-													Pro Plan - Monthly
-												</div>
-											</div>
-											<div className="flex items-center gap-2">
-												<span className="font-medium">$29.00</span>
-												<Button variant="ghost" size="sm">
-													<Download className="w-4 h-4" />
-												</Button>
-											</div>
-										</div>
-
-										<div className="flex items-center justify-between p-3 border rounded-lg">
-											<div>
-												<div className="font-medium">Nov 15, 2024</div>
-												<div className="text-sm text-muted-foreground">
-													Pro Plan - Monthly
-												</div>
-											</div>
-											<div className="flex items-center gap-2">
-												<span className="font-medium">$29.00</span>
-												<Button variant="ghost" size="sm">
-													<Download className="w-4 h-4" />
-												</Button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</TabsContent>
-
-					<TabsContent value="preferences" className="space-y-6">
-						<Card>
-							<CardHeader>
-								<CardTitle>Application Preferences</CardTitle>
-								<CardDescription>
-									Customize your application experience
-								</CardDescription>
-							</CardHeader>
-							<CardContent className="space-y-6">
-								<div className="space-y-4">
-									<h3 className="font-medium ">Appearance</h3>
-									<div className="space-y-4">
-										<div className="space-y-2">
-											<Label htmlFor="theme">Theme</Label>
-											<Select defaultValue="light">
-												<SelectTrigger>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="light">Light</SelectItem>
-													<SelectItem value="dark">Dark</SelectItem>
-													<SelectItem value="system">System</SelectItem>
-												</SelectContent>
-											</Select>
-										</div>
-
-										<div className="space-y-2">
-											<Label htmlFor="language">Language</Label>
-											<Select defaultValue="en">
-												<SelectTrigger>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="en">English</SelectItem>
-													<SelectItem value="es">Spanish</SelectItem>
-													<SelectItem value="fr">French</SelectItem>
-													<SelectItem value="de">German</SelectItem>
-												</SelectContent>
-											</Select>
-										</div>
-									</div>
-								</div>
-
-								<div className="space-y-4">
-									<h3 className="font-medium ">Data & Privacy</h3>
-									<div className="space-y-4">
+						<Separator />
+						<div className="space-y-2">
+							<h4 className="text-sm font-semibold text-foreground">
+								Planos disponíveis
+							</h4>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+								{[
+									{
+										name: "Pro",
+										price: "R$ 19/mês",
+										features: [
+											"Metas ilimitadas",
+											"Integrações",
+											"Suporte prioritário",
+										],
+									},
+									{
+										name: "Família",
+										price: "R$ 39/mês",
+										features: [
+											"5 usuários",
+											"Agenda compartilhada",
+											"Tudo do Pro",
+										],
+									},
+								].map((plan) => (
+									<div
+										key={plan.name}
+										className="border border-border rounded-lg p-4 space-y-2"
+									>
 										<div className="flex items-center justify-between">
-											<div>
-												<div className="font-medium">
-													Analytics & Usage Data
-												</div>
-												<div className="text-sm text-muted-foreground">
-													Help improve our product by sharing usage data
-												</div>
-											</div>
-											<Switch defaultChecked />
+											<span className="font-semibold text-foreground">
+												{plan.name}
+											</span>
+											<span className="text-sm text-primary font-medium">
+												{plan.price}
+											</span>
 										</div>
-
-										<div className="flex items-center justify-between">
-											<div>
-												<div className="font-medium">
-													Marketing Communications
-												</div>
-												<div className="text-sm text-muted-foreground">
-													Receive product updates and marketing emails
-												</div>
-											</div>
-											<Switch />
-										</div>
-									</div>
-								</div>
-
-								<div className="space-y-4">
-									<h3 className="font-medium ">Data Export</h3>
-									<div className="space-y-4">
-										<p className="text-sm text-muted-foreground">
-											Export your data including workflows, logs, and account
-											information.
-										</p>
-										<Button variant="outline" className="gap-2 bg-transparent">
-											<Download className="w-4 h-4" />
-											Export Data
+										<ul className="space-y-1">
+											{plan.features.map((f) => (
+												<li
+													key={f}
+													className="text-xs text-muted-foreground flex items-center gap-1.5"
+												>
+													<span className="w-1 h-1 rounded-full bg-primary inline-block" />
+													{f}
+												</li>
+											))}
+										</ul>
+										<Button variant="outline" size="sm" className="w-full">
+											Assinar
 										</Button>
 									</div>
-								</div>
+								))}
+							</div>
+						</div>
+					</div>
+				</TabsContent>
 
-								<div className="space-y-4">
-									<h3 className="font-medium text-red-600">Danger Zone</h3>
-									<div className="p-4 border rounded-lg">
-										<div className="space-y-4">
-											<div>
-												<div className="font-medium ">Delete Account</div>
-												<div className="text-sm text-red-700">
-													Permanently delete your account and all associated
-													data. This action cannot be undone.
-												</div>
-											</div>
-											<Button variant="destructive" className="gap-2">
-												<Trash2 className="w-4 h-4" />
-												Delete Account
-											</Button>
-										</div>
+				{/* Preferências */}
+				<TabsContent value="preferencias" className="space-y-4">
+					<div className="bg-card border border-border rounded-xl p-6 space-y-5">
+						<SectionTitle>Tema</SectionTitle>
+						<div className="grid grid-cols-3 gap-3">
+							{[
+								{ id: "light", label: "Claro", icon: Sun },
+								{ id: "dark", label: "Escuro", icon: Moon },
+								{ id: "system", label: "Sistema", icon: Monitor },
+							].map(({ id, label, icon: Icon }) => (
+								<button
+									key={id}
+									type="button"
+									onClick={() => setTheme(id as "light" | "dark" | "system")}
+									className={cn(
+										"flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all",
+										theme === id
+											? "border-primary bg-primary/5"
+											: "border-border hover:border-primary/40",
+									)}
+								>
+									<Icon
+										className={cn(
+											"w-5 h-5",
+											theme === id ? "text-primary" : "text-muted-foreground",
+										)}
+									/>
+									<span
+										className={cn(
+											"text-sm font-medium",
+											theme === id ? "text-primary" : "text-muted-foreground",
+										)}
+									>
+										{label}
+									</span>
+								</button>
+							))}
+						</div>
+
+						<Separator />
+						<div className="space-y-1.5">
+							<Label htmlFor="lang">Idioma</Label>
+							<Select defaultValue="pt-BR">
+								<SelectTrigger className="w-48">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="pt-BR">Português (Brasil)</SelectItem>
+									<SelectItem value="en">English</SelectItem>
+									<SelectItem value="es">Español</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+
+						<Separator />
+						<div className="space-y-3 divide-y divide-border">
+							<SectionTitle>Privacidade</SectionTitle>
+							<SettingRow
+								label="Análises de uso"
+								description="Ajude a melhorar o LifeOS compartilhando dados anônimos"
+							>
+								<Switch defaultChecked />
+							</SettingRow>
+						</div>
+
+						<Separator />
+						<div className="space-y-3">
+							<h3 className="text-base font-semibold text-destructive">
+								Zona de perigo
+							</h3>
+							<div className="p-4 border border-destructive/30 rounded-lg bg-destructive/5">
+								<div className="flex items-start gap-3">
+									<AlertTriangle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
+									<div className="flex-1">
+										<p className="text-sm font-medium text-foreground">
+											Excluir conta
+										</p>
+										<p className="text-xs text-muted-foreground mt-0.5">
+											Esta ação é permanente e não pode ser desfeita. Todos os
+											seus dados serão removidos.
+										</p>
 									</div>
-								</div>
-
-								<div className="flex justify-end">
-									<Button className="gap-2">
-										<Save className="w-4 h-4" />
-										Save Preferences
+									<Button variant="destructive" size="sm">
+										Excluir conta
 									</Button>
 								</div>
-							</CardContent>
-						</Card>
-					</TabsContent>
-				</Tabs>
-			</div>
+							</div>
+						</div>
+					</div>
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }

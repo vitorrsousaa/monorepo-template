@@ -8,6 +8,7 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
 import { Button } from "@repo/ui/button";
@@ -17,10 +18,13 @@ import {
 	Archive,
 	ArrowRight,
 	CheckCircle2,
+	Eye,
 	Folder,
+	History,
 	MoreHorizontal,
 	Plus,
 	Search,
+	Trash2,
 } from "lucide-react";
 import {
 	ALL_PROJECTS_MOCK,
@@ -219,7 +223,7 @@ export function AllProjects() {
 												<MoreHorizontal className="w-4 h-4" />
 											</button>
 										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end" className="w-44">
+										<DropdownMenuContent align="end" className="w-48">
 											<DropdownMenuItem
 												onSelect={() =>
 													navigate(
@@ -230,14 +234,20 @@ export function AllProjects() {
 													)
 												}
 											>
-												<ArrowRight className="w-4 h-4 mr-2" />
-												Abrir projeto
+												<Eye className="text-muted-foreground" />
+												<span>View Project</span>
 											</DropdownMenuItem>
+											<DropdownMenuItem>
+												<History className="text-muted-foreground" />
+												<span>Activity Log</span>
+											</DropdownMenuItem>
+											<DropdownMenuSeparator />
 											<DropdownMenuItem
 												className="text-destructive focus:text-destructive"
 												onSelect={() => openDeleteConfirm(project)}
 											>
-												Excluir projeto
+												<Trash2 className="text-muted-foreground" />
+												<span>Delete Project</span>
 											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>

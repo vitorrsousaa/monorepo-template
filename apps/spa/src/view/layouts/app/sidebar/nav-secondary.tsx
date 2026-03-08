@@ -1,13 +1,13 @@
-import { HelpCircle, Settings, type LucideIcon } from "lucide-react";
 import type * as React from "react";
+import { Link, useLocation } from "react-router-dom";
+import type { LucideIcon } from "lucide-react";
 
 import {
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarMenu
+	SidebarMenu,
 } from "@repo/ui/sidebar";
 import { cn } from "@repo/ui/utils";
-import { useState } from "react";
 
 export function NavSecondary({
 	items,
@@ -19,41 +19,33 @@ export function NavSecondary({
 		icon: LucideIcon;
 	}[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-	const [currentView, setView] = useState<string>("configuracoes");
+	const { pathname } = useLocation();
 
 	return (
 		<SidebarGroup {...props}>
 			<SidebarGroupContent>
 				<SidebarMenu>
 					<div className="px-2 py-2 border-t border-b border-sidebar-border space-y-0.5">
-						<button
-							onClick={() => setView("configuracoes")}
-							className={cn(
-								"flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-								"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-								currentView === "configuracoes"
-									? "bg-sidebar-accent text-sidebar-primary"
-									: "text-sidebar-foreground/60"
-							)}
-						>
-							<Settings className="w-4 h-4" />
-							<span>Configurações</span>
-						</button>
-						<button
-							onClick={() => setView("suporte")}
-							className={cn(
-								"flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-								"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-								currentView === "suporte"
-									? "bg-sidebar-accent text-sidebar-primary"
-									: "text-sidebar-foreground/60"
-							)}
-						>
-							<HelpCircle className="w-4 h-4" />
-							<span>Suporte</span>
-						</button>
+						{items.map(({ title, url, icon: Icon }) => {
+							const isActive = pathname === url;
+							return (
+								<Link
+									key={url}
+									to={url}
+									className={cn(
+										"flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+										"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+										isActive
+											? "bg-sidebar-accent text-sidebar-primary"
+											: "text-sidebar-foreground/60",
+									)}
+								>
+									<Icon className="w-4 h-4" />
+									<span>{title}</span>
+								</Link>
+							);
+						})}
 					</div>
-
 				</SidebarMenu>
 			</SidebarGroupContent>
 		</SidebarGroup>

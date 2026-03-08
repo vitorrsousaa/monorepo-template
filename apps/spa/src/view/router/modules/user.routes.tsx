@@ -1,7 +1,12 @@
-import { ROUTES } from "@/config/routes";
 import { UserLayout } from "@/layouts/app/user-layout";
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
+
+const Profile = lazy(() =>
+	import("@/pages/app/user/profile").then((module) => ({
+		default: module.Profile,
+	})),
+);
 
 const Settings = lazy(() =>
 	import("@/pages/app/settings").then((module) => ({
@@ -9,12 +14,27 @@ const Settings = lazy(() =>
 	})),
 );
 
+const Support = lazy(() =>
+	import("@/pages/app/support").then((module) => ({
+		default: module.Support,
+	})),
+);
+
 export const userRoutes: RouteObject = {
+	path: "user",
 	element: <UserLayout />,
 	children: [
 		{
-			path: ROUTES.SETTINGS.SETTINGS,
+			index: true,
+			element: <Profile />,
+		},
+		{
+			path: "settings",
 			element: <Settings />,
+		},
+		{
+			path: "support",
+			element: <Support />,
 		},
 	],
 };

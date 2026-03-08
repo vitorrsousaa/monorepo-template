@@ -11,17 +11,18 @@ export const PROJECTS_ROUTES = {
 	PROJECT_DETAILS: "/projects/:id",
 } as const;
 
-export const SETTINGS_ROUTES = {
-	SETTINGS: "/settings",
+export const USER_ROUTES = {
+	PROFILE: "/user",
+	SETTINGS: "/user/settings",
+	SUPPORT: "/user/support",
 } as const;
 
 export const ROUTES = {
-	USER: "/settings",
+	USER: USER_ROUTES,
 	SIGNIN: "/login",
 	SIGNUP: "/signup",
 	GOOGLE_CALLBACK: "/google/callback",
 	GOALS_DASHBOARD: "/goals/dashboard",
 	TODO: TODO_ROUTES,
 	PROJECTS: PROJECTS_ROUTES,
-	SETTINGS: SETTINGS_ROUTES,
 } as const;
