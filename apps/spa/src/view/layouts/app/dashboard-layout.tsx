@@ -4,6 +4,7 @@ import {
 	BreadcrumbLink,
 	BreadcrumbList,
 } from "@repo/ui/breadcrumb";
+import { Button } from "@repo/ui/button";
 import { Separator } from "@repo/ui/separator";
 import {
 	SidebarInset,
@@ -11,6 +12,7 @@ import {
 	SidebarTrigger,
 } from "@repo/ui/sidebar";
 import { ThemeToggle } from "@repo/ui/theme-toggle";
+import { Bell } from "lucide-react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "./sidebar";
 
@@ -34,7 +36,18 @@ export function DashboardLayout() {
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>
-					<ThemeToggle />
+					<div className="flex items-center gap-2">
+						<Button
+							variant="outline"
+							size="icon"
+							className="text-muted-foreground hover:text-foreground"
+							onClick={() => { }}
+						>
+							<Bell className="h-4 w-4" />
+							<span className="sr-only">Notificações</span>
+						</Button>
+						<ThemeToggle />
+					</div>
 				</header>
 				<div className="flex flex-1 flex-col min-h-0 overflow-hidden">
 					<Outlet />

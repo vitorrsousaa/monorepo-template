@@ -1,10 +1,12 @@
 import {
-	CalendarIcon,
-	Command,
-	GoalIcon,
+	CalendarClock,
+	CalendarDays,
+	CheckSquare,
+	Inbox,
+	LayoutDashboard,
 	LifeBuoy,
 	Send,
-	SquareTerminal,
+	Target
 } from "lucide-react";
 import type * as React from "react";
 import { Link } from "react-router-dom";
@@ -31,74 +33,11 @@ const data = {
 		avatar: "/avatars/shadcn.jpg",
 	},
 	navMain: [
-		{
-			title: "Todo List",
-			icon: SquareTerminal,
-			isActive: true,
-			items: [
-				{
-					title: "Dashboard",
-					url: ROUTES.TODO.DASHBOARD,
-				},
-				{
-					title: "Inbox",
-					url: ROUTES.TODO.INBOX,
-				},
-				{
-					title: "Today",
-					url: ROUTES.TODO.TODAY,
-				},
-				{
-					title: "Upcoming",
-					url: "#",
-				},
-				{
-					title: "Completed",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "Calendar",
-			url: "#",
-			icon: CalendarIcon,
-			items: [
-				{
-					title: "Genesis",
-					url: "#",
-				},
-				{
-					title: "Explorer",
-					url: "#",
-				},
-				{
-					title: "Quantum",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "Goals",
-			icon: GoalIcon,
-			items: [
-				{
-					title: "Dashboard",
-					url: ROUTES.GOALS_DASHBOARD,
-				},
-				{
-					title: "Get Started",
-					url: "#",
-				},
-				{
-					title: "Tutorials",
-					url: "#",
-				},
-				{
-					title: "Changelog",
-					url: "#",
-				},
-			],
-		},
+		{ url: ROUTES.TODO.INBOX, label: "Inbox", icon: Inbox },
+		{ url: ROUTES.TODO.DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
+		{ url: ROUTES.TODO.TODAY, label: "Hoje", icon: CalendarDays },
+		{ url: ROUTES.TODO.UPCOMING, label: "Em breve", icon: CalendarClock },
+		{ url: ROUTES.GOALS_DASHBOARD, label: "Metas", icon: Target },
 	],
 	navSecondary: [
 		{
@@ -122,11 +61,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<SidebarMenuItem>
 						<SidebarMenuButton size="lg" asChild>
 							<Link to={ROUTES.TODO.DASHBOARD}>
-								<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-									<Command className="size-4" />
+								<div className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg shrink-0">
+									<CheckSquare className="w-4 h-4 text-primary-foreground" />
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">Artemis</span>
+									<span className="truncate font-semibold">LifeOS</span>
 									<span className="truncate text-xs">Enterprise</span>
 								</div>
 							</Link>
@@ -140,7 +79,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser user={data.user} />
+				<NavUser />
 			</SidebarFooter>
 		</Sidebar>
 	);

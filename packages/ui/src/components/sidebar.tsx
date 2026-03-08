@@ -447,7 +447,7 @@ const SidebarGroupLabel = React.forwardRef<
 			ref={ref}
 			data-sidebar="group-label"
 			className={cn(
-				"flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+				"flex h-8 shrink-0 items-center justify-between rounded-md uppercase px-2 text-[12px] font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
 				"group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
 				className,
 			)}
@@ -622,7 +622,7 @@ const SidebarMenuAction = React.forwardRef<
 				"peer-data-[size=lg]/menu-button:top-2.5",
 				"group-data-[collapsible=icon]:hidden",
 				showOnHover &&
-					"group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
+				"group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
 				className,
 			)}
 			{...props}
@@ -767,5 +767,6 @@ export {
 	SidebarRail,
 	SidebarSeparator,
 	SidebarTrigger,
-	useSidebar,
+	useSidebar
 };
+

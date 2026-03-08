@@ -9,10 +9,20 @@ const Projects = lazy(() =>
 	})),
 );
 
+const AllProjects = lazy(() =>
+	import("@/pages/app/projects/all-projects/all-projects").then((module) => ({
+		default: module.AllProjects,
+	})),
+);
+
 export const projectsRoutes: RouteObject = {
 	path: "/",
 	element: <ProjectsLayout />,
 	children: [
+		{
+			path: ROUTES.PROJECTS.LIST,
+			element: <AllProjects />,
+		},
 		{
 			path: ROUTES.PROJECTS.PROJECT_DETAILS,
 			element: <Projects />,

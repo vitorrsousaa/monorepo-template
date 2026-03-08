@@ -1,9 +1,12 @@
-import { MoreHorizontal } from "lucide-react";
+import { FolderOpen, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
+import { ROUTES } from "@/config/routes";
 import { ProjectListEmptyState } from "@/layouts/app/sidebar/components/project-list-empty-state";
 import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-error";
 import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
+import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import {
 	SidebarGroup,
@@ -24,11 +27,16 @@ export function NavProjects() {
 	const shouldRenderEmptyState =
 		!isFetchingProjects && !isErrorProjects && !hasProjects;
 
-	// ROUTES.TODO.PROJECTS.replace(":id", "1")
+	const displayedProjects = projects.slice(0, 4);
+	const remainingCount = projects.length - 4;
+	const hasMoreProjects = remainingCount > 0;
 
 	return (
 		<SidebarGroup className="group-data-[collapsible=icon]:hidden">
-			<SidebarGroupLabel>Projects</SidebarGroupLabel>
+			<SidebarGroupLabel>Projects <Button variant='ghost' size='icon'>
+				<Plus className="w-4 h-4" />
+			</Button></SidebarGroupLabel>
+
 			<SidebarMenu>
 				{/* Loading State */}
 				<RenderIf
@@ -53,18 +61,31 @@ export function NavProjects() {
 					condition={shouldRenderProjects}
 					render={
 						<>
-							{projects.map((item) => (
+							{displayedProjects.map((item) => (
 								<ProjectListItem
 									key={`project-list-item-${item.id}-${Math.random().toString(36).substring(2, 15)}`}
 									project={item}
 								/>
 							))}
-							<SidebarMenuItem>
-								<SidebarMenuButton className="text-sidebar-foreground/70">
-									<MoreHorizontal />
-									<span>More</span>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
+							<RenderIf
+								condition={hasMoreProjects}
+								render={
+									<SidebarMenuItem>
+										<SidebarMenuButton asChild>
+											<Link
+												to={ROUTES.PROJECTS.LIST}
+												className="text-sidebar-foreground/70"
+											>
+												<FolderOpen />
+												<span>+{remainingCount} project</span>
+												<span className="sr-only">
+													View all {projects.length} projects
+												</span>
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								}
+							/>
 						</>
 					}
 				/>

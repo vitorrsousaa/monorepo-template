@@ -7,6 +7,7 @@ export const TODO_ROUTES = {
 } as const;
 
 export const PROJECTS_ROUTES = {
+	LIST: "/projects",
 	PROJECT_DETAILS: "/projects/:id",
 } as const;
 
