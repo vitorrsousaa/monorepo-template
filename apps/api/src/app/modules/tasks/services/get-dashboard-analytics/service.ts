@@ -1,0 +1,20 @@
+import type { IService } from "@application/interfaces/service";
+import type { GetDashboardAnalyticsInput, GetDashboardAnalyticsOutput } from "./dto";
+
+export interface IGetDashboardAnalyticsService extends IService<GetDashboardAnalyticsInput, GetDashboardAnalyticsOutput> {}
+
+export class GetDashboardAnalyticsService implements IGetDashboardAnalyticsService {
+  constructor() {}
+
+  async execute(input: GetDashboardAnalyticsInput): Promise<GetDashboardAnalyticsOutput> {
+    
+    // Implement calcs to get efficiency
+    const efficiency = 40
+    
+    const output: GetDashboardAnalyticsOutput = {
+      efficiency
+    }
+    
+    return output
+  }
+}
