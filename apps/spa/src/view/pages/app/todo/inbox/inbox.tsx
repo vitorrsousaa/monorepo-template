@@ -34,7 +34,7 @@ export function Inbox() {
 					type="button"
 				>
 					<Plus className="w-4 h-4 mr-2" />
-					New Todo
+					New Task
 				</Button>
 			</div>
 

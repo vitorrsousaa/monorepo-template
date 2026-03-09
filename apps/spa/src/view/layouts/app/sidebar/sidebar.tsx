@@ -36,8 +36,8 @@ const data = {
 	navMain: [
 		{ url: ROUTES.TODO.INBOX, label: "Inbox", icon: Inbox },
 		{ url: ROUTES.TODO.DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
-		{ url: ROUTES.TODO.TODAY, label: "Hoje", icon: CalendarDays },
-		{ url: ROUTES.TODO.UPCOMING, label: "Em breve", icon: CalendarClock },
+		{ url: ROUTES.TODO.TODAY, label: "Today", icon: CalendarDays },
+		{ url: ROUTES.TODO.UPCOMING, label: "Soon", icon: CalendarClock },
 		{ url: ROUTES.GOALS_DASHBOARD, label: "Metas", icon: Target },
 	],
 	navSecondary: [
