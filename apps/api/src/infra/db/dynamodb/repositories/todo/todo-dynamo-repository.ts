@@ -36,6 +36,28 @@ export class TodoDynamoRepository implements ITodoRepository {
 			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 
+	async findTodayTodos(userId: string): Promise<Todo[]> {
+		// Docs: GSI1 DueDateIndex - GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD
+		// Domain: dueDate <= hoje AND completed = false
+		const todayEnd = new Date();
+		todayEnd.setHours(23, 59, 59, 999);
+		const todayEndMs = todayEnd.getTime();
+
+		return this.dbTodos
+			.filter((t) => t.user_id === userId && t.completed === false)
+			.filter((t) => {
+				if (!t.due_date) return false;
+				return new Date(t.due_date).getTime() <= todayEndMs;
+			})
+			.sort((a, b) => {
+				// Overdue first (domain: atrasadas no topo)
+				const aMs = a.due_date ? new Date(a.due_date).getTime() : 0;
+				const bMs = b.due_date ? new Date(b.due_date).getTime() : 0;
+				return aMs - bMs;
+			})
+			.map((dbTodo) => this.mapper.toDomain(dbTodo));
+	}
+
 	async findAll(): Promise<Todo[]> {
 		// TODO: Implement DynamoDB query
 		// const result = await this.dynamoClient.query({

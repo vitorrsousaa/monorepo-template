@@ -10,6 +10,15 @@ import type { Todo } from "@core/domain/todo/todo";
  */
 export interface ITodoRepository {
 	findInboxTodos(userId: string): Promise<Todo[]>;
+
+	/**
+	 * Get todos for Today view: dueDate <= today AND completed = false.
+	 * Per domain rules: overdue tasks at top, grouped by project.
+	 * @param userId - User ID (for multi-tenancy)
+	 * @returns Array of todos (inbox and project) with dueDate <= today
+	 */
+	findTodayTodos(userId: string): Promise<Todo[]>;
+
 	findAll(): Promise<Todo[]>;
 	findById(id: string): Promise<Todo | null>;
 	create(data: Omit<Todo, "id" | "createdAt" | "updatedAt">): Promise<Todo>;

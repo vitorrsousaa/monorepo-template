@@ -104,7 +104,7 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 		priority: "high",
 		entity_type: "TODO",
 	},
-	// Vence hoje
+	// Vence hoje (due_date = today for Today view)
 	{
 		PK: USER_PK,
 		SK: "TODO#INBOX#PENDING#6#6",
@@ -113,13 +113,31 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 		project_id: null,
 		title: "Deploy em produção",
 		description:
-			"Fazer o deploy da versão 1.2.0 no ambiente de produção e validar health checks.Fazer o deploy da versão 1.2.0 no ambiente de produção e validar health checks.Fazer o deploy da versão 1.2.0 no ambiente de produção e validar health checks.Fazer o deploy da versão 1.2.0 no ambiente de produção e validar health checks",
+			"Fazer o deploy da versão 1.2.0 no ambiente de produção e validar health checks",
 		completed: false,
 		order: 6,
 		created_at: "2026-01-29T09:00:00.000Z",
 		updated_at: "2026-01-29T09:00:00.000Z",
 		completed_at: null,
-		due_date: "2026-01-30T23:59:59.000Z",
+		due_date: "2025-03-09T23:59:59.000Z",
+		priority: "high",
+		entity_type: "TODO",
+	},
+	// Overdue (for Today view - due_date < today)
+	{
+		PK: USER_PK,
+		SK: "TODO#INBOX#PENDING#6b#6b",
+		id: "6b",
+		user_id: MOCK_USER_ID,
+		project_id: null,
+		title: "Revisar documentação da API (overdue)",
+		description: "Atualizar o Swagger e o README",
+		completed: false,
+		order: 7,
+		created_at: "2026-01-20T10:00:00.000Z",
+		updated_at: "2026-01-20T10:00:00.000Z",
+		completed_at: null,
+		due_date: "2025-03-05T23:59:59.000Z",
 		priority: "high",
 		entity_type: "TODO",
 	},
@@ -349,11 +367,11 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 		entity_type: "TODO",
 	},
 
-	// Python Study Plan - In Progress (sec-python-002)
+	// Python Study Plan - In Progress (sec-python-002) - due today for Today view
 	{
 		PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}`,
 		SK: "TODO#PENDING#3#todo-python-progress-1",
-		GSI1PK: `USER#${MOCK_USER_ID}#DUE_DATE#2026-02-05`,
+		GSI1PK: `USER#${MOCK_USER_ID}#DUE_DATE#2025-03-09`,
 		GSI1SK: "TODO#PENDING#high#todo-python-progress-1",
 		GSI3PK: `USER#${MOCK_USER_ID}#PROJECT#${PYTHON_PROJECT_ID}#SECTION#sec-python-002`,
 		GSI3SK: "TODO#PENDING#1#todo-python-progress-1",
@@ -368,7 +386,7 @@ export const TODO_DYNAMO_MOCKS: TodoDynamoDBEntity[] = [
 		created_at: "2026-01-25T14:00:00.000Z",
 		updated_at: "2026-01-25T14:00:00.000Z",
 		completed_at: null,
-		due_date: "2026-02-05T23:59:59.000Z",
+		due_date: "2025-03-09T23:59:59.000Z",
 		priority: "high",
 		entity_type: "TODO",
 	},
