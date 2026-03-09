@@ -1,12 +1,14 @@
-import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
-import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { useMemo } from "react";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
 import { Calendar, Plus } from "lucide-react";
+import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
+import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
+import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
 import { ProjectColumnHeader } from "../project-column-header";
 import { useProjectColumnHook } from "./project-column.hook";
 
@@ -33,6 +35,32 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 		formatDate,
 		confirmDeleteProject,
 	} = useProjectColumnHook({ onProjectDeleted });
+
+	const editTodoFormInitialValues = useMemo((): Partial<TTodoFormSchema> => {
+		if (!selectedTask) return {};
+		return {
+			id: selectedTask.id,
+			title: selectedTask.title,
+			description: selectedTask.description,
+			project: selectedTask.projectId ?? "inbox",
+			section: selectedTask.sectionId ?? "none",
+			priority: selectedTask.priority ?? "none",
+			dueDate: selectedTask.dueDate
+				? new Date(selectedTask.dueDate)
+				: undefined,
+		};
+	}, [selectedTask]);
+
+	const editTodoFormHeaderMeta = useMemo((): {
+		projectName: string;
+		createdAt: string;
+	} | undefined => {
+		if (!selectedTask) return undefined;
+		return {
+			projectName: selectedTask.projectName,
+			createdAt: selectedTask.createdAt,
+		};
+	}, [selectedTask]);
 
 	return (
 		<>
@@ -122,25 +150,14 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 			<RenderIf
 				condition={!!selectedTask}
 				render={
-					<EditTodoModal
-						isOpen={!!selectedTask}
-						onClose={() => setSelectedTask(null)}
-						initialValues={{
-							id: selectedTask!.id,
-							title: selectedTask!.title,
-							description: selectedTask!.description,
-							project: selectedTask!.projectId ?? "inbox",
-							section: selectedTask!.sectionId ?? "none",
-							priority: selectedTask!.priority ?? "none",
-							dueDate: selectedTask!.dueDate
-								? new Date(selectedTask!.dueDate)
-								: undefined,
-						}}
-						headerMeta={{
-							projectName: selectedTask!.projectName,
-							createdAt: selectedTask!.createdAt,
-						}}
-					/>
+					selectedTask ? (
+						<EditTodoModal
+							isOpen={!!selectedTask}
+							onClose={() => setSelectedTask(null)}
+							initialValues={editTodoFormInitialValues}
+							headerMeta={editTodoFormHeaderMeta}
+						/>
+					) : null
 				}
 			/>
 		</>

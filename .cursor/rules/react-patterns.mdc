@@ -192,6 +192,49 @@ import { ProjectListEmpty } from "@/view/components/project-list-empty";
 // Each component in its own file with focused responsibility
 ```
 
+## Object Props
+
+### Create object props outside the component call
+
+**Rule:** When passing an object as a prop to a component, create that object outside the JSX—typically with `useMemo` when it depends on state or other props. Never inline object literals directly in the component call.
+
+```typescript
+// ✅ GOOD - Object created outside component call, with useMemo when derived from state
+const editTodoFormInitialValues = useMemo((): Partial<TTodoFormSchema> => {
+  if (!selectedTask) return {};
+  return {
+    id: selectedTask.id,
+    title: selectedTask.title,
+    project: selectedTask.projectId ?? "inbox",
+    section: selectedTask.sectionId ?? "none",
+  };
+}, [selectedTask]);
+
+<EditTodoModal
+  initialValues={editTodoFormInitialValues}
+  headerMeta={editTodoFormHeaderMeta}
+/>
+
+// ✅ GOOD - Static config object
+const modalConfig = { size: "lg", closeOnOverlay: true } as const;
+<Modal {...modalConfig} />
+
+// ❌ BAD - Inline object literal in component call
+<EditTodoModal
+  initialValues={{
+    id: selectedTask.id,
+    title: selectedTask.title,
+    project: selectedTask.projectId ?? "inbox",
+  }}
+/>
+```
+
+**Benefits:**
+- **Type safety**: Easier to type and validate the object
+- **Readability**: Clear separation of data and UI
+- **Performance**: `useMemo` avoids unnecessary re-renders when deps are stable
+- **Avoids null errors**: Objects derived from nullable state can be built safely
+
 ## Props & Types
 
 ### Always use `props` parameter and destructure in body
