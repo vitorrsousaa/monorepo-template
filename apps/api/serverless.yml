@@ -64,6 +64,12 @@ functions:
       - httpApi:
           path: /tasks/today
           method: get
+  getDashboardAnalytics:
+    handler: src/server/functions/tasks/get-dashboard-analytics/index.handler
+    events:
+      - httpApi:
+          path: /tasks/dashboard
+          method: get
   getAllProjectsByUser:
     handler: src/server/functions/projects/get-all-projects-by-user/index.handler
     events:
