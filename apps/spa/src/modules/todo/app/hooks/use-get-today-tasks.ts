@@ -14,7 +14,7 @@ export function useGetTodayTasks() {
 
 	return {
 		todayData: data ?? EMPTY_TODAY,
-		isErrorTodayTasks: true,
+		isErrorTodayTasks: isError,
 		isFetchingTodayTasks: isFetching || isPending || isLoading,
 		refetchTodayTasks: refetch,
 	};

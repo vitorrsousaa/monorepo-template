@@ -12,10 +12,11 @@ import { useProjectColumnHook } from "./project-column.hook";
 
 export type ProjectColumnProps = {
 	project: Project;
+	onProjectDeleted?: () => void;
 };
 
 export const ProjectColumn = (props: ProjectColumnProps) => {
-	const { project } = props;
+	const { project, onProjectDeleted } = props;
 
 	const {
 		selectedTodo,
@@ -31,7 +32,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 		handleNewTodo,
 		formatDate,
 		confirmDeleteProject,
-	} = useProjectColumnHook();
+	} = useProjectColumnHook({ onProjectDeleted });
 
 	return (
 		<>

@@ -1,9 +1,12 @@
-import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
+import { useGetTodayTasks } from "@/modules/todo/app/hooks/use-get-today-tasks";
 import { ProjectColumn } from "@/modules/todo/view/components/project-column";
-import { Button } from "@repo/ui/button";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import { PROJECTS_MOCKS } from "./today.mocks";
+import { TodayTasksHeader } from "@/modules/todo/view/components/today-header";
+import type { TaskDto } from "@repo/contracts/tasks/today";
+import type { TodayProjectDto } from "@repo/contracts/tasks/today";
+import { RenderIf } from "@repo/ui/render-if";
+import { useMemo } from "react";
+import { TodayErrorState } from "./components/today-error-state";
+import { TodayLoadingSkeleton } from "./components/today-loading-skeleton";
 
 export interface Todo {
 	id: string;
@@ -26,51 +29,73 @@ export interface Project {
 	userId?: string;
 }
 
-export function Today() {
-	const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
+function mapApiToView(apiProjects: TodayProjectDto[]): Project[] {
+	return apiProjects.map((p) => ({
+		id: p.id,
+		name: p.name,
+		emoji: "",
+		todos: p.tasks.map((t: TaskDto) => ({
+			id: t.id,
+			title: t.title,
+			description: t.description,
+			dueDate: t.dueDate ?? undefined,
+			completed: t.completed,
+			projectId: t.projectId ?? p.id,
+			projectName: p.name,
+			userId: t.userId,
+		})),
+	}));
+}
 
-	const [projects] = useState<Project[]>(PROJECTS_MOCKS);
+export function Today() {
+
+
+	const {
+		todayData,
+		isFetchingTodayTasks,
+		isErrorTodayTasks,
+		refetchTodayTasks,
+	} = useGetTodayTasks();
+
+	const projects = useMemo(
+		() => mapApiToView(todayData.projects),
+		[todayData.projects],
+	);
 
 	return (
 		<div className="h-full w-full flex flex-col bg-background overflow-hidden">
 			{/* Header - Fixed */}
-			<div className="flex-shrink-0 border-b border-border px-8 py-4">
-				<div className="flex items-center justify-between">
-					<div>
-						<h1 className="text-2xl font-semibold text-balance">Today</h1>
-						<p className="text-sm text-muted-foreground mt-1">
-							{new Date().toLocaleDateString("pt-BR", {
-								weekday: "long",
-								day: "numeric",
-								month: "long",
-							})}{" "}
-							· {projects.reduce((acc, project) => acc + project.todos.length, 0)}{" "}
-							tarefas
-						</p>
-					</div>
-					<Button
-						className="bg-primary text-primary-foreground hover:bg-primary/90"
-						onClick={() => setIsNewProjectModalOpen(true)}
-					>
-						<Plus className="w-4 h-4 mr-2" />
-						New Project
-					</Button>
-				</div>
-			</div>
+			<TodayTasksHeader taskCount={projects.reduce((acc, project) => acc + project.todos.length, 0)} isLoading={isFetchingTodayTasks} />
 
 			{/* Kanban Board - Scrollable Container */}
 			<div className="flex-1 min-h-0 overflow-y-auto overflow-x-auto">
-				<div className="p-6 flex gap-4" style={{ minWidth: "max-content" }}>
-					{projects.map((project) => (
-						<ProjectColumn key={project.id} project={project} />
-					))}
-				</div>
+				<RenderIf
+					condition={isFetchingTodayTasks}
+					render={<TodayLoadingSkeleton />}
+				/>
+				<RenderIf
+					condition={isErrorTodayTasks}
+					render={
+						<TodayErrorState onRetry={() => refetchTodayTasks()} />
+					}
+				/>
+				<RenderIf
+					condition={!isFetchingTodayTasks && !isErrorTodayTasks}
+					render={
+						<div className="p-6 flex gap-4" style={{ minWidth: "max-content" }}>
+							{projects.map((project) => (
+								<ProjectColumn
+									key={project.id}
+									project={project}
+									onProjectDeleted={refetchTodayTasks}
+								/>
+							))}
+						</div>
+					}
+				/>
 			</div>
 
-			<NewProjectModal
-				isOpen={isNewProjectModalOpen}
-				onClose={() => setIsNewProjectModalOpen(false)}
-			/>
+
 		</div>
 	);
 }
