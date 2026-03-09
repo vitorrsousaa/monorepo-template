@@ -11,20 +11,26 @@ React and Next.js specific patterns for the Artemis project.
 ## Component Structure
 
 ### Functional Components
-Always use functional components with TypeScript:
+Always use functional components with TypeScript. **Always receive `props` as parameter and destructure in the body**:
 
 ```typescript
-// ✅ GOOD
+// ✅ GOOD - props first, destructure after
 interface ProjectListErrorProps {
   onRetry: () => void;
 }
 
-export const ProjectListError = ({ onRetry }: ProjectListErrorProps) => {
+export const ProjectListError = (props: ProjectListErrorProps) => {
+  const { onRetry } = props;
   return (
     <div>
       <button onClick={onRetry}>Try Again</button>
     </div>
   );
+};
+
+// ❌ BAD - Destructuring in parameters
+export const ProjectListError = ({ onRetry }: ProjectListErrorProps) => {
+  return <div><button onClick={onRetry}>Try Again</button></div>;
 };
 
 // ❌ BAD - Class components
@@ -171,9 +177,12 @@ import { ProjectListEmpty } from "@/view/components/project-list-empty";
 
 ## Props & Types
 
-### Always type props explicitly and use named props
+### Always use `props` parameter and destructure in body
+
+**Rule:** Components must always receive `props` as the parameter and destructure inside the function body. Never destructure in the parameter list.
+
 ```typescript
-// ✅ GOOD - Named props, destructure in body
+// ✅ GOOD - props first, destructure after
 interface ProjectCardProps {
   project: Project;
   onDelete?: (id: string) => void;
@@ -183,7 +192,6 @@ interface ProjectCardProps {
 export const ProjectCard = (props: ProjectCardProps) => {
   const { project, onDelete, className } = props;
   
-  // Now you can use project, onDelete, className
   return (
     <div className={className}>
       {project.name}
@@ -193,7 +201,7 @@ export const ProjectCard = (props: ProjectCardProps) => {
 
 // ❌ BAD - Destructuring in parameters
 export const ProjectCard = ({ project, onDelete, className }: ProjectCardProps) => {
-  // Less clear, harder to refactor
+  // Don't destructure in the signature
 };
 
 // ❌ BAD - No types

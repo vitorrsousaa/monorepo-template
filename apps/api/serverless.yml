@@ -58,6 +58,12 @@ functions:
       - httpApi:
           path: /todos/inbox
           method: get
+  getTodayTasks:
+    handler: src/server/functions/tasks/get-today-tasks/index.handler
+    events:
+      - httpApi:
+          path: /tasks/today
+          method: get
   getAllProjectsByUser:
     handler: src/server/functions/projects/get-all-projects-by-user/index.handler
     events:

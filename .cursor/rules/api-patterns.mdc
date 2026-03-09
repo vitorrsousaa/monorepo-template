@@ -1,0 +1,66 @@
+---
+description: API patterns - index exports, module structure, conventions
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# API Patterns
+
+Padrões de organização e convenções para o projeto da API.
+
+---
+
+## 1. Index files em Controllers e Services
+
+**Regra:** Toda pasta de controller e service deve ter um arquivo `index.ts` que exporta tudo da pasta.
+
+### Estrutura esperada
+
+```
+modules/{module}/
+├── controllers/
+│   └── {feature}/
+│       ├── index.ts      ← obrigatório
+│       ├── controller.ts
+│       └── schema.ts
+└── services/
+    └── {feature}/
+        ├── index.ts      ← obrigatório
+        ├── service.ts
+        └── dto.ts
+```
+
+### O que fazer
+
+```typescript
+// controllers/get-today-tasks/index.ts
+export * from "./controller";
+export * from "./schema";
+
+// services/get-today-tasks/index.ts
+export * from "./dto";
+export * from "./service";
+```
+
+**Imports devem usar o caminho da pasta (index):**
+
+```typescript
+// ✅ BOM – importa via index
+import { GetTodayTasksController } from "@application/modules/tasks/controllers/get-today-tasks";
+import { GetTodayTasksService } from "@application/modules/tasks/services/get-today-tasks";
+import type { IGetTodayTasksService } from "@application/modules/tasks/services/get-today-tasks";
+```
+
+### O que não fazer
+
+```typescript
+// ❌ RUIM – importa arquivo direto (ignora o index)
+import { GetTodayTasksController } from "@application/modules/tasks/controllers/get-today-tasks/controller";
+import { GetTodayTasksService } from "@application/modules/tasks/services/get-today-tasks/service";
+```
+
+### Benefícios
+
+- Imports mais limpos e consistentes
+- Ponto único de exportação por feature
+- Facilita refatoração (mudar arquivos internos sem quebrar imports externos)

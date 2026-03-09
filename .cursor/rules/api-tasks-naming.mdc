@@ -1,0 +1,40 @@
+---
+description: API naming convention - use "tasks" for new code (gradual migration from todo)
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# API – Nomenclatura Tasks (Migração Gradual)
+
+Estamos em migração gradual da camada de domínio de **todo** para **tasks**. Todo código **novo** na API deve usar a nomenclatura **tasks**.
+
+## Regras
+
+### O que usar em código novo
+
+| Conceito        | Use        | Evite   |
+|-----------------|------------|---------|
+| Rotas HTTP      | `/tasks/*` | `/todos/*` |
+| Services        | `GetTodayTasksService` | `GetTodayTodosService` |
+| Controllers     | `GetTodayTasksController` | `GetTodayTodosController` |
+| DTOs/Contracts  | `GetTodayTasksResponse`, `TaskDto` | `GetTodayTodosResponse`, `TodoDto` |
+| Pastas          | `modules/tasks/`, `functions/tasks/` | `modules/todos/` (para features novas) |
+
+### O que permanece (legado)
+
+- `ITodoRepository`, `TodoDynamoRepository` – ainda usam "todo" internamente
+- `Todo` (domínio), `TodoDto` (contracts) – existentes, não alterar por enquanto
+- Rotas `/todos`, `/todos/inbox` – legado, manter até migração completa
+
+### Exemplo
+
+```typescript
+// ✅ NOVO – use tasks
+GET /tasks/today
+GetTodayTasksService
+GetTodayTasksResponse { projects: { id, name, tasks: TaskDto[] } }
+
+// ❌ Evitar em código novo
+GET /todos/today
+GetTodayTodosService
+```
