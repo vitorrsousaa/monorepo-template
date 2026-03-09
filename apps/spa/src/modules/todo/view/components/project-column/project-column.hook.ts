@@ -1,5 +1,5 @@
 import { ROUTES } from "@/config/routes";
-import type { Project, Todo } from "@/pages/app/todo/today";
+import type { TaskDto, TodayProjectDto } from "@repo/contracts/tasks/today";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,13 +16,13 @@ export function useProjectColumnHook(options?: UseProjectColumnHookOptions) {
 	);
 	const [deleteProjectModal, setDeleteProjectModal] = useState<{
 		isOpen: boolean;
-		project: Project | null;
+		project: TodayProjectDto | null;
 	}>({
 		isOpen: false,
 		project: null,
 	});
-	const [selectedTodo, setSelectedTodo] = useState<
-		(Todo & { projectName: string; createdAt: string }) | null
+	const [selectedTask, setSelectedTask] = useState<
+		(TaskDto & { projectName: string }) | null
 	>(null);
 
 	const handleNewTodo = (projectId: string) => {
@@ -30,7 +30,7 @@ export function useProjectColumnHook(options?: UseProjectColumnHookOptions) {
 		setIsNewTodoModalOpen(true);
 	};
 
-	const handleDeleteProject = (project: Project) => {
+	const handleDeleteProject = (project: TodayProjectDto) => {
 		setDeleteProjectModal({ isOpen: true, project });
 	};
 
@@ -41,16 +41,14 @@ export function useProjectColumnHook(options?: UseProjectColumnHookOptions) {
 		setDeleteProjectModal({ isOpen: false, project: null });
 	};
 
-	const handleTaskClick = (todo: Todo, project: Project) => {
-		setSelectedTodo({
-			...todo,
+	const handleTaskClick = (task: TaskDto, project: TodayProjectDto) => {
+		setSelectedTask({
+			...task,
 			projectName: project.name,
-			createdAt: new Date().toISOString(),
 		});
 	};
 
 	const handleViewProjectDetails = (projectId: string) => {
-		console.log("projectId", projectId);
 		navigate(ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", projectId));
 	};
 
@@ -70,8 +68,8 @@ export function useProjectColumnHook(options?: UseProjectColumnHookOptions) {
 	};
 
 	return {
-		selectedTodo,
-		setSelectedTodo,
+		selectedTask,
+		setSelectedTask,
 		isNewTodoModalOpen,
 		setIsNewTodoModalOpen,
 		selectedProjectId,
