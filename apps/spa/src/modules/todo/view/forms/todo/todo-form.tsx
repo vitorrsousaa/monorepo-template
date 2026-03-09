@@ -26,7 +26,8 @@ export interface TodoFormProps {
 }
 
 export function TodoForm(props: TodoFormProps) {
-	const { onCancel } = props;
+	const { onCancel, initialValues } = props;
+	const mode = initialValues?.id ? "edit" : "create";
 
 	const {
 		methods,
@@ -88,6 +89,15 @@ export function TodoForm(props: TodoFormProps) {
 							</div>
 						</div>
 
+						<div className="pt-4 border-t border-border space-y-3">
+							<p className="text-xs text-muted-foreground font-medium">Comments</p>
+							<div className="flex items-center gap-3">
+								<div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium flex-shrink-0">U</div>
+								<Input placeholder="Add a comment..." className="flex-1 bg-muted/50 h-8" disabled />
+							</div>
+							<p className="text-xs text-muted-foreground text-center py-2">No comments yet</p>
+						</div>
+
 						<div className="flex justify-end gap-2 pt-4">
 							<Button type="button" variant="outline" onClick={onCancel}>
 								Cancel
@@ -96,7 +106,7 @@ export function TodoForm(props: TodoFormProps) {
 								type="submit"
 								className="bg-primary text-primary-foreground hover:bg-primary/90"
 							>
-								Create Task
+								{mode === "edit" ? "Save changes" : "Create Task"}
 							</Button>
 						</div>
 					</div>

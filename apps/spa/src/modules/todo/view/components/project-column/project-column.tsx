@@ -3,9 +3,9 @@ import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
 import { Button } from "@repo/ui/button";
-import { RenderIf } from "@repo/ui/render-if";
 import { Card } from "@repo/ui/card";
 import { Checkbox } from "@repo/ui/checkbox";
+import { RenderIf } from "@repo/ui/render-if";
 import { Calendar, Plus } from "lucide-react";
 import { ProjectColumnHeader } from "../project-column-header";
 import { useProjectColumnHook } from "./project-column.hook";
@@ -125,11 +125,21 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 					<EditTodoModal
 						isOpen={!!selectedTask}
 						onClose={() => setSelectedTask(null)}
-						todo={
-							selectedTask as unknown as Record<string, string> & {
-								completed: boolean;
-							} & { dueDate: string }
-						}
+						initialValues={{
+							id: selectedTask!.id,
+							title: selectedTask!.title,
+							description: selectedTask!.description,
+							project: selectedTask!.projectId ?? "inbox",
+							section: selectedTask!.sectionId ?? "none",
+							priority: selectedTask!.priority ?? "none",
+							dueDate: selectedTask!.dueDate
+								? new Date(selectedTask!.dueDate)
+								: undefined,
+						}}
+						headerMeta={{
+							projectName: selectedTask!.projectName,
+							createdAt: selectedTask!.createdAt,
+						}}
 					/>
 				}
 			/>

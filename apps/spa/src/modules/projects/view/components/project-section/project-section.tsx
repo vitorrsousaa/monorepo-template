@@ -2,7 +2,7 @@ import type { SectionWithTodos } from "@/modules/sections/app/entities/section-w
 import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
 import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
-import type { Todo } from "@/pages/app/todo/today";
+import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
 import { OptimisticState } from "@/utils/types";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
@@ -33,7 +33,41 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 	const isError = optimisticState === OptimisticState.ERROR;
 
 	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
-	const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [editModalInitialValues, setEditModalInitialValues] =
+		useState<Partial<TTodoFormSchema> | null>(null);
+	const [editModalHeaderMeta, setEditModalHeaderMeta] = useState<{
+		projectName: string;
+		createdAt: string;
+	} | null>(null);
+
+	const handleTaskClick = (todo: (typeof sectionTodos)[number]) => {
+		const rawCreatedAt = (todo as { createdAt?: string | Date }).createdAt;
+		const createdAt =
+			typeof rawCreatedAt === "string"
+				? rawCreatedAt
+				: rawCreatedAt instanceof Date
+					? rawCreatedAt.toISOString()
+					: new Date().toISOString();
+
+		setEditModalInitialValues({
+			id: todo.id,
+			title: todo.title,
+			description: todo.description,
+			project: (todo as { projectId?: string }).projectId ?? projectId ?? "inbox",
+			section: (todo as { sectionId?: string }).sectionId ?? section.id ?? "none",
+			priority: todo.priority ?? "none",
+			dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
+		});
+		setEditModalHeaderMeta({ projectName, createdAt });
+		setIsEditModalOpen(true);
+	};
+
+	const handleCloseEditModal = () => {
+		setEditModalInitialValues(null);
+		setEditModalHeaderMeta(null);
+		setIsEditModalOpen(false);
+	};
 
 	return (
 		<div
@@ -76,14 +110,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 						key={todo.id}
 						type="button"
 						className="group w-full flex items-center gap-4 p-3 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors cursor-pointer text-left"
-						onClick={() =>
-							setSelectedTodo({
-								...todo,
-								projectName,
-								projectId,
-								dueDate: todo.dueDate?.toString() || undefined,
-							})
-						}
+						onClick={() => handleTaskClick(todo)}
 					>
 						<Checkbox
 							checked={todo.completed}
@@ -144,17 +171,12 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				sectionId={section.id}
 			/>
 
-			{selectedTodo && (
-				<EditTodoModal
-					isOpen={!!selectedTodo}
-					onClose={() => setSelectedTodo(null)}
-					todo={
-						selectedTodo as unknown as Record<string, string> & {
-							completed: boolean;
-						}
-					}
-				/>
-			)}
+			<EditTodoModal
+				isOpen={isEditModalOpen}
+				onClose={handleCloseEditModal}
+				initialValues={editModalInitialValues ?? {}}
+				headerMeta={editModalHeaderMeta ?? undefined}
+			/>
 		</div>
 	);
 };

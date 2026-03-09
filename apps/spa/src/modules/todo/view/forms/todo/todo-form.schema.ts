@@ -2,6 +2,7 @@ import { PRIORITY_VALUES } from "@/modules/todo/app/entities/todo";
 import * as z from "zod";
 
 export const TodoFormSchema = z.object({
+	id: z.string().optional(),
 	title: z.string(),
 	description: z.string().optional(),
 	project: z.string(),
