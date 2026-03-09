@@ -6,6 +6,7 @@ export default defineConfig({
 		"src/todo/index.ts",
 		"src/todo/inbox/index.ts",
 		"src/todo/create/index.ts",
+		"src/tasks/today/index.ts",
 		"src/common/index.ts",
 	],
 	format: ["esm"],

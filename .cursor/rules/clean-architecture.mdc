@@ -95,6 +95,78 @@ Controllers → Services → Entities
 Infrastructure (DB, HTTP, etc.)
 ```
 
+## DTO Pattern: Service vs Controller
+
+**Regra crítica:** o `dto.ts` do service usa entidades de domínio. O controller é quem usa os tipos do `@repo/contracts`.
+
+### Service DTOs (`services/{feature}/dto.ts`)
+
+- Input: schema Zod para validação
+- Output: usa entidades de domínio (`Todo`, `Project`, etc.) com `Date` objects
+- **Nunca** importa de `@repo/contracts`
+
+```typescript
+// ✅ CORRETO - service/dto.ts usa domínio interno
+import type { Todo } from "@core/domain/todo/todo";
+import { z } from "zod";
+
+export const GetTodayTasksInputDTO = z.object({
+  userId: z.string().uuid(),
+});
+export type GetTodayTasksInput = z.infer<typeof GetTodayTasksInputDTO>;
+
+export interface TodayProjectOutput {
+  id: string;
+  name: string;
+  tasks: Todo[]; // entidade de domínio com Date objects
+}
+
+export interface GetTodayTasksOutput {
+  projects: TodayProjectOutput[];
+}
+```
+
+```typescript
+// ❌ ERRADO - service/dto.ts NÃO deve usar @repo/contracts
+import type { TodayProjectDto } from "@repo/contracts/tasks/today";
+
+export interface GetTodayTasksOutput {
+  projects: TodayProjectDto[]; // errado: tipos de contrato no service
+}
+```
+
+### Controller (`controllers/{feature}/controller.ts`)
+
+- Recebe o output do service (domínio com `Date`)
+- Usa mappers para converter para tipos do `@repo/contracts` (ISO strings)
+- Retorna o tipo de contrato no body da response
+
+```typescript
+// ✅ CORRETO - controller usa @repo/contracts e mapper
+import type { GetTodayTasksResponse, TodayProjectDto } from "@repo/contracts/tasks/today";
+import { todoToDto } from "@application/modules/todos/mappers/todo-to-dto";
+
+const body: GetTodayTasksResponse = {
+  projects: result.projects.map((p): TodayProjectDto => ({
+    id: p.id,
+    name: p.name,
+    tasks: p.tasks.map(todoToDto), // Date → ISO string
+  })),
+};
+```
+
+### Fluxo resumido
+
+```
+Service (dto.ts)         → Todo (Date objects, domínio interno)
+    ↓ mapper (todoToDto)
+Controller               → TodoDto (ISO strings, @repo/contracts)
+    ↓ HTTP
+SPA / Contracts package  → GetTodayTasksResponse (@repo/contracts)
+```
+
+---
+
 ## Data Transformation
 
 Use mappers to convert between layers:
