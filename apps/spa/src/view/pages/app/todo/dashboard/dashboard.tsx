@@ -1,5 +1,6 @@
 import { ROUTES } from "@/config/routes";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { Button } from "@repo/ui/button";
 import { cn } from "@repo/ui/utils";
 import { ArrowRight, Calendar, CheckCircle2, Clock, TrendingUp } from "lucide-react";
 import { useState } from "react";
@@ -118,12 +119,14 @@ export function Dashboard() {
 				<div className="lg:col-span-2 space-y-3">
 					<div className="flex items-center justify-between">
 						<h3 className="font-semibold text-foreground">Tarefas de Hoje</h3>
-						<button
+						<Button
+							size="sm"
+							variant="ghost"
 							onClick={() => setView("hoje")}
-							className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+							className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium no-underline"
 						>
-							Ver kanban <ArrowRight className="w-3 h-3" />
-						</button>
+							All tasks <ArrowRight className="w-3 h-3" />
+						</Button>
 					</div>
 
 					{todayTasks.length === 0 ? (
@@ -151,12 +154,14 @@ export function Dashboard() {
 				<div className="space-y-3">
 					<div className="flex items-center justify-between">
 						<h3 className="font-semibold text-foreground">Projetos</h3>
-						<button
+						<Button
+							size="sm"
+							variant="ghost"
 							onClick={() => navigate(ROUTES.PROJECTS.LIST)}
-							className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+							className="text-xs text-primary hover:text-primary/80 font-medium transition-colors no-underline"
 						>
-							Ver todos
-						</button>
+							All projects <ArrowRight className="w-3 h-3" />
+						</Button>
 					</div>
 
 					<div className="space-y-3">

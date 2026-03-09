@@ -237,19 +237,19 @@ export function TodoForm(props: TodoFormProps) {
 												<SelectItem value="low">
 													<div className="flex items-center gap-2">
 														<Icon name="flag" className="w-3 h-3" />
-														<span>P4 - Low</span>
+														<span>Low</span>
 													</div>
 												</SelectItem>
 												<SelectItem value="medium">
 													<div className="flex items-center gap-2">
 														<Icon name="flag" className="w-3 h-3" />
-														<span>P3 - Medium</span>
+														<span>Medium</span>
 													</div>
 												</SelectItem>
 												<SelectItem value="high">
 													<div className="flex items-center gap-2">
 														<Icon name="flag" className="w-3 h-3" />
-														<span>P2 - High</span>
+														<span>High</span>
 													</div>
 												</SelectItem>
 											</SelectContent>
