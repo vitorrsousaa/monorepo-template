@@ -1,7 +1,6 @@
-import type { TodoDto } from "../../todo/dto";
+import type { TaskDto } from "../dto";
 
-/** Task DTO - alias during migration from todo to tasks. Same structure as TodoDto. */
-export type TaskDto = TodoDto;
+export type { TaskDto } from "../dto";
 
 /** Project with its today tasks (id and name only per domain rules). */
 export interface TodayProjectDto {
