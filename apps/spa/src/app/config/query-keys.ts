@@ -3,6 +3,10 @@ export const TODOS = {
 	PROJECTS: ["projects"],
 };
 
+export const TASKS = {
+	TODAY: ["tasks", "today"],
+};
+
 export const PROJECTS = {
 	ALL: ["projects", "all"],
 	DETAIL: (projectId: string) => ["projects", "detail", projectId],
@@ -12,4 +16,4 @@ export const SECTIONS = {
 	BY_PROJECT: (projectId: string) => ["sections", "by-project", projectId],
 };
 
-export const QUERY_KEYS = { TODOS, PROJECTS, SECTIONS } as const;
+export const QUERY_KEYS = { TODOS, TASKS, PROJECTS, SECTIONS } as const;
