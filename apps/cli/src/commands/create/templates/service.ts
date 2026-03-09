@@ -10,7 +10,7 @@ export interface I${pascal}Service extends IService<${pascal}Input, ${pascal}Out
 export class ${pascal}Service implements I${pascal}Service {
   constructor() {}
 
-  async execute(data: ${pascal}Input): Promise<${pascal}Output> {
+  async execute(input: ${pascal}Input): Promise<${pascal}Output> {
     return {
       success: true,
     };
