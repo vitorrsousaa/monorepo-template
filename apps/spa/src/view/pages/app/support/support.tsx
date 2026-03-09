@@ -1,24 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import {
-	BookOpen,
-	MessageSquare,
-	Mail,
-	ChevronDown,
-	ChevronRight,
-	Search,
-	ExternalLink,
-	CheckCircle2,
-	Clock,
-	AlertCircle,
-	Send,
-	Lightbulb,
-	Bug,
-	Zap,
-	Star,
-} from "lucide-react";
-import { cn } from "@repo/ui/utils";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
@@ -32,6 +13,25 @@ import {
 } from "@repo/ui/select";
 import { Separator } from "@repo/ui/separator";
 import { Textarea } from "@repo/ui/textarea";
+import { cn } from "@repo/ui/utils";
+import {
+	AlertCircle,
+	BookOpen,
+	Bug,
+	CheckCircle2,
+	ChevronDown,
+	ChevronRight,
+	Clock,
+	ExternalLink,
+	Lightbulb,
+	Mail,
+	MessageSquare,
+	Search,
+	Send,
+	Star,
+	Zap,
+} from "lucide-react";
+import { useState } from "react";
 
 // ---------- Tipos ----------
 interface FaqItem {
@@ -236,15 +236,15 @@ export function Support() {
 
 	const filteredCategories = faqSearch.trim()
 		? faqCategories
-				.map((cat) => ({
-					...cat,
-					items: cat.items.filter(
-						(item) =>
-							item.question.toLowerCase().includes(faqSearch.toLowerCase()) ||
-							item.answer.toLowerCase().includes(faqSearch.toLowerCase()),
-					),
-				}))
-				.filter((cat) => cat.items.length > 0)
+			.map((cat) => ({
+				...cat,
+				items: cat.items.filter(
+					(item) =>
+						item.question.toLowerCase().includes(faqSearch.toLowerCase()) ||
+						item.answer.toLowerCase().includes(faqSearch.toLowerCase()),
+				),
+			}))
+			.filter((cat) => cat.items.length > 0)
 		: faqCategories;
 
 	const handleSend = () => {
@@ -353,29 +353,6 @@ export function Support() {
 
 					<Separator />
 
-					{/* Atalhos de documentação */}
-					<div>
-						<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-							Documentação
-						</p>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-							{[
-								"Guia de início rápido",
-								"API & integrações",
-								"Atalhos de teclado",
-								"Changelog de versões",
-							].map((doc) => (
-								<button
-									key={doc}
-									type="button"
-									className="flex items-center justify-between px-4 py-3 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors text-sm text-foreground font-medium"
-								>
-									{doc}
-									<ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-								</button>
-							))}
-						</div>
-					</div>
 				</div>
 			)}
 
