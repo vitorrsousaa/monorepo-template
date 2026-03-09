@@ -76,7 +76,7 @@ import type { Project } from "@/modules/projects/app/entities/project";
 
 - Use **functional components** exclusively
 - Extract logic into **custom hooks**
-- Use **RenderIf** component for conditional rendering
+- Use **RenderIf** component for conditional rendering (never `{condition && (...)}` or ternaries)
 - Prefer **composition** over complex conditionals
 - Keep components **small and focused** (< 200 lines)
 

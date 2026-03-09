@@ -42,6 +42,9 @@ export class ProjectListError extends React.Component {
 ## Conditional Rendering
 
 ### Use RenderIf Component
+
+**Rule:** Always use `RenderIf` for conditional rendering. Never use `{condition && (...)}` or ternaries for showing/hiding JSX.
+
 ```typescript
 // ✅ GOOD - Clean and readable
 <RenderIf
@@ -59,6 +62,20 @@ export class ProjectListError extends React.Component {
     </>
   }
 />
+
+// ✅ GOOD - Conditional UI within a component (e.g. hide dropdown for Inbox)
+<RenderIf
+  condition={project.id !== PROJECT_INBOX_ID}
+  render={
+    <DropdownMenu>
+      {/* ... menu items ... */}
+    </DropdownMenu>
+  }
+/>
+
+// ❌ BAD - Inline condition with &&
+{project.id !== PROJECT_INBOX_ID && <DropdownMenu>...</DropdownMenu>}
+{isLoading && <LoadingSkeleton />}
 
 // ❌ BAD - Messy ternaries
 {isLoading ? <LoadingSkeleton /> : null}
