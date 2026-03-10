@@ -2,7 +2,7 @@ import { ROUTES } from "@/config/routes";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import { Button } from "@repo/ui/button";
 import { cn } from "@repo/ui/utils";
-import { ArrowRight, Calendar, CheckCircle2, Clock, TrendingUp } from "lucide-react";
+import { AlertCircle, ArrowRight, Calendar, CheckCircle2, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PROJECTS_MOCK, TASKS_MOCK } from "./dashboard.mocks";
@@ -39,7 +39,7 @@ export function Dashboard() {
 	};
 
 	const completed = tasks.filter((t) => t.status === "concluida").length
-	const inProgress = tasks.filter((t) => t.status === "pendente").length
+	const overdueTasks = tasks.filter((t) => t.dueDate < today && t.status === "pendente").length
 	const todayTasks = tasks.filter((t) => t.dueDate === today)
 	const todayDone = todayTasks.filter((t) => t.status === "concluida").length
 	const efficiency = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0
@@ -51,15 +51,15 @@ export function Dashboard() {
 			icon: CheckCircle2,
 			iconBg: "bg-emerald-100 dark:bg-emerald-900/30",
 			iconColor: "text-emerald-600 dark:text-emerald-400",
-			trend: "+2 hoje",
+			trend: "Hoje",
 		},
 		{
-			label: "Em andamento",
-			value: inProgress,
-			icon: Clock,
-			iconBg: "bg-blue-100 dark:bg-blue-900/30",
-			iconColor: "text-blue-600 dark:text-blue-400",
-			trend: `${todayTasks.length} para hoje`,
+			label: "Atrasadas",
+			value: overdueTasks,
+			icon: AlertCircle,
+			iconBg: "bg-amber-100 dark:bg-amber-900/30",
+			iconColor: "text-amber-600 dark:text-amber-400",
+			trend: overdueTasks === 0 ? "em dia" : "requer atenção",
 		},
 		{
 			label: "Para hoje",

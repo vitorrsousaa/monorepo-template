@@ -9,6 +9,7 @@ export class GetDashboardAnalyticsService implements IGetDashboardAnalyticsServi
   async execute(input: GetDashboardAnalyticsInput): Promise<GetDashboardAnalyticsOutput> {
     
     // Implement calcs to get efficiency
+    // tasksConcluídasHoje / tasksConcluídasHoje + tasksPendentesHoje
     const efficiency = 40
     
     const output: GetDashboardAnalyticsOutput = {
