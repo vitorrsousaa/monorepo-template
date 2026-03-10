@@ -1,0 +1,5 @@
+	•	Lume: Escolha se quer simbolizar “luz e clareza” na rotina diária — ilumina tarefas e metas sem esforço, ideal para casais que buscam visibilidade compartilhada. É o mais poético e memorável, com vibe premium e universal (PT/EN).
+	•	Tavo: Opte por ele se prioriza algo ultra-curto e amigável, como um apelido moderno — evoca “motivação” e ação leve, perfeito para baixa fricção em tarefas pessoais. Soa dinâmico e fácil de brandar em app stores.
+	•	Lira: Vá nessa se busca harmonia e musicalidade — remete a equilíbrio familiar, como uma “melodia” na agenda compartilhada. Elegante, feminino e acolhedor, ótimo para nicho de casais/família.
+	•	Noda: Ideal se quer neutralidade prática, como “nota + modo” — direto para organização sem firulas, transmite simplicidade e fluxo natural. Funciona bem para uso diário, sem soar corporativo.
+	•	Numa: Escolha para sensação de “intimidade e presença” (vida “numa” rotina organizada) — caloroso e humano, reforça compartilhamento com entes queridos. Perfeito para tom motivador sem pressão.
