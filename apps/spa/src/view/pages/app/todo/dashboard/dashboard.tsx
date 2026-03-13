@@ -198,7 +198,7 @@ export function Dashboard() {
 			</div>
 
 			{/* Content grid: Tarefas de Hoje (left) + Projetos (right) */}
-			<div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
+			<div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 items-start">
 				{/* Tarefas de Hoje — panel */}
 				<div className="bg-card border border-border rounded-[14px] shadow-sm overflow-hidden">
 					<div className="flex items-center justify-between px-5 py-4 border-b border-border/70">
