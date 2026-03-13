@@ -1,10 +1,10 @@
-import { addDays, formatDateLong } from "@/utils/date-utils";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { addDays, formatDateLong } from "@/utils/date-utils";
 import { Button } from "@repo/ui/button";
 import { CalendarClock, Plus } from "lucide-react";
 import { useState } from "react";
-import { getUpcomingTasksMock } from "./upcoming.mocks";
 import { UpcomingTaskCard } from "./upcoming-task-card";
+import { getUpcomingTasksMock } from "./upcoming.mocks";
 
 export function Upcoming() {
 	const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
@@ -70,19 +70,31 @@ export function Upcoming() {
 									<span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-700">
 										amanhã
 									</span>
-									<span className="text-xs font-semibold text-foreground">
-										{formatDateLong(tomorrow)}
-									</span>
+									{(() => {
+										const [weekday, rest] = formatDateLong(tomorrow)
+											.split(",")
+											.map((part) => part.trim());
+										const label =
+											weekday.charAt(0).toUpperCase() + weekday.slice(1);
+										return (
+											<span className="text-xs text-muted-foreground">
+												<span className="font-semibold text-foreground">{label}</span>
+												{rest && (
+													<span className="font-normal text-muted-foreground">
+														{`, ${rest}`}
+													</span>
+												)}
+											</span>
+										);
+									})()}
 									<span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
 										{tomorrowTasks.length}
 									</span>
 								</header>
-								<div className="rounded-xl border border-border bg-card">
+								<div className="rounded-xl border border-border bg-card overflow-hidden">
 									<div className="divide-y divide-border">
 										{tomorrowTasks.map((task) => (
-											<div key={task.id} className="px-4 py-3">
-												<UpcomingTaskCard task={task} />
-											</div>
+											<UpcomingTaskCard task={task} key={task.id} />
 										))}
 									</div>
 								</div>
@@ -95,19 +107,31 @@ export function Upcoming() {
 									<span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">
 										em 2 dias
 									</span>
-									<span className="text-xs font-semibold text-foreground">
-										{formatDateLong(inTwoDays)}
-									</span>
+									{(() => {
+										const [weekday, rest] = formatDateLong(inTwoDays)
+											.split(",")
+											.map((part) => part.trim());
+										const label =
+											weekday.charAt(0).toUpperCase() + weekday.slice(1);
+										return (
+											<span className="text-xs text-muted-foreground">
+												<span className="font-semibold text-foreground">{label}</span>
+												{rest && (
+													<span className="font-normal text-muted-foreground">
+														{`, ${rest}`}
+													</span>
+												)}
+											</span>
+										);
+									})()}
 									<span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
 										{inTwoDaysTasks.length}
 									</span>
 								</header>
-								<div className="rounded-xl border border-border bg-card">
+								<div className="rounded-xl border border-border bg-card overflow-hidden">
 									<div className="divide-y divide-border">
 										{inTwoDaysTasks.map((task) => (
-											<div key={task.id} className="px-4 py-3">
-												<UpcomingTaskCard task={task} />
-											</div>
+											<UpcomingTaskCard task={task} key={task.id} />
 										))}
 									</div>
 								</div>
@@ -127,12 +151,10 @@ export function Upcoming() {
 										{laterTasks.length}
 									</span>
 								</header>
-								<div className="rounded-xl border border-border bg-card">
+								<div className="rounded-xl border border-border bg-card overflow-hidden">
 									<div className="divide-y divide-border">
 										{laterTasks.map((task) => (
-											<div key={task.id} className="px-4 py-3">
-												<UpcomingTaskCard task={task} />
-											</div>
+											<UpcomingTaskCard task={task} key={task.id} />
 										))}
 									</div>
 								</div>
