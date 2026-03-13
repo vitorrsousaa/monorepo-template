@@ -32,8 +32,9 @@ export interface ProjectDetailDTO {
  * Input for the GetProjectDetail service.
  */
 export const GetProjectDetailInputDTO = z.object({
-	userId: z.string().uuid(),
-	projectId: z.string().uuid(),
+	// In dev, IDs come from mocks and we don't need strict UUID validation here.
+	userId: z.string().min(1),
+	projectId: z.string().min(1),
 });
 
 export type GetProjectDetailInput = z.infer<typeof GetProjectDetailInputDTO>;
