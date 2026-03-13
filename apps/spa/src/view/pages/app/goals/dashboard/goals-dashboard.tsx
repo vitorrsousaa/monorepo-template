@@ -105,47 +105,59 @@ export function GoalsDashboard() {
 	return (
 		<div className="flex flex-col h-full">
 			{/* Header */}
-			<div className="px-6 py-5 border-b border-border bg-card/50 shrink-0">
-				<div className="flex items-center justify-between max-w-4xl mx-auto">
-					<div>
-						<h2 className="text-xl font-bold text-foreground">Metas</h2>
-						<p className="text-sm text-muted-foreground mt-0.5">
-							Progresso calculado automaticamente pelas tarefas do projeto ou
-							atualizado manualmente
-						</p>
+			<div className="px-6 py-5 border-b border-border bg-background/80 backdrop-blur-sm shrink-0">
+				<div className="max-w-4xl mx-auto space-y-4">
+					<div className="flex items-end justify-between gap-4">
+						<div>
+							<h2 className="text-[22px] font-semibold tracking-tight text-foreground">
+								Goals
+							</h2>
+							<p className="text-xs text-muted-foreground mt-1 max-w-xl">
+								Progress is calculated automatically from linked project tasks,
+								or updated manually.
+							</p>
+						</div>
+						<Button
+							size="sm"
+							className="gap-1.5 rounded-md"
+							onClick={toggleNewGoalModal}
+						>
+							<Plus className="w-3.5 h-3.5" />
+							New goal
+						</Button>
 					</div>
-					<Button size="sm" className="gap-1.5" onClick={toggleNewGoalModal}>
-						<Plus className="w-3.5 h-3.5" />
-						Nova meta
-					</Button>
-				</div>
 
-				{/* Filtros */}
-				<div className="flex gap-1 mt-4 max-w-4xl mx-auto">
-					{(["todas", "em-andamento", "concluida", "pausada"] as const).map(
-						(f) => (
-							<button
-								key={f}
-								onClick={() => setFilter(f)}
-								className={cn(
-									"px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
-									filter === f
-										? "bg-primary text-primary-foreground"
-										: "text-muted-foreground hover:bg-muted",
-								)}
-								type="button"
-							>
-								{f === "todas"
-									? "Todas"
-									: f === "em-andamento"
-										? "Em andamento"
-										: f === "concluida"
-											? "Concluídas"
-											: "Pausadas"}{" "}
-								<span className="opacity-60">({counts[f]})</span>
-							</button>
-						),
-					)}
+					{/* Filter pills */}
+					<div className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-1.5 py-1">
+						{(["todas", "em-andamento", "concluida", "pausada"] as const).map(
+							(f) => (
+								<button
+									key={f}
+									onClick={() => setFilter(f)}
+									className={cn(
+										"inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors",
+										filter === f
+											? "bg-muted text-foreground shadow-sm"
+											: "text-muted-foreground hover:bg-muted/70",
+									)}
+									type="button"
+								>
+									<span>
+										{f === "todas"
+											? "All"
+											: f === "em-andamento"
+												? "In progress"
+												: f === "concluida"
+													? "Completed"
+													: "Paused"}
+									</span>
+									<span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-muted/80 text-muted-foreground">
+										{counts[f]}
+									</span>
+								</button>
+							),
+						)}
+					</div>
 				</div>
 			</div>
 

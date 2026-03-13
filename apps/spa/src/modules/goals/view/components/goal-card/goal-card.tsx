@@ -12,7 +12,6 @@ import {
 import { formatDateShort } from "@/utils/date-utils";
 import { DeadlineBadge } from "./deadline-badge";
 import { ProgressBar } from "./progress-bar";
-import { ProgressRing } from "./progress-ring";
 
 type GoalTask = {
 	id: string;
@@ -52,39 +51,53 @@ export function GoalCard({
 	const showEditButton = goal.targetValue != null;
 
 	return (
-		<div className="bg-card border border-border rounded-xl overflow-hidden transition-shadow hover:shadow-sm">
-			<div className="p-4 flex items-start gap-4">
-				{/* Ring de progresso */}
-				<div className="relative shrink-0">
-					<ProgressRing
-						value={progress.current}
-						max={progress.total}
-						size={60}
-						color={goal.color ?? "#7C3AED"}
-					/>
-					<span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">
+		<div className="bg-card border border-border rounded-2xl overflow-hidden transition-colors hover:border-foreground/15">
+			{/* Faixa de cor no topo */}
+			<div
+				className="h-0.5 w-full"
+				style={{ backgroundColor: goal.color ?? "#7C3AED" }}
+			/>
+
+			{/* Linha principal */}
+			<div className="px-4 py-3 flex items-center gap-4">
+				{/* Percentual grande à esquerda */}
+				<div className="shrink-0 w-14 text-center">
+					<div
+						className="text-xl font-bold leading-none tracking-tight"
+						style={{ color: goal.color ?? "#7C3AED" }}
+					>
 						{progress.pct}%
-					</span>
+					</div>
+					<div className="text-[10px] text-muted-foreground mt-1 uppercase tracking-[0.08em]">
+						done
+					</div>
 				</div>
 
-				{/* Conteúdo */}
+				{/* Conteúdo principal */}
 				<div className="flex-1 min-w-0 space-y-2">
 					<div className="flex items-start justify-between gap-2">
 						<div className="min-w-0">
-							<h3 className="text-sm font-semibold text-foreground truncate">
-								{goal.emoji} {goal.name}
-							</h3>
+							<div className="flex items-center gap-1.5 min-w-0">
+								<span className="text-base leading-none">
+									{goal.emoji}
+								</span>
+								<h3 className="text-sm font-semibold text-foreground truncate">
+									{goal.name}
+								</h3>
+							</div>
 							{goal.description && (
-								<p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+								<p className="text-xs text-muted-foreground mt-0.5">
 									{goal.description}
 								</p>
 							)}
 						</div>
+
+						{/* Ações */}
 						<div className="flex items-center gap-1 shrink-0">
 							{showEditButton && onEditValue && (
 								<button
 									onClick={onEditValue}
-									className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+									className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 									title="Atualizar progresso manualmente"
 									type="button"
 								>
@@ -94,7 +107,7 @@ export function GoalCard({
 							{onDelete && (
 								<button
 									onClick={onDelete}
-									className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+									className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
 									title="Excluir meta"
 									type="button"
 								>
@@ -104,31 +117,32 @@ export function GoalCard({
 						</div>
 					</div>
 
+					{/* Barra de progresso reta */}
 					<ProgressBar
 						value={progress.current}
 						max={progress.total}
 						color={goal.color ?? "#7C3AED"}
 					/>
 
-					<div className="flex items-center flex-wrap gap-2">
-						<span className="text-xs text-muted-foreground">
+					{/* Metadados */}
+					<div className="flex items-center flex-wrap gap-2 mt-1">
+						<span className="inline-flex items-center px-2 py-0.5 rounded-md bg-muted text-xs font-medium text-foreground/80">
 							{progress.label}
 						</span>
 
 						{progressSource === "tasks" ? (
 							<span
-								className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium border"
+								className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md font-medium"
 								style={{
-									backgroundColor: (goal.color ?? "#7C3AED") + "18",
-									borderColor: (goal.color ?? "#7C3AED") + "40",
+									backgroundColor: (goal.color ?? "#7C3AED") + "12",
 									color: goal.color ?? "#7C3AED",
 								}}
 							>
 								<FolderKanban className="w-3 h-3" />
-								Progresso por tarefas
+								Auto · tarefas do projeto
 							</span>
 						) : (
-							<span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+							<span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
 								Progresso manual
 							</span>
 						)}
@@ -141,13 +155,13 @@ export function GoalCard({
 				{hasProjectTasks && onToggleExpand && (
 					<button
 						onClick={onToggleExpand}
-						className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:bg-muted transition-colors self-center"
+						className="shrink-0 p-1.5 rounded-md border border-border bg-muted/60 text-muted-foreground hover:bg-muted transition-colors self-center"
 						type="button"
 					>
 						{isExpanded ? (
-							<ChevronDown className="w-4 h-4" />
+							<ChevronDown className="w-3.5 h-3.5" />
 						) : (
-							<ChevronRight className="w-4 h-4" />
+							<ChevronRight className="w-3.5 h-3.5" />
 						)}
 					</button>
 				)}
@@ -155,51 +169,46 @@ export function GoalCard({
 
 			{/* Painel expandido: tasks do projeto */}
 			{isExpanded && hasProjectTasks && (
-				<div className="border-t border-border bg-muted/30 px-4 py-3 space-y-3">
-					<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+				<div className="border-t border-border bg-card px-4 py-3 space-y-3">
+					<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em] flex items-center gap-1.5">
 						<TrendingUp className="w-3.5 h-3.5" />
-						Tarefas do projeto vinculado
+						Tarefas vinculadas à meta
 					</p>
 
 					{done.length > 0 && (
 						<div className="space-y-1.5">
-							<p className="text-xs text-muted-foreground font-medium">
-								Concluídas ({done.length})
+							<p className="text-[11px] text-muted-foreground font-medium">
+								Concluídas · {done.length}
 							</p>
-							{done.slice(0, 4).map((t) => (
+							{done.map((t) => (
 								<div
 									key={t.id}
-									className="flex items-center gap-2 text-xs text-muted-foreground"
+									className="flex items-center gap-2 text-xs text-muted-foreground py-1"
 								>
 									<CheckCircle2
 										className="w-3.5 h-3.5 shrink-0"
 										style={{ color: goal.color ?? "#7C3AED" }}
-									/>
+									 />
 									<span className="line-through truncate">{t.title}</span>
 								</div>
 							))}
-							{done.length > 4 && (
-								<p className="text-xs text-muted-foreground pl-5">
-									+ {done.length - 4} concluídas
-								</p>
-							)}
 						</div>
 					)}
 
 					{pending.length > 0 && (
 						<div className="space-y-1.5">
-							<p className="text-xs text-muted-foreground font-medium">
-								Pendentes ({pending.length})
+							<p className="text-[11px] text-muted-foreground font-medium">
+								Pendentes · {pending.length}
 							</p>
-							{pending.slice(0, 4).map((t) => (
+							{pending.map((t) => (
 								<div
 									key={t.id}
-									className="flex items-center gap-2 text-xs text-foreground"
+									className="flex items-center gap-2 text-xs text-foreground py-1"
 								>
 									<Circle className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
 									<span className="truncate">{t.title}</span>
 									{t.dueDate && (
-										<span className="ml-auto shrink-0 text-muted-foreground">
+										<span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
 											{formatDateShort(
 												new Date(t.dueDate + "T12:00:00"),
 											)}
@@ -207,11 +216,6 @@ export function GoalCard({
 									)}
 								</div>
 							))}
-							{pending.length > 4 && (
-								<p className="text-xs text-muted-foreground pl-5">
-									+ {pending.length - 4} pendentes
-								</p>
-							)}
 						</div>
 					)}
 				</div>
