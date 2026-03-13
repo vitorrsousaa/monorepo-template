@@ -1,11 +1,33 @@
+import type { ProjectDetail } from "@/modules/projects/app/entitites/project-detail";
+import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
+import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
+import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
+import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
+import type { Todo } from "@/modules/todo/app/entities/todo";
+import type { TaskRowTask } from "@/components/task-row";
 import { ProjectSection } from "@/modules/projects/view/components/project-section";
-import { ProjectTodoWithoutSection } from "@/modules/projects/view/components/project-todo-without-section";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { GripVertical, Plus } from "lucide-react";
+import { useState, useCallback } from "react";
 import { ProjectErrorState } from "./components/project-error-state";
+import { ProjectHeader } from "./components/project-header";
 import { ProjectLoadingSkeleton } from "./components/project-loading-skeleton";
+import { ProjectSectionBlock } from "@/components/project-section-block";
+import { ProjectTopbar } from "./components/project-topbar";
 import { useProjectHook } from "./project.hook";
+
+function todoToTaskRowTask(t: Todo): TaskRowTask {
+	return {
+		id: t.id,
+		title: t.title,
+		description: t.description ?? null,
+		completed: t.completed,
+		dueDate: t.dueDate ?? null,
+		priority: t.priority ?? null,
+	};
+}
 
 export function Projects() {
 	const {
@@ -23,12 +45,53 @@ export function Projects() {
 		handleChangeInputToAddSection,
 	} = useProjectHook();
 
-	// Loading state
+	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
+	const [newTodoSectionId, setNewTodoSectionId] = useState<string | undefined>(
+		undefined,
+	);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [editModalInitialValues, setEditModalInitialValues] =
+		useState<Partial<TTodoFormSchema> | null>(null);
+	const [editModalHeaderMeta, setEditModalHeaderMeta] = useState<{
+		projectName: string;
+		createdAt: string;
+	} | null>(null);
+
+	const openEditModal = useCallback(
+		(task: TaskRowTask, sectionId: string | null, projectName: string) => {
+			const todo = findTodoFromDetail(projectDetail, task.id);
+			const rawCreatedAt = todo && "createdAt" in todo ? todo.createdAt : undefined;
+			const createdAt =
+				typeof rawCreatedAt === "string"
+					? rawCreatedAt
+					: rawCreatedAt instanceof Date
+						? rawCreatedAt.toISOString()
+						: new Date().toISOString();
+			setEditModalInitialValues({
+				id: task.id,
+				title: task.title,
+				description: task.description ?? undefined,
+				project: projectId ?? "inbox",
+				section: sectionId ?? "none",
+				priority: task.priority ?? "none",
+				dueDate: task.dueDate ? new Date(task.dueDate as string) : undefined,
+			});
+			setEditModalHeaderMeta({ projectName, createdAt });
+			setIsEditModalOpen(true);
+		},
+		[projectDetail, projectId],
+	);
+
+	const closeEditModal = useCallback(() => {
+		setEditModalInitialValues(null);
+		setEditModalHeaderMeta(null);
+		setIsEditModalOpen(false);
+	}, []);
+
 	if (isFetchingProjectDetail) {
 		return <ProjectLoadingSkeleton />;
 	}
 
-	// Error state
 	if (isErrorProjectDetail) {
 		return (
 			<div className="p-8">
@@ -36,8 +99,6 @@ export function Projects() {
 			</div>
 		);
 	}
-
-	// Mock project data (fallback when API projectDetail not used yet)
 
 	if (!projectDetail) {
 		return (
@@ -49,61 +110,76 @@ export function Projects() {
 		);
 	}
 
-	// all todos completed in project
-	const completedCount = 30;
-	// all todos in project
-	const totalCount = 50;
-	const progressPercentage = Math.round((completedCount / totalCount) * 100);
+	const { project, sections, todosWithoutSection } = projectDetail;
+	const allTodos = [
+		...todosWithoutSection,
+		...sections.flatMap((s) => s.todos),
+	];
+	const completedCount = allTodos.filter((t) => t.completed).length;
+	const totalCount = allTodos.length;
 
 	return (
-		<div className="h-full w-full flex flex-col bg-background overflow-hidden">
-			{/* Project Header - Fixed */}
-			<div className="flex-shrink-0 border-b border-border px-8 py-6">
-				<div className="flex items-center gap-3 mb-2">
-					<span className="text-4xl">🐍</span>
-					<h1 className="text-3xl font-semibold">
-						{projectDetail.project.name}
-					</h1>
-				</div>
-				<p className="text-muted-foreground mb-4">
-					{projectDetail.project.description}
-				</p>
+		<div className="flex h-full w-full flex-col overflow-hidden bg-background">
+			<ProjectTopbar
+				projectName={project.name}
+				onAddTask={() => {
+					setNewTodoSectionId(undefined);
+					setIsNewTodoModalOpen(true);
+				}}
+			/>
 
-				<div className="flex items-center gap-4">
-					<div className="text-sm text-muted-foreground">
-						{completedCount} of {totalCount} completed ({progressPercentage}%)
-					</div>
-					<div className="flex-1 max-w-xs h-2 bg-muted rounded-full overflow-hidden">
-						<div
-							className="h-full bg-primary transition-all"
-							style={{ width: `${progressPercentage}%` }}
-						/>
-					</div>
-				</div>
-			</div>
-
-			{/* Tasks grouped by sections - Scrollable */}
 			<div className="flex-1 min-h-0 overflow-y-auto">
-				<div className="p-8 space-y-6">
-					<div className="space-y-2">
-						{projectDetail.todosWithoutSection.map((todo) => (
-							<ProjectTodoWithoutSection key={todo.id} todo={todo} />
-						))}
-					</div>
+				<div className="mx-auto max-w-[740px] px-8 pb-20 pt-8">
+					<ProjectHeader
+						icon="🐍"
+						name={project.name}
+						description={project.description}
+						completedCount={completedCount}
+						totalCount={totalCount}
+						deadlineLabel={null}
+						statusLabel="Active"
+					/>
 
-					{projectDetail.sections.map((section) => (
+					{/* Unsectioned */}
+					<ProjectSectionBlock
+						name="Unsectioned"
+						dimmed
+						showDragHandle={false}
+						tasks={todosWithoutSection.map(todoToTaskRowTask)}
+						onTaskClick={(task) =>
+							openEditModal(task, null, project.name)
+						}
+						onAddTask={() => {
+							setNewTodoSectionId(undefined);
+							setIsNewTodoModalOpen(true);
+						}}
+					/>
+
+					{/* Sections */}
+					{sections.map((section) => (
 						<ProjectSection
 							key={section.id}
 							section={section}
 							projectId={projectId}
-							projectName={projectDetail.project.name}
+							projectName={project.name}
+							onTaskClick={(task) =>
+								openEditModal(
+									task,
+									section.id,
+									project.name,
+								)
+							}
+							onAddTask={() => {
+								setNewTodoSectionId(section.id);
+								setIsNewTodoModalOpen(true);
+							}}
 						/>
 					))}
 
-					{/* Add New Section */}
+					{/* Add section */}
 					{openInputToAddSection ? (
-						<div className="flex items-center gap-2">
-							<GripVertical className="w-4 h-4 text-muted-foreground" />
+						<div className="flex items-center gap-2 py-2.5">
+							<GripVertical className="h-4 w-4 text-muted-foreground" />
 							<Input
 								value={newSectionName}
 								onChange={handleChangeInputToAddSection}
@@ -124,17 +200,45 @@ export function Projects() {
 							</Button>
 						</div>
 					) : (
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
+						<button
+							type="button"
+							className="flex items-center gap-2 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
 							onClick={toggleInputToAddSection}
 						>
-							<Plus className="w-4 h-4 mr-2" />
-							Add Section
-						</Button>
+							<Plus className="h-3.5 w-3.5" />
+							Add section
+						</button>
 					)}
 				</div>
 			</div>
+
+			<NewTodoModal
+				isOpen={isNewTodoModalOpen}
+				onClose={() => setIsNewTodoModalOpen(false)}
+				projectId={projectId}
+				sectionId={newTodoSectionId}
+			/>
+
+			<EditTodoModal
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+				initialValues={editModalInitialValues ?? {}}
+				headerMeta={editModalHeaderMeta ?? undefined}
+			/>
 		</div>
 	);
+}
+
+function findTodoFromDetail(
+	detail: ProjectDetail | undefined,
+	taskId: string,
+): Todo | undefined {
+	if (!detail) return undefined;
+	const fromUnsected = detail.todosWithoutSection.find((t) => t.id === taskId);
+	if (fromUnsected) return fromUnsected;
+	for (const section of detail.sections) {
+		const found = section.todos.find((t) => t.id === taskId);
+		if (found) return found;
+	}
+	return undefined;
 }
