@@ -26,7 +26,7 @@ export const ProjectColumnHeader = (props: ProjectColumnHeaderProps) => {
 	};
 
 	return (
-		<div className="flex items-center justify-between mb-4 flex-shrink-0">
+		<div className="flex items-center justify-between flex-shrink-0">
 			<div className="flex items-center gap-2">
 				<h2 className="font-semibold">{project.name}</h2>
 				<Badge variant="secondary" className="rounded-full px-2">

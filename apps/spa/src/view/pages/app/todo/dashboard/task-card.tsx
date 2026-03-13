@@ -66,7 +66,7 @@ export function TaskCard({ task, project, category, isOverdue }: TaskCardProps) 
 		<div
 			className={cn(
 				"flex items-start gap-3 pl-5 pr-5 py-4 transition-colors relative group",
-				isOverdue && "bg-[#FFFAF4] dark:bg-amber-950/20"
+				isOverdue && "bg-[#FEF2F2] dark:bg-red-950/20"
 			)}
 		>
 			{/* Category stripe — left edge, more opaque on hover */}

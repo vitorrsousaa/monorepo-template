@@ -54,8 +54,11 @@ export function useProjectColumnHook(options?: UseProjectColumnHookOptions) {
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
-		const now = new Date();
-		const isOverdue = date < now && date.toDateString() !== now.toDateString();
+		const todayStart = new Date();
+		todayStart.setHours(0, 0, 0, 0);
+		const taskStart = new Date(date);
+		taskStart.setHours(0, 0, 0, 0);
+		const isOverdue = taskStart < todayStart;
 
 		return {
 			text: date.toLocaleDateString("en-US", {

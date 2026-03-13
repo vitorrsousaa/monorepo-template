@@ -1,16 +1,26 @@
 import { useMemo } from "react";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
-import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Checkbox } from "@repo/ui/checkbox";
+import { cn } from "@repo/ui/utils";
 import { RenderIf } from "@repo/ui/render-if";
 import { Calendar, Plus } from "lucide-react";
+import { PROJECT_INBOX_ID } from "@/config/constants";
 import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
 import { ProjectColumnHeader } from "../project-column-header";
 import { useProjectColumnHook } from "./project-column.hook";
+
+/** Stripe color class for the left edge of task cards by project. */
+function getProjectStripeColor(projectId: string): string {
+	if (projectId === PROJECT_INBOX_ID) return "bg-muted-foreground/50";
+	// Cycle by project id for consistent colors across columns
+	const colors = ["bg-violet-500", "bg-emerald-600", "bg-blue-600"] as const;
+	const idx = projectId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % colors.length;
+	return colors[idx];
+}
 
 export type ProjectColumnProps = {
 	project: TodayProjectDto;
@@ -64,30 +74,56 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 
 	return (
 		<>
-			<div className="flex-shrink-0 w-80 h-full flex flex-col">
-				<ProjectColumnHeader
-					project={project}
-					onViewProjectDetails={handleViewProjectDetails}
-					onDeleteProject={handleDeleteProject}
-				/>
+			<div className="flex-shrink-0 w-80 h-full flex flex-col rounded-[14px] border border-border bg-card overflow-hidden">
+				<div className="px-4 pt-4 pb-3 border-b border-border/70 flex-shrink-0">
+					<ProjectColumnHeader
+						project={project}
+						onViewProjectDetails={handleViewProjectDetails}
+						onDeleteProject={handleDeleteProject}
+					/>
+				</div>
 
 				{/* Task Cards */}
-				<div className="flex-1 overflow-y-auto space-y-3 min-h-0">
+				<div className="flex-1 overflow-y-auto min-h-0 px-3 py-3">
+					<div className="space-y-2">
 					{project.tasks.map((task) => {
 						const dateInfo = task.dueDate ? formatDate(task.dueDate) : null;
+						const isOverdue = !!dateInfo?.isOverdue && !task.completed;
+						const stripeColor = getProjectStripeColor(project.id);
 
 						return (
 							<Card
 								key={task.id}
-								className="p-4 bg-card border-border hover:border-primary/50 transition-colors"
+								className={cn(
+									"relative pl-5 pr-4 py-4 border-border hover:border-primary/50 transition-colors",
+									isOverdue
+										? "bg-[#FEF2F2] dark:bg-red-950/20 border-red-200/20 dark:border-red-900/20"
+										: "bg-card"
+								)}
 								onClick={() => handleTaskClick(task, project)}
 							>
+								{/* Category stripe — left edge */}
+								<div
+									className={cn(
+										"absolute left-0 top-2 bottom-2 w-[3px] rounded-r opacity-70",
+										stripeColor
+									)}
+									aria-hidden
+								/>
 								<div className="space-y-3">
 									{/* Task Header */}
 									<div className="flex items-start gap-3">
-										<Checkbox className="mt-0.5 border-2 data-[state=checked]:border-primary" />
+										<Checkbox
+											checked={task.completed}
+											className="mt-0.5 border-2 data-[state=checked]:border-primary"
+										/>
 										<div className="flex-1 min-w-0">
-											<h3 className="font-medium text-balance leading-tight">
+											<h3
+												className={cn(
+													"font-medium text-balance leading-tight",
+													task.completed && "line-through text-muted-foreground"
+												)}
+											>
 												{task.title}
 											</h3>
 											<RenderIf
@@ -106,16 +142,21 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 										condition={!!dateInfo}
 										render={
 											<div className="flex items-center gap-1 text-xs">
-												<Calendar className="w-3 h-3" />
+												<Calendar className="w-3 h-3 shrink-0" />
 												<span
 													className={
 														dateInfo!.isOverdue
 															? "text-destructive"
-															: "text-primary"
+															: "text-muted-foreground"
 													}
 												>
 													{dateInfo!.text}
 												</span>
+												{dateInfo!.isOverdue && !task.completed && (
+													<span className="text-[10px] font-semibold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 px-1.5 py-0.5 rounded">
+														overdue
+													</span>
+												)}
 											</div>
 										}
 									/>
@@ -123,17 +164,22 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 							</Card>
 						);
 					})}
-				</div>
+					</div>
 
-				{/* Add Task Button */}
-				<Button
-					variant="ghost"
-					className="mt-3 justify-start text-muted-foreground hover:text-primary flex-shrink-0"
+				{/* Add Task — dashed style like mockup */}
+				<button
+					type="button"
 					onClick={() => handleNewTodo(project.id)}
+					className={cn(
+						"mt-2 w-full flex items-center gap-2 py-2 px-3 rounded-md",
+						"border border-dashed border-border text-muted-foreground text-xs",
+						"hover:bg-card hover:text-foreground hover:border-solid hover:border-border transition-colors cursor-pointer"
+					)}
 				>
-					<Plus className="w-4 h-4 mr-2" />
-					Add task
-				</Button>
+					<Plus className="w-3.5 h-3.5 shrink-0" />
+					Adicionar tarefa
+				</button>
+				</div>
 			</div>
 			<NewTodoModal
 				isOpen={isNewTodoModalOpen}
