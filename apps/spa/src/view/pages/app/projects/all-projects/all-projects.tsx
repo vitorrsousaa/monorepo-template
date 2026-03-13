@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/config/routes";
 import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
+import { Card } from "@repo/ui/card";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -181,142 +182,184 @@ export function AllProjects() {
 					)}
 				</div>
 			) : (
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					{filtered.map((project) => {
 						const { done, total, pct } = getProjectStats(project.id);
 						const status = statusLabels[project.status];
+						const remaining = Math.max(total - done, 0);
+						const isMuted = project.status !== "ativo";
 
 						return (
-							<div
+							<Card
 								key={project.id}
-								className="group bg-card border border-border rounded-xl p-5 flex flex-col gap-4 hover:border-primary/30 hover:shadow-sm transition-all duration-200"
+								className={cn(
+									"group flex cursor-pointer flex-col overflow-hidden rounded-2xl border bg-card text-left transition-all duration-200",
+									isMuted
+										? "border-border/70 opacity-70 hover:opacity-90"
+										: "border-border hover:border-border/80 hover:shadow-sm",
+								)}
+								onClick={() =>
+									navigate(
+										ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", project.id),
+									)
+								}
 							>
-								{/* Topo do card */}
-								<div className="flex items-start justify-between gap-2">
-									<div className="flex items-center gap-3 min-w-0">
-										<div
-											className="flex items-center justify-center w-10 h-10 rounded-lg text-xl shrink-0"
-											style={{
-												backgroundColor: `${project.color}20`,
-											}}
-										>
+								{/* Faixa de cor no topo */}
+								<div
+									className="h-[3px] w-full"
+									style={{
+										backgroundColor: isMuted ? "rgba(148,163,184,0.9)" : project.color,
+									}}
+								/>
+
+								<div className="flex flex-1 flex-col gap-4 px-5 pb-4 pt-4">
+									{/* Cabeçalho: ícone + título/descrição + status */}
+									<div className="flex items-start gap-3">
+										<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted text-lg">
 											{project.emoji}
 										</div>
-										<div className="min-w-0">
-											<p className="font-semibold text-sm text-foreground truncate">
-												{project.name}
-											</p>
-											{project.description && (
-												<p className="text-xs text-muted-foreground truncate mt-0.5">
-													{project.description}
-												</p>
+
+										<div className="min-w-0 flex-1">
+											<div className="flex items-start justify-between gap-2">
+												<div className="min-w-0">
+													<p className="truncate text-sm font-semibold tracking-tight">
+														{project.name}
+													</p>
+													{project.description && (
+														<p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+															{project.description}
+														</p>
+													)}
+												</div>
+
+												<div className="flex items-start gap-1">
+													{project.status !== "ativo" && (
+														<span
+															className={cn(
+																"mt-0.5 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold",
+																project.status === "concluido"
+																	? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+																	: "bg-muted text-muted-foreground",
+															)}
+														>
+															{project.status === "concluido" && (
+																<CheckCircle2 className="mr-1 h-3 w-3" />
+															)}
+															{project.status === "arquivado" && (
+																<Archive className="mr-1 h-3 w-3" />
+															)}
+															{status.label}
+														</span>
+													)}
+
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<button
+																type="button"
+																className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-muted hover:text-foreground"
+																onClick={(event) => {
+																	event.stopPropagation();
+																}}
+															>
+																<MoreHorizontal className="h-4 w-4" />
+															</button>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent
+															align="end"
+															className="w-48"
+															onClick={(event) => {
+																event.stopPropagation();
+															}}
+														>
+															<DropdownMenuItem
+																onSelect={() =>
+																	navigate(
+																		ROUTES.PROJECTS.PROJECT_DETAILS.replace(
+																			":id",
+																			project.id,
+																		),
+																	)
+																}
+															>
+																<Eye className="text-muted-foreground" />
+																<span>Ver projeto</span>
+															</DropdownMenuItem>
+															<DropdownMenuItem>
+																<History className="text-muted-foreground" />
+																<span>Ver atividade</span>
+															</DropdownMenuItem>
+															<DropdownMenuSeparator />
+																<DropdownMenuItem
+																className="text-destructive focus:text-destructive"
+																onSelect={() => openDeleteConfirm(project)}
+															>
+																<Trash2 className="text-muted-foreground" />
+																<span>Excluir projeto</span>
+															</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									{/* Progresso */}
+									<div className="mt-auto space-y-1.5">
+										<div className="flex items-baseline justify-between">
+											<span
+												className="text-xl font-semibold leading-none tracking-tight"
+												style={{
+													color: isMuted ? "rgb(148,163,184)" : project.color,
+												}}
+											>
+												{pct}%
+											</span>
+											<span className="text-[11px] text-muted-foreground">
+												{done} de {total} tarefas
+											</span>
+										</div>
+
+										<div className="h-1 overflow-hidden rounded-full bg-muted">
+											<div
+												className="h-full rounded-full transition-all duration-500"
+												style={{
+													width: `${pct}%`,
+													backgroundColor: isMuted
+														? "rgba(148,163,184,0.85)"
+														: project.color,
+												}}
+											/>
+										</div>
+
+										<div className="flex items-center justify-between pt-0.5">
+											<span className="text-[11px] text-muted-foreground">
+												{project.status === "concluido"
+													? "Finalizado"
+													: project.status === "arquivado"
+														? "Arquivado"
+														: `${remaining} ${
+																remaining === 1 ? "restante" : "restantes"
+															}`}
+											</span>
+
+											{project.deadline && (
+												<span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/80">
+													<History className="h-3 w-3" />
+													<span>
+														até{" "}
+														{new Date(
+															`${project.deadline}T12:00:00`,
+														).toLocaleDateString("pt-BR", {
+															day: "2-digit",
+															month: "short",
+														})}
+													</span>
+												</span>
 											)}
 										</div>
 									</div>
-
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<button
-												type="button"
-												className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-muted transition-all text-muted-foreground hover:text-foreground"
-											>
-												<MoreHorizontal className="w-4 h-4" />
-											</button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end" className="w-48">
-											<DropdownMenuItem
-												onSelect={() =>
-													navigate(
-														ROUTES.PROJECTS.PROJECT_DETAILS.replace(
-															":id",
-															project.id,
-														),
-													)
-												}
-											>
-												<Eye className="text-muted-foreground" />
-												<span>View Project</span>
-											</DropdownMenuItem>
-											<DropdownMenuItem>
-												<History className="text-muted-foreground" />
-												<span>Activity Log</span>
-											</DropdownMenuItem>
-											<DropdownMenuSeparator />
-											<DropdownMenuItem
-												className="text-destructive focus:text-destructive"
-												onSelect={() => openDeleteConfirm(project)}
-											>
-												<Trash2 className="text-muted-foreground" />
-												<span>Delete Project</span>
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
 								</div>
-
-								{/* Badge de status */}
-								<div className="flex items-center justify-between">
-									<span
-										className={cn(
-											"inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium",
-											status.color,
-										)}
-									>
-										{project.status === "ativo" && (
-											<CheckCircle2 className="w-3 h-3 mr-1" />
-										)}
-										{project.status === "arquivado" && (
-											<Archive className="w-3 h-3 mr-1" />
-										)}
-										{status.label}
-									</span>
-									<span className="text-xs text-muted-foreground">
-										{done}/{total} tarefas
-									</span>
-								</div>
-
-								{/* Barra de progresso */}
-								<div className="space-y-1.5">
-									<div className="h-1.5 bg-muted rounded-full overflow-hidden">
-										<div
-											className="h-full rounded-full transition-all duration-500"
-											style={{
-												width: `${pct}%`,
-												backgroundColor: project.color,
-											}}
-										/>
-									</div>
-									<div className="flex items-center justify-between">
-										<span className="text-xs text-muted-foreground">
-											{pct}% concluído
-										</span>
-										{project.deadline && (
-											<span className="text-xs text-muted-foreground">
-												até{" "}
-												{new Date(
-													`${project.deadline}T12:00:00`,
-												).toLocaleDateString("pt-BR", {
-													day: "2-digit",
-													month: "short",
-												})}
-											</span>
-										)}
-									</div>
-								</div>
-
-								{/* Botão abrir */}
-								<button
-									type="button"
-									onClick={() =>
-										navigate(
-											ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", project.id),
-										)
-									}
-									className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/20 transition-all duration-150"
-								>
-									Abrir projeto
-									<ArrowRight className="w-3.5 h-3.5" />
-								</button>
-							</div>
+							</Card>
 						);
 					})}
 				</div>

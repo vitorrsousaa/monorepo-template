@@ -1,12 +1,4 @@
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@repo/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
 import { Textarea } from "@repo/ui/textarea";
 import { useProjectFormHook } from "./project-form.hook";
@@ -28,15 +20,16 @@ export function ProjectForm(props: ProjectFormProps) {
 			<form
 				onSubmit={handleSubmit}
 				id={formId || "project-form"}
-				className="space-y-6 mt-4"
+				className="mt-1 space-y-5"
 			>
-				{/* Project Name */}
 				<FormField
 					control={methods.control}
 					name="name"
 					render={({ field }) => (
 						<FormItem className="w-full">
-							<FormLabel>Project Name</FormLabel>
+							<FormLabel className="text-xs font-semibold text-muted-foreground">
+								Project Name
+							</FormLabel>
 							<FormControl>
 								<Input
 									placeholder="e.g., Work, Personal, Health..."
@@ -44,10 +37,9 @@ export function ProjectForm(props: ProjectFormProps) {
 									required
 									disabled={isSubmitting}
 									{...field}
-									className="w-full"
+									className="mt-1 h-9 w-full rounded-[10px] border border-border bg-muted/60 px-3 text-[13px] shadow-none placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0"
 								/>
 							</FormControl>
-							<FormDescription>Add a name for your project.</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -58,19 +50,23 @@ export function ProjectForm(props: ProjectFormProps) {
 					name="description"
 					render={({ field }) => (
 						<FormItem className="w-full">
-							<FormLabel>Description</FormLabel>
+							<div className="flex items-baseline gap-1">
+								<FormLabel className="text-xs font-semibold text-muted-foreground">
+									Description
+								</FormLabel>
+								<span className="text-[11px] font-normal text-muted-foreground/60">
+									(optional)
+								</span>
+							</div>
 							<FormControl>
 								<Textarea
 									placeholder="Add a description for this project..."
 									rows={3}
-									className="bg-background resize-none"
+									className="mt-1 h-24 resize-none rounded-[10px] border border-border bg-muted/60 px-3 py-2 text-[13px] leading-relaxed shadow-none placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0"
 									disabled={isSubmitting}
 									{...field}
 								/>
 							</FormControl>
-							<FormDescription>
-								Add a description for your project.
-							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
