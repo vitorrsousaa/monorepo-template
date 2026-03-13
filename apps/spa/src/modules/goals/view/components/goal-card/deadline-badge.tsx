@@ -1,7 +1,9 @@
-import { Calendar } from "lucide-react";
-import { format, differenceInDays } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import {
+	differenceInDays,
+	formatDateWithYear,
+} from "@/utils/date-utils";
 import { cn } from "@repo/ui/utils";
+import { Calendar } from "lucide-react";
 
 type DeadlineBadgeProps = {
 	deadline?: string;
@@ -21,9 +23,7 @@ export function DeadlineBadge({ deadline }: DeadlineBadgeProps) {
 				? "Vence hoje"
 				: diff <= 7
 					? `${diff}d restantes`
-					: format(new Date(deadline + "T12:00:00"), "d MMM yyyy", {
-							locale: ptBR,
-						});
+					: formatDateWithYear(new Date(deadline + "T12:00:00"));
 
 	return (
 		<span

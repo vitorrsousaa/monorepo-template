@@ -9,8 +9,7 @@ import {
 	Trash2,
 	TrendingUp,
 } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatDateShort } from "@/utils/date-utils";
 import { DeadlineBadge } from "./deadline-badge";
 import { ProgressBar } from "./progress-bar";
 import { ProgressRing } from "./progress-ring";
@@ -201,10 +200,8 @@ export function GoalCard({
 									<span className="truncate">{t.title}</span>
 									{t.dueDate && (
 										<span className="ml-auto shrink-0 text-muted-foreground">
-											{format(
+											{formatDateShort(
 												new Date(t.dueDate + "T12:00:00"),
-												"d MMM",
-												{ locale: ptBR },
 											)}
 										</span>
 									)}
