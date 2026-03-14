@@ -24,7 +24,7 @@ export function useGetAllSectionsByProject(
 		sections: data?.sections ?? [],
 		total: data?.total ?? 0,
 		isErrorSections: isError,
-		isFetchingSections: isFetching || isPending || isLoading,
+		isFetchingSections: enabled && (isFetching || isPending || isLoading),
 		refetchSections: refetch,
 	};
 }
