@@ -1,6 +1,6 @@
 import type { TRecurrenceForm } from "./todo-form.schema";
 
-const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_NAMES_SHORT = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 export function formatRecurrencePreview(recurrence: TRecurrenceForm | undefined): string {
 	if (!recurrence?.enabled || !recurrence.frequency) {
@@ -17,7 +17,7 @@ export function formatRecurrencePreview(recurrence: TRecurrenceForm | undefined)
 			recurrence.weeklyDays.length < 7
 				? recurrence.weeklyDays
 						.sort((a, b) => a - b)
-						.map((d) => DAY_NAMES[d])
+						.map((d) => DAY_NAMES_SHORT[d])
 						.join(", ")
 				: null;
 		base = days ? `Repeats every week on ${days}` : "Repeats every week";
