@@ -4,11 +4,11 @@ Stack: AWS Lambda + Serverless Framework + TypeScript. Clean Architecture. Runs 
 
 ## Request Flow
 
-Every Lambda handler follows this exact pipeline:
+Every Lambda handler follows this exact pipeline (handlers use `lambdaHttpAdapter(controller)` which wraps the steps below):
 
 ```
 APIGatewayEvent
-  → handler (src/server/functions/<domain>/<feature>/handler.ts)
+  → handler = lambdaHttpAdapter(controller) (src/server/functions/<domain>/<feature>/handler.ts)
   → requestAdapter (src/server/adapters/request.ts)
   → makeXController() factory (src/factories/controllers/<domain>/<feature>.ts)
       → makeXService() factory (src/factories/services/<domain>/<feature>.ts)
@@ -64,17 +64,14 @@ From `serverless.yml`:
 ## Code Patterns
 
 ### Handler
+Handlers usam `lambdaHttpAdapter(controller)`; não chamar `requestAdapter`/`responseAdapter` manualmente.
+
 ```ts
 import { makeXController } from "@factories/controllers/<domain>/<feature>";
-import { requestAdapter } from "@server/adapters/request";
-import { responseAdapter } from "@server/adapters/response";
-import type { APIGatewayProxyEventV2 } from "aws-lambda";
+import { lambdaHttpAdapter } from "@server/adapters/lambda-http-adapter";
 
-export async function handler(event: APIGatewayProxyEventV2) {
-  const controller = makeXController();
-  const response = await controller.handle(requestAdapter(event));
-  return responseAdapter(response);
-}
+const controller = makeXController();
+export const handler = lambdaHttpAdapter(controller);
 ```
 
 ### Factory (controller)

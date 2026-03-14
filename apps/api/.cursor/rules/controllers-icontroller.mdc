@@ -1,0 +1,47 @@
+---
+description: Controllers must implement IController; handlers use lambdaHttpAdapter
+globs: apps/api/**/controllers/**/*.ts
+alwaysApply: false
+---
+
+# Controllers e Handler Lambda
+
+## Controller: IController
+
+Todo controller da API deve implementar a interface `IController` (`@application/interfaces/controller`), com o método:
+
+- `handle(request: IRequest): Promise<IResponse>`
+
+**Exemplo:**
+
+```typescript
+import type { IController } from "@application/interfaces/controller";
+import type { IRequest, IResponse } from "@application/interfaces/http";
+
+export class XController implements IController {
+  constructor(private readonly service: IXService) {}
+
+  async handle(request: IRequest): Promise<IResponse> {
+    // ...
+  }
+}
+```
+
+## Handler Lambda: lambdaHttpAdapter
+
+Handlers Lambda **não** devem chamar `requestAdapter` nem `responseAdapter` manualamente. Use o adapter único:
+
+- Importe o factory do controller e `lambdaHttpAdapter` de `@server/adapters/lambda-http-adapter`.
+- Instancie o controller uma vez e exporte `handler = lambdaHttpAdapter(controller)`.
+
+**Exemplo:**
+
+```typescript
+import { makeXController } from "@factories/controllers/<domain>/<feature>";
+import { lambdaHttpAdapter } from "@server/adapters/lambda-http-adapter";
+
+const controller = makeXController();
+export const handler = lambdaHttpAdapter(controller);
+```
+
+O `lambdaHttpAdapter` encapsula: `event` → `requestAdapter` → `controller.handle(request)` → `responseAdapter` → retorno Lambda.
