@@ -11,15 +11,13 @@
     "ci:typecheck": "tsc --noEmit",
     "format": "biome format --write ./src",
     "ci:format": "biome format ./src",
-    "dev": "nodemon --watch src --ext ts,js,json,yml --exec \"pnpm exec serverless offline\"",
     "dev:no-watch": "pnpm exec serverless offline",
     "deploy:dev": "pnpm exec serverless deploy --stage dev",
     "deploy:prod": "pnpm exec serverless deploy --stage prod",
     "deploy:fn": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage \"$2\"' sh",
     "deploy:fn:dev": "pnpm exec serverless deploy function --stage dev",
     "deploy:fn:prod": "pnpm exec serverless deploy function --stage prod",
-    "serverless": "pnpm exec serverless",
-    "dev:debug": "pnpm exec serverless offline --debug"
+    "serverless": "pnpm exec serverless"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

@@ -9,7 +9,6 @@ package:
 
 plugins:
   - serverless-dotenv-plugin
-  - serverless-offline
 
 provider:
   name: aws
@@ -32,17 +31,12 @@ provider:
 
 custom:
   userPoolName: ${self:service}-${self:provider.stage}-UserPool
-  # Domain do User Pool (só aceita minúsculas, números e hífen)
   userPoolDomain: lifeos-${self:provider.stage}-userpool
   dotenv:
     exclude:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
-  serverless-offline:
-    httpPort: 4000
-    lambdaPort: 3002
-    noPrependStageInUrl: true
 
 build:
   esbuild:
