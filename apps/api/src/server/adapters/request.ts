@@ -1,4 +1,3 @@
-import { MOCK_USER_ID } from "@application/config/mock-user";
 import type { IRequest } from "@application/interfaces/http";
 import type {
 	APIGatewayProxyEventV2,
@@ -12,7 +11,7 @@ export function requestAdapter(
 	const jwtSub = (event as APIGatewayProxyEventV2WithJWTAuthorizer)
 		.requestContext?.authorizer?.jwt?.claims?.sub as string | undefined;
 
-	const userId = jwtSub ?? MOCK_USER_ID;
+	const userId = jwtSub ?? null;
 
 	return {
 		body: bodyParser(event.body ?? "{}"),
