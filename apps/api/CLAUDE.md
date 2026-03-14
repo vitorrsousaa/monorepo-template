@@ -9,7 +9,7 @@ Every Lambda handler follows this exact pipeline (handlers use `lambdaHttpAdapte
 ```
 APIGatewayEvent
   → handler = lambdaHttpAdapter(controller) (src/server/functions/<domain>/<feature>/handler.ts)
-  → requestAdapter(event, controller.controllerType) — sets userId from JWT/mock (private) or null (public)
+  → requestAdapter(event) — builds IRequest; userId comes from JWT/mock when authorizer is present, else null (public/private is defined by the route in serverless.yml, not passed to the adapter)
   → makeXController() factory (src/factories/controllers/<domain>/<feature>.ts)
       → makeXService() factory (src/factories/services/<domain>/<feature>.ts)
           → repository factory (src/infra/db/dynamodb/factories/<entity>-repository-factory.ts)
@@ -56,14 +56,20 @@ Controllers declare whether they are **public** or **private** so `request.userI
 - **Private** (`Controller<'private', TBody>`): `request.userId` is `string` (from JWT or `MOCK_USER_ID`). Use for all endpoints that require the current user.
 - **Public** (`Controller<'public', TBody>`): `request.userId` is `null`. Use for health, sign-in, or any unauthenticated endpoint.
 
-**How it works:** The base class receives `controllerType` in the constructor. The lambda adapter calls `requestAdapter(event, controller.controllerType)` so that for `"public"` it sets `userId: null`; for `"private"` it sets `userId` from JWT or mock. In `handle()`, use `Controller.Request<'private'>` or `Controller.Request<'public'>` so TypeScript narrows `userId` to `string` or `null`.
+**How it works:** The lambda adapter calls `requestAdapter(event)` only (no second argument). Whether the route is public or private is determined by the serverless config (authorizer present or not); `userId` is set from JWT/mock when the event has authorizer claims, otherwise `null`. Controllers declare `Controller<'private', TBody>` or `Controller<'public', TBody>` and use `Controller.Request<'private'>` or `Controller.Request<'public'>` in `handle()` so TypeScript narrows `userId` to `string` or `null` correctly.
+
+## Modules structure
+
+See **`src/app/modules/claude.md`** for the single source of truth on what goes in each subfolder (`controllers/`, `services/`, `mappers/`, `errors/`) and the one-folder-per-feature convention.
+
+**Index exports (required):** Every controller feature folder must have `index.ts` exporting both controller and schema. Every service feature folder must have `index.ts` exporting both service and dto. See `.cursor/rules/api-patterns.mdc` for the exact pattern.
 
 ## Adding a New Feature — Checklist
 
 1. **Domain** (if new entity): `src/core/domain/<entity>/<entity>.ts`
 2. **Repository protocol**: `src/data/protocols/<entity>/<entity>-repository.ts`
-3. **Service + DTO**: `src/app/modules/<domain>/services/<feature>/service.ts` + `dto.ts`
-4. **Controller + Schema**: `src/app/modules/<domain>/controllers/<feature>/controller.ts` + `schema.ts`
+3. **Service + DTO**: `src/app/modules/<domain>/services/<feature>/service.ts` + `dto.ts`, and **`index.ts`** that exports `export * from "./dto"; export * from "./service";`
+4. **Controller + Schema**: `src/app/modules/<domain>/controllers/<feature>/controller.ts` + `schema.ts`, and **`index.ts`** that exports `export * from "./controller"; export * from "./schema";`
 5. **Factories**:
    - `src/factories/services/<domain>/<feature>.ts`
    - `src/factories/controllers/<domain>/<feature>.ts`

@@ -170,6 +170,7 @@ apps/api/src/
 │   │   │   ├── controllers/
 │   │   │   │   ├── signin/
 │   │   │   │   │   ├── controller.ts
+│   │   │   │   │   ├── schema.ts # Zod para body (pode reutilizar DTO do service)
 │   │   │   │   │   ├── controller.spec.ts
 │   │   │   │   │   └── index.ts
 │   │   │   │   └── ...
@@ -177,9 +178,10 @@ apps/api/src/
 │   │   │   │   ├── signin/
 │   │   │   │   │   ├── service.ts
 │   │   │   │   │   ├── service.spec.ts
-│   │   │   │   │   ├── dto.ts    # ✨ NOVO: DTOs tipados
+│   │   │   │   │   ├── dto.ts    # DTOs tipados (Zod + tipos input/output)
 │   │   │   │   │   └── index.ts
 │   │   │   │   └── ...
+│   │   │   ├── mappers/          # (opcional) conversão domínio → contrato HTTP
 │   │   │   ├── errors/           # Erros específicos do módulo
 │   │   │   └── types.ts
 │   │   └── ...
