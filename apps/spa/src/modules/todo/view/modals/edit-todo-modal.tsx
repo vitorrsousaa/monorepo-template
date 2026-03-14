@@ -27,7 +27,9 @@ export function EditTodoModal({
 				className="max-w-[620px] p-0 gap-0 flex flex-col max-h-[85vh]"
 				hideDefaultClose
 			>
-				<div className="flex items-center justify-end gap-1.5 px-4 py-3 border-b border-border shrink-0">
+				<div className="flex items-center justify-between gap-1.5 px-4 py-3 border-b border-border shrink-0">
+					<h2 className="text-sm font-medium text-foreground">Editing task</h2>
+					<div className="flex items-center gap-1.5">
 					<Button
 						type="button"
 						variant="ghost"
@@ -53,6 +55,7 @@ export function EditTodoModal({
 							<X className="w-3.5 h-3.5" />
 						</Button>
 					</DialogClose>
+					</div>
 				</div>
 				<TodoForm
 					mode="edit"

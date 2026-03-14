@@ -24,7 +24,8 @@ export function NewTodoModal(props: NewTodoModalProps) {
 				className="max-w-[620px] p-0 gap-0 flex flex-col max-h-[85vh]"
 				hideDefaultClose
 			>
-				<div className="flex items-center justify-end px-4 py-3 border-b border-border shrink-0">
+				<div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
+					<h2 className="text-sm font-medium text-foreground">Creating task</h2>
 					<DialogClose asChild>
 						<Button variant="ghost" size="icon" className="h-7 w-7">
 							<X className="w-4 h-4" />
