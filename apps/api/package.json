@@ -31,6 +31,7 @@
     "serverless-offline": "^14.4.0"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.1009.0",
     "@repo/contracts": "workspace:*",
     "@repo/logger": "workspace:*",
     "dotenv": "^16.4.7",
