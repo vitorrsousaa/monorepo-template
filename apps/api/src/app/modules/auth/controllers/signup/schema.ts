@@ -1,5 +1,5 @@
 import type z from "zod";
-import { SignupInputDTO } from "../services/signup/dto";
+import { SignupInputDTO } from "@application/modules/auth/services/signup";
 
 export const signupSchema = SignupInputDTO;
 
