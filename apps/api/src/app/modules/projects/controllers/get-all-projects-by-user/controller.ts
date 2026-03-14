@@ -1,32 +1,27 @@
-import type { IController } from "@application/interfaces/controller";
+import { Controller } from "@application/interfaces/controller";
 import type { IRequest, IResponse } from "@application/interfaces/http";
-import { errorHandler } from "@application/utils/error-handler";
-import { missingFields } from "@application/utils/missing-fields";
 import type { IGetAllProjectsByUserService } from "@application/modules/projects/services/get-all-projects-by-user";
-import { getAllProjectsByUserSchema } from "./schema";
+import { GetAllProjectsByUserSchema, getAllProjectsByUserSchema } from "./schema";
 
-export class GetAllProjectsByUserController implements IController {
+export class GetAllProjectsByUserController extends Controller {
 	constructor(
 		private readonly getAllProjectsByUserService: IGetAllProjectsByUserService,
-	) {}
+	) {
+		super();
+	}
+	
+	protected override schema = getAllProjectsByUserSchema;
 
-	async handle(request: IRequest): Promise<IResponse> {
-		try {
-			const [status, parsedBody] = missingFields(getAllProjectsByUserSchema, {
-				...request.body,
-				userId: request.userId || "",
-			});
+	protected override async handle(request: IRequest<GetAllProjectsByUserSchema>): Promise<IResponse> {
+	
+	
 
-			if (!status) return parsedBody;
-
-			const result = await this.getAllProjectsByUserService.execute(parsedBody);
+			const result = await this.getAllProjectsByUserService.execute({userId: request.userId || ""});
 
 			return {
 				statusCode: 200,
 				body: result,
 			};
-		} catch (error) {
-			return errorHandler(error);
-		}
+		
 	}
 }
