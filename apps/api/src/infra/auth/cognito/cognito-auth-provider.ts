@@ -15,6 +15,11 @@ import type {
 	AuthSignUpResult,
 	IAuthProvider,
 } from "@data/protocols/auth/auth-provider";
+import {
+	InvalidParameterError,
+	InvalidPasswordError,
+	UsernameExistsError,
+} from "./errors";
 
 export class CognitoAuthProvider implements IAuthProvider {
 
@@ -45,15 +50,15 @@ export class CognitoAuthProvider implements IAuthProvider {
 			return { userId };
 		} catch (error) {
 			if (error instanceof UsernameExistsException) {
-				throw new AppError("Username already exists", 409);
+				throw new UsernameExistsError();
 			}
 
 			if (error instanceof InvalidPasswordException) {
-				throw new AppError("Invalid Password", 400);
+				throw new InvalidPasswordError();
 			}
-			
-			if(error instanceof InvalidParameterException) {
-				throw new AppError("Invalid Parameter", 400);
+
+			if (error instanceof InvalidParameterException) {
+				throw new InvalidParameterError();
 			}
 
 			throw new AppError("Internal Server Error", 500);
