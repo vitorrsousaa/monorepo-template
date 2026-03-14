@@ -1,7 +1,7 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: vitorrsousaa
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: ProjectName
+service: LifeOS
 useDotenv: true
 
 package:
@@ -13,11 +13,12 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs22.x
   stage: ${opt:stage, 'dev'}
   region: us-east-1
   deploymentMethod: direct
   architecture: arm64
+  memorySize: 128
 
 custom:
   # dotenv:
