@@ -2,6 +2,7 @@ import {
 	Collapsible,
 	CollapsibleContent,
 } from "@repo/ui/collapsible";
+import { DatePicker } from "@repo/ui/date-picker";
 import {
 	FormControl,
 	FormField,
@@ -11,12 +12,11 @@ import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
 import { RadioGroup, RadioGroupItem } from "@repo/ui/radio-group";
 import { Switch } from "@repo/ui/switch";
-import { DatePicker } from "@repo/ui/date-picker";
+import { cn } from "@repo/ui/utils";
 import { Repeat } from "lucide-react";
 import type { Control } from "react-hook-form";
-import { cn } from "@repo/ui/utils";
-import type { TTodoFormSchema } from "./todo-form.schema";
 import { formatRecurrencePreview } from "./format-recurrence-preview";
+import type { TTodoFormSchema } from "./todo-form.schema";
 
 const FREQUENCIES = [
 	{ value: "daily", label: "Daily" },
@@ -50,7 +50,7 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 				name="recurrence.enabled"
 				render={({ field: enabledField }) => (
 					<FormItem>
-						{/* Toggle row: label "Repeat" when off, "Repeating task" when on; whole row clickable except Switch */}
+						{/* Card-style row: icon box + "Repeat" label + hint + toggle; whole row clickable except Switch */}
 						<div
 							role="button"
 							tabIndex={0}
@@ -62,56 +62,55 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 							}}
 							onClick={() => enabledField.onChange(!enabledField.value)}
 							className={cn(
-								"flex cursor-pointer items-start justify-between gap-3 rounded-lg border p-2 px-2.5 transition-colors hover:bg-muted/50",
+								"flex cursor-pointer items-center justify-between gap-3 rounded-xl border bg-card px-3 py-2 shadow-sm transition-colors hover:bg-muted/40",
 								enabledField.value
 									? "border-primary/30 bg-primary/5"
-									: "border-border bg-muted/30",
+									: "border-border",
 							)}
 						>
-							<div className="flex min-w-0 flex-1 items-start gap-3">
-								<div
+							{/* Icon: small square, rounded, neutral when off */}
+							<div
+								className={cn(
+									"flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+									enabledField.value
+										? "bg-primary/15 text-primary"
+										: "bg-muted text-muted-foreground",
+								)}
+							>
+								<Repeat className="h-4 w-4" />
+							</div>
+							{/* Label + hint */}
+							<div className="min-w-0 flex-1">
+								<p
 									className={cn(
-										"flex h-6 w-6 shrink-0 items-center justify-center rounded border",
-										enabledField.value
-											? "border-primary/50 bg-primary/20 text-primary"
-											: "border-border bg-muted text-muted-foreground",
+										"text-sm font-medium leading-tight",
+										enabledField.value ? "text-primary" : "text-foreground",
 									)}
 								>
-									<Repeat className="h-4 w-4" />
-								</div>
-								<div className="min-w-0 flex-1 space-y-0.5">
-									<p
-										className={cn(
-											"text-sm font-semibold",
-											enabledField.value ? "text-primary" : "text-foreground",
-										)}
-									>
-										{enabledField.value ? "Repeating task" : "Repeat"}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										{enabledField.value ? (
-											<FormField
-												control={control}
-												name="recurrence"
-												render={({ field }) => (
-													<>
-														{formatRecurrencePreview(field.value) ||
-															"Choose frequency and options below"}
-													</>
-												)}
-											/>
-										) : (
-											"This task doesn't repeat"
-										)}
-									</p>
-								</div>
+									{enabledField.value ? "Repeating task" : "Repeat"}
+								</p>
+								<p className="text-xs leading-tight text-muted-foreground mt-0.5">
+									{enabledField.value ? (
+										<FormField
+											control={control}
+											name="recurrence"
+											render={({ field }) => (
+												<>
+													{formatRecurrencePreview(field.value) ||
+														"Choose frequency and options below"}
+												</>
+											)}
+										/>
+									) : (
+										"This task doesn't repeat"
+									)}
+								</p>
 							</div>
-							<div onClick={(e) => e.stopPropagation()}>
+							<div onClick={(e) => e.stopPropagation()} className="shrink-0">
 								<FormControl>
 									<Switch
 										checked={enabledField.value}
 										onCheckedChange={enabledField.onChange}
-										className="shrink-0"
 									/>
 								</FormControl>
 							</div>
@@ -192,7 +191,9 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 													</FormItem>
 												)}
 											/>
-										) : null
+										) : (
+											<></>
+										)
 									}
 								/>
 
@@ -287,7 +288,7 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 									name="recurrence"
 									render={({ field }) => {
 										const preview = formatRecurrencePreview(field.value);
-										if (!preview) return null;
+										if (!preview) return <></>;
 										return (
 											<div className="flex items-start gap-1.5 rounded-full bg-primary/5 py-1.5 px-2 text-xs text-primary">
 												<Repeat className="mt-0.5 h-3.5 w-3.5 shrink-0" />
