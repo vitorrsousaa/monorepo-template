@@ -23,7 +23,7 @@ try {
 	envSchema.parse(process.env);
 } catch (error) {
 	if (error instanceof z.ZodError) {
-		console.error("Error on environment variables:", error.errors);
+		console.error("Error on environment variables:", error.issues.map((issue) => issue.message));
 		process.exit(1);
 	}
 }
