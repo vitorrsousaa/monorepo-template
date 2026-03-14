@@ -4,6 +4,7 @@ export default defineConfig({
 	entry: [
 		"src/index.ts",
 		"src/auth/signup/index.ts",
+		"src/auth/signin/index.ts",
 		"src/todo/index.ts",
 		"src/todo/inbox/index.ts",
 		"src/todo/create/index.ts",
