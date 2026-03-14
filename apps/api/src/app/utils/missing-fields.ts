@@ -1,17 +1,10 @@
 import { ZodError } from "@application/errors/zod";
-import type { IResponse } from "@application/interfaces/http";
 import type * as z from "zod";
 
-type IReturnErrorMissingFieldOutput<S extends z.ZodType> = [
-	true,
-	z.ZodSafeParseSuccess<z.output<S>>["data"],
-];
 
-type IReturnErrorMissingFieldOutputFalse = [false, IResponse];
 
-type IReturnErrorMissingFieldOutputUnion<S extends z.ZodType> =
-	| IReturnErrorMissingFieldOutput<S>
-	| IReturnErrorMissingFieldOutputFalse;
+type IReturnErrorMissingFieldOutputUnion<S extends z.ZodType> = z.ZodSafeParseSuccess<z.output<S>>["data"]
+
 
 export function missingFields<S extends z.ZodType>(
 	schema: S,
@@ -20,16 +13,8 @@ export function missingFields<S extends z.ZodType>(
 	const result = schema.safeParse(request);
 
 	if (!result.success) {
-		const { statusCode, message } = new ZodError(result.error);
-
-		return [
-			false,
-			{
-				statusCode,
-				body: message,
-			},
-		];
+		throw new ZodError(result.error);
 	}
 
-	return [true, result.data];
+	return result.data;
 }

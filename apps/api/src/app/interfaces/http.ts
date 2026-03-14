@@ -1,5 +1,5 @@
-export interface IRequest {
-	body: Record<string, unknown>;
+export interface IRequest<TBody extends Record<string, unknown> = Record<string, unknown>> {
+	body: TBody;
 	params: Record<string, unknown>;
 	headers: Record<string, string | undefined>;
 	queryParams: Record<string, string | undefined>;

@@ -1,4 +1,5 @@
-import type { IController } from "@application/interfaces/controller";
+import type { Controller } from "@application/interfaces/controller";
+import { errorHandler } from "@application/utils/error-handler";
 import { requestAdapter } from "@server/adapters/request";
 import { responseAdapter } from "@server/adapters/response";
 import type {
@@ -11,11 +12,16 @@ type LambdaEvent =
 	| APIGatewayProxyEventV2WithJWTAuthorizer;
 
 export function lambdaHttpAdapter(
-	controller: IController,
+	controller: Controller,
 ): (event: LambdaEvent) => Promise<ReturnType<typeof responseAdapter>> {
 	return async (event: LambdaEvent) => {
 		const request = requestAdapter(event);
-		const response = await controller.handle(request);
+		try{ 
+			const response = await controller.execute(request);
 		return responseAdapter(response);
+		
+		} catch (error) {
+			return responseAdapter(errorHandler(error));
+		}
 	};
 }
