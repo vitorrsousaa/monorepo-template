@@ -145,3 +145,27 @@ All repositories use in-memory arrays from `*-repository.mocks.ts` files. Dynamo
 pnpm dev:api          # nodemon + serverless offline, port 4000
 pnpm dev:api:no-watch # serverless offline without nodemon
 ```
+
+## Deploy
+
+Full stack:
+
+```bash
+pnpm run deploy:dev   # stage dev
+pnpm run deploy:prod  # stage prod
+```
+
+Single function (obrigatório passar nome da função e stage na ordem indicada):
+
+```bash
+# Forma: pnpm run deploy:fn -- <nomeDaFunção> <stage>
+pnpm run deploy:fn -- getProjectDetail dev
+pnpm run deploy:fn -- getTodayTasks prod
+```
+
+Atalhos por stage (a função ainda precisa ser passada após `--`):
+
+```bash
+pnpm run deploy:fn:dev  -- --function getProjectDetail
+pnpm run deploy:fn:prod -- --function getTodayTasks
+```

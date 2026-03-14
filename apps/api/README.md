@@ -32,14 +32,26 @@ We use stripe by default, but the payment provider is agnostic, so, you can chan
 
 ## Deployment
 
-We can deploy in two stages.
+Deploy do stack completo:
 
 ```bash
-# Deploy stage dev
-$ yarn deploy:dev
+pnpm run deploy:dev   # stage dev
+pnpm run deploy:prod  # stage prod
+```
 
-# Deploy stage prod
-$ yarn deploy:prod
+Deploy de uma única função: é obrigatório passar o **nome da função** e o **stage** na ordem abaixo (os argumentos vêm depois de `--`).
+
+```bash
+# Forma: pnpm run deploy:fn -- <nomeDaFunção> <stage>
+pnpm run deploy:fn -- getProjectDetail dev
+pnpm run deploy:fn -- getTodayTasks prod
+```
+
+Atalhos por stage (a função continua obrigatória após `--`):
+
+```bash
+pnpm run deploy:fn:dev  -- --function getProjectDetail
+pnpm run deploy:fn:prod -- --function getTodayTasks
 ```
 
 After deploying, you should see output similar to:
