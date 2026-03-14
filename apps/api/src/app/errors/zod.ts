@@ -1,15 +1,15 @@
 import type { ZodError as LibZodError } from "zod";
+import { AppError } from "./app-error";
 
-export class ZodError {
-	public readonly message: { field: string | number; message: string }[];
-	public readonly statusCode: number;
+export class ZodError extends AppError {
+	public readonly details: { field: string | number; message: string }[];
 
 	constructor(error: LibZodError) {
+		super("Validation failed", 422);
 		const issues = error?.issues ?? [];
-		this.message = issues.map((issue) => ({
+		this.details = issues.map((issue) => ({
 			field: issue.path.map((path) => path.toString()).join("-"),
 			message: issue.message,
 		}));
-		this.statusCode = 422;
 	}
 }
