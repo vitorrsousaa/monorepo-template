@@ -16,4 +16,8 @@ export const SECTIONS = {
 	BY_PROJECT: (projectId: string) => ["sections", "by-project", projectId],
 };
 
-export const QUERY_KEYS = { TODOS, TASKS, PROJECTS, SECTIONS } as const;
+export const GOALS = {
+	ALL: ["goals", "all"],
+};
+
+export const QUERY_KEYS = { TODOS, TASKS, PROJECTS, SECTIONS, GOALS } as const;

@@ -1,3 +1,4 @@
+import { useGetAllGoals } from "@/modules/goals/app/hooks/use-get-all-goals";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get-all-sections-by-project";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +9,7 @@ import { getTodoFormValues, TodoFormSchema } from "./todo-form.schema";
 export const useTodoFormHook = (props: TodoFormProps) => {
 	const { initialValues } = props;
 	const { projects } = useGetAllProjectsByUser();
+	const { goals } = useGetAllGoals();
 
 	const methods = useForm({
 		resolver: zodResolver(TodoFormSchema),
@@ -43,6 +45,7 @@ export const useTodoFormHook = (props: TodoFormProps) => {
 	return {
 		methods,
 		projects,
+		goals,
 		sections,
 		isFetchingSections,
 		isProjectSelected,
