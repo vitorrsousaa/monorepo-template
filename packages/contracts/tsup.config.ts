@@ -8,6 +8,7 @@ export default defineConfig({
 		"src/todo/create/index.ts",
 		"src/tasks/dto.ts",
 		"src/tasks/today/index.ts",
+		"src/projects/index.ts",
 		"src/common/index.ts",
 	],
 	format: ["esm"],

@@ -9,7 +9,7 @@ Every Lambda handler follows this exact pipeline (handlers use `lambdaHttpAdapte
 ```
 APIGatewayEvent
   → handler = lambdaHttpAdapter(controller) (src/server/functions/<domain>/<feature>/handler.ts)
-  → requestAdapter (src/server/adapters/request.ts)
+  → requestAdapter(event, controller.controllerType) — sets userId from JWT/mock (private) or null (public)
   → makeXController() factory (src/factories/controllers/<domain>/<feature>.ts)
       → makeXService() factory (src/factories/services/<domain>/<feature>.ts)
           → repository factory (src/infra/db/dynamodb/factories/<entity>-repository-factory.ts)
@@ -34,20 +34,29 @@ Source: `apps/api/tsconfig.paths.json`
 
 ## API Routes
 
-From `serverless.yml`:
+From `serverless.yml`. All routes are **private** (require auth / `userId`); when auth is implemented, public routes will use `controllerType: "public"` and `userId` will be `null`.
 
-| Path | Method | Purpose |
-|------|--------|---------|
-| `/todos` | GET | List todos (legacy) |
-| `/todos/inbox` | GET | List inbox todos |
-| `/todos` | POST | Create todo |
-| `/tasks/today` | GET | Today tasks (grouped by project) |
-| `/tasks/dashboard` | GET | Dashboard analytics |
-| `/projects` | GET | List projects by user |
-| `/projects` | POST | Create project |
-| `/projects/{projectId}/detail` | GET | Project detail |
-| `/projects/{projectId}/sections` | GET | List sections of project |
-| `/projects/{projectId}/sections` | POST | Create section |
+| Path | Method | Purpose | Auth |
+|------|--------|---------|------|
+| `/todos` | GET | List todos (legacy) | private |
+| `/todos/inbox` | GET | List inbox todos | private |
+| `/todos` | POST | Create todo | private |
+| `/tasks/today` | GET | Today tasks (grouped by project) | private |
+| `/tasks/dashboard` | GET | Dashboard analytics | private |
+| `/projects` | GET | List projects by user | private |
+| `/projects` | POST | Create project | private |
+| `/projects/{projectId}/detail` | GET | Project detail | private |
+| `/projects/{projectId}/sections` | GET | List sections of project | private |
+| `/projects/{projectId}/sections` | POST | Create section | private |
+
+## Public vs private routes (controller type)
+
+Controllers declare whether they are **public** or **private** so `request.userId` is correctly typed and the adapter injects the right value:
+
+- **Private** (`Controller<'private', TBody>`): `request.userId` is `string` (from JWT or `MOCK_USER_ID`). Use for all endpoints that require the current user.
+- **Public** (`Controller<'public', TBody>`): `request.userId` is `null`. Use for health, sign-in, or any unauthenticated endpoint.
+
+**How it works:** The base class receives `controllerType` in the constructor. The lambda adapter calls `requestAdapter(event, controller.controllerType)` so that for `"public"` it sets `userId: null`; for `"private"` it sets `userId` from JWT or mock. In `handle()`, use `Controller.Request<'private'>` or `Controller.Request<'public'>` so TypeScript narrows `userId` to `string` or `null`.
 
 ## Adding a New Feature — Checklist
 
@@ -85,25 +94,35 @@ export function makeXController() {
 ```
 
 ### Controller
-Controllers extend the base `Controller` class (do not `implements IController`). Define `schema` (optional) and implement only `handle()`. No try/catch; errors are handled by the lambda adapter. Only `request.body` is validated; pass `userId` and `params` from `request` in `handle()` when the service needs them.
+Controllers extend the base `Controller<TType, TBody>` class (do not `implements IController`). Pass `"private"` or `"public"` to `super()` so the request adapter sets `userId` correctly. Define `schema` (optional) and implement only `handle()`. No try/catch; errors are handled by the lambda adapter. Only `request.body` is validated; pass `userId` and `params` from `request` in `handle()` when the service needs them.
+
+**Private controller (recommended for most endpoints):** Use `Controller<'private', ResponseType>` and `Controller.Request<'private'>` so `request.userId` is typed as `string` (no `?? ""` needed).
 
 ```ts
 import { Controller } from "@application/interfaces/controller";
-import type { IRequest, IResponse } from "@application/interfaces/http";
+import type { GetAllProjectsByUserResponse } from "@repo/contracts/projects";
 
-export class XController extends Controller {
-  constructor(private readonly service: IXService) {
-    super();
+export class GetAllProjectsByUserController extends Controller<"private", GetAllProjectsByUserResponse> {
+  constructor(private readonly service: IGetAllProjectsByUserService) {
+    super("private");
   }
 
-  protected override schema = mySchema;
+  protected override async handle(request: Controller.Request<"private">): Promise<Controller.Response<GetAllProjectsByUserResponse>> {
+    const result = await this.service.execute({ userId: request.userId });
+    return { statusCode: 200, body: { projects: result.projects.map(projectToDto) } };
+  }
+}
+```
 
-  protected override async handle(request: IRequest<MySchemaType>): Promise<IResponse> {
-    const result = await this.service.execute({
-      ...request.body,
-      userId: request.userId ?? "",
-    });
-    return { statusCode: 200, body: result };
+**Public controller:** Use `Controller<'public', TBody>` and `Controller.Request<'public'>`; `request.userId` will be `null`.
+
+```ts
+export class HealthController extends Controller<"public", HealthResponse> {
+  constructor() {
+    super("public");
+  }
+  protected override async handle(request: Controller.Request<"public">): Promise<Controller.Response<HealthResponse>> {
+    return { statusCode: 200, body: { ok: true } };
   }
 }
 ```

@@ -147,3 +147,54 @@ import type { TaskDto } from "@repo/contracts/tasks/today"; // no service/dto.ts
 // ❌ ERRADO – retornar domain entity direto do controller sem mapear
 return { statusCode: 200, body: result }; // expõe Date objects
 ```
+
+---
+
+## 3. Rotas públicas vs privadas (tipagem de `userId`)
+
+**Regra:** Todo controller deve declarar o tipo de rota (`"public"` ou `"private"`) passando-o no `super()` e, quando possível, usar os genéricos `Controller<TType, TBody>` e `Controller.Request<TType>` para tipagem correta de `request.userId`.
+
+### Comportamento
+
+- **Private** (`super("private")`): `request.userId` é `string` (JWT ou `MOCK_USER_ID`). Use em endpoints que exigem usuário autenticado.
+- **Public** (`super("public")`): `request.userId` é `null`. Use em health, sign-in ou qualquer endpoint sem autenticação.
+
+O `requestAdapter` recebe `controller.controllerType` e define `userId` em runtime; o tipo em `handle(request: Controller.Request<'private'>)` garante que em rotas privadas não é necessário `request.userId ?? ""`.
+
+### Exemplo — controller privado (recomendado)
+
+```typescript
+export class GetAllProjectsByUserController extends Controller<"private", GetAllProjectsByUserResponse> {
+  constructor(private readonly service: IGetAllProjectsByUserService) {
+    super("private");
+  }
+
+  protected override async handle(request: Controller.Request<"private">): Promise<Controller.Response<GetAllProjectsByUserResponse>> {
+    const result = await this.service.execute({ userId: request.userId }); // userId já é string
+    return { statusCode: 200, body: { projects: result.projects.map(projectToDto) } };
+  }
+}
+```
+
+### Exemplo — controller público
+
+```typescript
+export class HealthController extends Controller<"public", HealthResponse> {
+  constructor() {
+    super("public");
+  }
+  protected override async handle(request: Controller.Request<"public">): Promise<Controller.Response<HealthResponse>> {
+    return { statusCode: 200, body: { ok: true } };
+  }
+}
+```
+
+### O que NÃO fazer
+
+```typescript
+// ❌ ERRADO – não passar o tipo no super (o adapter não saberá se deve injetar userId)
+super();
+
+// ❌ DESNECESSÁRIO em controller privado tipado – request.userId já é string
+userId: request.userId ?? ""
+```

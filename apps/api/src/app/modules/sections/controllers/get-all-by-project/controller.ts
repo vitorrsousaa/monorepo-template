@@ -1,17 +1,18 @@
 import { Controller } from "@application/interfaces/controller";
-import type { IRequest, IResponse } from "@application/interfaces/http";
 import type { IGetAllByProjectService } from "@application/modules/sections/services/get-all-by-project";
 
-export class GetAllByProjectController extends Controller {
+export class GetAllByProjectController extends Controller<"private"> {
 	constructor(
 		private readonly getAllByProjectService: IGetAllByProjectService,
 	) {
 		super();
 	}
 
-	protected override async handle(request: IRequest): Promise<IResponse> {
+	protected override async handle(
+		request: Controller.Request<"private">,
+	): Promise<Controller.Response<undefined>> {
 		const result = await this.getAllByProjectService.execute({
-			userId: request.userId ?? "",
+			userId: request.userId,
 			projectId: (request.params.projectId as string) ?? "",
 		});
 		return {

@@ -1,9 +1,8 @@
 import { Controller } from "@application/interfaces/controller";
-import type { IRequest, IResponse } from "@application/interfaces/http";
 import type { ICreateSectionService } from "@application/modules/sections/services/create-section";
 import { createSectionSchema, type CreateSectionSchema } from "./schema";
 
-export class CreateSectionController extends Controller {
+export class CreateSectionController extends Controller<"private"> {
 	constructor(private readonly createSectionService: ICreateSectionService) {
 		super();
 	}
@@ -11,11 +10,12 @@ export class CreateSectionController extends Controller {
 	protected override schema = createSectionSchema;
 
 	protected override async handle(
-		request: IRequest<CreateSectionSchema>,
-	): Promise<IResponse> {
+		request: Controller.Request<"private">,
+	): Promise<Controller.Response<undefined>> {
+		const body = request.body as CreateSectionSchema;
 		const result = await this.createSectionService.execute({
-			...request.body,
-			userId: request.userId ?? "",
+			...body,
+			userId: request.userId,
 			projectId: (request.params.projectId as string) ?? "",
 		});
 		return {

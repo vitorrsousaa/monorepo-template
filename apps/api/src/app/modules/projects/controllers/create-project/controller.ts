@@ -1,9 +1,8 @@
 import { Controller } from "@application/interfaces/controller";
-import type { IRequest, IResponse } from "@application/interfaces/http";
 import type { ICreateProjectService } from "@application/modules/projects/services/create-project";
 import { createProjectSchema, type CreateProjectSchema } from "./schema";
 
-export class CreateProjectController extends Controller {
+export class CreateProjectController extends Controller<"private"> {
 	constructor(private readonly createProjectService: ICreateProjectService) {
 		super();
 	}
@@ -11,11 +10,12 @@ export class CreateProjectController extends Controller {
 	protected override schema = createProjectSchema;
 
 	protected override async handle(
-		request: IRequest<CreateProjectSchema>,
-	): Promise<IResponse> {
+		request: Controller.Request<"private">,
+	): Promise<Controller.Response<undefined>> {
+		const body = request.body as CreateProjectSchema;
 		const result = await this.createProjectService.execute({
-			...request.body,
-			userId: request.userId ?? "",
+			...body,
+			userId: request.userId,
 		});
 		return {
 			statusCode: 200,

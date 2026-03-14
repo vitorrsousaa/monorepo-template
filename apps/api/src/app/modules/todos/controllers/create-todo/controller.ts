@@ -1,11 +1,10 @@
 import { Controller } from "@application/interfaces/controller";
-import type { IRequest, IResponse } from "@application/interfaces/http";
 import { todoToDto } from "@application/modules/todos/mappers/todo-to-dto";
 import type { ICreateTodoService } from "@application/modules/todos/services/create-todo";
 import type { CreateTodoResponse } from "@repo/contracts/todo/create";
 import { createTodoSchema, type CreateTodoSchema } from "./schema";
 
-export class CreateTodoController extends Controller {
+export class CreateTodoController extends Controller<"private", CreateTodoResponse> {
 	constructor(private readonly createTodoService: ICreateTodoService) {
 		super();
 	}
@@ -13,18 +12,18 @@ export class CreateTodoController extends Controller {
 	protected override schema = createTodoSchema;
 
 	protected override async handle(
-		request: IRequest<CreateTodoSchema>,
-	): Promise<IResponse> {
+		request: Controller.Request<"private">,
+	): Promise<Controller.Response<CreateTodoResponse>> {
+		const body = request.body as CreateTodoSchema;
 		const service = await this.createTodoService.execute({
-			...request.body,
-			userId: request.userId ?? "",
+			...body,
+			userId: request.userId,
 		});
-		const body: CreateTodoResponse = {
-			todo: todoToDto(service.todo),
-		};
 		return {
 			statusCode: 201,
-			body,
+			body: {
+				todo: todoToDto(service.todo),
+			},
 		};
 	}
 }
