@@ -4,7 +4,7 @@ import type { SignupResponse } from "@repo/contracts/auth/signup";
 import { signupSchema, SignupSchema } from "./schema";
 
 export class SignupController extends Controller<
-	"private",
+	"public",
 	SignupResponse
 > {
 	protected override schema = signupSchema;
@@ -15,7 +15,7 @@ export class SignupController extends Controller<
 	}
 
 	protected override async handle(
-		request: Controller.Request<"private", SignupSchema>,
+		request: Controller.Request<"public", SignupSchema>,
 	): Promise<Controller.Response<SignupResponse>> {
 		const result = await this.signupService.execute({
 			firstName: request.body.firstName,
