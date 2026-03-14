@@ -1,8 +1,8 @@
 import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
-import { TodoForm } from "../forms/todo";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { X } from "lucide-react";
+import { TodoForm } from "../forms/todo";
 
 interface NewTodoModalProps {
 	isOpen: boolean;
@@ -21,7 +21,7 @@ export function NewTodoModal(props: NewTodoModalProps) {
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
-				className="max-w-[620px] p-0 gap-0 flex flex-col max-h-[85vh]"
+				className="max-w-[820px] p-0 gap-0 flex flex-col max-h-[85vh]"
 				hideDefaultClose
 			>
 				<div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
