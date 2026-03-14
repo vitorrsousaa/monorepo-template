@@ -63,12 +63,12 @@ export function TodoForm(props: TodoFormProps) {
 					<div className="flex-1 border-r border-border overflow-y-auto max-h-[82vh]">
 						{/* Title area */}
 						<div className="px-5 pt-5 pb-3 border-b border-border">
-							<div className="flex items-center gap-2 mb-2.5">
+							<div className="flex items-center gap-2">
 								<FormField
 									control={methods.control}
 									name="completed"
 									render={({ field }) => (
-										<FormItem className="mb-0">
+										<FormItem className="mb-0 shrink-0">
 											<FormControl>
 												<Checkbox
 													checked={field.value ?? false}
@@ -78,26 +78,26 @@ export function TodoForm(props: TodoFormProps) {
 										</FormItem>
 									)}
 								/>
+								<FormField
+									control={methods.control}
+									name="title"
+									render={({ field }) => (
+										<FormItem className="w-full min-w-0 mb-0">
+											<FormControl>
+												<Input
+													placeholder="Task title"
+													type="text"
+													required
+													className="text-lg font-medium w-full border-0 shadow-none focus-visible:ring-0 px-0"
+													autoFocus
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 							</div>
-							<FormField
-								control={methods.control}
-								name="title"
-								render={({ field }) => (
-									<FormItem className="w-full">
-										<FormControl>
-											<Input
-												placeholder="Task title"
-												type="text"
-												required
-												className="text-lg font-medium w-full border-0 shadow-none focus-visible:ring-0 px-0"
-												autoFocus
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
 						</div>
 
 						{/* Description */}
