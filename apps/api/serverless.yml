@@ -32,6 +32,8 @@ provider:
 
 custom:
   userPoolName: ${self:service}-${self:provider.stage}-UserPool
+  # Domain do User Pool (só aceita minúsculas, números e hífen)
+  userPoolDomain: lifeos-${self:provider.stage}-userpool
   dotenv:
     exclude:
       - AWS_ACCESS_KEY_ID
