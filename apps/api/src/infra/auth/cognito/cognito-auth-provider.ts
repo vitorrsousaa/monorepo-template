@@ -5,8 +5,11 @@ import {
 	InitiateAuthCommand,
 	InvalidParameterException,
 	InvalidPasswordException,
+	NotAuthorizedException,
 	SignUpCommand,
 	UsernameExistsException,
+	UserNotConfirmedException,
+	UserNotFoundException,
 } from "@aws-sdk/client-cognito-identity-provider";
 import type {
 	AuthSignInParams,
@@ -16,9 +19,11 @@ import type {
 	IAuthProvider,
 } from "@data/protocols/auth/auth-provider";
 import {
+	InvalidCredentialsError,
 	InvalidParameterError,
 	InvalidPasswordError,
 	UsernameExistsError,
+	UserNotConfirmedError,
 } from "./errors";
 
 export class CognitoAuthProvider implements IAuthProvider {
@@ -82,7 +87,7 @@ export class CognitoAuthProvider implements IAuthProvider {
 				!authResult?.RefreshToken ||
 				!authResult?.IdToken
 			) {
-				throw new AppError("Invalid credentials", 401);
+				throw new InvalidCredentialsError("Invalid credentials");
 			}
 			return {
 				accessToken: authResult.AccessToken,
@@ -90,24 +95,19 @@ export class CognitoAuthProvider implements IAuthProvider {
 				idToken: authResult.IdToken,
 			};
 		} catch (error) {
-			throw this.mapSignInError(error);
-		}
-	}
-	
-	private mapSignInError(error: unknown): AppError {
-		if (error instanceof AppError) return error;
-		const name = error instanceof Error ? error.name : String(error);
-		switch (name) {
-			case "NotAuthorizedException":
-			case "UserNotFoundException":
-				return new AppError("Invalid credentials", 401);
-			case "InvalidParameterException":
-				return new AppError(
-					error instanceof Error ? error.message : "Invalid request",
-					400,
-				);
-			default:
-				return new AppError("Sign in failed", 500);
+			if (error instanceof UserNotFoundException) {
+				throw new InvalidCredentialsError();
+			}
+			if (error instanceof NotAuthorizedException) {
+				throw new InvalidCredentialsError();
+			}
+			if (error instanceof UserNotConfirmedException) {
+				throw new UserNotConfirmedError();
+			}
+			if (error instanceof InvalidParameterException) {
+				throw new InvalidParameterError();
+			}
+			throw new AppError("Internal Server Error", 500);
 		}
 	}
 }
