@@ -33,7 +33,9 @@ export function taskToDto(task: Task): TaskDto {
 }
 
 /** Converts service TodayProjectOutput to API contract TodayProjectDto. */
-export function todayProjectToDto(project: TodayProjectOutput): TodayProjectDto {
+export function todayProjectToDto(
+	project: TodayProjectOutput,
+): TodayProjectDto {
 	return {
 		id: project.id,
 		name: project.name,

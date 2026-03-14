@@ -1,10 +1,8 @@
 import { ZodError } from "@application/errors/zod";
 import type * as z from "zod";
 
-
-
-type IReturnErrorMissingFieldOutputUnion<S extends z.ZodType> = z.ZodSafeParseSuccess<z.output<S>>["data"]
-
+type IReturnErrorMissingFieldOutputUnion<S extends z.ZodType> =
+	z.ZodSafeParseSuccess<z.output<S>>["data"];
 
 export function missingFields<S extends z.ZodType>(
 	schema: S,

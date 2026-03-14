@@ -7,7 +7,7 @@ export class CreateProjectController extends Controller {
 	constructor(private readonly createProjectService: ICreateProjectService) {
 		super();
 	}
-	
+
 	protected override schema = createProjectSchema;
 
 	protected override async handle(

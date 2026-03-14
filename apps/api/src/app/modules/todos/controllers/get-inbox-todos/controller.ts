@@ -5,9 +5,7 @@ import type { IGetInboxTodosService } from "@application/modules/todos/services/
 import type { GetInboxTodosResponse } from "@repo/contracts/todo/inbox";
 
 export class GetInboxTodosController extends Controller {
-	constructor(
-		private readonly getInboxTodosService: IGetInboxTodosService,
-	) {
+	constructor(private readonly getInboxTodosService: IGetInboxTodosService) {
 		super();
 	}
 

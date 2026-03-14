@@ -16,10 +16,9 @@ export function lambdaHttpAdapter(
 ): (event: LambdaEvent) => Promise<ReturnType<typeof responseAdapter>> {
 	return async (event: LambdaEvent) => {
 		const request = requestAdapter(event);
-		try{ 
+		try {
 			const response = await controller.execute(request);
-		return responseAdapter(response);
-		
+			return responseAdapter(response);
 		} catch (error) {
 			return responseAdapter(errorHandler(error));
 		}

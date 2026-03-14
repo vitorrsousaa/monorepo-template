@@ -2,4 +2,6 @@ import { GetDashboardAnalyticsInputDTO } from "@application/modules/tasks/servic
 import type z from "zod";
 
 export const getDashboardAnalyticsSchema = GetDashboardAnalyticsInputDTO;
-export type GetDashboardAnalyticsSchema = z.infer<typeof getDashboardAnalyticsSchema>;
+export type GetDashboardAnalyticsSchema = z.infer<
+	typeof getDashboardAnalyticsSchema
+>;

@@ -3,4 +3,6 @@ import type z from "zod";
 
 export const getAllProjectsByUserSchema = GetAllProjectsByUserInputDTO;
 
-export type GetAllProjectsByUserSchema = z.infer<typeof getAllProjectsByUserSchema>;
+export type GetAllProjectsByUserSchema = z.infer<
+	typeof getAllProjectsByUserSchema
+>;

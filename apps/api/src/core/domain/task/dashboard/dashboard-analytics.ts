@@ -1,3 +1,3 @@
 export type DashboardAnalytics = {
-  efficiency: number
-}
+	efficiency: number;
+};
