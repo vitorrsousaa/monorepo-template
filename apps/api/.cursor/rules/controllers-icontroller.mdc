@@ -1,35 +1,56 @@
 ---
-description: Controllers must implement IController; handlers use lambdaHttpAdapter
+description: Controllers extend Controller base class; handlers use lambdaHttpAdapter
 globs: apps/api/**/controllers/**/*.ts
 alwaysApply: false
 ---
 
 # Controllers e Handler Lambda
 
-## Controller: IController
+## Controller: base class Controller
 
-Todo controller da API deve implementar a interface `IController` (`@application/interfaces/controller`), com o método:
+Todo controller da API deve **estender** a classe `Controller` (`@application/interfaces/controller`), com:
 
-- `handle(request: IRequest): Promise<IResponse>`
+- `protected override schema = ...` (Zod schema; opcional se não houver validação de body)
+- `protected override async handle(request: IRequest<SchemaType>): Promise<IResponse>` — passar `userId` e `params` do `request` para o service quando necessário
 
-**Exemplo:**
+Não use try/catch nem `errorHandler` no controller; erros são tratados pelo lambda adapter.
+
+**Exemplo (só body):**
 
 ```typescript
-import type { IController } from "@application/interfaces/controller";
+import { Controller } from "@application/interfaces/controller";
 import type { IRequest, IResponse } from "@application/interfaces/http";
 
-export class XController implements IController {
-  constructor(private readonly service: IXService) {}
+export class XController extends Controller {
+  constructor(private readonly service: IXService) {
+    super();
+  }
 
-  async handle(request: IRequest): Promise<IResponse> {
-    // ...
+  protected override schema = mySchema;
+
+  protected override async handle(request: IRequest<MySchemaType>): Promise<IResponse> {
+    const result = await this.service.execute(request.body);
+    return { statusCode: 200, body: result };
   }
 }
 ```
 
+**Exemplo (service precisa de userId/params):**
+
+```typescript
+  protected override async handle(request: IRequest<MySchemaType>): Promise<IResponse> {
+    const result = await this.service.execute({
+      ...request.body,
+      userId: request.userId ?? "",
+      projectId: request.params.projectId as string,
+    });
+    return { statusCode: 200, body: result };
+  }
+```
+
 ## Handler Lambda: lambdaHttpAdapter
 
-Handlers Lambda **não** devem chamar `requestAdapter` nem `responseAdapter` manualamente. Use o adapter único:
+Handlers Lambda **não** devem chamar `requestAdapter` nem `responseAdapter` manualmente. Use o adapter único:
 
 - Importe o factory do controller e `lambdaHttpAdapter` de `@server/adapters/lambda-http-adapter`.
 - Instancie o controller uma vez e exporte `handler = lambdaHttpAdapter(controller)`.
@@ -44,4 +65,4 @@ const controller = makeXController();
 export const handler = lambdaHttpAdapter(controller);
 ```
 
-O `lambdaHttpAdapter` encapsula: `event` → `requestAdapter` → `controller.handle(request)` → `responseAdapter` → retorno Lambda.
+O `lambdaHttpAdapter` encapsula: `event` → `requestAdapter` → `controller.execute(request)` (validação + `handle`) → `responseAdapter`; em caso de erro, `errorHandler` formata a resposta.

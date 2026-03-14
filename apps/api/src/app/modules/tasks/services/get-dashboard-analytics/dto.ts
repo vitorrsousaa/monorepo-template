@@ -1,4 +1,4 @@
-import { DashboardAnalytics } from "@core/domain/task/dashboard/dashboard-analytics";
+import type { DashboardAnalytics } from "@core/domain/task/dashboard/dashboard-analytics";
 import { z } from "zod";
 
 export const GetDashboardAnalyticsInputDTO = z.object({

@@ -1,31 +1,26 @@
-import type { IController } from "@application/interfaces/controller";
+import { Controller } from "@application/interfaces/controller";
 import type { IRequest, IResponse } from "@application/interfaces/http";
-import { errorHandler } from "@application/utils/error-handler";
-import { missingFields } from "@application/utils/missing-fields";
 import type { ICreateSectionService } from "@application/modules/sections/services/create-section";
-import { createSectionSchema } from "./schema";
+import { createSectionSchema, type CreateSectionSchema } from "./schema";
 
-export class CreateSectionController implements IController {
-	constructor(private readonly createSectionService: ICreateSectionService) {}
+export class CreateSectionController extends Controller {
+	constructor(private readonly createSectionService: ICreateSectionService) {
+		super();
+	}
 
-	async handle(request: IRequest): Promise<IResponse> {
-		try {
-			const [status, parsedBody] = missingFields(createSectionSchema, {
-				...request.body,
-				userId: request.userId || "",
-				projectId: (request.params.projectId as string) || "",
-			});
+	protected override schema = createSectionSchema;
 
-			if (!status) return parsedBody;
-
-			const result = await this.createSectionService.execute(parsedBody);
-
-			return {
-				statusCode: 200,
-				body: result,
-			};
-		} catch (error) {
-			return errorHandler(error);
-		}
+	protected override async handle(
+		request: IRequest<CreateSectionSchema>,
+	): Promise<IResponse> {
+		const result = await this.createSectionService.execute({
+			...request.body,
+			userId: request.userId ?? "",
+			projectId: (request.params.projectId as string) ?? "",
+		});
+		return {
+			statusCode: 200,
+			body: result,
+		};
 	}
 }

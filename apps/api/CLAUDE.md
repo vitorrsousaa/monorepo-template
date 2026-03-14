@@ -4,7 +4,7 @@ Stack: AWS Lambda + Serverless Framework + TypeScript. Clean Architecture. Runs 
 
 ## Request Flow
 
-Every Lambda handler follows this exact pipeline (handlers use `lambdaHttpAdapter(controller)` which wraps the steps below):
+Every Lambda handler follows this exact pipeline (handlers use `lambdaHttpAdapter(controller)` which wraps the steps below). Errors are handled in the lambda adapter (try/catch + `errorHandler`); controllers do not use try/catch.
 
 ```
 APIGatewayEvent
@@ -13,7 +13,7 @@ APIGatewayEvent
   → makeXController() factory (src/factories/controllers/<domain>/<feature>.ts)
       → makeXService() factory (src/factories/services/<domain>/<feature>.ts)
           → repository factory (src/infra/db/dynamodb/factories/<entity>-repository-factory.ts)
-  → controller.handle(request) (src/app/modules/<domain>/controllers/<feature>/controller.ts)
+  → controller.execute(request) → validateBody(request.body) → controller.handle(request)
   → service.execute(data) (src/app/modules/<domain>/services/<feature>/service.ts)
   → repository method (src/infra/db/dynamodb/repositories/<entity>/<entity>-dynamo-repository.ts)
   → responseAdapter (src/server/adapters/response.ts)
@@ -85,19 +85,25 @@ export function makeXController() {
 ```
 
 ### Controller
-```ts
-export class XController implements IController {
-  constructor(private readonly service: IXService) {}
+Controllers extend the base `Controller` class (do not `implements IController`). Define `schema` (optional) and implement only `handle()`. No try/catch; errors are handled by the lambda adapter. Only `request.body` is validated; pass `userId` and `params` from `request` in `handle()` when the service needs them.
 
-  async handle(request: IRequest): Promise<IResponse> {
-    try {
-      const [ok, parsed] = missingFields(schema, { ...request.body, userId: request.userId || "" });
-      if (!ok) return parsed;
-      const result = await this.service.execute(parsed);
-      return { statusCode: 200, body: result };
-    } catch (error) {
-      return errorHandler(error);
-    }
+```ts
+import { Controller } from "@application/interfaces/controller";
+import type { IRequest, IResponse } from "@application/interfaces/http";
+
+export class XController extends Controller {
+  constructor(private readonly service: IXService) {
+    super();
+  }
+
+  protected override schema = mySchema;
+
+  protected override async handle(request: IRequest<MySchemaType>): Promise<IResponse> {
+    const result = await this.service.execute({
+      ...request.body,
+      userId: request.userId ?? "",
+    });
+    return { statusCode: 200, body: result };
   }
 }
 ```
@@ -116,8 +122,8 @@ export class XService implements IXService {
 ## Error Handling
 
 - `AppError` for domain errors: `throw new AppError("message", statusCode)`
-- `errorHandler` in controllers catches and formats all errors
-- `missingFields` validates request shape via Zod schema — returns `[false, errorResponse]` on failure
+- Errors are handled in the **lambda adapter** (try/catch around `controller.execute(request)` + `errorHandler`). Controllers do not use try/catch or call `errorHandler`.
+- `missingFields` (used by base `Controller.validateBody`) validates via Zod schema and **throws** `ZodError` on failure; the adapter turns it into a formatted response.
 
 ## Auth State — MOCK
 

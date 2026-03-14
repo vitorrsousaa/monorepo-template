@@ -1,5 +1,5 @@
 import { GetAllProjectsByUserInputDTO } from "@application/modules/projects/services/get-all-projects-by-user/dto";
-import z from "zod";
+import type z from "zod";
 
 export const getAllProjectsByUserSchema = GetAllProjectsByUserInputDTO;
 

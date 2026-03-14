@@ -344,48 +344,40 @@ export class CreateTodoService implements IService<CreateTodoInput, CreateTodoOu
 
 #### 3. Controller - `controllers/create-todo/controller.ts`
 
+O padrão atual de controllers está em `apps/api/CLAUDE.md` e em `.cursor/rules/controllers-icontroller.mdc`. Resumo: estender `Controller`, definir `schema` (só body), implementar apenas `handle()` passando `userId` do request quando necessário; sem try/catch (erros tratados no lambda adapter).
+
 ```typescript
-export class CreateTodoController implements IController {
-  constructor(private readonly createTodoService: CreateTodoService) {}
+export class CreateTodoController extends Controller {
+  constructor(private readonly createTodoService: ICreateTodoService) {
+    super();
+  }
 
-  async handle(request: IRequest): Promise<IResponse> {
-    try {
-      // Valida com Zod
-      const validationResult = createTodoSchema.safeParse(request.body);
+  protected override schema = createTodoSchema;
 
-      if (!validationResult.success) {
-        const errorMessages = validationResult.error.errors
-          .map((err) => `${err.path.join(".")}: ${err.message}`)
-          .join(", ");
-        
-        throw new AppError(`Dados de entrada inválidos: ${errorMessages}`, 400);
-      }
-
-      // Executa service
-      const result = await this.createTodoService.execute(validationResult.data);
-
-      return { statusCode: 201, body: result };
-    } catch (error) {
-      return errorHandler(error);
-    }
+  protected override async handle(request: IRequest<CreateTodoSchema>): Promise<IResponse> {
+    const service = await this.createTodoService.execute({
+      ...request.body,
+      userId: request.userId ?? "",
+    });
+    const body: CreateTodoResponse = { todo: todoToDto(service.todo) };
+    return { statusCode: 201, body };
   }
 }
 ```
 
 **Características:**
-- ✅ Valida dados de entrada
-- ✅ Mensagens de erro amigáveis
+- ✅ Validação via schema Zod na base Controller
 - ✅ Retorna 201 Created
-- ✅ Error handling centralizado
+- ✅ Erros tratados no lambda adapter (não no controller)
 
 #### 4. Handler - `server/functions/todo/create-todo/handler.ts`
 
 ```typescript
-export async function handler(event: APIGatewayProxyEventV2) {
-  const controller = makeCreateTodoController();
-  const response = await controller.handle(requestAdapter(event));
-  return responseAdapter(response);
-}
+import { makeCreateTodoController } from "@factories/controllers/todo/create-todo";
+import { lambdaHttpAdapter } from "@server/adapters/lambda-http-adapter";
+
+const controller = makeCreateTodoController();
+export const handler = lambdaHttpAdapter(controller);
 ```
 
 ### 🎯 Exemplos de Uso

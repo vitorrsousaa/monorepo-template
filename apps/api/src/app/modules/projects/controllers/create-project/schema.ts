@@ -1,3 +1,7 @@
-import { CreateProjectInputDTO } from "@application/modules/projects/services/create-project/dto";
+import z from "zod";
 
-export const createProjectSchema = CreateProjectInputDTO;
+export const createProjectSchema = z.object({
+	name: z.string(),
+	description: z.string().optional(),
+});
+export type CreateProjectSchema = z.infer<typeof createProjectSchema>;
