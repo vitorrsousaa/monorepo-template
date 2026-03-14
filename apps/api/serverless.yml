@@ -22,6 +22,13 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     COGNITO_CLIENT_ID: !Ref UserPoolClient
+  httpApi:
+    authorizers:
+      CognitoAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: !GetAtt UserPool.ProviderUrl
+        audience: !Ref UserPoolClient
 
 custom:
   dotenv:
@@ -59,64 +66,91 @@ functions:
       - httpApi:
           path: /auth/signin
           method: post
+  preSignUpTrigger:
+    handler: src/server/triggers/auth/presignup/index.handler
+    events:
+      - cognitoUserPool:
+          pool: ${self:resources.UserPool.UserPoolName}
+          trigger: PreSignUp
+          existing: true
+          forceDeploy: true
   getTodos:
     handler: src/server/functions/todo/get-todos/index.handler
     events:
       - httpApi:
           path: /todos
           method: get
+          authorizer: 
+            name: CognitoAuthorizer
   getInboxTodos:
     handler: src/server/functions/todo/get-inbox-todos/index.handler
     events:
       - httpApi:
           path: /todos/inbox
           method: get
+          authorizer: 
+            name: CognitoAuthorizer
   getTodayTasks:
     handler: src/server/functions/tasks/get-today-tasks/index.handler
     events:
       - httpApi:
           path: /tasks/today
           method: get
+          authorizer: 
+            name: CognitoAuthorizer
   getDashboardAnalytics:
     handler: src/server/functions/tasks/get-dashboard-analytics/index.handler
     events:
       - httpApi:
           path: /tasks/dashboard
           method: get
+          authorizer: 
+            name: CognitoAuthorizer
   getAllProjectsByUser:
     handler: src/server/functions/projects/get-all-projects-by-user/index.handler
     events:
       - httpApi:
           path: /projects
           method: get
+          authorizer: 
+            name: CognitoAuthorizer
   createProject:
     handler: src/server/functions/projects/create-project/index.handler
     events:
       - httpApi:
           path: /projects
           method: post
+          authorizer: 
+            name: CognitoAuthorizer
   getProjectDetail:
     handler: src/server/functions/projects/get-project-detail/index.handler
     events:
       - httpApi:
           path: /projects/{projectId}/detail
           method: get
+          authorizer: 
+            name: CognitoAuthorizer
   createSection:
     handler: src/server/functions/sections/create-section/index.handler
     events:
       - httpApi:
           path: /projects/{projectId}/sections
           method: post
+          authorizer: 
+            name: CognitoAuthorizer
   getAllByProject:
     handler: src/server/functions/sections/get-all-by-project/index.handler
     events:
       - httpApi:
           path: /projects/{projectId}/sections
           method: get
-
+          authorizer: 
+            name: CognitoAuthorizer
   createTodo:
     handler: src/server/functions/todo/create-todo/index.handler
     events:
       - httpApi:
           path: /todos
           method: post
+          authorizer: 
+            name: CognitoAuthorizer
