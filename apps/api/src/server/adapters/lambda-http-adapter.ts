@@ -1,4 +1,7 @@
-import type { Controller as ControllerBase, TControllerType } from "@application/interfaces/controller";
+import type {
+	Controller as ControllerBase,
+	TControllerType,
+} from "@application/interfaces/controller";
 import { errorHandler } from "@application/utils/error-handler";
 import { requestAdapter } from "@server/adapters/request";
 import { responseAdapter } from "@server/adapters/response";

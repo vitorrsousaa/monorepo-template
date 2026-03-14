@@ -6,14 +6,13 @@ import type {
 } from "aws-lambda";
 import { bodyParser } from "./body-parser";
 
-
 export function requestAdapter(
 	event: APIGatewayProxyEventV2 | APIGatewayProxyEventV2WithJWTAuthorizer,
 ): IRequest {
 	const jwtSub = (event as APIGatewayProxyEventV2WithJWTAuthorizer)
 		.requestContext?.authorizer?.jwt?.claims?.sub as string | undefined;
 
-	const userId =  (jwtSub ?? MOCK_USER_ID);
+	const userId = jwtSub ?? MOCK_USER_ID;
 
 	return {
 		body: bodyParser(event.body ?? "{}"),

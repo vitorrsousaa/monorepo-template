@@ -3,7 +3,10 @@ import { todoToDto } from "@application/modules/todos/mappers/todo-to-dto";
 import type { IGetInboxTodosService } from "@application/modules/todos/services/get-inbox-todos";
 import type { GetInboxTodosResponse } from "@repo/contracts/todo/inbox";
 
-export class GetInboxTodosController extends Controller<"private", GetInboxTodosResponse> {
+export class GetInboxTodosController extends Controller<
+	"private",
+	GetInboxTodosResponse
+> {
 	constructor(private readonly getInboxTodosService: IGetInboxTodosService) {
 		super();
 	}

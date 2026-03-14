@@ -4,7 +4,10 @@ import type { ICreateTodoService } from "@application/modules/todos/services/cre
 import type { CreateTodoResponse } from "@repo/contracts/todo/create";
 import { createTodoSchema, type CreateTodoSchema } from "./schema";
 
-export class CreateTodoController extends Controller<"private", CreateTodoResponse> {
+export class CreateTodoController extends Controller<
+	"private",
+	CreateTodoResponse
+> {
 	constructor(private readonly createTodoService: ICreateTodoService) {
 		super();
 	}

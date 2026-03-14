@@ -3,7 +3,10 @@ import { todayProjectToDto } from "@application/modules/tasks/mappers/task-to-dt
 import type { IGetTodayTasksService } from "@application/modules/tasks/services/get-today-tasks";
 import type { GetTodayTasksResponse } from "@repo/contracts/tasks/today";
 
-export class GetTodayTasksController extends Controller<"private", GetTodayTasksResponse> {
+export class GetTodayTasksController extends Controller<
+	"private",
+	GetTodayTasksResponse
+> {
 	constructor(private readonly getTodayTasksService: IGetTodayTasksService) {
 		super();
 	}
