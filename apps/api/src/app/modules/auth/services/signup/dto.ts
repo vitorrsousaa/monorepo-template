@@ -7,10 +7,8 @@ export const SignupInputDTO = z.object({
 	password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-export type SignupInput = z.infer<
-	typeof SignupInputDTO
->;
+export type SignupInput = z.infer<typeof SignupInputDTO>;
 
 export interface SignupOutput {
-	userId: string
+	userId: string;
 }

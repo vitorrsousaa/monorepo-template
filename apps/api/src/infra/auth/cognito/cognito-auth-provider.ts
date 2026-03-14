@@ -27,11 +27,10 @@ import {
 } from "./errors";
 
 export class CognitoAuthProvider implements IAuthProvider {
-
-
-	constructor(private readonly client: CognitoIdentityProviderClient, private readonly config: Config) {
-		
-	}
+	constructor(
+		private readonly client: CognitoIdentityProviderClient,
+		private readonly config: Config,
+	) {}
 
 	async signUp(params: AuthSignUpParams): Promise<AuthSignUpResult> {
 		try {
@@ -44,14 +43,14 @@ export class CognitoAuthProvider implements IAuthProvider {
 					{ Name: "family_name", Value: params.lastName },
 				],
 			});
-			
+
 			const result = await this.client.send(command);
 			const userId = result.UserSub as string;
-			
+
 			if (!userId) {
 				throw new AppError("Sign up did not return a user id", 500);
 			}
-			
+
 			return { userId };
 		} catch (error) {
 			if (error instanceof UsernameExistsException) {

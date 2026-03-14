@@ -3,14 +3,9 @@ import type { ISignupService } from "@application/modules/auth/services/signup";
 import type { SignupResponse } from "@repo/contracts/auth/signup";
 import { signupSchema, SignupSchema } from "./schema";
 
-export class SignupController extends Controller<
-	"public",
-	SignupResponse
-> {
+export class SignupController extends Controller<"public", SignupResponse> {
 	protected override schema = signupSchema;
-	constructor(
-		private readonly signupService: ISignupService,
-	) {
+	constructor(private readonly signupService: ISignupService) {
 		super();
 	}
 
@@ -23,7 +18,7 @@ export class SignupController extends Controller<
 			email: request.body.email,
 			password: request.body.password,
 		});
-		
+
 		return {
 			statusCode: 200,
 			body: result,

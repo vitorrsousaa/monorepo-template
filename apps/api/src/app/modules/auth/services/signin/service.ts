@@ -2,8 +2,7 @@ import type { IService } from "@application/interfaces/service";
 import { IAuthProvider } from "@data/protocols/auth/auth-provider";
 import type { SigninInput, SigninOutput } from "./dto";
 
-export interface ISigninService
-	extends IService<SigninInput, SigninOutput> {}
+export interface ISigninService extends IService<SigninInput, SigninOutput> {}
 
 export class SigninService implements ISigninService {
 	constructor(private readonly authProvider: IAuthProvider) {}
