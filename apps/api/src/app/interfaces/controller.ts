@@ -1,5 +1,5 @@
 import { missingFields } from "@application/utils/missing-fields";
-import z from "zod";
+import type z from "zod";
 import type { IRequest, IResponse } from "./http";
 
 export abstract class Controller {
