@@ -27,10 +27,11 @@ provider:
       CognitoAuthorizer:
         type: jwt
         identitySource: $request.header.Authorization
-        issuerUrl: !GetAtt UserPool.ProviderUrl
+        issuerUrl: !GetAtt UserPool.ProviderURL
         audience: !Ref UserPoolClient
 
 custom:
+  userPoolName: ${self:service}-${self:provider.stage}-UserPool
   dotenv:
     exclude:
       - AWS_ACCESS_KEY_ID
@@ -70,7 +71,7 @@ functions:
     handler: src/server/triggers/auth/presignup/index.handler
     events:
       - cognitoUserPool:
-          pool: ${self:resources.UserPool.UserPoolName}
+          pool: ${self:custom.userPoolName}
           trigger: PreSignUp
           existing: true
           forceDeploy: true
