@@ -1,3 +1,4 @@
+import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import {
 	Form,
@@ -8,6 +9,8 @@ import {
 	FormMessage,
 } from "@repo/ui/form";
 import { Icon } from "@repo/ui/icon";
+import { Input } from "@repo/ui/input";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useSigninFormHook } from "./signin-form.hook";
 import type { TSigninFormSchema } from "./signin-form.schema";
@@ -19,47 +22,35 @@ export interface SigninFormProps {
 }
 
 export function SigninForm(props: SigninFormProps) {
-	const { formId, isSubmitting } = props;
-	const [isVisible, setIsVisible] = useState<boolean>(false);
+	const { formId, isSubmitting = false } = props;
+	const [showPassword, setShowPassword] = useState(false);
 
 	const { handleSubmit, methods } = useSigninFormHook(props);
-
-	const toggleVisibility = () => setIsVisible((prevState) => !prevState);
-
-	const inputClasses =
-		"w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 transition-all duration-200 outline-none focus:border-purple-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-purple-500/20 disabled:opacity-50";
-
-	const inputWithIconClasses = `${inputClasses} ps-10`;
 
 	return (
 		<Form {...methods}>
 			<form
 				onSubmit={handleSubmit}
 				id={formId || "signin-form"}
-				className="space-y-5"
+				className="flex flex-col gap-3.5"
 			>
 				<FormField
 					control={methods.control}
 					name="email"
 					render={({ field }) => (
-						<FormItem>
-							<FormLabel className="text-xs font-medium uppercase tracking-wider text-white/40">
+						<FormItem className="flex flex-col gap-1.5">
+							<FormLabel className="text-xs font-medium text-foreground">
 								Email
 							</FormLabel>
 							<FormControl>
-								<div className="relative mt-1.5">
-									<input
-										className={inputWithIconClasses}
-										placeholder="you@company.com"
-										type="email"
-										required
-										disabled={isSubmitting}
-										{...field}
-									/>
-									<div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
-										<Icon name="mail" className="h-4 w-4 text-white/20" />
-									</div>
-								</div>
+								<Input
+									placeholder="you@email.com"
+									className="bg-background"
+									type="email"
+									autoComplete="email"
+									disabled={isSubmitting}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -70,44 +61,41 @@ export function SigninForm(props: SigninFormProps) {
 					control={methods.control}
 					name="password"
 					render={({ field }) => (
-						<FormItem>
+						<FormItem className="flex flex-col gap-1.5">
 							<div className="flex items-center justify-between">
-								<FormLabel className="text-xs font-medium uppercase tracking-wider text-white/40">
+								<FormLabel className="text-xs font-medium text-foreground">
 									Password
 								</FormLabel>
 								<a
 									href="#"
-									className="text-xs text-purple-400/70 transition-colors duration-200 hover:text-purple-300"
+									className="text-xs font-medium text-primary no-underline hover:underline"
 								>
-									Forgot?
+									Forgot password?
 								</a>
 							</div>
 							<FormControl>
-								<div className="relative mt-1.5">
-									<input
-										className={`${inputWithIconClasses} pe-10`}
+								<div className="relative">
+									<Input
 										placeholder="Enter your password"
-										type={isVisible ? "text" : "password"}
-										required
+										type={showPassword ? "text" : "password"}
+										autoComplete="current-password"
 										disabled={isSubmitting}
+										className="pe-10 bg-background"
 										{...field}
 									/>
-									<div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
-										<Icon name="lockClosed" className="h-4 w-4 text-white/20" />
-									</div>
 									<button
-										className="absolute inset-y-0 end-0 flex w-10 items-center justify-center text-white/20 transition-colors duration-200 hover:text-white/50"
 										type="button"
-										onClick={toggleVisibility}
-										aria-label={isVisible ? "Hide password" : "Show password"}
-										aria-pressed={isVisible}
+										className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center border-none bg-transparent p-0 text-muted-foreground transition-colors duration-[120ms] hover:text-foreground"
+										onClick={() => setShowPassword(!showPassword)}
+										aria-label={
+											showPassword ? "Hide password" : "Show password"
+										}
 										disabled={isSubmitting}
 									>
-										{isVisible ? (
-											<Icon name="eyeOff" className="h-4 w-4" />
-										) : (
-											<Icon name="eye" className="h-4 w-4" />
-										)}
+										<Icon
+											name={showPassword ? "eyeOff" : "eye"}
+											className="h-[15px] w-[15px]"
+										/>
 									</button>
 								</div>
 							</FormControl>
@@ -127,17 +115,27 @@ export function SigninForm(props: SigninFormProps) {
 										checked={field.value}
 										onCheckedChange={field.onChange}
 										disabled={isSubmitting}
-										className="border-white/[0.15] data-[state=checked]:border-purple-500 data-[state=checked]:bg-purple-600"
 									/>
 								</FormControl>
-								<FormLabel className="!mt-0 cursor-pointer text-sm text-white/40 transition-colors duration-200 hover:text-white/60">
-									Remember for 30 days
+								<FormLabel className="!mt-0 cursor-pointer text-xs text-muted-foreground">
+									Remember me for 30 days
 								</FormLabel>
 							</div>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+
+				<Button
+					type="submit"
+					disabled={isSubmitting}
+					className="mb-4.5 w-full"
+					size="lg"
+					loading={isSubmitting}
+				>
+					Sign in
+					<ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
+				</Button>
 			</form>
 		</Form>
 	);

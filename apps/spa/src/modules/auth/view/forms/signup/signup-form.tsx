@@ -54,6 +54,7 @@ export function SignupForm(props: SignupFormProps) {
 										type="text"
 										autoComplete="given-name"
 										disabled={isSubmitting}
+										className="bg-background"
 										{...field}
 									/>
 								</FormControl>
@@ -75,6 +76,7 @@ export function SignupForm(props: SignupFormProps) {
 										type="text"
 										autoComplete="family-name"
 										disabled={isSubmitting}
+										className="bg-background"
 										{...field}
 									/>
 								</FormControl>
@@ -98,6 +100,7 @@ export function SignupForm(props: SignupFormProps) {
 									type="email"
 									autoComplete="email"
 									disabled={isSubmitting}
+									className="bg-background"
 									{...field}
 								/>
 							</FormControl>
@@ -122,6 +125,7 @@ export function SignupForm(props: SignupFormProps) {
 										type={showPassword ? "text" : "password"}
 										autoComplete="new-password"
 										disabled={isSubmitting}
+										className="bg-background"
 										{...field}
 									/>
 									<button
@@ -192,6 +196,7 @@ export function SignupForm(props: SignupFormProps) {
 										type={showConfirm ? "text" : "password"}
 										autoComplete="new-password"
 										disabled={isSubmitting}
+										className="bg-background"
 										{...field}
 									/>
 									<button
