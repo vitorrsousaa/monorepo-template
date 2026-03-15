@@ -14,7 +14,11 @@ const LABELS: Record<PasswordStrengthLevel, string> = {
 
 export function getPasswordStrength(value: string): PasswordStrength {
 	if (!value) {
-		return { score: 0, level: "weak", label: "Use at least 8 characters, a number and a symbol" };
+		return {
+			score: 0,
+			level: "weak",
+			label: "Use at least 8 characters, a number and a symbol",
+		};
 	}
 
 	let score = 0;
@@ -25,7 +29,10 @@ export function getPasswordStrength(value: string): PasswordStrength {
 
 	const level: PasswordStrengthLevel =
 		score <= 1 ? "weak" : score <= 2 ? "fair" : "strong";
-	const label = score === 0 ? "Use at least 8 characters, a number and a symbol" : LABELS[level];
+	const label =
+		score === 0
+			? "Use at least 8 characters, a number and a symbol"
+			: LABELS[level];
 
 	return { score, level, label };
 }

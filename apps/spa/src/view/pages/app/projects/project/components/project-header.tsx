@@ -24,7 +24,8 @@ export function ProjectHeader({
 	statusLabel,
 }: ProjectHeaderProps) {
 	const remaining = totalCount - completedCount;
-	const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+	const progressPercent =
+		totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
 	return (
 		<header className="mb-7">

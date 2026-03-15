@@ -51,7 +51,7 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 						? "bg-destructive"
 						: todo.priority === "medium"
 							? "bg-amber-500"
-							: "bg-blue-500"
+							: "bg-blue-500",
 				)}
 				aria-hidden
 			/>
@@ -63,7 +63,9 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 				<div
 					className={cn(
 						"text-[13px] font-medium",
-						todo.completed ? "line-through text-muted-foreground" : "text-foreground"
+						todo.completed
+							? "line-through text-muted-foreground"
+							: "text-foreground",
 					)}
 				>
 					{todo.title}
@@ -83,7 +85,7 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 									? "bg-destructive/15 text-destructive"
 									: todo.priority === "medium"
 										? "bg-chart-2/15 text-chart-2"
-										: "bg-chart-4/15 text-chart-4"
+										: "bg-chart-4/15 text-chart-4",
 							)}
 						>
 							<Flag className="mr-1 h-3 w-3" />
@@ -97,7 +99,7 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 								"h-5 rounded-[6px] px-2 py-0 text-[11px] font-medium",
 								dueDateInfo.isOverdue
 									? "bg-destructive/15 text-destructive"
-									: "bg-muted text-muted-foreground"
+									: "bg-muted text-muted-foreground",
 							)}
 						>
 							<Calendar className="mr-1 h-3 w-3 shrink-0" />
@@ -116,7 +118,9 @@ export function InboxTodoCard(props: InboxTodoCardProps) {
 				<DropdownMenuContent align="end" className="w-48">
 					<DropdownMenuItem>Assign to Project</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+					<DropdownMenuItem className="text-destructive">
+						Delete
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

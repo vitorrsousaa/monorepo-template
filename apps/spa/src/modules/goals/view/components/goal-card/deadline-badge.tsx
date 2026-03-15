@@ -1,7 +1,4 @@
-import {
-	differenceInDays,
-	formatDateWithYear,
-} from "@/utils/date-utils";
+import { differenceInDays, formatDateWithYear } from "@/utils/date-utils";
 import { cn } from "@repo/ui/utils";
 import { Calendar } from "lucide-react";
 
@@ -12,10 +9,7 @@ type DeadlineBadgeProps = {
 export function DeadlineBadge({ deadline }: DeadlineBadgeProps) {
 	if (!deadline) return null;
 
-	const diff = differenceInDays(
-		new Date(deadline + "T12:00:00"),
-		new Date(),
-	);
+	const diff = differenceInDays(new Date(deadline + "T12:00:00"), new Date());
 	const label =
 		diff < 0
 			? "Atrasada"

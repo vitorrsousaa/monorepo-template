@@ -39,8 +39,7 @@ export function Signin() {
 							Welcome back
 						</h1>
 						<p className="text-sm leading-relaxed text-white/50">
-							Sign in to access your dashboard, settings and
-							projects.
+							Sign in to access your dashboard, settings and projects.
 						</p>
 					</div>
 
@@ -67,10 +66,7 @@ export function Signin() {
 
 					{/* Form */}
 					<div className="animate-in fade-in slide-in-from-bottom-2 duration-500 delay-[400ms]">
-						<SigninForm
-							onSubmit={handleSubmit}
-							formId={SIGNIN_FORM_ID}
-						/>
+						<SigninForm onSubmit={handleSubmit} formId={SIGNIN_FORM_ID} />
 					</div>
 
 					{/* Submit */}

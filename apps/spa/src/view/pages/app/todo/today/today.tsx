@@ -14,12 +14,22 @@ export function Today() {
 		refetchTodayTasks,
 	} = useGetTodayTasks();
 
-	const taskCount = useMemo(() => todayData.projects.reduce((acc, project) => acc + project.tasks.length, 0), [todayData]);
+	const taskCount = useMemo(
+		() =>
+			todayData.projects.reduce(
+				(acc, project) => acc + project.tasks.length,
+				0,
+			),
+		[todayData],
+	);
 
 	return (
 		<div className="h-full w-full flex flex-col bg-background overflow-hidden">
 			{/* Header - Fixed */}
-			<TodayTasksHeader taskCount={taskCount} isLoading={isFetchingTodayTasks} />
+			<TodayTasksHeader
+				taskCount={taskCount}
+				isLoading={isFetchingTodayTasks}
+			/>
 
 			{/* Kanban Board - Scrollable Container */}
 			<div className="flex-1 min-h-0 overflow-y-auto overflow-x-auto">
@@ -29,9 +39,7 @@ export function Today() {
 				/>
 				<RenderIf
 					condition={isErrorTodayTasks}
-					render={
-						<TodayErrorState onRetry={() => refetchTodayTasks()} />
-					}
+					render={<TodayErrorState onRetry={() => refetchTodayTasks()} />}
 				/>
 				<RenderIf
 					condition={!isFetchingTodayTasks && !isErrorTodayTasks}
@@ -48,8 +56,6 @@ export function Today() {
 					}
 				/>
 			</div>
-
-
 		</div>
 	);
 }

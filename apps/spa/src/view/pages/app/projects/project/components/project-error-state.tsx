@@ -22,7 +22,8 @@ export function ProjectErrorState(props: ProjectErrorStateProps) {
 					size="sm"
 					className="mt-3 border-destructive/50 text-destructive hover:bg-destructive/10"
 					onClick={onRetry}
-				><RefreshCw className="h-4 w-4 mr-2" />	Try again
+				>
+					<RefreshCw className="h-4 w-4 mr-2" /> Try again
 				</Button>
 			</Alert>
 		</div>

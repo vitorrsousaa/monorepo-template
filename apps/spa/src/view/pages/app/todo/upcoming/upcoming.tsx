@@ -21,7 +21,9 @@ export function Upcoming() {
 	function diffInDaysFromToday(dateIso: string) {
 		const date = new Date(dateIso + "T12:00:00");
 		date.setHours(0, 0, 0, 0);
-		return Math.round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+		return Math.round(
+			(date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+		);
 	}
 
 	const upcomingTasks = tasks.filter((t) => {
@@ -30,15 +32,23 @@ export function Upcoming() {
 		return diff >= 1 && diff <= 7;
 	});
 
-	const tomorrowTasks = upcomingTasks.filter((t) => diffInDaysFromToday(t.dueDate) === 1);
-	const inTwoDaysTasks = upcomingTasks.filter((t) => diffInDaysFromToday(t.dueDate) === 2);
-	const laterTasks = upcomingTasks.filter((t) => diffInDaysFromToday(t.dueDate) >= 3);
+	const tomorrowTasks = upcomingTasks.filter(
+		(t) => diffInDaysFromToday(t.dueDate) === 1,
+	);
+	const inTwoDaysTasks = upcomingTasks.filter(
+		(t) => diffInDaysFromToday(t.dueDate) === 2,
+	);
+	const laterTasks = upcomingTasks.filter(
+		(t) => diffInDaysFromToday(t.dueDate) >= 3,
+	);
 
 	return (
 		<div className="p-8 space-y-8">
 			<div className="flex items-center justify-between border-b border-border pb-5">
 				<div>
-					<h1 className="text-[26px] font-semibold tracking-tight text-balance">Em breve</h1>
+					<h1 className="text-[26px] font-semibold tracking-tight text-balance">
+						Em breve
+					</h1>
 					<p className="mt-1 text-xs text-muted-foreground">Próximos 7 dias</p>
 				</div>
 				<Button
@@ -56,7 +66,9 @@ export function Upcoming() {
 					<div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
 						<CalendarClock className="w-8 h-8 text-muted-foreground/50" />
 					</div>
-					<h3 className="font-semibold text-foreground">Nenhuma tarefa futura</h3>
+					<h3 className="font-semibold text-foreground">
+						Nenhuma tarefa futura
+					</h3>
 					<p className="text-sm text-muted-foreground mt-1">
 						Adicione tarefas com datas futuras para planejá-las
 					</p>
@@ -78,7 +90,9 @@ export function Upcoming() {
 											weekday.charAt(0).toUpperCase() + weekday.slice(1);
 										return (
 											<span className="text-xs text-muted-foreground">
-												<span className="font-semibold text-foreground">{label}</span>
+												<span className="font-semibold text-foreground">
+													{label}
+												</span>
 												{rest && (
 													<span className="font-normal text-muted-foreground">
 														{`, ${rest}`}
@@ -115,7 +129,9 @@ export function Upcoming() {
 											weekday.charAt(0).toUpperCase() + weekday.slice(1);
 										return (
 											<span className="text-xs text-muted-foreground">
-												<span className="font-semibold text-foreground">{label}</span>
+												<span className="font-semibold text-foreground">
+													{label}
+												</span>
 												{rest && (
 													<span className="font-normal text-muted-foreground">
 														{`, ${rest}`}
@@ -164,7 +180,10 @@ export function Upcoming() {
 				</div>
 			)}
 
-			<NewTodoModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} />
+			<NewTodoModal
+				isOpen={isNewTaskOpen}
+				onClose={() => setIsNewTaskOpen(false)}
+			/>
 		</div>
 	);
 }

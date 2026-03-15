@@ -60,7 +60,8 @@ export function Projects() {
 	const openEditModal = useCallback(
 		(task: TaskRowTask, sectionId: string | null, projectName: string) => {
 			const todo = findTodoFromDetail(projectDetail, task.id);
-			const rawCreatedAt = todo && "createdAt" in todo ? todo.createdAt : undefined;
+			const rawCreatedAt =
+				todo && "createdAt" in todo ? todo.createdAt : undefined;
 			const createdAt =
 				typeof rawCreatedAt === "string"
 					? rawCreatedAt
@@ -146,9 +147,7 @@ export function Projects() {
 						dimmed
 						showDragHandle={false}
 						tasks={todosWithoutSection.map(todoToTaskRowTask)}
-						onTaskClick={(task) =>
-							openEditModal(task, null, project.name)
-						}
+						onTaskClick={(task) => openEditModal(task, null, project.name)}
 						onAddTask={() => {
 							setNewTodoSectionId(undefined);
 							setIsNewTodoModalOpen(true);
@@ -163,11 +162,7 @@ export function Projects() {
 							projectId={projectId}
 							projectName={project.name}
 							onTaskClick={(task) =>
-								openEditModal(
-									task,
-									section.id,
-									project.name,
-								)
+								openEditModal(task, section.id, project.name)
 							}
 							onAddTask={() => {
 								setNewTodoSectionId(section.id);

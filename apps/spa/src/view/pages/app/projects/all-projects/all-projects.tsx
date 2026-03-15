@@ -69,9 +69,7 @@ export function AllProjects() {
 	const [tasks] = useState(ALL_PROJECTS_TASKS_MOCK);
 
 	const filtered = projects.filter((p) => {
-		const matchesSearch = p.name
-			.toLowerCase()
-			.includes(search.toLowerCase());
+		const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
 		const matchesFilter = filter === "todos" || p.status === filter;
 		return matchesSearch && matchesFilter;
 	});
@@ -102,8 +100,8 @@ export function AllProjects() {
 						Todos os projetos
 					</h1>
 					<p className="text-sm text-muted-foreground mt-0.5">
-						{projects.length}{" "}
-						{projects.length === 1 ? "projeto" : "projetos"} no total
+						{projects.length} {projects.length === 1 ? "projeto" : "projetos"}{" "}
+						no total
 					</p>
 				</div>
 				<Button
@@ -136,7 +134,9 @@ export function AllProjects() {
 							<span
 								className={cn(
 									"text-[10px] font-semibold",
-									filter === tab.id ? "text-primary" : "text-muted-foreground/60",
+									filter === tab.id
+										? "text-primary"
+										: "text-muted-foreground/60",
 								)}
 							>
 								{tab.id === "todos"
@@ -167,7 +167,9 @@ export function AllProjects() {
 						Nenhum projeto encontrado
 					</p>
 					<p className="text-xs text-muted-foreground/60 mt-1">
-						{search ? "Tente outro termo de busca" : "Crie um projeto para começar"}
+						{search
+							? "Tente outro termo de busca"
+							: "Crie um projeto para começar"}
 					</p>
 					{!search && (
 						<Button
@@ -208,7 +210,9 @@ export function AllProjects() {
 								<div
 									className="h-[3px] w-full"
 									style={{
-										backgroundColor: isMuted ? "rgba(148,163,184,0.9)" : project.color,
+										backgroundColor: isMuted
+											? "rgba(148,163,184,0.9)"
+											: project.color,
 									}}
 								/>
 
@@ -289,7 +293,7 @@ export function AllProjects() {
 																<span>Ver atividade</span>
 															</DropdownMenuItem>
 															<DropdownMenuSeparator />
-																<DropdownMenuItem
+															<DropdownMenuItem
 																className="text-destructive focus:text-destructive"
 																onSelect={() => openDeleteConfirm(project)}
 															>

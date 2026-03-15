@@ -33,9 +33,12 @@ export function NavProjects() {
 
 	return (
 		<SidebarGroup className="group-data-[collapsible=icon]:hidden">
-			<SidebarGroupLabel>Projects <Button variant='ghost' size='icon'>
-				<Plus className="w-4 h-4" />
-			</Button></SidebarGroupLabel>
+			<SidebarGroupLabel>
+				Projects{" "}
+				<Button variant="ghost" size="icon">
+					<Plus className="w-4 h-4" />
+				</Button>
+			</SidebarGroupLabel>
 
 			<SidebarMenu>
 				{/* Loading State */}

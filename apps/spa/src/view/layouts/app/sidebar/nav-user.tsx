@@ -1,9 +1,4 @@
-import {
-	BadgeCheck,
-	Bell,
-	LogOut,
-	Settings
-} from "lucide-react";
+import { BadgeCheck, Bell, LogOut, Settings } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@repo/ui/avatar";
 import {
@@ -11,13 +6,9 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
-	DropdownMenuTrigger
+	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
-import {
-	SidebarMenu,
-	SidebarMenuItem,
-	useSidebar
-} from "@repo/ui/sidebar";
+import { SidebarMenu, SidebarMenuItem, useSidebar } from "@repo/ui/sidebar";
 
 import { ROUTES } from "@/config/routes";
 import { useAuth } from "@/hooks/auth";
@@ -48,14 +39,20 @@ export function NavUser() {
 								</AvatarFallback>
 							</Avatar>
 							<div className="flex-1 text-left min-w-0">
-								<p className="text-sm font-medium text-sidebar-foreground truncate">Marcos Costa</p>
-								<p className="text-xs text-sidebar-foreground/50 truncate">marcos@email.com</p>
+								<p className="text-sm font-medium text-sidebar-foreground truncate">
+									Marcos Costa
+								</p>
+								<p className="text-xs text-sidebar-foreground/50 truncate">
+									marcos@email.com
+								</p>
 							</div>
 						</button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end"
+					<DropdownMenuContent
+						align="end"
 						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg w-52"
-						side={isMobile ? "bottom" : "right"}>
+						side={isMobile ? "bottom" : "right"}
+					>
 						<DropdownMenuItem onSelect={handleNavigateToProfile}>
 							<BadgeCheck className="w-4 h-4 mr-2" />
 							Perfil
@@ -69,7 +66,10 @@ export function NavUser() {
 							Settings
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem className="text-destructive focus:text-destructive" onClick={signout}>
+						<DropdownMenuItem
+							className="text-destructive focus:text-destructive"
+							onClick={signout}
+						>
 							<LogOut className="w-4 h-4 mr-2" />
 							Logout
 						</DropdownMenuItem>

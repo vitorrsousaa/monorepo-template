@@ -6,11 +6,12 @@ import { getTodayTasks } from "../services/get-today-tasks";
 const EMPTY_TODAY: GetTodayTasksResponse = { projects: [] };
 
 export function useGetTodayTasks() {
-	const { data, isError, isPending, isFetching, isLoading, refetch } =
-		useQuery({
+	const { data, isError, isPending, isFetching, isLoading, refetch } = useQuery(
+		{
 			queryKey: QUERY_KEYS.TASKS.TODAY,
 			queryFn: getTodayTasks,
-		});
+		},
+	);
 
 	return {
 		todayData: data ?? EMPTY_TODAY,

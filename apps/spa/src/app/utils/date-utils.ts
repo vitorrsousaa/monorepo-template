@@ -74,7 +74,5 @@ export function formatDueDateChip(dueDate: string | Date): string {
 	const date = typeof dueDate === "string" ? new Date(dueDate) : dueDate;
 	const now = new Date();
 	const sameYear = date.getFullYear() === now.getFullYear();
-	return sameYear
-		? formatDateShort(date)
-		: formatDateWithYear(date);
+	return sameYear ? formatDateShort(date) : formatDateWithYear(date);
 }

@@ -181,7 +181,9 @@ export function GoalsDashboard() {
 					{filtered.map((project) => {
 						const goal = mapProjectToGoal(project);
 						const progress = getGoalProgress(project, tasks);
-						const projectTasks = tasks.filter((t) => t.projectId === project.id);
+						const projectTasks = tasks.filter(
+							(t) => t.projectId === project.id,
+						);
 						const doneTasks = projectTasks.filter(
 							(t) => t.status === "concluida",
 						);
@@ -214,9 +216,7 @@ export function GoalsDashboard() {
 								}}
 								isExpanded={expandedGoalId === goal.id}
 								onToggleExpand={() =>
-									setExpandedGoalId(
-										expandedGoalId === goal.id ? null : goal.id,
-									)
+									setExpandedGoalId(expandedGoalId === goal.id ? null : goal.id)
 								}
 								onEditValue={
 									goal.targetValue != null

@@ -17,7 +17,10 @@ function formatDueDate(dueDate: string): string {
 }
 
 /** Derive meta subtitle and duration/recurring badge from task description. */
-function parseMetaFromDescription(description: string | undefined): { extra?: string; badge?: string } {
+function parseMetaFromDescription(description: string | undefined): {
+	extra?: string;
+	badge?: string;
+} {
 	if (!description?.trim()) return {};
 	const d = description.trim();
 	// "10 minutos" / "10 min" -> "10 min"
@@ -56,7 +59,12 @@ const STRIPE_COLORS = {
 	health: "bg-amber-600",
 } as const;
 
-export function TaskCard({ task, project, category, isOverdue }: TaskCardProps) {
+export function TaskCard({
+	task,
+	project,
+	category,
+	isOverdue,
+}: TaskCardProps) {
 	const isCompleted = task.status === "concluida";
 	const { extra, badge } = parseMetaFromDescription(task.description);
 	const projectName = project?.name ?? "Sem projeto";
@@ -66,14 +74,14 @@ export function TaskCard({ task, project, category, isOverdue }: TaskCardProps) 
 		<div
 			className={cn(
 				"flex items-start gap-3 pl-5 pr-5 py-4 transition-colors relative group",
-				isOverdue && "bg-[#FEF2F2] dark:bg-red-950/20"
+				isOverdue && "bg-[#FEF2F2] dark:bg-red-950/20",
 			)}
 		>
 			{/* Category stripe — left edge, more opaque on hover */}
 			<div
 				className={cn(
 					"absolute left-0 top-2 bottom-2 w-[3px] rounded-r opacity-50 group-hover:opacity-100 transition-opacity",
-					STRIPE_COLORS[category]
+					STRIPE_COLORS[category],
 				)}
 				aria-hidden
 			/>
@@ -83,13 +91,25 @@ export function TaskCard({ task, project, category, isOverdue }: TaskCardProps) 
 					"w-4 h-4 rounded shrink-0 mt-0.5 flex items-center justify-center border-2 transition-colors",
 					isCompleted
 						? "bg-emerald-600 border-emerald-600 text-white"
-						: "border-border bg-background"
+						: "border-border bg-background",
 				)}
 				aria-hidden
 			>
 				{isCompleted && (
-					<svg width="8" height="5" viewBox="0 0 8 5" fill="none" className="text-white">
-						<path d="M1 2.5L3 4.5L7 0.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+					<svg
+						width="8"
+						height="5"
+						viewBox="0 0 8 5"
+						fill="none"
+						className="text-white"
+					>
+						<path
+							d="M1 2.5L3 4.5L7 0.5"
+							stroke="currentColor"
+							strokeWidth="1.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
 					</svg>
 				)}
 			</div>
@@ -97,7 +117,9 @@ export function TaskCard({ task, project, category, isOverdue }: TaskCardProps) 
 				<div
 					className={cn(
 						"text-[13px] font-medium mb-0.5",
-						isCompleted ? "line-through text-muted-foreground" : "text-foreground"
+						isCompleted
+							? "line-through text-muted-foreground"
+							: "text-foreground",
 					)}
 				>
 					{task.title}
@@ -119,7 +141,9 @@ export function TaskCard({ task, project, category, isOverdue }: TaskCardProps) 
 					)}
 				</div>
 			</div>
-			<span className="text-[11px] text-muted-foreground shrink-0">{formatDueDate(task.dueDate)}</span>
+			<span className="text-[11px] text-muted-foreground shrink-0">
+				{formatDueDate(task.dueDate)}
+			</span>
 		</div>
 	);
 }

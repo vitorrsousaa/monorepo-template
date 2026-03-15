@@ -57,10 +57,7 @@ export function SigninForm(props: SigninFormProps) {
 										{...field}
 									/>
 									<div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
-										<Icon
-											name="mail"
-											className="h-4 w-4 text-white/20"
-										/>
+										<Icon name="mail" className="h-4 w-4 text-white/20" />
 									</div>
 								</div>
 							</FormControl>
@@ -96,33 +93,20 @@ export function SigninForm(props: SigninFormProps) {
 										{...field}
 									/>
 									<div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
-										<Icon
-											name="lockClosed"
-											className="h-4 w-4 text-white/20"
-										/>
+										<Icon name="lockClosed" className="h-4 w-4 text-white/20" />
 									</div>
 									<button
 										className="absolute inset-y-0 end-0 flex w-10 items-center justify-center text-white/20 transition-colors duration-200 hover:text-white/50"
 										type="button"
 										onClick={toggleVisibility}
-										aria-label={
-											isVisible
-												? "Hide password"
-												: "Show password"
-										}
+										aria-label={isVisible ? "Hide password" : "Show password"}
 										aria-pressed={isVisible}
 										disabled={isSubmitting}
 									>
 										{isVisible ? (
-											<Icon
-												name="eyeOff"
-												className="h-4 w-4"
-											/>
+											<Icon name="eyeOff" className="h-4 w-4" />
 										) : (
-											<Icon
-												name="eye"
-												className="h-4 w-4"
-											/>
+											<Icon name="eye" className="h-4 w-4" />
 										)}
 									</button>
 								</div>

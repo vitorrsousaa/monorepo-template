@@ -32,7 +32,6 @@ export function SignupForm(props: SignupFormProps) {
 	const passwordValue = methods.watch("password");
 	const strength = getPasswordStrength(passwordValue ?? "");
 
-
 	return (
 		<Form {...methods}>
 			<form
@@ -199,9 +198,7 @@ export function SignupForm(props: SignupFormProps) {
 										type="button"
 										className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center border-none bg-transparent p-0 text-muted-foreground transition-colors duration-[120ms] hover:text-foreground"
 										onClick={() => setShowConfirm(!showConfirm)}
-										aria-label={
-											showConfirm ? "Hide password" : "Show password"
-										}
+										aria-label={showConfirm ? "Hide password" : "Show password"}
 										disabled={isSubmitting}
 									>
 										<Icon
@@ -223,7 +220,12 @@ export function SignupForm(props: SignupFormProps) {
 						<FormItem className="flex flex-col gap-0">
 							<div className="terms flex items-start gap-2 pt-1">
 								<FormControl>
-									<Checkbox id="agree-to-terms" checked={field.value} onCheckedChange={field.onChange} disabled={isSubmitting} />
+									<Checkbox
+										id="agree-to-terms"
+										checked={field.value}
+										onCheckedChange={field.onChange}
+										disabled={isSubmitting}
+									/>
 								</FormControl>
 								<label
 									htmlFor="agree-to-terms"

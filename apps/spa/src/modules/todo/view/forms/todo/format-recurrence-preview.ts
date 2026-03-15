@@ -2,7 +2,9 @@ import type { TRecurrenceForm } from "./todo-form.schema";
 
 const DAY_NAMES_SHORT = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-export function formatRecurrencePreview(recurrence: TRecurrenceForm | undefined): string {
+export function formatRecurrencePreview(
+	recurrence: TRecurrenceForm | undefined,
+): string {
 	if (!recurrence?.enabled || !recurrence.frequency) {
 		return "";
 	}

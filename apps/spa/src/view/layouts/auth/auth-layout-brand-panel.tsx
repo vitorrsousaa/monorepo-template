@@ -20,8 +20,8 @@ export function AuthLayoutBrandPanel() {
 					<span className="text-primary">organized.</span>
 				</h2>
 				<p className="brand-sub mb-9 max-w-[320px] text-sm leading-relaxed text-white/45">
-					Tasks, goals and projects — all in one place. Built for people who want
-					to move forward every day.
+					Tasks, goals and projects — all in one place. Built for people who
+					want to move forward every day.
 				</p>
 
 				<div className="features flex flex-col gap-3">
@@ -83,9 +83,7 @@ export function AuthLayoutBrandPanel() {
 					</div>
 				</div>
 				<p className="social-text text-xs text-white/40">
-					<strong className="font-medium text-white/70">
-						2,400+ people
-					</strong>{" "}
+					<strong className="font-medium text-white/70">2,400+ people</strong>{" "}
 					organizing their lives with LifeOS
 				</p>
 			</div>

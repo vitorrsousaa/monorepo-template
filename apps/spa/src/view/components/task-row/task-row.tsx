@@ -1,7 +1,4 @@
-import {
-	formatDueDateChip,
-	getDueDateChipStatus,
-} from "@/utils/date-utils";
+import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { cn } from "@repo/ui/utils";
 import { Calendar, Flag } from "lucide-react";
 import type { TaskRowProps, TaskRowTask } from "./task-row-types";
@@ -154,10 +151,8 @@ export function TaskRow({
 							"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
 							chipStatus === "overdue" &&
 								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-							chipStatus === "late" &&
-								"bg-destructive/10 text-destructive",
-							chipStatus === "ok" &&
-								"bg-muted text-muted-foreground",
+							chipStatus === "late" && "bg-destructive/10 text-destructive",
+							chipStatus === "ok" && "bg-muted text-muted-foreground",
 						)}
 					>
 						<Calendar className="h-3 w-3" aria-hidden />
@@ -168,12 +163,10 @@ export function TaskRow({
 					<span
 						className={cn(
 							"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-							priority === "high" &&
-								"bg-destructive/10 text-destructive",
+							priority === "high" && "bg-destructive/10 text-destructive",
 							priority === "medium" &&
 								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-							priority === "low" &&
-								"bg-primary/10 text-primary",
+							priority === "low" && "bg-primary/10 text-primary",
 						)}
 					>
 						<PriorityBarsIcon level={priority} />

@@ -4,7 +4,9 @@ import type { RouteObject } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
 const AuthLayout = lazy(() =>
-	import("@/layouts/auth/auth-layout").then((module) => ({ default: module.AuthLayout })),
+	import("@/layouts/auth/auth-layout").then((module) => ({
+		default: module.AuthLayout,
+	})),
 );
 
 const Signin = lazy(() =>
@@ -29,10 +31,5 @@ export const authRoutes: RouteObject = {
 			path: ROUTES.SIGNUP,
 			element: <Signup />,
 		},
-	]
-}
-
-
-
-
-
+	],
+};

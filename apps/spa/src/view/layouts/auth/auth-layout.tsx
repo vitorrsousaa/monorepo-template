@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { AuthLayoutBrandPanel } from "./auth-layout-brand-panel";
 
-
 export function AuthLayout() {
 	return (
 		<div className="grid min-h-svh grid-cols-1 md:grid-cols-2">

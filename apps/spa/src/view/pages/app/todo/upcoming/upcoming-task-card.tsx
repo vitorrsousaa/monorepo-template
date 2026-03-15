@@ -50,7 +50,7 @@ export function UpcomingTaskCard({ task }: UpcomingTaskCardProps) {
 			<div
 				className={cn(
 					"absolute left-0 top-2 bottom-2 w-[3px] rounded-r opacity-60",
-					STRIPE_COLORS[category]
+					STRIPE_COLORS[category],
 				)}
 				aria-hidden
 			/>
@@ -60,12 +60,18 @@ export function UpcomingTaskCard({ task }: UpcomingTaskCardProps) {
 					"mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-colors",
 					isCompleted
 						? "border-emerald-600 bg-emerald-600 text-white"
-						: "border-border bg-background"
+						: "border-border bg-background",
 				)}
 				aria-pressed={isCompleted}
 			>
 				{isCompleted && (
-					<svg width="8" height="5" viewBox="0 0 8 5" fill="none" className="text-white">
+					<svg
+						width="8"
+						height="5"
+						viewBox="0 0 8 5"
+						fill="none"
+						className="text-white"
+					>
 						<path
 							d="M1 2.5L3 4.5L7 0.5"
 							stroke="currentColor"
@@ -80,7 +86,9 @@ export function UpcomingTaskCard({ task }: UpcomingTaskCardProps) {
 				<div
 					className={cn(
 						"text-[13px] font-medium truncate",
-						isCompleted ? "line-through text-muted-foreground" : "text-foreground"
+						isCompleted
+							? "line-through text-muted-foreground"
+							: "text-foreground",
 					)}
 				>
 					{task.title}
@@ -89,7 +97,7 @@ export function UpcomingTaskCard({ task }: UpcomingTaskCardProps) {
 			<span
 				className={cn(
 					"ml-3 rounded-[4px] px-2 py-0.5 text-[11px] font-semibold",
-					TAG_STYLES[category]
+					TAG_STYLES[category],
 				)}
 			>
 				{TAG_LABELS[category]}

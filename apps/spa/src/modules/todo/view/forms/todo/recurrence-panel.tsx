@@ -1,13 +1,6 @@
-import {
-	Collapsible,
-	CollapsibleContent,
-} from "@repo/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@repo/ui/collapsible";
 import { DatePicker } from "@repo/ui/date-picker";
-import {
-	FormControl,
-	FormField,
-	FormItem,
-} from "@repo/ui/form";
+import { FormControl, FormField, FormItem } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
 import { RadioGroup, RadioGroupItem } from "@repo/ui/radio-group";
@@ -171,9 +164,15 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 																		type="button"
 																		onClick={() => {
 																			if (checked) {
-																				daysField.onChange(arr.filter((x) => x !== d.value));
+																				daysField.onChange(
+																					arr.filter((x) => x !== d.value),
+																				);
 																			} else {
-																				daysField.onChange([...arr, d.value].sort((a, b) => a - b));
+																				daysField.onChange(
+																					[...arr, d.value].sort(
+																						(a, b) => a - b,
+																					),
+																				);
 																			}
 																		}}
 																		className={cn(
@@ -208,25 +207,39 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 												<RadioGroup
 													value={endTypeField.value ?? "never"}
 													onValueChange={(v) =>
-														endTypeField.onChange(v as "never" | "on_date" | "after_count")
+														endTypeField.onChange(
+															v as "never" | "on_date" | "after_count",
+														)
 													}
 													className="flex flex-wrap gap-4 pt-1.5"
 												>
 													<div className="flex items-center gap-2">
 														<RadioGroupItem value="never" id="end-never" />
-														<Label htmlFor="end-never" className="cursor-pointer font-normal text-sm">
+														<Label
+															htmlFor="end-never"
+															className="cursor-pointer font-normal text-sm"
+														>
 															Never
 														</Label>
 													</div>
 													<div className="flex items-center gap-2">
 														<RadioGroupItem value="on_date" id="end-on-date" />
-														<Label htmlFor="end-on-date" className="cursor-pointer font-normal text-sm">
+														<Label
+															htmlFor="end-on-date"
+															className="cursor-pointer font-normal text-sm"
+														>
 															On date
 														</Label>
 													</div>
 													<div className="flex items-center gap-2">
-														<RadioGroupItem value="after_count" id="end-after" />
-														<Label htmlFor="end-after" className="cursor-pointer font-normal text-sm">
+														<RadioGroupItem
+															value="after_count"
+															id="end-after"
+														/>
+														<Label
+															htmlFor="end-after"
+															className="cursor-pointer font-normal text-sm"
+														>
 															After
 														</Label>
 													</div>
@@ -265,7 +278,9 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 																		onChange={(e) => {
 																			const v = e.target.value;
 																			countField.onChange(
-																				v === "" ? undefined : Number.parseInt(v, 10),
+																				v === ""
+																					? undefined
+																					: Number.parseInt(v, 10),
 																			);
 																		}}
 																	/>

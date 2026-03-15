@@ -18,9 +18,7 @@ import { useState } from "react";
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
 	return (
-		<h3 className="text-base font-semibold text-foreground mb-4">
-			{children}
-		</h3>
+		<h3 className="text-base font-semibold text-foreground mb-4">{children}</h3>
 	);
 }
 
@@ -92,13 +90,19 @@ export function Settings() {
 							label="Notificações por email"
 							description="Receba atualizações no seu email"
 						>
-							<Switch checked={notifs.email} onCheckedChange={() => toggleNotif("email")} />
+							<Switch
+								checked={notifs.email}
+								onCheckedChange={() => toggleNotif("email")}
+							/>
 						</SettingRow>
 						<SettingRow
 							label="Notificações push"
 							description="Notificações no navegador"
 						>
-							<Switch checked={notifs.push} onCheckedChange={() => toggleNotif("push")} />
+							<Switch
+								checked={notifs.push}
+								onCheckedChange={() => toggleNotif("push")}
+							/>
 						</SettingRow>
 
 						<div className="pt-4">
@@ -108,19 +112,28 @@ export function Settings() {
 							label="Vencimento de tarefas"
 							description="Alertas quando uma tarefa está prestes a vencer"
 						>
-							<Switch checked={notifs.tarefas} onCheckedChange={() => toggleNotif("tarefas")} />
+							<Switch
+								checked={notifs.tarefas}
+								onCheckedChange={() => toggleNotif("tarefas")}
+							/>
 						</SettingRow>
 						<SettingRow
 							label="Atualização de metas"
 							description="Acompanhamento do progresso de metas"
 						>
-							<Switch checked={notifs.metas} onCheckedChange={() => toggleNotif("metas")} />
+							<Switch
+								checked={notifs.metas}
+								onCheckedChange={() => toggleNotif("metas")}
+							/>
 						</SettingRow>
 						<SettingRow
 							label="Resumo semanal"
 							description="Resumo de produtividade toda segunda-feira"
 						>
-							<Switch checked={notifs.resumo} onCheckedChange={() => toggleNotif("resumo")} />
+							<Switch
+								checked={notifs.resumo}
+								onCheckedChange={() => toggleNotif("resumo")}
+							/>
 						</SettingRow>
 					</div>
 				</TabsContent>
@@ -158,7 +171,10 @@ export function Settings() {
 								Ativar 2FA
 							</Button>
 						</SettingRow>
-						<SettingRow label="Sessões ativas" description="1 dispositivo logado">
+						<SettingRow
+							label="Sessões ativas"
+							description="1 dispositivo logado"
+						>
 							<Button variant="outline" size="sm">
 								Gerenciar
 							</Button>

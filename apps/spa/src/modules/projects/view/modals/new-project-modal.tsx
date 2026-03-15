@@ -127,9 +127,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 										<span
 											className="absolute inset-[-3px] rounded-full border-2 border-transparent transition-colors"
 											style={
-												isActive
-													? { borderColor: option.solid }
-													: undefined
+												isActive ? { borderColor: option.solid } : undefined
 											}
 										/>
 										{isActive && (

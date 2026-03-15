@@ -162,7 +162,9 @@ function FaqAccordion({ category }: { category: FaqCategory }) {
 				<div className="flex items-center justify-center w-7 h-7 rounded-lg bg-accent">
 					<Icon className="w-3.5 h-3.5 text-accent-foreground" />
 				</div>
-				<span className="text-sm font-semibold text-foreground">{category.label}</span>
+				<span className="text-sm font-semibold text-foreground">
+					{category.label}
+				</span>
 			</div>
 
 			<div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
@@ -172,7 +174,9 @@ function FaqAccordion({ category }: { category: FaqCategory }) {
 							onClick={() => setOpenIndex(openIndex === i ? null : i)}
 							className="flex items-center justify-between w-full px-4 py-3.5 text-left hover:bg-muted/50 transition-colors"
 						>
-							<span className="text-sm font-medium text-foreground pr-4">{item.question}</span>
+							<span className="text-sm font-medium text-foreground pr-4">
+								{item.question}
+							</span>
 							{openIndex === i ? (
 								<ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
 							) : (
@@ -181,7 +185,9 @@ function FaqAccordion({ category }: { category: FaqCategory }) {
 						</button>
 						{openIndex === i && (
 							<div className="px-4 pb-4 pt-1 bg-muted/30">
-								<p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+								<p className="text-sm text-muted-foreground leading-relaxed">
+									{item.answer}
+								</p>
 							</div>
 						)}
 					</div>
@@ -196,7 +202,8 @@ function StatusBadge({ status }: { status: Ticket["status"] }) {
 		aberto: {
 			label: "Aberto",
 			icon: Clock,
-			className: "bg-amber-500/15 text-amber-700 dark:text-amber-200 border-amber-500/30",
+			className:
+				"bg-amber-500/15 text-amber-700 dark:text-amber-200 border-amber-500/30",
 		},
 		"em-andamento": {
 			label: "Em andamento",
@@ -206,7 +213,8 @@ function StatusBadge({ status }: { status: Ticket["status"] }) {
 		resolvido: {
 			label: "Resolvido",
 			icon: CheckCircle2,
-			className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-200 border-emerald-500/30",
+			className:
+				"bg-emerald-500/15 text-emerald-700 dark:text-emerald-200 border-emerald-500/30",
 		},
 	};
 	const { label, icon: Icon, className } = map[status];
@@ -226,7 +234,9 @@ function StatusBadge({ status }: { status: Ticket["status"] }) {
 // ---------- Componente principal ----------
 export function Support() {
 	const [faqSearch, setFaqSearch] = useState("");
-	const [activeSection, setActiveSection] = useState<"faq" | "contato" | "chamados">("faq");
+	const [activeSection, setActiveSection] = useState<
+		"faq" | "contato" | "chamados"
+	>("faq");
 	const [formSent, setFormSent] = useState(false);
 	const [formData, setFormData] = useState({
 		subject: "",
@@ -236,15 +246,15 @@ export function Support() {
 
 	const filteredCategories = faqSearch.trim()
 		? faqCategories
-			.map((cat) => ({
-				...cat,
-				items: cat.items.filter(
-					(item) =>
-						item.question.toLowerCase().includes(faqSearch.toLowerCase()) ||
-						item.answer.toLowerCase().includes(faqSearch.toLowerCase()),
-				),
-			}))
-			.filter((cat) => cat.items.length > 0)
+				.map((cat) => ({
+					...cat,
+					items: cat.items.filter(
+						(item) =>
+							item.question.toLowerCase().includes(faqSearch.toLowerCase()) ||
+							item.answer.toLowerCase().includes(faqSearch.toLowerCase()),
+					),
+				}))
+				.filter((cat) => cat.items.length > 0)
 		: faqCategories;
 
 	const handleSend = () => {
@@ -298,13 +308,20 @@ export function Support() {
 						<div
 							className={cn(
 								"flex items-center justify-center w-8 h-8 rounded-lg",
-								activeSection === id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+								activeSection === id
+									? "bg-primary text-primary-foreground"
+									: "bg-muted text-muted-foreground",
 							)}
 						>
 							<Icon className="w-4 h-4" />
 						</div>
 						<div>
-							<p className={cn("text-sm font-semibold", activeSection === id ? "text-primary" : "text-foreground")}>
+							<p
+								className={cn(
+									"text-sm font-semibold",
+									activeSection === id ? "text-primary" : "text-foreground",
+								)}
+							>
 								{label}
 							</p>
 							<p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
@@ -330,7 +347,9 @@ export function Support() {
 					{filteredCategories.length === 0 ? (
 						<div className="flex flex-col items-center justify-center py-12 text-center">
 							<Lightbulb className="w-10 h-10 text-muted-foreground/40 mb-3" />
-							<p className="text-sm font-medium text-foreground">Nenhum resultado encontrado</p>
+							<p className="text-sm font-medium text-foreground">
+								Nenhum resultado encontrado
+							</p>
 							<p className="text-xs text-muted-foreground mt-1">
 								Tente outros termos ou abra um chamado
 							</p>
@@ -352,7 +371,6 @@ export function Support() {
 					)}
 
 					<Separator />
-
 				</div>
 			)}
 
@@ -364,7 +382,9 @@ export function Support() {
 							<div className="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/15 mb-4">
 								<CheckCircle2 className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
 							</div>
-							<h3 className="text-base font-semibold text-foreground">Chamado enviado!</h3>
+							<h3 className="text-base font-semibold text-foreground">
+								Chamado enviado!
+							</h3>
 							<p className="text-sm text-muted-foreground mt-1.5 max-w-xs">
 								Nossa equipe responderá em até 24 horas no email da sua conta.
 							</p>
@@ -390,7 +410,9 @@ export function Support() {
 					) : (
 						<>
 							<div>
-								<h3 className="text-base font-semibold text-foreground">Novo chamado</h3>
+								<h3 className="text-base font-semibold text-foreground">
+									Novo chamado
+								</h3>
 								<p className="text-sm text-muted-foreground mt-0.5">
 									Descreva o seu problema ou dúvida com o máximo de detalhes
 								</p>
@@ -404,14 +426,18 @@ export function Support() {
 											id="ticket-subject"
 											placeholder="Descreva brevemente o problema"
 											value={formData.subject}
-											onChange={(e) => setFormData((f) => ({ ...f, subject: e.target.value }))}
+											onChange={(e) =>
+												setFormData((f) => ({ ...f, subject: e.target.value }))
+											}
 										/>
 									</div>
 									<div className="space-y-1.5">
 										<Label htmlFor="ticket-category">Categoria</Label>
 										<Select
 											value={formData.category}
-											onValueChange={(v) => setFormData((f) => ({ ...f, category: v }))}
+											onValueChange={(v) =>
+												setFormData((f) => ({ ...f, category: v }))
+											}
 										>
 											<SelectTrigger id="ticket-category">
 												<SelectValue placeholder="Selecione..." />
@@ -450,7 +476,9 @@ export function Support() {
 										placeholder="Descreva detalhadamente: o que aconteceu, em qual tela, quais passos realizou..."
 										rows={5}
 										value={formData.message}
-										onChange={(e) => setFormData((f) => ({ ...f, message: e.target.value }))}
+										onChange={(e) =>
+											setFormData((f) => ({ ...f, message: e.target.value }))
+										}
 									/>
 									<p className="text-xs text-muted-foreground">
 										{formData.message.length}/2000 caracteres
@@ -460,11 +488,17 @@ export function Support() {
 								<div className="flex items-center justify-between pt-1">
 									<p className="text-xs text-muted-foreground">
 										Tempo médio de resposta:{" "}
-										<span className="font-medium text-foreground">2–4 horas</span>
+										<span className="font-medium text-foreground">
+											2–4 horas
+										</span>
 									</p>
 									<Button
 										onClick={handleSend}
-										disabled={!formData.subject || !formData.category || !formData.message}
+										disabled={
+											!formData.subject ||
+											!formData.category ||
+											!formData.message
+										}
 										className="gap-2"
 									>
 										<Send className="w-3.5 h-3.5" />
@@ -482,8 +516,14 @@ export function Support() {
 				<div className="space-y-4">
 					<div className="bg-card border border-border rounded-xl overflow-hidden">
 						<div className="px-5 py-4 border-b border-border flex items-center justify-between">
-							<h3 className="text-sm font-semibold text-foreground">Chamados recentes</h3>
-							<Button size="sm" variant="outline" onClick={() => setActiveSection("contato")}>
+							<h3 className="text-sm font-semibold text-foreground">
+								Chamados recentes
+							</h3>
+							<Button
+								size="sm"
+								variant="outline"
+								onClick={() => setActiveSection("contato")}
+							>
 								Novo chamado
 							</Button>
 						</div>
@@ -491,7 +531,9 @@ export function Support() {
 						{mockTickets.length === 0 ? (
 							<div className="flex flex-col items-center justify-center py-10 text-center px-4">
 								<Mail className="w-8 h-8 text-muted-foreground/40 mb-3" />
-								<p className="text-sm font-medium text-foreground">Nenhum chamado encontrado</p>
+								<p className="text-sm font-medium text-foreground">
+									Nenhum chamado encontrado
+								</p>
 								<p className="text-xs text-muted-foreground mt-1">
 									Abra um chamado para falar com nosso suporte
 								</p>
@@ -505,14 +547,22 @@ export function Support() {
 									>
 										<div className="space-y-1 min-w-0">
 											<div className="flex items-center gap-2 flex-wrap">
-												<span className="text-xs font-mono text-muted-foreground">{ticket.id}</span>
-												<Badge variant="outline" className="text-xs px-1.5 py-0 h-5">
+												<span className="text-xs font-mono text-muted-foreground">
+													{ticket.id}
+												</span>
+												<Badge
+													variant="outline"
+													className="text-xs px-1.5 py-0 h-5"
+												>
 													{ticket.category}
 												</Badge>
 											</div>
-											<p className="text-sm font-medium text-foreground truncate">{ticket.subject}</p>
+											<p className="text-sm font-medium text-foreground truncate">
+												{ticket.subject}
+											</p>
 											<p className="text-xs text-muted-foreground">
-												Aberto em {ticket.createdAt} · Atualizado: {ticket.lastUpdate}
+												Aberto em {ticket.createdAt} · Atualizado:{" "}
+												{ticket.lastUpdate}
 											</p>
 										</div>
 										<StatusBadge status={ticket.status} />
@@ -528,13 +578,22 @@ export function Support() {
 							<Mail className="w-4 h-4 text-primary" />
 						</div>
 						<div className="flex-1 min-w-0">
-							<p className="text-sm font-semibold text-foreground">Contato direto por email</p>
+							<p className="text-sm font-semibold text-foreground">
+								Contato direto por email
+							</p>
 							<p className="text-xs text-muted-foreground mt-0.5">
 								Para assuntos urgentes ou de cobrança, envie um email para{" "}
-								<span className="font-medium text-foreground">suporte@lifeos.app</span>
+								<span className="font-medium text-foreground">
+									suporte@lifeos.app
+								</span>
 							</p>
 						</div>
-						<Button variant="outline" size="sm" className="shrink-0 gap-1.5" asChild>
+						<Button
+							variant="outline"
+							size="sm"
+							className="shrink-0 gap-1.5"
+							asChild
+						>
 							<a href="mailto:suporte@lifeos.app">
 								<ExternalLink className="w-3.5 h-3.5" />
 								Enviar email

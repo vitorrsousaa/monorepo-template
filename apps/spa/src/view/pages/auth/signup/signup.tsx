@@ -5,16 +5,12 @@ import { Button } from "@repo/ui/button";
 import { Icon } from "@repo/ui/icon";
 import { useNavigate } from "react-router-dom";
 
-
 export function Signup() {
-
 	const navigate = useNavigate();
-
 
 	const handleNavigateToSignin = () => {
 		navigate(ROUTES.SIGNIN);
 	};
-
 
 	const handleSubmit = async (data: TSignupFormSchema) => {
 		console.log(data);
@@ -29,11 +25,7 @@ export function Signup() {
 				</h1>
 			</div>
 
-			<Button
-				type="button"
-				variant="outline"
-				className="mb-5 w-full "
-			>
+			<Button type="button" variant="outline" className="mb-5 w-full ">
 				<Icon name="google" className="h-4 w-4" />
 				Continue with Google
 			</Button>

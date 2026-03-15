@@ -43,11 +43,18 @@ function StatCard({
 }) {
 	return (
 		<div className="bg-card border border-border rounded-xl p-5 flex items-center gap-4">
-			<div className={cn("flex items-center justify-center w-11 h-11 rounded-xl shrink-0", color)}>
+			<div
+				className={cn(
+					"flex items-center justify-center w-11 h-11 rounded-xl shrink-0",
+					color,
+				)}
+			>
 				<Icon className="w-5 h-5" />
 			</div>
 			<div>
-				<p className="text-2xl font-bold text-foreground leading-none">{value}</p>
+				<p className="text-2xl font-bold text-foreground leading-none">
+					{value}
+				</p>
 				<p className="text-xs text-muted-foreground mt-1">{label}</p>
 			</div>
 		</div>
@@ -233,7 +240,12 @@ export function Profile() {
 						<div className="flex items-center gap-2 pb-1">
 							{editing ? (
 								<>
-									<Button size="sm" variant="ghost" onClick={handleCancel} className="gap-1.5">
+									<Button
+										size="sm"
+										variant="ghost"
+										onClick={handleCancel}
+										className="gap-1.5"
+									>
 										<X className="w-3.5 h-3.5" />
 										Cancelar
 									</Button>
@@ -342,25 +354,35 @@ export function Profile() {
 				<div className="lg:col-span-2 space-y-6">
 					<div className="bg-card border border-border rounded-xl p-5 space-y-4">
 						<div className="flex items-center justify-between">
-							<h3 className="text-base font-semibold text-foreground">Atividade recente</h3>
+							<h3 className="text-base font-semibold text-foreground">
+								Atividade recente
+							</h3>
 							<div className="flex items-center gap-2 text-xs text-muted-foreground">
 								<span className="flex items-center gap-1">
-									<span className="w-3 h-3 rounded-sm bg-muted inline-block" /> Sem atividade
+									<span className="w-3 h-3 rounded-sm bg-muted inline-block" />{" "}
+									Sem atividade
 								</span>
 								<span className="flex items-center gap-1">
-									<span className="w-3 h-3 rounded-sm bg-primary inline-block" /> Ativo
+									<span className="w-3 h-3 rounded-sm bg-primary inline-block" />{" "}
+									Ativo
 								</span>
 							</div>
 						</div>
 						<ActivityGrid completedDates={completedDates} />
-						<p className="text-xs text-muted-foreground">Exibindo os últimos 70 dias</p>
+						<p className="text-xs text-muted-foreground">
+							Exibindo os últimos 70 dias
+						</p>
 					</div>
 
 					{/* Progresso de Metas */}
 					<div className="bg-card border border-border rounded-xl p-5 space-y-4">
-						<h3 className="text-base font-semibold text-foreground">Progresso das metas</h3>
+						<h3 className="text-base font-semibold text-foreground">
+							Progresso das metas
+						</h3>
 						{goalsWithProgress.length === 0 ? (
-							<p className="text-sm text-muted-foreground">Nenhuma meta criada ainda.</p>
+							<p className="text-sm text-muted-foreground">
+								Nenhuma meta criada ainda.
+							</p>
 						) : (
 							<div className="space-y-4">
 								{goalsWithProgress.map((g) => (
@@ -368,9 +390,13 @@ export function Profile() {
 										<div className="flex items-center justify-between">
 											<div className="flex items-center gap-2">
 												<span className="text-base">{g.emoji}</span>
-												<span className="text-sm font-medium text-foreground">{g.name}</span>
+												<span className="text-sm font-medium text-foreground">
+													{g.name}
+												</span>
 											</div>
-											<span className="text-xs font-semibold text-primary">{g.percent}%</span>
+											<span className="text-xs font-semibold text-primary">
+												{g.percent}%
+											</span>
 										</div>
 										<div className="h-2 bg-muted rounded-full overflow-hidden">
 											<div
@@ -391,7 +417,9 @@ export function Profile() {
 				{/* Conquistas */}
 				<div className="space-y-6">
 					<div className="bg-card border border-border rounded-xl p-5 space-y-4">
-						<h3 className="text-base font-semibold text-foreground">Conquistas</h3>
+						<h3 className="text-base font-semibold text-foreground">
+							Conquistas
+						</h3>
 						<div className="space-y-3">
 							{BADGES.map((b) => {
 								const Icon = b.icon;
@@ -408,7 +436,9 @@ export function Profile() {
 										<div
 											className={cn(
 												"flex items-center justify-center w-9 h-9 rounded-lg shrink-0",
-												b.earned ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground",
+												b.earned
+													? "bg-primary/15 text-primary"
+													: "bg-muted text-muted-foreground",
 											)}
 										>
 											<Icon className="w-4 h-4" />
@@ -417,12 +447,16 @@ export function Profile() {
 											<p
 												className={cn(
 													"text-sm font-medium",
-													b.earned ? "text-foreground" : "text-muted-foreground",
+													b.earned
+														? "text-foreground"
+														: "text-muted-foreground",
 												)}
 											>
 												{b.label}
 											</p>
-											<p className="text-xs text-muted-foreground truncate">{b.description}</p>
+											<p className="text-xs text-muted-foreground truncate">
+												{b.description}
+											</p>
 										</div>
 										{b.earned && (
 											<CheckCircle2 className="w-4 h-4 text-primary shrink-0 ml-auto" />
@@ -435,21 +469,31 @@ export function Profile() {
 
 					{/* Projetos recentes */}
 					<div className="bg-card border border-border rounded-xl p-5 space-y-3">
-						<h3 className="text-base font-semibold text-foreground">Projetos</h3>
+						<h3 className="text-base font-semibold text-foreground">
+							Projetos
+						</h3>
 						{allProjects.length === 0 ? (
-							<p className="text-sm text-muted-foreground">Nenhum projeto ainda.</p>
+							<p className="text-sm text-muted-foreground">
+								Nenhum projeto ainda.
+							</p>
 						) : (
 							<div className="space-y-2">
 								{allProjects.map((p) => {
-									const projectTasks = allTasks.filter((t) => t.projectId === p.id);
+									const projectTasks = allTasks.filter(
+										(t) => t.projectId === p.id,
+									);
 									const count = projectTasks.length;
-									const done = projectTasks.filter((t) => t.status === "concluida").length;
+									const done = projectTasks.filter(
+										(t) => t.status === "concluida",
+									).length;
 									const pct = count > 0 ? Math.round((done / count) * 100) : 0;
 									return (
 										<div key={p.id} className="flex items-center gap-3">
 											<span className="text-lg leading-none">{p.emoji}</span>
 											<div className="flex-1 min-w-0">
-												<p className="text-sm font-medium text-foreground truncate">{p.name}</p>
+												<p className="text-sm font-medium text-foreground truncate">
+													{p.name}
+												</p>
 												<div className="flex items-center gap-2 mt-1">
 													<div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
 														<div
@@ -457,7 +501,9 @@ export function Profile() {
 															style={{ width: `${pct}%` }}
 														/>
 													</div>
-													<span className="text-xs text-muted-foreground shrink-0">{pct}%</span>
+													<span className="text-xs text-muted-foreground shrink-0">
+														{pct}%
+													</span>
 												</div>
 											</div>
 										</div>

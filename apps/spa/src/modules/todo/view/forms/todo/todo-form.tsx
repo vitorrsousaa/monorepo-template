@@ -38,11 +38,7 @@ const sidebarLabelClass =
 	"text-[10px] font-semibold uppercase tracking-wide text-muted-foreground";
 
 export function TodoForm(props: TodoFormProps) {
-	const {
-		onCancel,
-		mode,
-		metadata,
-	} = props;
+	const { onCancel, mode, metadata } = props;
 
 	const {
 		methods,
@@ -147,7 +143,10 @@ export function TodoForm(props: TodoFormProps) {
 							render={({ field }) => (
 								<FormItem>
 									<label className={sidebarLabelClass}>Project</label>
-									<Select value={field.value} onValueChange={handleProjectChange}>
+									<Select
+										value={field.value}
+										onValueChange={handleProjectChange}
+									>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
 												<SelectValue placeholder="Select project" />
@@ -285,7 +284,9 @@ export function TodoForm(props: TodoFormProps) {
 									<label className={sidebarLabelClass}>Goal</label>
 									<Select
 										value={field.value ?? "none"}
-										onValueChange={(v) => field.onChange(v === "none" ? undefined : v)}
+										onValueChange={(v) =>
+											field.onChange(v === "none" ? undefined : v)
+										}
 									>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
@@ -312,30 +313,37 @@ export function TodoForm(props: TodoFormProps) {
 						/>
 
 						{/* Metadata (edit mode only) */}
-						{mode === "edit" && (metadata?.createdAt || metadata?.updatedAt) && (
-							<div className="pt-4 border-t border-border space-y-0.5">
-								{metadata.createdAt && (
-									<p className="text-[11px] text-muted-foreground">
-										Created{" "}
-										{new Date(metadata.createdAt).toLocaleDateString("en-US", {
-											month: "short",
-											day: "numeric",
-											year: "numeric",
-										})}
-									</p>
-								)}
-								{metadata.updatedAt && (
-									<p className="text-[11px] text-muted-foreground">
-										Updated{" "}
-										{new Date(metadata.updatedAt).toLocaleDateString("en-US", {
-											month: "short",
-											day: "numeric",
-											year: "numeric",
-										})}
-									</p>
-								)}
-							</div>
-						)}
+						{mode === "edit" &&
+							(metadata?.createdAt || metadata?.updatedAt) && (
+								<div className="pt-4 border-t border-border space-y-0.5">
+									{metadata.createdAt && (
+										<p className="text-[11px] text-muted-foreground">
+											Created{" "}
+											{new Date(metadata.createdAt).toLocaleDateString(
+												"en-US",
+												{
+													month: "short",
+													day: "numeric",
+													year: "numeric",
+												},
+											)}
+										</p>
+									)}
+									{metadata.updatedAt && (
+										<p className="text-[11px] text-muted-foreground">
+											Updated{" "}
+											{new Date(metadata.updatedAt).toLocaleDateString(
+												"en-US",
+												{
+													month: "short",
+													day: "numeric",
+													year: "numeric",
+												},
+											)}
+										</p>
+									)}
+								</div>
+							)}
 					</div>
 				</div>
 

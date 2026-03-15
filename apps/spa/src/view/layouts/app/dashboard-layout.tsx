@@ -41,7 +41,7 @@ export function DashboardLayout() {
 							variant="outline"
 							size="icon"
 							className="text-muted-foreground hover:text-foreground"
-							onClick={() => { }}
+							onClick={() => {}}
 						>
 							<Bell className="h-4 w-4" />
 							<span className="sr-only">Notificações</span>
