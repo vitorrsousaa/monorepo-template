@@ -144,31 +144,67 @@ export function useGetProjects() {
 }
 ```
 
+## Mutation hook pattern
+
+Ao criar uma mutation, seguir o padrão de `apps/spa/src/modules/auth/app/hooks/use-signup.ts`:
+
+1. **mutationFn**: apontar para o service do módulo (ex.: `signup as signupService`).
+2. **Retorno**: devolver um objeto com nomes explícitos para evitar conflitos em componentes que usam vários hooks:
+   - **ação**: `mutate` exposto com nome do verbo (ex.: `signup`, `createProject`).
+   - **ação assíncrona**: `mutateAsync` com sufixo `Async` (ex.: `signupAsync`).
+   - **estado**: prefixar com o nome da ação — ex.: `isSignupPending`, `isSignupError` (evita colisão com outros hooks).
+
+```typescript
+// ✅ GOOD - Padrão de mutation (referência: modules/auth/app/hooks/use-signup.ts)
+import { useMutation } from "@tanstack/react-query";
+import { signup as signupService } from "@/modules/auth/app/services/signup";
+
+export function useSignup() {
+	const { mutate, mutateAsync, isPending, isError } = useMutation({
+		mutationFn: signupService,
+	});
+
+	return {
+		isSignupPending: isPending,
+		isSignupError: isError,
+		signup: mutate,
+		signupAsync: mutateAsync,
+	};
+}
+```
+
+Quando a mutation afetar cache, adicionar `onSuccess` (ou `onSettled`) com `queryClient.invalidateQueries` (ver secção abaixo). Para optimistic updates, usar `onMutate` / `onError` / `onSettled`.
+
 ## Manual Cache Invalidation
 
-Invalidate cache after mutations:
+Invalidate cache after mutations quando a mutation alterar dados que estão em cache:
 
 ```typescript
 // ✅ GOOD - Invalidate related queries after mutation
 export function useCreateProject() {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
+	const { mutate, mutateAsync, isPending, isError } = useMutation({
+		mutationFn: createProject,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: QUERY_KEYS.PROJECTS.ALL,
+			});
+		},
+	});
 
-  return useMutation({
-    mutationFn: createProject,
-    onSuccess: () => {
-      // Invalidate projects list to refetch
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.PROJECTS.ALL,
-      });
-    },
-  });
+	return {
+		createProject: mutate,
+		createProjectAsync: mutateAsync,
+		isCreateProjectPending: isPending,
+		isCreateProjectError: isError,
+	};
 }
 
-// ✅ GOOD - Optimistic updates
+// ✅ GOOD - Optimistic updates (quando precisar de UI instantânea + rollback)
 export function useUpdateProject() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: updateProject,
     onMutate: async (newProject) => {
       // Cancel outgoing refetches
@@ -186,7 +222,6 @@ export function useUpdateProject() {
         QUERY_KEYS.PROJECTS.DETAIL(newProject.id),
         newProject
       );
-
       return { previousProject };
     },
     onError: (err, newProject, context) => {
@@ -203,6 +238,13 @@ export function useUpdateProject() {
       });
     },
   });
+
+  return {
+    updateProject: mutation.mutate,
+    updateProjectAsync: mutation.mutateAsync,
+    isUpdateProjectPending: mutation.isPending,
+    isUpdateProjectError: mutation.isError,
+  };
 }
 ```
 
