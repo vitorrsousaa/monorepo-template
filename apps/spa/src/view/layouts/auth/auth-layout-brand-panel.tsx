@@ -3,7 +3,16 @@ import { GoalIcon, LayoutDashboardIcon } from "lucide-react";
 
 export function AuthLayoutBrandPanel() {
 	return (
-		<div className="brand-panel relative flex min-h-svh flex-col justify-between overflow-hidden bg-zinc-900 px-8 py-12 before:pointer-events-none before:absolute before:inset-0 before:content-[''] md:px-12">
+		<div className="brand-panel relative flex min-h-svh flex-col justify-between overflow-hidden bg-zinc-900 px-8 py-12 md:px-12">
+			<div
+				className="pointer-events-none absolute inset-0 z-0"
+				aria-hidden
+				style={{
+					backgroundImage:
+						"radial-gradient(circle, rgba(127,119,221,0.12) 1px, transparent 1px)",
+					backgroundSize: "28px 28px",
+				}}
+			/>
 			<div className="brand-logo relative z-10 flex items-center gap-2.5">
 				<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold tracking-tight text-primary-foreground">
 					L
