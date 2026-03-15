@@ -20,7 +20,7 @@ httpClient.interceptors.request.use((config) => {
 });
 
 httpClient.interceptors.request.use((config) => {
-	config.headers.set("Access-Control-Allow-Origin", "https://app.grypp.com.br");
+	// config.headers.set("Access-Control-Allow-Origin", "https://localhost:5173");
 	config.headers["Content-Type"] = "application/json";
 
 	return config;
