@@ -1,0 +1,116 @@
+---
+description: Repository protocols in data/protocols use entities from @repo/contracts; interface + JSDoc pattern
+globs: apps/api/src/data/protocols/**/*.ts
+alwaysApply: false
+---
+
+# Data Protocols — Repositories e interfaces
+
+Ao criar ou editar arquivos em `src/data/protocols/` (repositories, mappers, providers), siga o padrão abaixo. **Referência de implementação:** `src/data/protocols/auth/user-repository.ts`.
+
+## Regra principal: entidade do pacote contracts
+
+As interfaces de repositório devem usar **sempre** o tipo da entidade que vem de `@repo/contracts`. Não use entidades de `@core/domain` nos protocolos novos — o contrato é a fonte de verdade para a forma dos dados na API.
+
+- **Importar:** `import type { Entity } from "@repo/contracts/<domain>/<entity>";`
+- **Nome da interface:** `I{Entity}Repository` (ex.: `IUserRepository`, `ITaskRepository`).
+- **Métodos:** recebem e retornam a entidade (ou `Omit<Entity, "createdAt" | "updatedAt">` para create, conforme necessário). Nunca expor DTOs de resposta HTTP no repositório; o repositório fala em entidade do contrato.
+
+## Estrutura do arquivo de repository
+
+1. Import do tipo da entidade de `@repo/contracts`.
+2. Bloco JSDoc na interface explicando que é agnóstico de banco e que retorna entidades, não DTOs.
+3. Métodos com JSDoc quando fizer sentido (`@param`, `@returns`).
+
+## Exemplo — O que fazer
+
+```typescript
+// src/data/protocols/auth/user-repository.ts
+
+import type { User } from "@repo/contracts/auth/user";
+
+/**
+ * IUserRepository
+ *
+ * Database-agnostic interface for User data access.
+ * Defines all operations needed for User management.
+ *
+ * This interface abstracts persistence technology (DynamoDB, etc).
+ * Repositories should return domain entities only, never DTOs.
+ */
+export interface IUserRepository {
+	/**
+	 * Create a new user (e.g. after Cognito signup).
+	 * @param data - User data (id from Cognito sub, email, name; no timestamps)
+	 * @returns Created user with generated createdAt/updatedAt
+	 */
+	create(
+		data: Omit<User, "createdAt" | "updatedAt" | "deletedAt">,
+	): Promise<User>;
+}
+```
+
+Outro exemplo (múltiplos métodos):
+
+```typescript
+import type { TaskDto } from "@repo/contracts/tasks/dto";
+
+/**
+ * ITaskRepository
+ *
+ * Database-agnostic interface for Task data access.
+ * Uses TaskDto from contracts as the canonical entity shape.
+ */
+export interface ITaskRepository {
+	getById(id: string, userId: string): Promise<TaskDto | null>;
+
+	create(
+		data: Omit<TaskDto, "id" | "createdAt" | "updatedAt">,
+	): Promise<TaskDto>;
+}
+```
+
+## Exemplo — O que NÃO fazer
+
+```typescript
+// ❌ ERRADO — usar entidade do core/domain em protocolo novo
+import type { Project } from "@core/domain/project/project";
+
+export interface IProjectRepository {
+	getAllProjectsByUser(userId: string): Promise<Project[]>;
+}
+```
+
+```typescript
+// ❌ ERRADO — retornar DTO de resposta HTTP no repositório
+import type { GetTodayTasksResponse } from "@repo/contracts/tasks/today";
+
+export interface ITaskRepository {
+	findToday(userId: string): Promise<GetTodayTasksResponse>; // DTO de rota, não entidade
+}
+```
+
+```typescript
+// ❌ ERRADO — interface sem JSDoc e sem tipo do contracts
+export interface IUserRepository {
+	create(data: any): Promise<any>;
+}
+```
+
+```typescript
+// ❌ ERRADO — nome da interface fora do padrão
+export interface UserRepository { }   // falta o "I" de interface
+export interface UserRepo { }         // use IUserRepository
+```
+
+## Resumo
+
+| Item | Fazer | Não fazer |
+|------|--------|------------|
+| Tipo da entidade | `@repo/contracts/<domain>/<entity>` ou `@repo/contracts/<domain>/dto` | `@core/domain/...` em código novo |
+| Nome da interface | `I{Entity}Repository` | `{Entity}Repository`, `I{Entity}Repo` |
+| Retorno dos métodos | Entidade do contrato (ex.: `User`, `TaskDto`) | DTO de resposta de rota (ex.: `GetTodayTasksResponse`) |
+| Documentação | JSDoc na interface e nos métodos relevantes | Interface sem descrição |
+| Create | `Omit<Entity, "id" \| "createdAt" \| ...">` conforme contrato | `any` ou tipo local duplicado |
+
+Esta regra aplica-se ao criar ou modificar qualquer arquivo em `apps/api/src/data/protocols/`.
