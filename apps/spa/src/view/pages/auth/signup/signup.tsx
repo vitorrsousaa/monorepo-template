@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 export function Signup() {
 	const navigate = useNavigate();
 
-	const { signupAsync, isSignupPending, isSignupError } = useSignup();
+	const { signupAsync, isSignupPending } = useSignup();
 
 	const handleNavigateToSignin = () => {
 		navigate(ROUTES.SIGNIN);
@@ -28,9 +28,6 @@ export function Signup() {
 				toast.error("Failed to signup");
 			}
 		}
-
-
-
 	};
 
 	return (
@@ -41,7 +38,12 @@ export function Signup() {
 				</h1>
 			</div>
 
-			<Button type="button" variant="outline" className="mb-5 w-full " disabled={isSignupPending}>
+			<Button
+				type="button"
+				variant="outline"
+				className="mb-5 w-full "
+				disabled={isSignupPending}
+			>
 				<Icon name="google" className="h-4 w-4" />
 				Continue with Google
 			</Button>

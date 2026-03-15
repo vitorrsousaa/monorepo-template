@@ -6,10 +6,10 @@ export function useSignup() {
 		mutationFn: signupService,
 	});
 
-	return {	
+	return {
 		isSignupPending: isPending,
 		isSignupError: isError,
 		signup: mutate,
-		signupAsync:mutateAsync,
+		signupAsync: mutateAsync,
 	};
 }
