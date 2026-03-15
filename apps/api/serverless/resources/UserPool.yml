@@ -18,7 +18,7 @@ Resources:
           RequireUppercase: true
           RequireLowercase: true
           RequireNumbers: true
-          RequireSymbols: true
+          RequireSymbols: false
       Schema:
         - AttributeDataType: String
           Name: given_name
