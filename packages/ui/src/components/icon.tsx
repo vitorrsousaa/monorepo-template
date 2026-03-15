@@ -1,4 +1,5 @@
 import {
+	ArrowPathIcon,
 	ArrowRightEndOnRectangleIcon,
 	ArrowTrendingDownIcon,
 	ArrowTrendingUpIcon,
@@ -7,6 +8,7 @@ import {
 	CalendarDaysIcon,
 	CalendarIcon,
 	ChartBarIcon,
+	ChartBarSquareIcon,
 	CheckBadgeIcon,
 	ChevronRightIcon,
 	ChevronUpDownIcon,
@@ -50,6 +52,7 @@ const icons = {
 	chevronUpDown: ChevronUpDownIcon,
 	creditCard: CreditCardIcon,
 	sparkles: SparklesIcon,
+	chartBarSquare: ChartBarSquareIcon,
 	folder: FolderIcon,
 	arrowUturnRight: ArrowUturnRightIcon,
 	ellipsisHorizontal: EllipsisHorizontalIcon,
@@ -70,6 +73,7 @@ const icons = {
 	arrowTrendingDown: ArrowTrendingDownIcon,
 	calendarDays: CalendarDaysIcon,
 	chartBar: ChartBarIcon,
+	arrowPath: ArrowPathIcon,
 } as const;
 
 export function Icon(props: IconProps) {
