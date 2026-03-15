@@ -15,7 +15,7 @@ import {
 const router = createBrowserRouter([
 	{
 		element: <AuthGuard isPrivate={false} />,
-		children: authRoutes,
+		children: [authRoutes],
 	},
 	{
 		path: "/",
