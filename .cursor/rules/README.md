@@ -2,7 +2,7 @@
 
 This folder contains Cursor AI rules that provide persistent guidance and enforce coding standards across the project.
 
-## 📋 Available Rules
+## 📋 Available Rules (root)
 
 ### 1. **project-standards.mdc** (Always Active)
 Core project standards that apply to all files:
@@ -12,23 +12,7 @@ Core project standards that apply to all files:
 - Component patterns
 - Error handling guidelines
 
-### 2. **import-standards.mdc** (TypeScript/TSX files)
-Import path standards:
-- Always use `@` aliases instead of relative paths
-- Lists all available path aliases
-- Examples of good vs bad imports
-- Migration guide
-
-### 3. **react-patterns.mdc** (React files)
-React and Next.js specific patterns:
-- Functional components only
-- RenderIf component for conditional rendering
-- React Query for server state
-- Loading and error state patterns
-- Component organization guidelines
-- Props and event handler best practices
-
-### 4. **clean-architecture.mdc** (API and SPA modules)
+### 2. **clean-architecture.mdc** (API and SPA modules)
 Clean Architecture principles:
 - Layer separation (Domain, Application, Infrastructure)
 - Module structure for API and SPA
@@ -36,14 +20,22 @@ Clean Architecture principles:
 - Mapper pattern for data transformation
 - **Factory pattern for dependency injection** (standard format, naming, structure)
 
-### 5. **react-query-patterns.mdc** (Hooks and Services)
-React Query data fetching and caching:
-- Cache configuration (staleTime, gcTime)
-- Recommended cache times by data type
-- Query keys structure
-- Hook return patterns
-- Manual cache invalidation
-- Common issues and solutions
+### 3. **domain.mdc**, **api-patterns.mdc**, **api-tasks-naming.mdc**
+Domain rules, API patterns and naming (see file descriptions).
+
+---
+
+## 📋 React/SPA Rules (apps/spa/.cursor/rules)
+
+Rules that apply only to the SPA (React) app live in **`apps/spa/.cursor/rules/`**:
+
+- **import-standards.mdc** — Import path standards (`@` aliases), SPA aliases
+- **react-patterns.mdc** — React/Next.js component patterns, RenderIf, props/hooks conventions
+- **react-query-patterns.mdc** — React Query cache, query keys, hook return patterns
+- **ui-reuse-components.mdc** — Reuso de Card, Button e componentes `@repo/ui`
+- **spa-services-contracts.mdc** — Services devem usar tipos de `@repo/contracts`
+
+Quando trabalhar apenas no SPA, abrir o workspace na pasta `apps/spa` faz com que essas rules sejam carregadas pelo Cursor.
 
 ## 🚀 How Rules Work
 
@@ -53,8 +45,8 @@ React Query data fetching and caching:
    - Example: `project-standards.mdc`
 
 2. **File-Specific Rules**: Rules with `globs` patterns are loaded when matching files are open
-   - Example: `react-patterns.mdc` loads when you open `.tsx` or `.jsx` files
-   - Example: `import-standards.mdc` loads for all TypeScript files
+   - Example: `clean-architecture.mdc` loads when editing API or SPA module files
+   - React/SPA rules in `apps/spa/.cursor/rules/` apply when working in the SPA app
 
 ### Manual Application
 

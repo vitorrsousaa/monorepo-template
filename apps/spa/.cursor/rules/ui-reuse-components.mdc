@@ -14,7 +14,7 @@ Sempre que for criar uma nova tela ou bloco de interface no SPA, **pense primeir
   - Use como contêiner padrão para blocos clicáveis ou painéis (cards de projeto, cards de tarefa, painéis de configuração).
   - Antes de criar um wrapper como `button` grande com borda/hover manual, avalie se dá para:
     - Usar `<Card>` diretamente e aplicar `className` com o layout desejado.
-    - Tratar o card como “clicável” via `onClick` no próprio `Card` em vez de embrulhar tudo em um `button`.
+    - Tratar o card como "clicável" via `onClick` no próprio `Card` em vez de embrulhar tudo em um `button`.
   - **Se precisar sobrescrever quase tudo** (bordas, fundo, estados de hover, radius, etc.), documente no PR por que não foi possível reutilizar o `Card` e então siga em frente com o layout custom.
 
 - **Buttons, Inputs, Dropdowns**:
@@ -28,7 +28,7 @@ Antes de implementar um novo card:
 1. **Checar se existe um componente parecido**:
    - Exemplos: `ProjectColumn` / cards de hoje, cards de inbox, cards de settings.
 2. **Tentar encaixar o layout no `Card`**:
-   - Se o design for “um retângulo com borda, fundo e hover”, provavelmente o `Card` é um bom fit.
+   - Se o design for "um retângulo com borda, fundo e hover", provavelmente o `Card` é um bom fit.
 3. **Só partir para um wrapper custom (ex: `button` grande)** quando:
    - O comportamento é muito atípico (ex: elemento que precisa ser semanticamente `button` e já existem muitos estilos especiais), **e**
    - A customização necessária tornaria o uso do `Card` mais confuso do que útil.
@@ -38,4 +38,3 @@ Antes de implementar um novo card:
 - **Consistência visual**: cards e interações ficam alinhados ao resto do app.
 - **Menos CSS/tailwind duplicado**: reaproveita tokens e estilos centralizados.
 - **Evolução mais fácil**: se quisermos mudar o visual de todos os cards, fazemos isso no componente compartilhado.
-

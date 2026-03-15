@@ -1,6 +1,6 @@
 ---
 description: Import path standards - always use @ aliases instead of relative paths
-globs: **/*.{ts,tsx}
+globs: apps/spa/**/*.{ts,tsx}
 alwaysApply: false
 ---
 

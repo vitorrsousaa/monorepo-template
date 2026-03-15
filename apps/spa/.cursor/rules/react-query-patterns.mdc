@@ -1,6 +1,6 @@
 ---
 description: React Query cache and data fetching patterns
-globs: **/*{hook,service}*.ts
+globs: apps/spa/**/*{hook,service}*.ts
 alwaysApply: false
 ---
 

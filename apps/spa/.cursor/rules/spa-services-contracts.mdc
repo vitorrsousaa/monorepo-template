@@ -1,0 +1,58 @@
+---
+description: SPA module services must use @repo/contracts for request/response typing
+globs: apps/spa/**/modules/**/app/services/*.ts
+alwaysApply: false
+---
+
+# SPA Services — Tipagem via @repo/contracts
+
+Todo service em `modules/<feature>/app/services/*.ts` deve usar **tipagem do pacote `@repo/contracts`** para inputs (body/params) e responses das chamadas à API. Não definir tipos locais ou duplicados para o contrato HTTP.
+
+## Regra
+
+- **Request/input**: tipar parâmetros da função com os tipos de request do contracts (ex.: `CreateTodoRequest`, `SignupInput`).
+- **Response**: tipar o retorno da função e o genérico do `httpClient` com os tipos de response do contracts (ex.: `GetInboxTodosResponse`, `SignupResponse`).
+- **Fonte única**: os tipos vêm de `packages/contracts`; API e SPA compartilham o mesmo contrato. Nunca duplicar DTOs ou shapes de request/response em entidades locais do módulo quando já existirem no contracts.
+
+## Exemplos
+
+### GET — response do contracts
+
+```typescript
+import type { GetInboxTodosResponse } from "@repo/contracts/todo/inbox";
+import { httpClient } from "@/services/http-client";
+
+export async function getInboxTodos(): Promise<GetInboxTodosResponse> {
+  const { data } = await httpClient.get<GetInboxTodosResponse>("/todos/inbox");
+  return data;
+}
+```
+
+### POST — request e response do contracts
+
+```typescript
+import type { SignupInput, SignupResponse } from "@repo/contracts/auth/signup";
+import { httpClient } from "@/services/http-client";
+
+export async function signup(input: SignupInput): Promise<SignupResponse> {
+  const { data } = await httpClient.post<SignupResponse>("/auth/signup", input);
+  return data;
+}
+```
+
+### Quando o contracts ainda não tem o endpoint
+
+Se o contrato para aquela rota ainda não existir em `packages/contracts`:
+
+1. **Criar ou estender** o contrato em `packages/contracts` (ex.: novo arquivo em `packages/contracts/src/<domain>/<feature>/index.ts`).
+2. **Depois** importar no service do SPA de `@repo/contracts/<path>` e usar esses tipos. Não deixar o service com tipos soltos ou entidades locais para o contrato HTTP.
+
+## O que evitar
+
+- Tipar response com tipo local (ex.: `Section` ou `{ section: Section }`) quando existir ou puder existir um tipo em `@repo/contracts`.
+- Criar DTOs ou interfaces de request/response no módulo que espelhem o contrato da API; usar sempre `@repo/contracts`.
+
+## Referências
+
+- Tipos compartilhados: `packages/contracts` e [docs/packages/contracts.md](../../../docs/packages/contracts.md).
+- Root [CLAUDE.md](../../../CLAUDE.md): "Always import from `@repo/contracts/...` for types shared between API and SPA."

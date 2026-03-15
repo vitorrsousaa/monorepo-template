@@ -1,6 +1,6 @@
 ---
 description: React and Next.js component patterns and best practices
-globs: **/*.{tsx,jsx}
+globs: apps/spa/**/*.{tsx,jsx}
 alwaysApply: false
 ---
 
