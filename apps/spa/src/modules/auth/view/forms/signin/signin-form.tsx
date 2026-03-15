@@ -44,7 +44,7 @@ export function SigninForm(props: SigninFormProps) {
 							</FormLabel>
 							<FormControl>
 								<Input
-									placeholder="you@email.com"
+									placeholder="john.doe@example.com"
 									className="bg-background"
 									type="email"
 									autoComplete="email"

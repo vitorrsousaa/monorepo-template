@@ -20,4 +20,15 @@ export const GOALS = {
 	ALL: ["goals", "all"],
 };
 
-export const QUERY_KEYS = { TODOS, TASKS, PROJECTS, SECTIONS, GOALS } as const;
+export const AUTH = {
+	PROFILE: ["auth", "profile"],
+};
+
+export const QUERY_KEYS = {
+	TODOS,
+	TASKS,
+	PROJECTS,
+	SECTIONS,
+	GOALS,
+	AUTH,
+} as const;

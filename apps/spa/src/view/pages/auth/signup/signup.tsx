@@ -1,5 +1,7 @@
 import { ROUTES } from "@/config/routes";
 import { AppError } from "@/errors/app-error";
+import { useAuth } from "@/hooks/auth";
+import { useSignin } from "@/modules/auth/app/hooks/use-signin";
 import { useSignup } from "@/modules/auth/app/hooks/use-signup";
 import type { TSignupFormSchema } from "@/modules/auth/view/forms/signup";
 import { SignupForm } from "@/modules/auth/view/forms/signup";
@@ -13,6 +15,14 @@ export function Signup() {
 
 	const { signupAsync, isSignupPending } = useSignup();
 
+	const redirectToDashboard = () => {
+		navigate(ROUTES.TODO.DASHBOARD);
+	};
+
+	const { signin } = useAuth();
+
+	const { signinAsync, isSigninPending } = useSignin();
+
 	const handleNavigateToSignin = () => {
 		navigate(ROUTES.SIGNIN);
 	};
@@ -20,6 +30,13 @@ export function Signup() {
 	const handleSubmit = async (data: TSignupFormSchema) => {
 		try {
 			await signupAsync(data);
+
+			const { accessToken } = await signinAsync({
+				email: data.email,
+				password: data.password,
+			});
+			signin(accessToken);
+			redirectToDashboard();
 			toast.success("Signed up successfully");
 		} catch (error) {
 			if (error instanceof AppError) {
@@ -29,6 +46,8 @@ export function Signup() {
 			}
 		}
 	};
+
+	const isSubmitting = isSignupPending || isSigninPending;
 
 	return (
 		<div className="w-full max-w-[380px]">
@@ -42,7 +61,7 @@ export function Signup() {
 				type="button"
 				variant="outline"
 				className="mb-5 w-full "
-				disabled={isSignupPending}
+				disabled={isSubmitting}
 			>
 				<Icon name="google" className="h-4 w-4" />
 				Continue with Google
@@ -56,7 +75,7 @@ export function Signup() {
 				<div className="h-px flex-1 bg-border" />
 			</div>
 
-			<SignupForm onSubmit={handleSubmit} isSubmitting={isSignupPending} />
+			<SignupForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
 
 			<p className="signin-row text-center text-[13px] text-muted-foreground">
 				Already have an account?{" "}
@@ -64,7 +83,7 @@ export function Signup() {
 					type="button"
 					variant="link"
 					onClick={handleNavigateToSignin}
-					disabled={isSignupPending}
+					disabled={isSubmitting}
 					className="h-auto p-0 font-medium text-primary no-underline hover:underline"
 				>
 					Sign in

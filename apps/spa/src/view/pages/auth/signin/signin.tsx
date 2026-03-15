@@ -1,14 +1,11 @@
-import { ROUTES } from "@/config/routes";
 import { SigninForm } from "@/modules/auth/view/forms/signin";
 import { Button } from "@repo/ui/button";
 import { Icon } from "@repo/ui/icon";
-import { useNavigate } from "react-router-dom";
 import { useSigninPageHook } from "./signin.hook";
 
 const SIGNIN_FORM_ID = "signin-form";
 
 export function Signin() {
-	const navigate = useNavigate();
 	const {
 		handleSubmit,
 		handleNavigateToSignup,

@@ -1,5 +1,7 @@
 import { LoadingScreen } from "@/components/loading-screen";
+import { QUERY_KEYS } from "@/config/query-keys";
 import { tokenStorage } from "@/storage/token-storage";
+import { useQueryClient } from "@tanstack/react-query";
 import {
 	createContext,
 	useCallback,
@@ -32,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		return !!storageAccessToken;
 	});
 
-	// const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
 	// const { data, isFetching, isSuccess, isError } = useQuery({
 	//   queryKey: QUERY_KEYS.PROFILE,
@@ -66,9 +68,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const signout = useCallback(() => {
 		tokenStorage.remove();
-		// queryClient.invalidateQueries({
-		//   queryKey: QUERY_KEYS.PROFILE,
-		// });
+		queryClient.invalidateQueries({
+			queryKey: QUERY_KEYS.AUTH.PROFILE,
+		});
+
 		setSignedIn(false);
 	}, []);
 
