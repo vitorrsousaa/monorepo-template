@@ -56,6 +56,9 @@ const config = {
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
 			},
+			aria: {
+				invalid: 'invalid="true"',
+			},
 		},
 	},
 	plugins: [animate],
