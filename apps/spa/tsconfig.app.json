@@ -66,6 +66,9 @@
       "@/entities/*": [
         "./src/app/entities/*"
       ],
+      "@/errors/*": [
+        "./src/app/errors/*"
+      ],
       "@/modules/*": [
         "./src/modules/*"
       ],

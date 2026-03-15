@@ -24,7 +24,7 @@ export interface SignupFormProps {
 }
 
 export function SignupForm(props: SignupFormProps) {
-	const { formId, isSubmitting } = props;
+	const { formId, isSubmitting = false } = props;
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 
@@ -257,6 +257,7 @@ export function SignupForm(props: SignupFormProps) {
 					disabled={isSubmitting}
 					className="w-full "
 					size="lg"
+					loading={isSubmitting}
 				>
 					Create account
 					<ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />

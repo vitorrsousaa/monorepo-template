@@ -22,6 +22,7 @@ export default defineConfig({
 			"@/config": path.resolve(__dirname, "./src/app/config"),
 			"@/libs": path.resolve(__dirname, "./src/app/libs"),
 			"@/entities": path.resolve(__dirname, "./src/app/entities"),
+			"@/errors": path.resolve(__dirname, "./src/app/errors"),
 			"@/storage": path.resolve(__dirname, "./src/app/storage"),
 			"@/modules": path.resolve(__dirname, "./src/modules"),
 		},
