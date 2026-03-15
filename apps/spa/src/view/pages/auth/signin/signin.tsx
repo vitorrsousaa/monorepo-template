@@ -1,5 +1,5 @@
-import { SigninForm } from "@/modules/auth/forms/signin";
 import { AuthLayout } from "@/layouts/auth-layout";
+import { SigninForm } from "@/modules/auth/view/forms/signin";
 import { Icon } from "@repo/ui/icon";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useSigninPageHook } from "./signin.hook";

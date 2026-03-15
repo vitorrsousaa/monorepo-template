@@ -1,6 +1,6 @@
 import { ROUTES } from "@/config/routes";
 import { useAuth } from "@/hooks/auth";
-import type { TSigninFormSchema } from "@/modules/auth/forms/signin";
+import type { TSigninFormSchema } from "@/modules/auth/view/forms/signin";
 import { useNavigate } from "react-router-dom";
 
 export function useSigninPageHook() {

@@ -1,6 +1,6 @@
 import { ROUTES } from "@/config/routes";
-import type { TSignupFormSchema } from "@/modules/auth/forms/signup";
-import { SignupForm } from "@/modules/auth/forms/signup";
+import type { TSignupFormSchema } from "@/modules/auth/view/forms/signup";
+import { SignupForm } from "@/modules/auth/view/forms/signup";
 import { Button } from "@repo/ui/button";
 import { Icon } from "@repo/ui/icon";
 import { useNavigate } from "react-router-dom";
