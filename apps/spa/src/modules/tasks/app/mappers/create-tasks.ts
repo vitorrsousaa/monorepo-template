@@ -11,7 +11,9 @@ import type { TTaskFormSchema } from "../../view/forms/task/task-form.schema";
  * - `dueDate: Date` → ISO string (API expects ISO 8601 format)
  * - Omits fields not needed by API: id, completed, goal, recurrence
  */
-export function mapTaskFormToCreateInput(formData: TTaskFormSchema): CreateTaskInput {
+export function mapTaskFormToCreateInput(
+	formData: TTaskFormSchema,
+): CreateTaskInput {
 	return {
 		title: formData.title,
 		description: formData.description || null,

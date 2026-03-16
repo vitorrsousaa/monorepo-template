@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import type { Project } from "@/modules/projects/app/entitites/project";
 import { createProject as createProjectService } from "@/modules/projects/app/services/create-project";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
+import type { Project } from "@repo/contracts/projects/entities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type ProjectWithOptimisticState = WithOptimisticState<Partial<Project>>;

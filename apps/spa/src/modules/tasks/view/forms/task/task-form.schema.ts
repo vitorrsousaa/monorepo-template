@@ -21,10 +21,16 @@ export const TaskFormSchema = z.object({
 	title: z
 		.string()
 		.min(TASK_TITLE_MIN, "Title cannot be empty")
-		.max(TASK_TITLE_MAX, `Title must have at most ${TASK_TITLE_MAX} characters`),
+		.max(
+			TASK_TITLE_MAX,
+			`Title must have at most ${TASK_TITLE_MAX} characters`,
+		),
 	description: z
 		.string()
-		.max(TASK_DESCRIPTION_MAX, `Description must have at most ${TASK_DESCRIPTION_MAX} characters`)
+		.max(
+			TASK_DESCRIPTION_MAX,
+			`Description must have at most ${TASK_DESCRIPTION_MAX} characters`,
+		)
 		.optional(),
 	project: z.string(),
 	section: z.string().optional(),
@@ -32,15 +38,12 @@ export const TaskFormSchema = z.object({
 	dueDate: z
 		.date()
 		.optional()
-		.refine(
-			(date) => {
-				if (!date) return true; // optional field is valid
-				const today = new Date();
-				today.setHours(0, 0, 0, 0);
-				return date >= today;
-			},
-			"Due date cannot be in the past",
-		),
+		.refine((date) => {
+			if (!date) return true; // optional field is valid
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+			return date >= today;
+		}, "Due date cannot be in the past"),
 	completed: z.boolean().optional(),
 	goal: z.string().optional(),
 	recurrence: recurrenceSchema.optional(),

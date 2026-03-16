@@ -4,7 +4,11 @@ import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { TaskFormProps } from "./task-form";
-import { getTaskFormValues, TaskFormSchema, type TTaskFormSchema } from "./task-form.schema";
+import {
+	getTaskFormValues,
+	TaskFormSchema,
+	type TTaskFormSchema,
+} from "./task-form.schema";
 
 export const useTaskFormHook = (props: TaskFormProps) => {
 	const { initialValues, onSubmit } = props;
@@ -38,16 +42,16 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 		// const sectionId = data.section === "none" ? undefined : data.section;
 		const dueDate = data.dueDate ? new Date(data.dueDate) : undefined;
 
-		const payload: TTaskFormSchema = { 
+		const payload: TTaskFormSchema = {
 			title: data.title,
 			description: data.description,
 			project: data.project,
 			section: data.section,
 			priority: data.priority,
-			dueDate
-		}
-		
-		await onSubmit?.(payload)
+			dueDate,
+		};
+
+		await onSubmit?.(payload);
 	});
 
 	return {

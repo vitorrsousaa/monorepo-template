@@ -20,13 +20,12 @@ export function NewTaskModal(props: NewTaskModalProps) {
 		section: sectionId ?? "none",
 	};
 
-	const { createTasks } = useCreateTasks()
+	const { createTasks } = useCreateTasks();
 
 	async function handleSubmit(data: TTaskFormSchema) {
 		const taskInput = mapTaskFormToCreateInput(data);
 		createTasks(taskInput);
 	}
-
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
