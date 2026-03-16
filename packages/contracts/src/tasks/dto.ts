@@ -3,7 +3,7 @@
  * Source of truth for task/todo wire format.
  * Dates are ISO strings over the wire.
  */
-export interface TaskDto {
+export interface Task {
 	id: string;
 	userId: string;
 	projectId: string | null;
@@ -18,3 +18,5 @@ export interface TaskDto {
 	dueDate: string | null;
 	priority: "low" | "medium" | "high" | null;
 }
+
+export type TaskDto = Task;
