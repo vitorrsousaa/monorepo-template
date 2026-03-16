@@ -49,7 +49,7 @@ export interface IConfig {
 	STRIPE_PRO_QUOTA: number;
 	STRIPE_REDIRECT_URL: string;
 	STRIPE_PRICE_ID: string;
-	COGNITO_CLIENT_ID: string;	
+	COGNITO_CLIENT_ID: string;
 	SERVICE: string;
 }
 
