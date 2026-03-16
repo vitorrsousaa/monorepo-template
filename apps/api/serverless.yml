@@ -40,6 +40,26 @@ provider:
         - PUT
         - DELETE
         - OPTIONS
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "cognito-idp:AdminGetUser"
+          Resource: !GetAtt UserPool.Arn
+        - Effect: "Allow"
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:DeleteItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:ConditionCheckItem
+            - dynamodb:BatchWriteItem
+          Resource: 
+            - !GetAtt DatabaseTable.Arn
+            - !Sub ${DatabaseTable.Arn}/index/GSI1Index
 
 custom:
   userPoolName: ${self:service}-${self:provider.stage}-UserPool
@@ -61,6 +81,7 @@ build:
     
 resources:
   - ${file(./serverless/resources/UserPool.yml)}
+  - ${file(./serverless/resources/Database.yml)}
 
 functions:
   signup:
