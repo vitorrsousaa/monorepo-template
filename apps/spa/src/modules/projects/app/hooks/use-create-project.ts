@@ -12,7 +12,7 @@ export function useCreateProject() {
 	const { mutate: createProject } = useMutation({
 		mutationFn: createProjectService,
 		onMutate: (variables) => {
-			const { name, description } = variables;
+			const { name, description, color } = variables;
 			const tempId = Math.random().toString(36).substr(2, 9);
 
 			queryClient.setQueryData<ProjectWithOptimisticState[]>(
@@ -23,6 +23,7 @@ export function useCreateProject() {
 						optimisticState: OptimisticState.PENDING,
 						name,
 						description,
+						color,
 					}),
 			);
 
