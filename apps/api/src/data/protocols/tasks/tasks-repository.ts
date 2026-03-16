@@ -10,7 +10,7 @@ import type { Task } from "@repo/contracts/tasks";
  * This interface abstracts persistence technology (DynamoDB, Postgres, etc).
  */
 export interface ITasksRepository {
-	findInboxTasks(userId: string): Promise<Task[]>;
+	getInbox(userId: string): Promise<Task[]>;
 	create(
 		data: Omit<
 			Task,

@@ -120,11 +120,11 @@ functions:
           method: get
           authorizer: 
             name: CognitoAuthorizer
-  getInboxTodos:
-    handler: src/server/functions/todo/get-inbox-todos/index.handler
+  getInboxTasks:
+    handler: src/server/functions/tasks/get-inbox-tasks/index.handler
     events:
       - httpApi:
-          path: /todos/inbox
+          path: /tasks/inbox
           method: get
           authorizer: 
             name: CognitoAuthorizer

@@ -28,7 +28,7 @@ export interface TasksDynamoDBEntity extends BaseDynamoDBEntity {
 	project_id?: string | null;
 	section_id?: string | null;
 	title: string;
-	description: string;
+	description: string | null;
 	completed: boolean;
 	order?: number;
 	created_at: string; // ISO 8601

@@ -1,7 +1,7 @@
-import type { TaskDto } from "../entities";
+import { Task } from "../entities";
 
 /** Response body of GET /tasks/inbox */
 export interface GetInboxTasksResponse {
-	tasks: TaskDto[];
+	tasks: Task[];
 	total: number;
 }

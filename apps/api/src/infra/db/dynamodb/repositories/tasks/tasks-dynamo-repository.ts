@@ -20,11 +20,6 @@ import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
  * For now, keeps data in memory for development (see tasks-dynamo-repository.mocks.ts).
  */
 export class TasksDynamoRepository implements ITasksRepository {
-	// TODO: Replace with DynamoDB client
-	// private dynamoClient: DynamoDBDocumentClient;
-	// private tableName: string;
-
-	// Temporary: In-memory simulation using shared mocks (PK = USER#userId per docs/database-design.md)
 	private dbTodos: TodoDynamoDBEntity[] = [...TODO_DYNAMO_MOCKS];
 
 	constructor(
@@ -56,14 +51,27 @@ export class TasksDynamoRepository implements ITasksRepository {
 		return newTask;
 	}
 
-	async findInboxTasks(userId: string): Promise<Task[]> {
+	async getInbox(userId: string): Promise<Task[]> {
 		// Docs: PK = USER#userId AND SK begins_with TODO#INBOX#
 		// TODO: DynamoDB Query KeyConditionExpression: PK = :pk AND begins_with(SK, 'TODO#INBOX#')
 		const pk = `USER#${userId}`;
-		return this.dbTodos
-			.filter((t) => t.PK === pk && t.SK.startsWith("TODO#INBOX#"))
-			.filter((t) => t.completed === false)
-			.map((dbTodo) => this.mapper.toDomain(dbTodo));
+		
+		const queryResult = await this.dynamoClient.query<TasksDynamoDBEntity[]>({
+			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+			ExpressionAttributeValues: {
+				":pk": pk,
+				":skPrefix": "TODO#INBOX#",
+			},
+			FilterExpression: `attribute_not_exists(deleted_at) AND completed = false`,
+			IndexName: undefined,
+		})
+		
+		const resultTasks = queryResult ? queryResult : [];
+		
+		const tasks = resultTasks.map((dbTodo) => this.mapper.toDomain(dbTodo));
+		
+		return tasks;
+		
 	}
 
 	async findTodayTodos(userId: string): Promise<Todo[]> {

@@ -15,7 +15,7 @@ import {
 	UpdateCommand,
 	UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-import { IDatabaseClient } from "../contracts/client";
+import { IDatabaseClient, IDatabaseClientQueryArgs } from "../contracts/client";
 import { BaseDynamoDBEntity } from "../contracts/entity";
 
 export class DatabaseClient implements IDatabaseClient {
@@ -63,11 +63,10 @@ export class DatabaseClient implements IDatabaseClient {
 		await this.dynamoClient.send(updateCommand);
 	}
 
-	async query<T>(
-		args: Omit<QueryCommandInput, "TableName">,
-	): Promise<T | undefined> {
+	async query<T>(args: IDatabaseClientQueryArgs<T>): Promise<T | undefined> {
 		const command = new QueryCommand({
 			TableName: this.table.TABLE_NAME,
+			IndexName: args.IndexName ? args.IndexName : undefined,
 			...args,
 		});
 
