@@ -1,26 +1,26 @@
-import { TodoForm } from "@/modules/todo/view/forms/todo";
-import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
+import { TaskForm } from "@/modules/tasks/view/forms/task";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { Copy, Trash2, X } from "lucide-react";
 
-interface EditTodoModalProps {
+interface EditTaskModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	initialValues: Partial<TTodoFormSchema>;
+	initialValues: Partial<TTaskFormSchema>;
 	headerMeta?: { projectName?: string; createdAt?: string; updatedAt?: string };
 	onDuplicate?: () => void;
 	onDelete?: () => void;
 }
 
-export function EditTodoModal({
+export function EditTaskModal({
 	isOpen,
 	onClose,
 	initialValues,
 	headerMeta,
 	onDuplicate,
 	onDelete,
-}: EditTodoModalProps) {
+}: EditTaskModalProps) {
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
@@ -57,7 +57,7 @@ export function EditTodoModal({
 						</DialogClose>
 					</div>
 				</div>
-				<TodoForm
+				<TaskForm
 					mode="edit"
 					onCancel={onClose}
 					initialValues={initialValues}

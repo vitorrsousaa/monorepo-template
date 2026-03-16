@@ -1,4 +1,4 @@
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { addDays, formatDateLong } from "@/utils/date-utils";
 import { Button } from "@repo/ui/button";
 import { CalendarClock, Plus } from "lucide-react";
@@ -180,7 +180,7 @@ export function Upcoming() {
 				</div>
 			)}
 
-			<NewTodoModal
+			<NewTaskModal
 				isOpen={isNewTaskOpen}
 				onClose={() => setIsNewTaskOpen(false)}
 			/>

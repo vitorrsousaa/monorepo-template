@@ -1,4 +1,4 @@
-import type { TRecurrenceForm } from "./todo-form.schema";
+import type { TRecurrenceForm } from "./task-form.schema";
 
 const DAY_NAMES_SHORT = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 

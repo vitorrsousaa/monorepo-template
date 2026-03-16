@@ -18,15 +18,15 @@ import {
 } from "@repo/ui/select";
 import { Textarea } from "@repo/ui/textarea";
 import { cn } from "@repo/ui/utils";
-import { useTodoFormHook } from "./todo-form.hook";
-import type { TTodoFormSchema } from "./todo-form.schema";
+import { useTaskFormHook } from "./task-form.hook";
+import type { TTaskFormSchema } from "./task-form.schema";
 import { RecurrencePanel } from "./recurrence-panel";
 
-export interface TodoFormProps {
+export interface TaskFormProps {
 	onCancel?: () => void;
 	onDelete?: () => void;
 	onDuplicate?: () => void;
-	initialValues?: Partial<TTodoFormSchema>;
+	initialValues?: Partial<TTaskFormSchema>;
 	mode: "create" | "edit";
 	metadata?: {
 		createdAt?: string;
@@ -37,7 +37,7 @@ export interface TodoFormProps {
 const sidebarLabelClass =
 	"text-[10px] font-semibold uppercase tracking-wide text-muted-foreground";
 
-export function TodoForm(props: TodoFormProps) {
+export function TaskForm(props: TaskFormProps) {
 	const { onCancel, mode, metadata } = props;
 
 	const {
@@ -49,7 +49,7 @@ export function TodoForm(props: TodoFormProps) {
 		isProjectSelected,
 		handleProjectChange,
 		handleSubmit,
-	} = useTodoFormHook(props);
+	} = useTaskFormHook(props);
 
 	return (
 		<Form {...methods}>

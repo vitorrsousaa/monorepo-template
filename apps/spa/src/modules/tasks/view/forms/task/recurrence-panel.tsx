@@ -9,7 +9,7 @@ import { cn } from "@repo/ui/utils";
 import { Repeat } from "lucide-react";
 import type { Control } from "react-hook-form";
 import { formatRecurrencePreview } from "./format-recurrence-preview";
-import type { TTodoFormSchema } from "./todo-form.schema";
+import type { TTaskFormSchema } from "./task-form.schema";
 
 const FREQUENCIES = [
 	{ value: "daily", label: "Daily" },
@@ -32,7 +32,7 @@ const sectionLabelClass =
 	"text-[10px] font-semibold uppercase tracking-wide text-muted-foreground";
 
 interface RecurrencePanelProps {
-	control: Control<TTodoFormSchema>;
+	control: Control<TTaskFormSchema>;
 }
 
 export function RecurrencePanel({ control }: RecurrencePanelProps) {

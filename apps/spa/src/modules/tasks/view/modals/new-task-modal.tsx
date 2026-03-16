@@ -1,19 +1,19 @@
-import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { X } from "lucide-react";
-import { TodoForm } from "../forms/todo";
+import { TaskForm } from "../forms/task";
 
-interface NewTodoModalProps {
+interface NewTaskModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	projectId?: string;
 	sectionId?: string;
 }
 
-export function NewTodoModal(props: NewTodoModalProps) {
+export function NewTaskModal(props: NewTaskModalProps) {
 	const { isOpen, onClose, projectId, sectionId } = props;
-	const initialValues: Partial<TTodoFormSchema> = {
+	const initialValues: Partial<TTaskFormSchema> = {
 		project: projectId ?? "inbox",
 		section: sectionId ?? "none",
 	};
@@ -32,7 +32,7 @@ export function NewTodoModal(props: NewTodoModalProps) {
 						</Button>
 					</DialogClose>
 				</div>
-				<TodoForm
+				<TaskForm
 					mode="create"
 					onCancel={onClose}
 					initialValues={initialValues}

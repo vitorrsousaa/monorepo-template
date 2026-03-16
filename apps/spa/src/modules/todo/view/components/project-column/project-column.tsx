@@ -7,9 +7,9 @@ import { RenderIf } from "@repo/ui/render-if";
 import { Calendar, Plus } from "lucide-react";
 import { PROJECT_INBOX_ID } from "@/config/constants";
 import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
-import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
-import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
+import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { ProjectColumnHeader } from "../project-column-header";
 import { useProjectColumnHook } from "./project-column.hook";
 
@@ -48,7 +48,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 		confirmDeleteProject,
 	} = useProjectColumnHook({ onProjectDeleted });
 
-	const editTodoFormInitialValues = useMemo((): Partial<TTodoFormSchema> => {
+	const editTodoFormInitialValues = useMemo((): Partial<TTaskFormSchema> => {
 		if (!selectedTask) return {};
 		return {
 			id: selectedTask.id,
@@ -186,7 +186,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 					</button>
 				</div>
 			</div>
-			<NewTodoModal
+			<NewTaskModal
 				isOpen={isNewTodoModalOpen}
 				onClose={() => setIsNewTodoModalOpen(false)}
 				projectId={selectedProjectId ?? undefined}
@@ -202,7 +202,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 				condition={!!selectedTask}
 				render={
 					selectedTask ? (
-						<EditTodoModal
+						<EditTaskModal
 							isOpen={!!selectedTask}
 							onClose={() => setSelectedTask(null)}
 							initialValues={editTodoFormInitialValues}

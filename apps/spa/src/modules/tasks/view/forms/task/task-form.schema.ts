@@ -10,7 +10,7 @@ const recurrenceSchema = z.object({
 	endCount: z.number().positive().optional(),
 });
 
-export const TodoFormSchema = z.object({
+export const TaskFormSchema = z.object({
 	id: z.string().optional(),
 	title: z.string(),
 	description: z.string().optional(),
@@ -23,11 +23,11 @@ export const TodoFormSchema = z.object({
 	recurrence: recurrenceSchema.optional(),
 });
 
-export type TTodoFormSchema = z.infer<typeof TodoFormSchema>;
+export type TTaskFormSchema = z.infer<typeof TaskFormSchema>;
 
 export type TRecurrenceForm = z.infer<typeof recurrenceSchema>;
 
-export const defaultInitialValues: TTodoFormSchema = {
+export const defaultInitialValues: TTaskFormSchema = {
 	title: "",
 	description: "",
 	project: "inbox",
@@ -40,12 +40,12 @@ export const defaultInitialValues: TTodoFormSchema = {
 };
 
 /**
- * Returns complete todo form values by merging defaults with optional overrides.
- * Use when you need full TTodoFormSchema (e.g. defaultValues for useForm).
+ * Returns complete task form values by merging defaults with optional overrides.
+ * Use when you need full TTaskFormSchema (e.g. defaultValues for useForm).
  */
-export function getTodoFormValues(
-	overrides?: Partial<TTodoFormSchema>,
-): TTodoFormSchema {
+export function getTaskFormValues(
+	overrides?: Partial<TTaskFormSchema>,
+): TTaskFormSchema {
 	return {
 		...defaultInitialValues,
 		...overrides,

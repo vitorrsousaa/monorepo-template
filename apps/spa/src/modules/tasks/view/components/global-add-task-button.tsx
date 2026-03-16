@@ -1,4 +1,4 @@
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { Button } from "@repo/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -14,7 +14,7 @@ export function GlobalAddTaskButton() {
 			>
 				<Plus className="w-6 h-6" />
 			</Button>
-			<NewTodoModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+			<NewTaskModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
 		</>
 	);
 }

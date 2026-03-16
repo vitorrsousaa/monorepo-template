@@ -1,5 +1,5 @@
 import { InboxTaskCard } from "@/modules/tasks/view/components/inbox-task-card";
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import { Plus } from "lucide-react";
@@ -70,7 +70,7 @@ export function Inbox() {
 				}
 			/>
 
-			<NewTodoModal
+			<NewTaskModal
 				isOpen={isNewTaskModalOpen}
 				onClose={() => setIsNewTaskModalOpen(false)}
 			/>

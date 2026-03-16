@@ -1,6 +1,6 @@
 import { ROUTES } from "@/config/routes";
 import { useAuth } from "@/hooks/auth";
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { cn } from "@repo/ui/utils";
 import {
 	AlertCircle,
@@ -444,7 +444,7 @@ export function Dashboard() {
 				</div>
 			</div>
 
-			<NewTodoModal
+			<NewTaskModal
 				isOpen={isNewTaskOpen}
 				onClose={() => setIsNewTaskOpen(false)}
 			/>

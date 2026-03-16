@@ -3,17 +3,17 @@ import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-al
 import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get-all-sections-by-project";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import type { TodoFormProps } from "./todo-form";
-import { getTodoFormValues, TodoFormSchema } from "./todo-form.schema";
+import type { TaskFormProps } from "./task-form";
+import { getTaskFormValues, TaskFormSchema } from "./task-form.schema";
 
-export const useTodoFormHook = (props: TodoFormProps) => {
+export const useTaskFormHook = (props: TaskFormProps) => {
 	const { initialValues } = props;
 	const { projects } = useGetAllProjectsByUser();
 	const { goals } = useGetAllGoals();
 
 	const methods = useForm({
-		resolver: zodResolver(TodoFormSchema),
-		defaultValues: getTodoFormValues(initialValues),
+		resolver: zodResolver(TaskFormSchema),
+		defaultValues: getTaskFormValues(initialValues),
 	});
 
 	const selectedProjectId = methods.watch("project");

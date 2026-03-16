@@ -1,7 +1,7 @@
 import type { ProjectDetail } from "@/modules/projects/app/entitites/project-detail";
-import { EditTodoModal } from "@/modules/todo/view/modals/edit-todo-modal";
-import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
-import type { TTodoFormSchema } from "@/modules/todo/view/forms/todo/todo-form.schema";
+import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
 import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
 import type { Todo } from "@/modules/todo/app/entities/todo";
@@ -51,7 +51,7 @@ export function Projects() {
 	);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [editModalInitialValues, setEditModalInitialValues] =
-		useState<Partial<TTodoFormSchema> | null>(null);
+		useState<Partial<TTaskFormSchema> | null>(null);
 	const [editModalHeaderMeta, setEditModalHeaderMeta] = useState<{
 		projectName: string;
 		createdAt: string;
@@ -207,14 +207,14 @@ export function Projects() {
 				</div>
 			</div>
 
-			<NewTodoModal
+			<NewTaskModal
 				isOpen={isNewTodoModalOpen}
 				onClose={() => setIsNewTodoModalOpen(false)}
 				projectId={projectId}
 				sectionId={newTodoSectionId}
 			/>
 
-			<EditTodoModal
+			<EditTaskModal
 				isOpen={isEditModalOpen}
 				onClose={closeEditModal}
 				initialValues={editModalInitialValues ?? {}}
