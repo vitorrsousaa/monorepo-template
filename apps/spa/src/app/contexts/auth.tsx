@@ -1,6 +1,8 @@
 import { LoadingScreen } from "@/components/loading-screen";
 import { QUERY_KEYS } from "@/config/query-keys";
+import { useGetProfile } from "@/modules/auth/app/hooks/use-get-profile";
 import { tokenStorage } from "@/storage/token-storage";
+import type { ProfileResponse } from "@repo/contracts/auth/profile";
 import { useQueryClient } from "@tanstack/react-query";
 import {
 	createContext,
@@ -10,18 +12,11 @@ import {
 	useState,
 } from "react";
 
-type Profile = {
-	name: string;
-	email: string;
-	id: string;
-	picture: string;
-};
-
 export interface IAuthContextValue {
 	signedIn: boolean;
 	signInWithGoogle: () => void;
 	signout: () => void;
-	user: Profile;
+	user: ProfileResponse["user"];
 	signin: (accessToken: string) => void;
 }
 
@@ -36,22 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const queryClient = useQueryClient();
 
+	const { user, isProfileError, isProfileFetching, isProfileSuccess } =
+		useGetProfile({ enabled: signedIn, staleTime: Number.POSITIVE_INFINITY });
+
 	// const { data, isFetching, isSuccess, isError } = useQuery({
 	//   queryKey: QUERY_KEYS.PROFILE,
 	//   queryFn: authServices.profile,
 	//   enabled: signedIn,
 	//   staleTime: Number.POSITIVE_INFINITY,
 	// });
-
-	const isError = false;
-	const isFetching = false;
-	const data = {
-		name: "John Doe",
-		email: "john.doe@example.com",
-		id: "123",
-		picture: "https://example.com/picture.jpg",
-	};
-	const isSuccess = true;
 
 	const signInWithGoogle = useCallback(() => {
 		// const CLIENT_ID = env.VITE_AUTH_GOOGLE_ID;
@@ -83,30 +71,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const value = useMemo<IAuthContextValue>(
 		() => ({
-			signedIn: isSuccess && signedIn,
+			signedIn: isProfileSuccess && signedIn,
 			signInWithGoogle,
 			signout,
 			signin,
 			user: {
-				name: data?.name || "",
-				email: data?.email || "",
-				id: data?.id || "",
-				picture: data?.picture || "",
+				name: user?.name || "",
+				email: user?.email || "",
+				id: user?.id || "",
+				createdAt: user?.createdAt || "",
+				updatedAt: user?.updatedAt || "",
+				// picture: data?.picture || "",
 			},
 		}),
 		[signedIn, signInWithGoogle, signout, signin],
 	);
 
 	useEffect(() => {
-		if (isError) {
+		if (isProfileError) {
 			signout();
 		}
 	}, [signout]);
 
 	return (
 		<AuthContext.Provider value={value}>
-			{isFetching && <LoadingScreen />}
-			{!isFetching && children}
+			{isProfileFetching && <LoadingScreen />}
+			{!isProfileFetching && children}
 		</AuthContext.Provider>
 	);
 }

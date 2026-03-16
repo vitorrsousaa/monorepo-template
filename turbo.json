@@ -26,8 +26,16 @@
         "^ci:lint"
       ]
     },
-    "format": {},
-    "ci:format": {},
+    "format": {
+      "dependsOn": [
+        "^format"
+      ]
+    },
+    "ci:format": {
+      "dependsOn": [
+        "^ci:format"
+      ]
+    },
     "typecheck": {},
     "ci:typecheck": {},
     "test": {
