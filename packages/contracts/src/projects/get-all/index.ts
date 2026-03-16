@@ -1,2 +1,3 @@
+export type { Project } from "../entities";
 export type { GetAllProjectsByUserResponse } from "./output";
-export type { ProjectDto } from "../entities";
+

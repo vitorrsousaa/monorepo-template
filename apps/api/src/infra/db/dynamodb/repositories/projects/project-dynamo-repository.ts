@@ -1,8 +1,9 @@
-import type { Project } from "@core/domain/project/project";
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ProjectDynamoDBEntity } from "@infra/db/dynamodb/mappers/projects/types";
+import { Project } from "@repo/contracts/projects";
 import { randomUUID } from "node:crypto";
+import { IDatabaseClient } from "../../contracts/client";
 import { PROJECT_DYNAMO_MOCKS } from "./project-dynamo-repository-mocks";
 
 /**
@@ -14,18 +15,12 @@ import { PROJECT_DYNAMO_MOCKS } from "./project-dynamo-repository-mocks";
  *
  * Uses a Mapper to convert between DB format and application format.
  *
- * TODO: Implement real DynamoDB integration
  * For now, keeps data in memory for development (see project-dynamo-repository-mocks.ts).
  */
 export class ProjectDynamoRepository implements IProjectRepository {
-	// TODO: Replace with DynamoDB client
-	// private dynamoClient: DynamoDBDocumentClient;
-	// private tableName: string;
-
-	// Temporary: In-memory simulation using shared mocks (PK = USER#userId per docs/database-design.md)
 	private dbProjects: ProjectDynamoDBEntity[] = [...PROJECT_DYNAMO_MOCKS];
 
-	constructor(private readonly mapper: ProjectMapper<ProjectDynamoDBEntity>) {}
+	constructor(private readonly dynamoClient: IDatabaseClient,private readonly mapper: ProjectMapper<ProjectDynamoDBEntity>) {}
 
 	async getAllProjectsByUser(userId: string): Promise<Project[]> {
 		// Docs: Use GSI6 (ProjectNameIndex) for alphabetical ordering by name
@@ -66,32 +61,24 @@ export class ProjectDynamoRepository implements IProjectRepository {
 	async create(
 		data: Omit<Project, "id" | "createdAt" | "updatedAt" | "deletedAt">,
 	): Promise<Project> {
-		// Generate unique ID and timestamps
 		const projectId = randomUUID();
 		const now = new Date();
+		const isoNow = now.toISOString();
 
-		// Build complete Project domain entity
 		const project: Project = {
 			id: projectId,
 			userId: data.userId,
 			name: data.name,
 			description: data.description,
+			color: data.color,
 			deletedAt: undefined,
-			createdAt: now,
-			updatedAt: now,
+			createdAt: isoNow,
+			updatedAt: isoNow,
 		};
 
-		// Convert to DynamoDB entity using mapper
 		const dbEntity = this.mapper.toDatabase(project);
 
-		// TODO: Replace with DynamoDB PutItem
-		// await this.dynamoClient.put({
-		//   TableName: this.tableName,
-		//   Item: dbEntity,
-		// });
-
-		// Temporary: Add to in-memory array
-		this.dbProjects.push(dbEntity);
+		await this.dynamoClient.create(dbEntity); 
 
 		return project;
 	}

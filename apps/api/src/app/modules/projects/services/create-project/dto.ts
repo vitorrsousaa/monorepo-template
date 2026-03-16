@@ -1,19 +1,12 @@
-import { z } from "zod";
+import { Project } from "@repo/contracts/projects";
+import { CreateProjectInput } from "@repo/contracts/projects/create";
 
-export const CreateProjectInputDTO = z.object({
-	userId: z.string().uuid(),
-	name: z.string(),
-	description: z.string().optional(),
-});
+export interface CreateProjectInputService extends CreateProjectInput {
+	userId: string;
+}
 
-export type CreateProjectInput = z.infer<typeof CreateProjectInputDTO>;
 
-export interface CreateProjectOutput {
-	project: {
-		id: string;
-		name: string;
-		description?: string;
-		createdAt: Date;
-		updatedAt: Date;
-	};
+
+export interface CreateProjectOutputService {
+	project: Project;
 }

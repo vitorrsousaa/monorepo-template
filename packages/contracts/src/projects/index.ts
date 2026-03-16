@@ -1,1 +1,1 @@
-export { type ProjectDto } from "./entities";
+export { type Project } from "./entities";

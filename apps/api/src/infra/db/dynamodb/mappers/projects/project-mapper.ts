@@ -1,5 +1,5 @@
-import type { Project } from "@core/domain/project/project";
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
+import { Project } from "@repo/contracts/projects";
 import type { ProjectDynamoDBEntity } from "./types";
 
 const USER_PREFIX = "USER#";
@@ -11,10 +11,6 @@ function buildPK(userId: string): string {
 
 function buildSK(projectId: string): string {
 	return `${PROJECT_PREFIX}${projectId}`;
-}
-
-function buildGSI6SK(name: string, projectId: string): string {
-	return `${PROJECT_PREFIX}${name}#${projectId}`;
 }
 
 export class ProjectDynamoMapper
@@ -31,12 +27,13 @@ export class ProjectDynamoMapper
 			id: dbEntity.id,
 			userId: dbEntity.user_id,
 			name: dbEntity.name,
-			description: dbEntity.description ?? undefined,
+			color: dbEntity.color,
+			description: dbEntity.description ?? null,
 			deletedAt: dbEntity.deleted_at
-				? new Date(dbEntity.deleted_at)
+				? new Date(dbEntity.deleted_at).toISOString()
 				: undefined,
-			createdAt: new Date(dbEntity.created_at),
-			updatedAt: new Date(dbEntity.updated_at),
+			createdAt: new Date(dbEntity.created_at).toISOString(),
+			updatedAt: new Date(dbEntity.updated_at).toISOString(),
 		};
 	}
 
@@ -49,20 +46,18 @@ export class ProjectDynamoMapper
 	toDatabase(project: Project): ProjectDynamoDBEntity {
 		const pk = buildPK(project.userId);
 		const sk = buildSK(project.id);
-		const gsi6sk = buildGSI6SK(project.name, project.id);
 
 		return {
 			PK: pk,
 			SK: sk,
-			GSI6PK: pk,
-			GSI6SK: gsi6sk,
 			id: project.id,
 			user_id: project.userId,
 			name: project.name,
-			description: project.description ?? null,
-			deleted_at: project.deletedAt?.toISOString() ?? null,
-			created_at: project.createdAt.toISOString(),
-			updated_at: project.updatedAt.toISOString(),
+			description: project?.description ?? null,
+			color: project.color,
+			deleted_at: project?.deletedAt ?? null,
+			created_at: project.createdAt,
+			updated_at: project.updatedAt,
 			entity_type: "PROJECT",
 		};
 	}
