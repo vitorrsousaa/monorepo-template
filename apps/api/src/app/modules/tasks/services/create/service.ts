@@ -9,16 +9,14 @@ export class CreateTasksService implements ICreateTasksService {
 	constructor(private readonly taskRepository: ITasksRepository) {}
 
 	async execute(input: CreateTasksInput): Promise<CreateTasksOutput> {
-		const { userId } = input;
-
 		const task = await this.taskRepository.create({
-			userId,
-			title: "Task de teste",
-			description: "Descrição da task de teste",
-			priority: "medium",
-			dueDate: null,
-			projectId: null,
-			sectionId: null,
+			userId: input.userId,
+			title: input.title,
+			description: input.description ?? "",
+			priority: input.priority ?? null,
+			dueDate: input.dueDate ?? null,
+			projectId: input.projectId ?? null,
+			sectionId: input.sectionId ?? null,
 		});
 		return { task };
 	}

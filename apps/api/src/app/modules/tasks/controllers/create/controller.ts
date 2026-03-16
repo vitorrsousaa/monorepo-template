@@ -21,12 +21,7 @@ export class CreateTasksController extends Controller<
 	): Promise<Controller.Response<CreateTaskResponse>> {
 		const result = await this.createTaskService.execute({
 			userId: request.userId,
-			title: "Task de teste",
-			description: "Descrição da task de teste",
-			priority: "medium",
-			dueDate: null,
-			projectId: null,
-			sectionId: null,
+			...request.body,
 		});
 		return {
 			statusCode: 200,

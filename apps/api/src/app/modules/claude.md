@@ -36,7 +36,7 @@ export * from "./dto";
 export * from "./service";
 ```
 
-- **Regra:** não importar `@repo/contracts` no service; contratos são da camada HTTP. O service trabalha com tipos internos (dto.ts do módulo).
+- **Regra:** service DTO é **interface TS pura** (sem Zod). O controller já validou com Zod; o service recebe dados tipados. Usar `import type` do `@repo/contracts` para derivar a interface (ex.: `extends CreateTaskInputDto`), adicionando campos internos como `userId`. Não importar schemas Zod no service. Ver [docs/schema-pattern.md](../../../../docs/schema-pattern.md).
 
 ## mappers/ (opcional por módulo)
 

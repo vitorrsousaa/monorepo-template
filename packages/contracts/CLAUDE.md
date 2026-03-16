@@ -45,6 +45,20 @@ Package exports (see `package.json`) are subpath-based: `@repo/contracts/*` maps
 
 When adding a new API route, add or extend the corresponding folder under `src/` and export from its `index.ts` so both API and SPA can import from `@repo/contracts/...`.
 
+## Validation constants pattern
+
+Contracts exports **validation constants** alongside Zod schemas. These constants are the single source of truth for min/max/enum values used by both API and SPA:
+
+```ts
+// contracts/tasks/create/index.ts
+export const TASK_TITLE_MIN = 1;
+export const TASK_TITLE_MAX = 100;
+export const TASK_DESCRIPTION_MAX = 500;
+export const TASK_PRIORITIES = ["low", "medium", "high"] as const;
+```
+
+When adding a new action schema, always extract numeric limits and enum values as named constants and export them. See [docs/schema-pattern.md](../../docs/schema-pattern.md).
+
 ## References
 
 - Root [CLAUDE.md](../../CLAUDE.md) — project identity, Task vs Todo, “always use @repo/contracts”.

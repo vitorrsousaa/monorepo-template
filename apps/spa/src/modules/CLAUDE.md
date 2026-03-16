@@ -33,7 +33,7 @@ Parte da aplicação organizada por **módulos** (feature-sliced). Cada módulo 
 | Subpasta | Propósito |
 |----------|-----------|
 | **components/** | Componentes de UI específicos do fluxo (cartões, listas, colunas, botões, etc.). |
-| **forms/** | Formulários reutilizáveis, geralmente com schema (Zod), hook de submit e componente; usados por modais e páginas. |
+| **forms/** | Formulários reutilizáveis, geralmente com schema (Zod), hook de submit e componente; usados por modais e páginas. Form schemas importam **constantes de validação do `@repo/contracts`** (ex.: `TASK_TITLE_MAX`) para manter min/max em sincronia com a API. Ver [docs/schema-pattern.md](../../../../../docs/schema-pattern.md). |
 | **modals/** | Modais que envolvem conteúdo (frequentemente um form) em `Dialog`. |
 
 ## Exceção: módulo auth

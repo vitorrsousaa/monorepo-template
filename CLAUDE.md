@@ -65,6 +65,15 @@ Shared DTOs live in `packages/contracts/`. **Always import from `@repo/contracts
 
 See `apps/api/CLAUDE.md` and `apps/spa/CLAUDE.md` for app-specific details.
 
+## Schema Pattern (Contracts → API → SPA)
+
+Contracts is the **single source of truth** for validation. See [docs/schema-pattern.md](docs/schema-pattern.md) for full details.
+
+- **Contracts**: exports validation constants (`TASK_TITLE_MAX`, etc.) + Zod schema + types
+- **API Service DTO**: pure TS interface (extends contracts type + `userId`) — no Zod
+- **SPA Form schema**: imports constants from contracts for min/max sync
+
 ## Related documentation
 
 - [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) — shared types and usage
+- [docs/schema-pattern.md](docs/schema-pattern.md) — schema pattern across layers
