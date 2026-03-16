@@ -1,5 +1,5 @@
 import { ROUTES } from "@/config/routes";
-import { TodoLayout } from "@/layouts/app/todo-layout";
+import { TasksLayout } from "@/layouts/app/tasks-layout";
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
@@ -26,7 +26,7 @@ const Upcoming = lazy(() =>
 
 export const tasksRoutes: RouteObject = {
 	path: "/",
-	element: <TodoLayout />,
+	element: <TasksLayout />,
 	children: [
 		{
 			path: ROUTES.TODO.DASHBOARD,
