@@ -1,4 +1,5 @@
 import { ROUTES } from "@/config/routes";
+import { useAuth } from "@/hooks/auth";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import { cn } from "@repo/ui/utils";
 import {
@@ -141,6 +142,10 @@ export function Dashboard() {
 	const pendingToday = todayTasks.filter((t) => t.status === "pendente").length;
 	const hasOverdue = overdueTasks > 0;
 
+	const { user } = useAuth();
+
+	const firstName = user?.name.split(" ")[0];
+
 	return (
 		<div className="p-8 space-y-6 max-w-6xl">
 			{/* Greeting */}
@@ -154,7 +159,7 @@ export function Dashboard() {
 					})}
 				</p>
 				<h2 className="text-[26px] font-semibold text-foreground tracking-tight leading-tight">
-					Bom dia, Marcos 👋
+					Bom dia, {firstName} 👋
 				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
 					Você tem{" "}
@@ -188,7 +193,7 @@ export function Dashboard() {
 							className={cn(
 								"relative rounded-[14px] p-5 overflow-hidden bg-card border border-border shadow-sm",
 								tintedBg &&
-									"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
+								"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
 							)}
 						>
 							{/* Left accent stripe */}
@@ -217,9 +222,9 @@ export function Dashboard() {
 									className={cn(
 										"text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
 										trendVariant === "up" &&
-											"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+										"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 										trendVariant === "down" &&
-											"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+										"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
 										trendVariant === "flat" && "bg-muted text-muted-foreground",
 									)}
 								>

@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 export function NavUser() {
 	const { isMobile } = useSidebar();
 	const navigate = useNavigate();
-	const { signout } = useAuth();
+	const { user, signout } = useAuth();
 
 	const handleNavigateToProfile = () => {
 		navigate(ROUTES.USER.PROFILE);
@@ -40,10 +40,10 @@ export function NavUser() {
 							</Avatar>
 							<div className="flex-1 text-left min-w-0">
 								<p className="text-sm font-medium text-sidebar-foreground truncate">
-									Marcos Costa
+									{user?.name}
 								</p>
 								<p className="text-xs text-sidebar-foreground/50 truncate">
-									marcos@email.com
+									{user?.email}
 								</p>
 							</div>
 						</button>

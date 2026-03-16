@@ -1,34 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useAuth } from "@/hooks/auth";
 import {
-	Camera,
-	CheckCircle2,
-	Target,
-	FolderKanban,
-	Flame,
-	TrendingUp,
-	Star,
-	Edit3,
-	Check,
-	X,
-} from "lucide-react";
-import { cn } from "@repo/ui/utils";
+	GOALS_PROJECTS_MOCK,
+	GOALS_TASKS_MOCK,
+} from "@/pages/app/goals/dashboard/goals-dashboard.mocks";
+import {
+	PROJECTS_MOCK,
+	TASKS_MOCK,
+} from "@/pages/app/todo/dashboard/dashboard.mocks";
 import { Avatar, AvatarFallback } from "@repo/ui/avatar";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
-import { Separator } from "@repo/ui/separator";
 import { Textarea } from "@repo/ui/textarea";
+import { cn } from "@repo/ui/utils";
 import {
-	PROJECTS_MOCK,
-	TASKS_MOCK,
-} from "@/pages/app/todo/dashboard/dashboard.mocks";
-import {
-	GOALS_PROJECTS_MOCK,
-	GOALS_TASKS_MOCK,
-} from "@/pages/app/goals/dashboard/goals-dashboard.mocks";
+	Camera,
+	Check,
+	CheckCircle2,
+	Edit3,
+	Flame,
+	FolderKanban,
+	Star,
+	Target,
+	TrendingUp,
+	X,
+} from "lucide-react";
+import { useState } from "react";
 
 function StatCard({
 	label,
@@ -135,8 +135,10 @@ export function Profile() {
 	const projects = PROJECTS_MOCK;
 	const goals = GOALS_PROJECTS_MOCK;
 
+	const { user } = useAuth();
+
 	const [editing, setEditing] = useState(false);
-	const [name, setName] = useState("Marcos Costa");
+	const [name, setName] = useState(user?.name || "");
 	const [bio, setBio] = useState(
 		"Desenvolvedor apaixonado por produtividade, tecnologia e aprendizado contínuo.",
 	);
