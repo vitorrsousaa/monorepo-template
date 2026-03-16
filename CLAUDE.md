@@ -58,10 +58,10 @@ Shared DTOs live in `packages/contracts/`. **Always import from `@repo/contracts
 
 ## Current Dev State
 
-- **Auth: MOCKED** — `MOCK_USER_ID` hardcoded in `apps/api/src/app/config/mock-user.ts`. No JWT yet.
-- **Repositories: IN-MEMORY** — DynamoDB repos exist but use `TODO_DYNAMO_MOCKS` arrays. Data resets on each serverless-offline restart.
+- **Auth: Cognito JWT** — Cognito authorizer validates JWT tokens. `MOCK_USER_ID` descontinuado.
+- **Repositories: DynamoDB** — Repos implementam acesso ao DynamoDB via `IDatabaseClient`.
 - **Tests: PLACEHOLDER** — test files exist but coverage is minimal.
-- **DynamoDB: NOT connected** — all repos have `// TODO: Implement real DynamoDB` blocks.
+- **Serverless Offline: REMOVIDO** — migrado para deployment real ou alternativa.
 
 See `apps/api/CLAUDE.md` and `apps/spa/CLAUDE.md` for app-specific details.
 

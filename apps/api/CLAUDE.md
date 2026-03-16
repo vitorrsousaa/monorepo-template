@@ -1,6 +1,6 @@
 # API — Claude Context
 
-Stack: AWS Lambda + Serverless Framework + TypeScript. Clean Architecture. Runs locally via `serverless-offline` on **port 4000**.
+Stack: AWS Lambda + Serverless Framework + TypeScript. Clean Architecture. Runs on **port 4000**.
 
 ## Request Flow
 
@@ -150,31 +150,24 @@ export class XService implements IXService {
 - Errors are handled in the **lambda adapter** (try/catch around `controller.execute(request)` + `errorHandler`). Controllers do not use try/catch or call `errorHandler`.
 - `missingFields` (used by base `Controller.validateBody`) validates via Zod schema and **throws** `ZodError` on failure; the adapter turns it into a formatted response.
 
-## Auth State — MOCK
+## Auth State — Cognito JWT
 
-```ts
-// apps/api/src/app/config/mock-user.ts
-export const MOCK_USER_ID = "93470f22-3bc0-4a98-90b2-306fb233e0f5" as const;
-```
+- `requestAdapter` extracts `userId` (sub claim) do JWT do Cognito via `event.requestContext.authorizer.jwt.claims.sub`
+- Rotas com `CognitoAuthorizer` no `serverless.yml` requerem JWT válido
+- `MOCK_USER_ID` foi descontinuado; remover quando encontrado em mocks antigos
 
-- `requestAdapter` injects `userId` from `MOCK_USER_ID` (not from JWT)
-- **Do not implement real JWT auth unless explicitly asked**
-- When real auth arrives: replace `requestAdapter`, remove `MOCK_USER_ID`
+## DynamoDB State
 
-## DynamoDB State — IN-MEMORY MOCKS
+Repositórios implementam acesso ao DynamoDB via `IDatabaseClient`. Verificar configuração de ambiente para connection string.
 
-All repositories use in-memory arrays from `*-repository.mocks.ts` files. DynamoDB client is commented out with `// TODO: Implement real DynamoDB`.
-
-- Data **does not persist** between serverless-offline restarts
-- **Do not implement real DynamoDB unless explicitly asked**
-- Mock IDs live in `src/infra/db/dynamodb/repositories/mock-ids.ts`
+- Mock IDs (legado): `src/infra/db/dynamodb/repositories/mock-ids.ts`
 - DB schema reference: `docs/database-design.md` (single-table, PK/SK pattern)
+- Remover arquivos `*-repository.mocks.ts` quando não mais necessários
 
 ## Local Dev
 
 ```bash
-pnpm dev:api          # nodemon + serverless offline, port 4000
-pnpm dev:api:no-watch # serverless offline without nodemon
+pnpm dev:api          # Start API on port 4000
 ```
 
 ## Deploy

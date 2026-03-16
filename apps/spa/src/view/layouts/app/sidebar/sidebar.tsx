@@ -34,7 +34,7 @@ const data = {
 		avatar: "/avatars/shadcn.jpg",
 	},
 	navMain: [
-		{ url: ROUTES.TODO.INBOX, label: "Inbox", icon: Inbox },
+		{ url: ROUTES.TASKS.INBOX, label: "Inbox", icon: Inbox },
 		{ url: ROUTES.TODO.DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
 		{ url: ROUTES.TODO.TODAY, label: "Today", icon: CalendarDays },
 		{ url: ROUTES.TODO.UPCOMING, label: "Soon", icon: CalendarClock },
