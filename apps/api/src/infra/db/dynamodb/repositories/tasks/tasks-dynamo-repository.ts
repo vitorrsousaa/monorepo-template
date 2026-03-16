@@ -52,17 +52,20 @@ export class TasksDynamoRepository implements ITasksRepository {
 	}
 
 	async getInbox(userId: string): Promise<Task[]> {
-		// Docs: PK = USER#userId AND SK begins_with TODO#INBOX#
-		// TODO: DynamoDB Query KeyConditionExpression: PK = :pk AND begins_with(SK, 'TODO#INBOX#')
 		const pk = `USER#${userId}`;
 		
 		const queryResult = await this.dynamoClient.query<TasksDynamoDBEntity[]>({
 			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+			ExpressionAttributeNames: {
+				"#deletedAt": "deleted_at",
+				"#completed": "completed",
+			},
 			ExpressionAttributeValues: {
 				":pk": pk,
-				":skPrefix": "TODO#INBOX#",
+				":skPrefix": "TASK#INBOX#PENDING#",
+				":falseValue": false,
 			},
-			FilterExpression: `attribute_not_exists(deleted_at) AND completed = false`,
+			FilterExpression: `attribute_not_exists(#deletedAt) AND #completed = :falseValue`,
 			IndexName: undefined,
 		})
 		

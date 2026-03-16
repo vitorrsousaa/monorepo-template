@@ -14,9 +14,8 @@
     "dev:no-watch": "pnpm exec serverless offline",
     "deploy:dev": "pnpm exec serverless deploy --stage dev",
     "deploy:prod": "pnpm exec serverless deploy --stage prod",
-    "deploy:fn": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage \"$2\"' sh",
-    "deploy:fn:dev": "pnpm exec serverless deploy function --stage dev",
-    "deploy:fn:prod": "pnpm exec serverless deploy function --stage prod",
+    "deploy:fn:dev": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage dev' sh",
+    "deploy:fn:prod": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage prod' sh",
     "serverless": "pnpm exec serverless",
     "validate:dev": "pnpm exec serverless package --stage dev",
     "validate:prod": "pnpm exec serverless package --stage prod"
