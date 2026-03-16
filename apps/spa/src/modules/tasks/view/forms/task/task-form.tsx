@@ -38,6 +38,16 @@ export interface TaskFormProps {
 const sidebarLabelClass =
 	"text-[10px] font-semibold uppercase tracking-wide text-muted-foreground";
 
+/**
+ * Checks if a date is in the past (before today).
+ * Used to disable past dates in the date picker.
+ */
+function isDateInPast(date: Date): boolean {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	return date < today;
+}
+
 export function TaskForm(props: TaskFormProps) {
 	const { onCancel, mode, metadata } = props;
 
@@ -238,6 +248,7 @@ export function TaskForm(props: TaskFormProps) {
 											onChange={field.onChange}
 											placeholder="No due date"
 											className="h-[30px] text-[11px] mt-1"
+											disabledDates={isDateInPast}
 										/>
 									</FormControl>
 									<FormMessage />

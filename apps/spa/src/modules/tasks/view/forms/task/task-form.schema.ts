@@ -29,7 +29,18 @@ export const TaskFormSchema = z.object({
 	project: z.string(),
 	section: z.string().optional(),
 	priority: z.enum(FORM_PRIORITY_VALUES),
-	dueDate: z.date().optional(),
+	dueDate: z
+		.date()
+		.optional()
+		.refine(
+			(date) => {
+				if (!date) return true; // optional field is valid
+				const today = new Date();
+				today.setHours(0, 0, 0, 0);
+				return date >= today;
+			},
+			"Due date cannot be in the past",
+		),
 	completed: z.boolean().optional(),
 	goal: z.string().optional(),
 	recurrence: recurrenceSchema.optional(),
