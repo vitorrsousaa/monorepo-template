@@ -56,18 +56,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const signout = useCallback(() => {
 		tokenStorage.remove();
-		queryClient.invalidateQueries({
-			queryKey: QUERY_KEYS.AUTH.PROFILE,
-		});
-
+		queryClient.removeQueries({ queryKey: QUERY_KEYS.AUTH.PROFILE });
 		setSignedIn(false);
-	}, []);
+	}, [queryClient]);
 
-	const signin = useCallback((accessToken: string) => {
-		tokenStorage.set(accessToken);
-
-		setSignedIn(true);
-	}, []);
+	const signin = useCallback(
+		(accessToken: string) => {
+			tokenStorage.set(accessToken);
+			queryClient.removeQueries({ queryKey: QUERY_KEYS.AUTH.PROFILE });
+			setSignedIn(true);
+		},
+		[queryClient],
+	);
 
 	const value = useMemo<IAuthContextValue>(
 		() => ({
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		if (isProfileError) {
 			signout();
 		}
-	}, [signout]);
+	}, [isProfileError, signout]);
 
 	return (
 		<AuthContext.Provider value={value}>
