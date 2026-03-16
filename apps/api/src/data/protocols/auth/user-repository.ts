@@ -18,4 +18,6 @@ export interface IUserRepository {
 	create(
 		data: Omit<User, "createdAt" | "updatedAt" | "deletedAt">,
 	): Promise<User>;
+
+	getById(userId: string): Promise<User | null>;
 }

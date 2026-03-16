@@ -1,8 +1,11 @@
 import { UserMapper } from "@data/protocols/auth/user-mapper";
 import { IUserRepository } from "@data/protocols/auth/user-repository";
 import { User } from "@repo/contracts/auth/user";
-import { IDatabaseClient } from "../../contracts/client";
-import { UserDynamoDBEntity } from "../../mappers/user/types";
+import {
+	IDatabaseClient,
+	IDatabaseClientGetArgs,
+} from "@infra/db/dynamodb/contracts/client";
+import { UserDynamoDBEntity } from "@infra/db/dynamodb/mappers/user/types";
 
 export class UserDynamoRepository implements IUserRepository {
 	constructor(
@@ -24,5 +27,18 @@ export class UserDynamoRepository implements IUserRepository {
 		await this.dynamoClient.create(dbEntity);
 
 		return newUser;
+	}
+
+	async getById(userId: string): Promise<User | null> {
+		const getArgs: IDatabaseClientGetArgs = {
+			Key: {
+				PK: `USER#${userId}`,
+				SK: `PROFILE`,
+			},
+		};
+
+		const dbEntity = await this.dynamoClient.get<UserDynamoDBEntity>(getArgs);
+
+		return dbEntity ? this.mapper.toDomain(dbEntity) : null;
 	}
 }

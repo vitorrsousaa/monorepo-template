@@ -5,6 +5,8 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { BaseDynamoDBEntity } from "./entity";
 
+export type IDatabaseClientGetArgs = Omit<GetCommandInput, "TableName">;
+
 export interface IDatabaseClient {
 	create<T extends BaseDynamoDBEntity>(attributes: T): Promise<void>;
 	update(args: Omit<UpdateCommandInput, "TableName">): Promise<void>;
@@ -13,6 +15,6 @@ export interface IDatabaseClient {
 	// 		IndexName?: TIndexes;
 	// 	},
 	// ): Promise<T | undefined>;
-	get<T>(args: Omit<GetCommandInput, "TableName">): Promise<T | undefined>;
+	get<T>(args: IDatabaseClientGetArgs): Promise<T | undefined>;
 	delete(args: Omit<DeleteCommandInput, "TableName">): Promise<void>;
 }
