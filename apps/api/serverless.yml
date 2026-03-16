@@ -96,6 +96,14 @@ functions:
       - httpApi:
           path: /auth/signin
           method: post
+  profile:
+    handler: src/server/functions/auth/profile/index.handler
+    events:
+      - httpApi:
+          path: /auth/profile
+          method: get
+          authorizer: 
+            name: CognitoAuthorizer
   preSignUpTrigger:
     handler: src/server/triggers/auth/presignup/index.handler
     events:
