@@ -1,0 +1,91 @@
+import { IDatabaseTable } from "@application/config/tables";
+import {
+	BatchWriteCommand,
+	BatchWriteCommandInput,
+	DeleteCommand,
+	DeleteCommandInput,
+	DynamoDBDocumentClient,
+	GetCommand,
+	GetCommandInput,
+	PutCommand,
+	QueryCommand,
+	QueryCommandInput,
+	TransactWriteCommand,
+	TransactWriteCommandInput,
+	UpdateCommand,
+	UpdateCommandInput,
+} from "@aws-sdk/lib-dynamodb";
+import { IDatabaseClient } from "../contracts/client";
+import { BaseDynamoDBEntity } from "../contracts/entity";
+
+export class DatabaseClient implements IDatabaseClient {
+	constructor(
+		private readonly table: IDatabaseTable,
+		private readonly dynamoClient: DynamoDBDocumentClient,
+	) {}
+	async batchWrite(args: BatchWriteCommandInput): Promise<void> {
+		const command = new BatchWriteCommand({ ...args });
+
+		await this.dynamoClient.send(command);
+	}
+	async transactWrite(args: TransactWriteCommandInput): Promise<void> {
+		const command = new TransactWriteCommand({ ...args });
+
+		await this.dynamoClient.send(command);
+	}
+
+	async create<T extends BaseDynamoDBEntity>(attributes: T) {
+		const command = new PutCommand({
+			TableName: this.table.TABLE_NAME,
+			Item: {
+				...attributes,
+			},
+		});
+
+		await this.dynamoClient.send(command);
+	}
+
+	async delete(args: Omit<DeleteCommandInput, "TableName">) {
+		const command = new DeleteCommand({
+			TableName: this.table.TABLE_NAME,
+			...args,
+		});
+
+		await this.dynamoClient.send(command);
+	}
+
+	async update(args: Omit<UpdateCommandInput, "TableName">) {
+		const updateCommand = new UpdateCommand({
+			TableName: this.table.TABLE_NAME,
+			...args,
+		});
+
+		await this.dynamoClient.send(updateCommand);
+	}
+
+	async query<T>(
+		args: Omit<QueryCommandInput, "TableName">,
+	): Promise<T | undefined> {
+		const command = new QueryCommand({
+			TableName: this.table.TABLE_NAME,
+			...args,
+		});
+
+		const { Items } = await this.dynamoClient.send(command);
+
+		return Items as T | undefined;
+	}
+
+	async get<T>(
+		args: Omit<GetCommandInput, "TableName">,
+	): Promise<T | undefined> {
+		const command = new GetCommand({
+			TableName: this.table.TABLE_NAME,
+			...args,
+		});
+
+		const { Item } = await this.dynamoClient.send(command);
+
+		return Item as T | undefined;
+	}
+}

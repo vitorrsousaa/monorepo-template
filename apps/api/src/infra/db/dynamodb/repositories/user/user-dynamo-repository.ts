@@ -1,10 +1,14 @@
 import { UserMapper } from "@data/protocols/auth/user-mapper";
 import { IUserRepository } from "@data/protocols/auth/user-repository";
 import { User } from "@repo/contracts/auth/user";
+import { IDatabaseClient } from "../../contracts/client";
 import { UserDynamoDBEntity } from "../../mappers/user/types";
 
 export class UserDynamoRepository implements IUserRepository {
-	constructor(private readonly mapper: UserMapper<UserDynamoDBEntity>) {}
+	constructor(
+		private readonly dynamoClient: IDatabaseClient,
+		private readonly mapper: UserMapper<UserDynamoDBEntity>,
+	) {}
 
 	async create(
 		data: Omit<User, "createdAt" | "updatedAt" | "deletedAt">,
@@ -17,6 +21,8 @@ export class UserDynamoRepository implements IUserRepository {
 		};
 		const dbEntity = this.mapper.toDatabase(newUser);
 
-		return this.mapper.toDomain(dbEntity);
+		await this.dynamoClient.create(dbEntity);
+
+		return newUser;
 	}
 }
