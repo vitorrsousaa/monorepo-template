@@ -12,7 +12,7 @@ export class CreateTasksService implements ICreateTasksService {
 		const task = await this.taskRepository.create({
 			userId: input.userId,
 			title: input.title,
-			description: input.description ?? "",
+			description: input.description ?? null,
 			priority: input.priority ?? null,
 			dueDate: input.dueDate ?? null,
 			projectId: input.projectId ?? null,

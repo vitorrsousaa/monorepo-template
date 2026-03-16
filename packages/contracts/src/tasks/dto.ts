@@ -9,7 +9,7 @@ export interface Task {
 	projectId: string | null;
 	sectionId: string | null;
 	title: string;
-	description: string;
+	description: string | null;
 	completed: boolean;
 	createdAt: string;
 	updatedAt: string;
