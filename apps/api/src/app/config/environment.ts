@@ -16,6 +16,7 @@ export const envSchema = z.object({
 	STRIPE_REDIRECT_URL: z.string(),
 	STRIPE_PRICE_ID: z.string(),
 	COGNITO_CLIENT_ID: z.string(),
+	SERVICE: z.string(),
 });
 
 dotenv.config();
@@ -48,7 +49,8 @@ export interface IConfig {
 	STRIPE_PRO_QUOTA: number;
 	STRIPE_REDIRECT_URL: string;
 	STRIPE_PRICE_ID: string;
-	COGNITO_CLIENT_ID: string;
+	COGNITO_CLIENT_ID: string;	
+	SERVICE: string;
 }
 
 export class Config implements IConfig {
@@ -74,4 +76,5 @@ export class Config implements IConfig {
 	public STRIPE_REDIRECT_URL = process.env.STRIPE_REDIRECT_URL as string;
 	public STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID as string;
 	public COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID as string;
+	public SERVICE = process.env.SERVICE as string;
 }
