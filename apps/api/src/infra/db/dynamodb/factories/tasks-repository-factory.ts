@@ -6,8 +6,11 @@ import { TasksDynamoRepository } from "@infra/db/dynamodb/repositories/tasks/tas
 export function makeTasksDynamoRepository(): ITasksRepository {
 	const mapper = new TasksDynamoMapper();
 	const databaseClient = makeDatabaseClient();
-	
-	const tasksRepositoryInstance = new TasksDynamoRepository(databaseClient, mapper);
-	
+
+	const tasksRepositoryInstance = new TasksDynamoRepository(
+		databaseClient,
+		mapper,
+	);
+
 	return tasksRepositoryInstance;
 }

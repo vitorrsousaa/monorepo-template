@@ -184,11 +184,11 @@ functions:
           method: get
           authorizer: 
             name: CognitoAuthorizer
-  createTodo:
-    handler: src/server/functions/todo/create-todo/index.handler
+  createTasks:
+    handler: src/server/functions/tasks/create-tasks/index.handler
     events:
       - httpApi:
-          path: /todos
+          path: /tasks/create
           method: post
           authorizer: 
             name: CognitoAuthorizer

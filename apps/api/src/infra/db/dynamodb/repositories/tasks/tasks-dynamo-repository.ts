@@ -33,7 +33,10 @@ export class TasksDynamoRepository implements ITasksRepository {
 	) {}
 
 	async create(
-		data: Omit<Task, "id" | "createdAt" | "updatedAt">,
+		data: Omit<
+			Task,
+			"id" | "createdAt" | "updatedAt" | "completedAt" | "completed" | "order"
+		>,
 	): Promise<Task> {
 		const now = new Date();
 		const nowIso = now.toISOString();
@@ -42,6 +45,9 @@ export class TasksDynamoRepository implements ITasksRepository {
 			...data,
 			createdAt: nowIso,
 			updatedAt: nowIso,
+			completedAt: null,
+			completed: false,
+			order: 0,
 		};
 
 		const dbEntity = this.mapper.toDatabase(newTask);

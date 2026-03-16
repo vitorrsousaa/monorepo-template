@@ -11,7 +11,12 @@ import type { Task } from "@repo/contracts/tasks";
  */
 export interface ITasksRepository {
 	findInboxTasks(userId: string): Promise<Task[]>;
-	create(data: Omit<Task, "id" | "createdAt" | "updatedAt">): Promise<Task>;
+	create(
+		data: Omit<
+			Task,
+			"id" | "createdAt" | "updatedAt" | "completedAt" | "completed" | "order"
+		>,
+	): Promise<Task>;
 
 	/**
 	 * Get todos for Today view: dueDate <= today AND completed = false.
