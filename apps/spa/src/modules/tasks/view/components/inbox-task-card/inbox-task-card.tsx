@@ -1,5 +1,5 @@
 import { truncateText } from "@/utils/truncate-text";
-import type { TaskDto } from "@repo/contracts/tasks";
+import type { TaskDto } from "@repo/contracts/tasks/entities";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";

@@ -4,10 +4,10 @@ import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { TaskFormProps } from "./task-form";
-import { getTaskFormValues, TaskFormSchema } from "./task-form.schema";
+import { getTaskFormValues, TaskFormSchema, type TTaskFormSchema } from "./task-form.schema";
 
 export const useTaskFormHook = (props: TaskFormProps) => {
-	const { initialValues } = props;
+	const { initialValues, onSubmit } = props;
 	const { projects } = useGetAllProjectsByUser();
 	const { goals } = useGetAllGoals();
 
@@ -34,12 +34,20 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 	const { handleSubmit: hookFormSubmit } = methods;
 
 	const handleSubmit = hookFormSubmit(async (data) => {
-		const projectId = data.project === "inbox" ? undefined : data.project;
-		const sectionId = data.section === "none" ? undefined : data.section;
-		const priority = data.priority === "none" ? undefined : data.priority;
-		const dueDate = data.dueDate;
+		// const projectId = data.project === "inbox" ? undefined : data.project;
+		// const sectionId = data.section === "none" ? undefined : data.section;
+		const dueDate = data.dueDate ? new Date(data.dueDate) : undefined;
 
-		console.log({ ...data, projectId, sectionId, priority, dueDate });
+		const payload: TTaskFormSchema = { 
+			title: data.title,
+			description: data.description,
+			project: data.project,
+			section: data.section,
+			priority: data.priority,
+			dueDate
+		}
+		
+		await onSubmit?.(payload)
 	});
 
 	return {

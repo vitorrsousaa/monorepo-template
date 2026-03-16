@@ -1,5 +1,11 @@
-import { PRIORITY_VALUES } from "@/modules/todo/app/entities/todo";
+import {
+	TASK_DESCRIPTION_MAX,
+	TASK_TITLE_MAX,
+	TASK_TITLE_MIN,
+} from "@repo/contracts/tasks/create";
 import * as z from "zod";
+
+const FORM_PRIORITY_VALUES = ["none", "low", "medium", "high"] as const;
 
 const recurrenceSchema = z.object({
 	enabled: z.boolean(),
@@ -12,11 +18,17 @@ const recurrenceSchema = z.object({
 
 export const TaskFormSchema = z.object({
 	id: z.string().optional(),
-	title: z.string(),
-	description: z.string().optional(),
+	title: z
+		.string()
+		.min(TASK_TITLE_MIN, "Title cannot be empty")
+		.max(TASK_TITLE_MAX, `Title must have at most ${TASK_TITLE_MAX} characters`),
+	description: z
+		.string()
+		.max(TASK_DESCRIPTION_MAX, `Description must have at most ${TASK_DESCRIPTION_MAX} characters`)
+		.optional(),
 	project: z.string(),
 	section: z.string().optional(),
-	priority: z.enum(PRIORITY_VALUES),
+	priority: z.enum(FORM_PRIORITY_VALUES),
 	dueDate: z.date().optional(),
 	completed: z.boolean().optional(),
 	goal: z.string().optional(),

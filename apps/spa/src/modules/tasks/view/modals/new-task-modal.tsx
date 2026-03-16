@@ -1,7 +1,9 @@
+import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { X } from "lucide-react";
+import { mapTaskFormToCreateInput } from "../../app/mappers/create-tasks";
 import { TaskForm } from "../forms/task";
 
 interface NewTaskModalProps {
@@ -17,6 +19,14 @@ export function NewTaskModal(props: NewTaskModalProps) {
 		project: projectId ?? "inbox",
 		section: sectionId ?? "none",
 	};
+
+	const { createTasks } = useCreateTasks()
+
+	async function handleSubmit(data: TTaskFormSchema) {
+		const taskInput = mapTaskFormToCreateInput(data);
+		createTasks(taskInput);
+	}
+
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
@@ -36,6 +46,7 @@ export function NewTaskModal(props: NewTaskModalProps) {
 					mode="create"
 					onCancel={onClose}
 					initialValues={initialValues}
+					onSubmit={handleSubmit}
 				/>
 			</DialogContent>
 		</Dialog>

@@ -18,14 +18,15 @@ import {
 } from "@repo/ui/select";
 import { Textarea } from "@repo/ui/textarea";
 import { cn } from "@repo/ui/utils";
+import { RecurrencePanel } from "./recurrence-panel";
 import { useTaskFormHook } from "./task-form.hook";
 import type { TTaskFormSchema } from "./task-form.schema";
-import { RecurrencePanel } from "./recurrence-panel";
 
 export interface TaskFormProps {
 	onCancel?: () => void;
 	onDelete?: () => void;
 	onDuplicate?: () => void;
+	onSubmit?: (data: TTaskFormSchema) => Promise<void>;
 	initialValues?: Partial<TTaskFormSchema>;
 	mode: "create" | "edit";
 	metadata?: {

@@ -16,7 +16,7 @@ export const createTaskSchema = z.object({
 		.max(TASK_DESCRIPTION_MAX, `Description must have at most ${TASK_DESCRIPTION_MAX} characters`)
 		.optional()
 		.nullable(),
-	priority: z.enum(TASK_PRIORITIES).optional(),
+	priority: z.enum(TASK_PRIORITIES).optional().nullable(),
 	dueDate: z.string().nullable().optional(),
 	projectId: z.string().uuid().nullable().optional(),
 	sectionId: z.string().uuid().nullable().optional(),
