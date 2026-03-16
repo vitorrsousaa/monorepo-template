@@ -1,8 +1,15 @@
 import { Controller } from "@application/interfaces/controller";
 import type { ICreateProjectService } from "@application/modules/projects/services/create-project";
-import { CreateProjectInput, createProjectSchema, type CreateProjectOutput } from "@repo/contracts/projects/create";
+import {
+	CreateProjectInput,
+	createProjectSchema,
+	type CreateProjectOutput,
+} from "@repo/contracts/projects/create";
 
-export class CreateProjectController extends Controller<"private", CreateProjectOutput> {
+export class CreateProjectController extends Controller<
+	"private",
+	CreateProjectOutput
+> {
 	constructor(private readonly createProjectService: ICreateProjectService) {
 		super();
 	}
@@ -10,7 +17,7 @@ export class CreateProjectController extends Controller<"private", CreateProject
 	protected override schema = createProjectSchema;
 
 	protected override async handle(
-		request: Controller.Request<"private",CreateProjectInput>,
+		request: Controller.Request<"private", CreateProjectInput>,
 	): Promise<Controller.Response<CreateProjectOutput>> {
 		const result = await this.createProjectService.execute({
 			...request.body,

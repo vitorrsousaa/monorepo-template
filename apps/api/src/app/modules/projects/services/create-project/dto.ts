@@ -5,8 +5,6 @@ export interface CreateProjectInputService extends CreateProjectInput {
 	userId: string;
 }
 
-
-
 export interface CreateProjectOutputService {
 	project: Project;
 }

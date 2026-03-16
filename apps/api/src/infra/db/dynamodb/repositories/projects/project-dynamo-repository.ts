@@ -20,7 +20,10 @@ import { PROJECT_DYNAMO_MOCKS } from "./project-dynamo-repository-mocks";
 export class ProjectDynamoRepository implements IProjectRepository {
 	private dbProjects: ProjectDynamoDBEntity[] = [...PROJECT_DYNAMO_MOCKS];
 
-	constructor(private readonly dynamoClient: IDatabaseClient,private readonly mapper: ProjectMapper<ProjectDynamoDBEntity>) {}
+	constructor(
+		private readonly dynamoClient: IDatabaseClient,
+		private readonly mapper: ProjectMapper<ProjectDynamoDBEntity>,
+	) {}
 
 	async getAllProjectsByUser(userId: string): Promise<Project[]> {
 		// Docs: Use GSI6 (ProjectNameIndex) for alphabetical ordering by name
@@ -78,7 +81,7 @@ export class ProjectDynamoRepository implements IProjectRepository {
 
 		const dbEntity = this.mapper.toDatabase(project);
 
-		await this.dynamoClient.create(dbEntity); 
+		await this.dynamoClient.create(dbEntity);
 
 		return project;
 	}

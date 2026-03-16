@@ -53,7 +53,7 @@ export class TasksDynamoRepository implements ITasksRepository {
 
 	async getInbox(userId: string): Promise<Task[]> {
 		const pk = `USER#${userId}`;
-		
+
 		const queryResult = await this.dynamoClient.query<TasksDynamoDBEntity[]>({
 			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
 			ExpressionAttributeNames: {
@@ -67,14 +67,13 @@ export class TasksDynamoRepository implements ITasksRepository {
 			},
 			FilterExpression: `attribute_not_exists(#deletedAt) AND #completed = :falseValue`,
 			IndexName: undefined,
-		})
-		
+		});
+
 		const resultTasks = queryResult ? queryResult : [];
-		
+
 		const tasks = resultTasks.map((dbTodo) => this.mapper.toDomain(dbTodo));
-		
+
 		return tasks;
-		
 	}
 
 	async findTodayTodos(userId: string): Promise<Todo[]> {

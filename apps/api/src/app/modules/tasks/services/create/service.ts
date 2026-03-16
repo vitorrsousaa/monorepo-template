@@ -8,7 +8,9 @@ export interface ICreateTasksService
 export class CreateTasksService implements ICreateTasksService {
 	constructor(private readonly taskRepository: ITasksRepository) {}
 
-	async execute(input: CreateTasksInputService): Promise<CreateTasksOutputService> {
+	async execute(
+		input: CreateTasksInputService,
+	): Promise<CreateTasksOutputService> {
 		const task = await this.taskRepository.create({
 			userId: input.userId,
 			title: input.title,
