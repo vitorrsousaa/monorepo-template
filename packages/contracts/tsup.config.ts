@@ -3,9 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
 	entry: [
 		"src/index.ts",
-		"src/auth/signup/index.ts",
-		"src/auth/signin/index.ts",
-		"src/auth/user/index.ts",
+		"src/auth/**/*.ts",
 		"src/todo/index.ts",
 		"src/todo/inbox/index.ts",
 		"src/todo/create/index.ts",
