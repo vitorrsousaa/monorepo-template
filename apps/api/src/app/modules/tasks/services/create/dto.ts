@@ -1,10 +1,10 @@
-import type { CreateTaskInputDto } from "@repo/contracts/tasks/create";
 import type { Task } from "@repo/contracts/tasks";
+import type { CreateTaskInput } from "@repo/contracts/tasks/create";
 
-export interface CreateTasksInput extends CreateTaskInputDto {
+export interface CreateTasksInputService extends CreateTaskInput {
 	userId: string;
 }
 
-export interface CreateTasksOutput {
+export interface CreateTasksOutputService {
 	task: Task;
 }

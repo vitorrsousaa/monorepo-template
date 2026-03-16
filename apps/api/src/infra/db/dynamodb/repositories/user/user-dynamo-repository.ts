@@ -1,6 +1,6 @@
 import { UserMapper } from "@data/protocols/auth/user-mapper";
 import { IUserRepository } from "@data/protocols/auth/user-repository";
-import { User } from "@repo/contracts/auth/user";
+import { User } from "@repo/contracts/auth/entities";
 import {
 	IDatabaseClient,
 	IDatabaseClientGetArgs,

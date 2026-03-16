@@ -1,4 +1,4 @@
-import type { User } from "../user";
+import type { User } from "../entities";
 
 export interface ProfileResponse {
 	user: User;

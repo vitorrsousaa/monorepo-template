@@ -1,14 +1,14 @@
 import type { IService } from "@application/interfaces/service";
 import { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
-import type { CreateTasksInput, CreateTasksOutput } from "./dto";
+import type { CreateTasksInputService, CreateTasksOutputService } from "./dto";
 
 export interface ICreateTasksService
-	extends IService<CreateTasksInput, CreateTasksOutput> {}
+	extends IService<CreateTasksInputService, CreateTasksOutputService> {}
 
 export class CreateTasksService implements ICreateTasksService {
 	constructor(private readonly taskRepository: ITasksRepository) {}
 
-	async execute(input: CreateTasksInput): Promise<CreateTasksOutput> {
+	async execute(input: CreateTasksInputService): Promise<CreateTasksOutputService> {
 		const task = await this.taskRepository.create({
 			userId: input.userId,
 			title: input.title,

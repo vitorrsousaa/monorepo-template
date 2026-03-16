@@ -1,4 +1,4 @@
-import { User } from "@repo/contracts/auth/user";
+import { User } from "@repo/contracts/auth/entities";
 import { z } from "zod";
 
 export const ProfileInputDTO = z.object({

@@ -1,4 +1,4 @@
-import type { User } from "@repo/contracts/auth/user";
+import type { User } from "@repo/contracts/auth/entities";
 
 /**
  * IUserRepository

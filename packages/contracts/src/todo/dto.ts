@@ -1,4 +1,4 @@
-import type { TaskDto } from "../tasks/dto";
+import type { TaskDto } from "../tasks/entities";
 
 /**
  * Todo DTO - clone of TaskDto for backward compatibility during migration.
