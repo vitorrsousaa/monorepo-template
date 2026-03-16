@@ -5,21 +5,18 @@ import { UserDynamoDBEntity } from "../../mappers/user/types";
 
 export class UserDynamoRepository implements IUserRepository {
 	constructor(private readonly mapper: UserMapper<UserDynamoDBEntity>) {}
-  
-  
-  async create(data: Omit<User, "createdAt" | "updatedAt" | "deletedAt">): Promise<User> {
-    const now = new Date();
-    const newUser: User = {
-     
-      ...data,
-      createdAt: now.toISOString(),
-      updatedAt: now.toISOString(),
-    };
-    const dbEntity = this.mapper.toDatabase(newUser);
-    
-    
-    return this.mapper.toDomain(dbEntity);
-  }
-  
-  
+
+	async create(
+		data: Omit<User, "createdAt" | "updatedAt" | "deletedAt">,
+	): Promise<User> {
+		const now = new Date();
+		const newUser: User = {
+			...data,
+			createdAt: now.toISOString(),
+			updatedAt: now.toISOString(),
+		};
+		const dbEntity = this.mapper.toDatabase(newUser);
+
+		return this.mapper.toDomain(dbEntity);
+	}
 }
