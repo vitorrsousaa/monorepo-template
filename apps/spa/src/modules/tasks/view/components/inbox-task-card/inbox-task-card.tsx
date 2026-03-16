@@ -1,9 +1,8 @@
 import { truncateText } from "@/utils/truncate-text";
-import type { TodoDto } from "@repo/contracts/todo/inbox";
+import type { TaskDto } from "@repo/contracts/tasks";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
-import { cn } from "@repo/ui/utils";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,12 +10,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
+import { cn } from "@repo/ui/utils";
 import { Calendar, Flag, MoreVertical } from "lucide-react";
 
 const DESCRIPTION_MAX_LENGTH = 100;
 
-type InboxTodoCardProps = {
-	todo: TodoDto;
+type InboxTaskCardProps = {
+	task: TaskDto;
 };
 
 function formatDueDate(dueDate: string | null | undefined): {
@@ -38,58 +38,58 @@ function formatDueDate(dueDate: string | null | undefined): {
 	return { text, isOverdue };
 }
 
-export function InboxTodoCard(props: InboxTodoCardProps) {
-	const { todo } = props;
-	const dueDateInfo = formatDueDate(todo.dueDate);
+export function InboxTaskCard(props: InboxTaskCardProps) {
+	const { task } = props;
+	const dueDateInfo = formatDueDate(task.dueDate);
 	return (
 		<div className="relative flex items-center gap-4 bg-card px-5 py-3.5 hover:bg-muted/60">
 			{/* Faixa lateral baseada na prioridade */}
 			<div
 				className={cn(
 					"absolute left-0 top-2 bottom-2 w-[3px] rounded-r",
-					todo.priority === "high"
+					task.priority === "high"
 						? "bg-destructive"
-						: todo.priority === "medium"
+						: task.priority === "medium"
 							? "bg-amber-500"
 							: "bg-blue-500",
 				)}
 				aria-hidden
 			/>
 			<Checkbox
-				checked={todo.completed}
+				checked={task.completed}
 				className="mt-0.5 h-4 w-4 shrink-0 rounded border-2"
 			/>
 			<div className="flex-1 min-w-0">
 				<div
 					className={cn(
 						"text-[13px] font-medium",
-						todo.completed
+						task.completed
 							? "line-through text-muted-foreground"
 							: "text-foreground",
 					)}
 				>
-					{todo.title}
+					{task.title}
 				</div>
-				{todo.description != null && todo.description !== "" && (
+				{task.description != null && task.description !== "" && (
 					<p className="mt-0.5 text-[12px] text-muted-foreground">
-						{truncateText(todo.description, DESCRIPTION_MAX_LENGTH)}
+						{truncateText(task.description, DESCRIPTION_MAX_LENGTH)}
 					</p>
 				)}
 				<div className="mt-1 flex flex-wrap items-center gap-2">
-					{todo.priority != null && (
+					{task.priority != null && (
 						<Badge
 							variant="secondary"
 							className={cn(
 								"h-5 rounded-[6px] px-2 py-0 text-[11px] font-medium",
-								todo.priority === "high"
+								task.priority === "high"
 									? "bg-destructive/15 text-destructive"
-									: todo.priority === "medium"
+									: task.priority === "medium"
 										? "bg-chart-2/15 text-chart-2"
 										: "bg-chart-4/15 text-chart-4",
 							)}
 						>
 							<Flag className="mr-1 h-3 w-3" />
-							{todo.priority}
+							{task.priority}
 						</Badge>
 					)}
 					{dueDateInfo != null && (

@@ -8,7 +8,7 @@ import {
 	authRoutes,
 	goalsRoutes,
 	projectsRoutes,
-	todoRoutes,
+	tasksRoutes,
 	userRoutes,
 } from "./modules";
 
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				element: <DashboardLayout />,
-				children: [todoRoutes, userRoutes, goalsRoutes, projectsRoutes],
+				children: [tasksRoutes, userRoutes, goalsRoutes, projectsRoutes],
 			},
 		],
 	},

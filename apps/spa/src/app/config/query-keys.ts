@@ -4,6 +4,7 @@ export const TODOS = {
 };
 
 export const TASKS = {
+	INBOX: ["tasks", "inbox"],
 	TODAY: ["tasks", "today"],
 };
 

@@ -1,12 +1,12 @@
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
-import { Inbox, Sparkles } from "lucide-react";
+import { Inbox } from "lucide-react";
 
 interface InboxEmptyStateProps {
-	onCreateTodo: () => void;
+	onCreateTask: () => void;
 }
 
-export function InboxEmptyState({ onCreateTodo }: InboxEmptyStateProps) {
+export function InboxEmptyState({ onCreateTask }: InboxEmptyStateProps) {
 	return (
 		<div className="flex items-center justify-center min-h-[400px] px-4">
 			<Card className="max-w-md w-full p-8 text-center space-y-6 border-dashed">
@@ -29,15 +29,14 @@ export function InboxEmptyState({ onCreateTodo }: InboxEmptyStateProps) {
 
 				<div className="flex flex-col gap-3 pt-2">
 					<Button
-						onClick={onCreateTodo}
+						onClick={onCreateTask}
 						className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
 						size="lg"
 					>
-						<Sparkles className="w-4 h-4 mr-2" />
-						Create your first todo
+						Create your first task
 					</Button>
 					<p className="text-xs text-muted-foreground">
-						Tip: Use the "New Todo" button in the header anytime
+						Tip: Use the "New Task" button in the header anytime
 					</p>
 				</div>
 			</Card>

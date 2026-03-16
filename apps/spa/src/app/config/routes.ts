@@ -6,6 +6,10 @@ export const TODO_ROUTES = {
 	COMPLETED: "/todo/completed",
 } as const;
 
+export const TASKS_ROUTES = {
+	INBOX: "/tasks/inbox",
+} as const;
+
 export const PROJECTS_ROUTES = {
 	LIST: "/projects",
 	PROJECT_DETAILS: "/projects/:id",
@@ -25,4 +29,5 @@ export const ROUTES = {
 	GOALS_DASHBOARD: "/goals/dashboard",
 	TODO: TODO_ROUTES,
 	PROJECTS: PROJECTS_ROUTES,
+	TASKS: TASKS_ROUTES,
 } as const;

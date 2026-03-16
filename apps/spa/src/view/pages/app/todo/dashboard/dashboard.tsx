@@ -193,7 +193,7 @@ export function Dashboard() {
 							className={cn(
 								"relative rounded-[14px] p-5 overflow-hidden bg-card border border-border shadow-sm",
 								tintedBg &&
-								"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
+									"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
 							)}
 						>
 							{/* Left accent stripe */}
@@ -222,9 +222,9 @@ export function Dashboard() {
 									className={cn(
 										"text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
 										trendVariant === "up" &&
-										"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+											"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 										trendVariant === "down" &&
-										"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+											"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
 										trendVariant === "flat" && "bg-muted text-muted-foreground",
 									)}
 								>

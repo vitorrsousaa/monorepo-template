@@ -9,7 +9,7 @@ const Dashboard = lazy(() =>
 	})),
 );
 const Inbox = lazy(() =>
-	import("@/pages/app/todo/inbox").then((module) => ({
+	import("@/pages/app/tasks/inbox").then((module) => ({
 		default: module.Inbox,
 	})),
 );
@@ -24,7 +24,7 @@ const Upcoming = lazy(() =>
 	})),
 );
 
-export const todoRoutes: RouteObject = {
+export const tasksRoutes: RouteObject = {
 	path: "/",
 	element: <TodoLayout />,
 	children: [
@@ -33,7 +33,7 @@ export const todoRoutes: RouteObject = {
 			element: <Dashboard />,
 		},
 		{
-			path: ROUTES.TODO.INBOX,
+			path: ROUTES.TASKS.INBOX,
 			element: <Inbox />,
 		},
 		{

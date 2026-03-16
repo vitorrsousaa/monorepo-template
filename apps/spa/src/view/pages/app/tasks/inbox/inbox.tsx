@@ -1,4 +1,4 @@
-import { InboxTodoCard } from "@/modules/todo/view/components/inbox-todo-card";
+import { InboxTaskCard } from "@/modules/tasks/view/components/inbox-task-card";
 import { NewTodoModal } from "@/modules/todo/view/modals/new-todo-modal";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
@@ -11,14 +11,14 @@ import { useInboxHook } from "./inbox.hook";
 
 export function Inbox() {
 	const {
-		inboxTodos,
-		isFetchingTodos,
-		isErrorInboxTodos,
-		shouldRenderInboxTodos,
-		refetchInboxTodos,
+		inboxTasks,
+		isFetchingTasks,
+		isErrorInboxTasks,
+		shouldRenderInboxTasks,
+		refetchInboxTasks,
 	} = useInboxHook();
 
-	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
+	const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
 	return (
 		<div className="p-8 space-y-8">
@@ -28,41 +28,41 @@ export function Inbox() {
 						Inbox
 					</h1>
 					<p className="mt-1 text-xs text-muted-foreground">
-						Tasks sem projeto atribuído
+						Tasks without a project assigned
 					</p>
 				</div>
 				<Button
 					className="gap-1.5 rounded-md bg-primary px-4 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-					onClick={() => setIsNewTodoModalOpen(true)}
-					disabled={isFetchingTodos}
+					onClick={() => setIsNewTaskModalOpen(true)}
+					disabled={isFetchingTasks}
 					type="button"
 				>
 					<Plus className="mr-1 h-3.5 w-3.5" />
-					Nova tarefa
+					Add task
 				</Button>
 			</div>
 
-			<RenderIf condition={isFetchingTodos} render={<InboxLoadingSkeleton />} />
+			<RenderIf condition={isFetchingTasks} render={<InboxLoadingSkeleton />} />
 			<RenderIf
-				condition={isErrorInboxTodos}
-				render={<InboxErrorState onRetry={() => refetchInboxTodos()} />}
+				condition={isErrorInboxTasks}
+				render={<InboxErrorState onRetry={() => refetchInboxTasks()} />}
 			/>
 			<RenderIf
 				condition={
-					!shouldRenderInboxTodos && !isFetchingTodos && !isErrorInboxTodos
+					!shouldRenderInboxTasks && !isFetchingTasks && !isErrorInboxTasks
 				}
 				render={
-					<InboxEmptyState onCreateTodo={() => setIsNewTodoModalOpen(true)} />
+					<InboxEmptyState onCreateTask={() => setIsNewTaskModalOpen(true)} />
 				}
 			/>
 			<RenderIf
-				condition={shouldRenderInboxTodos}
+				condition={shouldRenderInboxTasks}
 				render={
 					<div className="max-h-[calc(100vh-220px)] overflow-y-auto pb-10">
 						<div className="mx-auto max-w-3xl rounded-xl border border-border bg-card overflow-hidden">
 							<div className="divide-y divide-border">
-								{inboxTodos.map((todo) => (
-									<InboxTodoCard key={todo.id} todo={todo} />
+								{inboxTasks.map((task) => (
+									<InboxTaskCard key={task.id} task={task} />
 								))}
 							</div>
 						</div>
@@ -71,8 +71,8 @@ export function Inbox() {
 			/>
 
 			<NewTodoModal
-				isOpen={isNewTodoModalOpen}
-				onClose={() => setIsNewTodoModalOpen(false)}
+				isOpen={isNewTaskModalOpen}
+				onClose={() => setIsNewTaskModalOpen(false)}
 			/>
 		</div>
 	);
