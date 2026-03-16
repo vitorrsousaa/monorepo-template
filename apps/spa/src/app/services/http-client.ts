@@ -1,4 +1,4 @@
-import { STORAGE_KEYS } from "@/config/storage";
+import { tokenStorage } from "@/storage/token-storage";
 import { delay } from "@/utils/delay";
 import axios from "axios";
 import { AppError } from "../errors/app-error";
@@ -10,10 +10,10 @@ export const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use((config) => {
-	const storedAccessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+	const accessToken = tokenStorage.get();
 
-	if (storedAccessToken) {
-		config.headers.Authorization = `Bearer ${storedAccessToken}`;
+	if (accessToken) {
+		config.headers.Authorization = `Bearer ${accessToken}`;
 	}
 
 	return config;

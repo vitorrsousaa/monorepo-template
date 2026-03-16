@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				// picture: data?.picture || "",
 			},
 		}),
-		[signedIn, signInWithGoogle, signout, signin],
+		[signedIn, isProfileSuccess, user, signInWithGoogle, signout, signin],
 	);
 
 	useEffect(() => {
