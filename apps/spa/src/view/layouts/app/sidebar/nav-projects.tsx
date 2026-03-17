@@ -6,6 +6,7 @@ import { ProjectListEmptyState } from "@/layouts/app/sidebar/components/project-
 import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-error";
 import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
+import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import {
@@ -15,11 +16,17 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@repo/ui/sidebar";
+import { useReducer } from "react";
 import { ProjectListItem } from "./components/project-list-item";
 
 export function NavProjects() {
 	const { projects, isErrorProjects, isFetchingProjects, refetchProjects } =
 		useGetAllProjectsByUser();
+
+	const [isNewProjectModalOpen, toggleNewProjectModal] = useReducer(
+		(state) => !state,
+		false,
+	);
 
 	const hasProjects = projects.length > 0;
 	const shouldRenderProjects =
@@ -33,9 +40,9 @@ export function NavProjects() {
 
 	return (
 		<SidebarGroup className="group-data-[collapsible=icon]:hidden">
-			<SidebarGroupLabel>
+			<SidebarGroupLabel className="pr-0">
 				Projects{" "}
-				<Button variant="ghost" size="icon">
+				<Button variant="ghost" size="icon" onClick={toggleNewProjectModal}>
 					<Plus className="w-4 h-4" />
 				</Button>
 			</SidebarGroupLabel>
@@ -91,6 +98,11 @@ export function NavProjects() {
 							/>
 						</>
 					}
+				/>
+
+				<NewProjectModal
+					isOpen={isNewProjectModalOpen}
+					onClose={toggleNewProjectModal}
 				/>
 			</SidebarMenu>
 		</SidebarGroup>

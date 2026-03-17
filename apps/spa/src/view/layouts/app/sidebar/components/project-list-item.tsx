@@ -1,16 +1,17 @@
 import {
-	AlertCircle,
 	Eye,
 	Frame,
 	History,
 	Loader2,
 	MoreHorizontal,
-	Trash2,
+	RotateCw,
+	Trash2
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 
 import type { Project } from "@/modules/projects/app/entitites/project";
+import { useCreateProject } from "@/modules/projects/app/hooks/use-create-project";
 import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import {
@@ -38,32 +39,46 @@ export function ProjectListItem(props: ProjectListItemProps) {
 	const { project, onDeleteProject } = props;
 	const { isMobile } = useSidebar();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const { retryProject } = useCreateProject();
 
-	const isPending = project.optimisticState === OptimisticState.PENDING;
+	const isPendingState = project.optimisticState === OptimisticState.PENDING;
 	const isError = project.optimisticState === OptimisticState.ERROR;
 	const shouldShowDropdown =
 		project.optimisticState === OptimisticState.SYNCED ||
 		!project.optimisticState;
 
+	const handleRetry = useCallback(() => {
+		retryProject(project.id);
+	}, [project.id, retryProject]);
+
+	const isNavigable = !isPendingState && !isError;
+
 	return (
 		<SidebarMenuItem>
-			<SidebarMenuButton
-				asChild
-				disabled={isPending || isError}
-				className={cn(
-					(isPending || isError) && "cursor-not-allowed opacity-50",
-					isError && "text-destructive opacity-80",
-				)}
-			>
-				<Link to={`/projects/${project.id}`}>
+			{isNavigable ? (
+				<SidebarMenuButton asChild>
+					<Link to={`/projects/${project.id}`}>
+						<Frame />
+						<span>{project.name}</span>
+					</Link>
+				</SidebarMenuButton>
+			) : (
+				<SidebarMenuButton
+					disabled
+					className={cn(
+						"cursor-not-allowed opacity-50",
+						isError && "text-destructive opacity-80",
+					)}
+				>
 					<Frame />
 					<span>{project.name}</span>
-				</Link>
-			</SidebarMenuButton>
+
+				</SidebarMenuButton>
+			)}
 
 			{/* Pending: Loading spinner */}
 			<RenderIf
-				condition={isPending}
+				condition={isPendingState}
 				render={
 					<SidebarMenuAction>
 						<Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -72,13 +87,13 @@ export function ProjectListItem(props: ProjectListItemProps) {
 				}
 			/>
 
-			{/* Error: Alert icon sempre visível */}
+			{/* Error: Inline retry and dismiss actions */}
 			<RenderIf
 				condition={isError}
 				render={
-					<SidebarMenuAction>
-						<AlertCircle className="h-4 w-4 text-destructive" />
-						<span className="sr-only">Error</span>
+					<SidebarMenuAction onClick={handleRetry} title="Retry">
+						<RotateCw className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+						<span className="sr-only">Retry</span>
 					</SidebarMenuAction>
 				}
 			/>

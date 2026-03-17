@@ -9,6 +9,7 @@ export async function createProject(
 		"/projects",
 		input,
 	);
+	
+	return data
 
-	return data;
 }

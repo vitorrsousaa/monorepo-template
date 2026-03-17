@@ -23,5 +23,4 @@ export const createProjectSchema = z.object({
 		.optional()
 		.nullable(),
 	color: z.enum(PROJECT_COLORS),
-	userId: z.string().uuid(),
 });
