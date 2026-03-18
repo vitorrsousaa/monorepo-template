@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PROJECT_DESCRIPTION_MAX = 30;
+export const PROJECT_DESCRIPTION_MAX = 60;
 
 export const PROJECT_COLORS = [
 	"#7F77DD",

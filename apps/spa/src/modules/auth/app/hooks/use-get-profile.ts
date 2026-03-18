@@ -12,9 +12,7 @@ export function useGetProfile(params: UseGetProfileParams) {
 	const {
 		data,
 		isError,
-		isPending,
 		isFetching,
-		isLoading,
 		isSuccess,
 		refetch,
 	} = useQuery({
@@ -26,7 +24,7 @@ export function useGetProfile(params: UseGetProfileParams) {
 	return {
 		user: data?.user ?? null,
 		isProfileError: isError,
-		isProfileFetching: isFetching || isPending || isLoading,
+		isProfileFetching: isFetching,
 		isProfileSuccess: isSuccess,
 		refetchProfile: refetch,
 	};

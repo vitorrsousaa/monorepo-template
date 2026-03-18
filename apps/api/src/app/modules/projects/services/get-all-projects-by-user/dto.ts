@@ -1,14 +1,10 @@
-import type { Project } from "@core/domain/project/project";
-import { z } from "zod";
+import { Project } from "@repo/contracts/projects/entities";
 
-export const GetAllProjectsByUserInputDTO = z.object({
-	userId: z.string().uuid(),
-});
 
-export type GetAllProjectsByUserInput = z.infer<
-	typeof GetAllProjectsByUserInputDTO
->;
+export type GetAllProjectsByUserInputService = {
+	userId: string;
+}
 
-export interface GetAllProjectsByUserOutput {
+export interface GetAllProjectsByUserOutputService {
 	projects: Project[];
 }

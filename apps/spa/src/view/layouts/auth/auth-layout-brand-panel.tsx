@@ -9,7 +9,7 @@ export function AuthLayoutBrandPanel() {
 				aria-hidden
 				style={{
 					backgroundImage:
-						"radial-gradient(circle, rgba(127,119,221,0.12) 1px, transparent 1px)",
+						"radial-gradient(circle, rgba(162, 157, 222, 0.12) 1px, transparent 1px)",
 					backgroundSize: "28px 28px",
 				}}
 			/>

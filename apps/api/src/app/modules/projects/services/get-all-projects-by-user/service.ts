@@ -1,12 +1,12 @@
 import type { IService } from "@application/interfaces/service";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type {
-	GetAllProjectsByUserInput,
-	GetAllProjectsByUserOutput,
+	GetAllProjectsByUserInputService,
+	GetAllProjectsByUserOutputService,
 } from "./dto";
 
 export interface IGetAllProjectsByUserService
-	extends IService<GetAllProjectsByUserInput, GetAllProjectsByUserOutput> {}
+	extends IService<GetAllProjectsByUserInputService, GetAllProjectsByUserOutputService> {}
 
 export class GetAllProjectsByUserService
 	implements IGetAllProjectsByUserService
@@ -14,8 +14,8 @@ export class GetAllProjectsByUserService
 	constructor(private readonly projectRepository: IProjectRepository) {}
 
 	async execute(
-		data: GetAllProjectsByUserInput,
-	): Promise<GetAllProjectsByUserOutput> {
+		data: GetAllProjectsByUserInputService,
+	): Promise<GetAllProjectsByUserOutputService> {
 		const projects = await this.projectRepository.getAllProjectsByUser(
 			data.userId,
 		);
