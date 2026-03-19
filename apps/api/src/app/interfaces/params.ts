@@ -1,3 +1,3 @@
 export type IProjectParams = {
-  projectId: string;
-}
+	projectId: string;
+};

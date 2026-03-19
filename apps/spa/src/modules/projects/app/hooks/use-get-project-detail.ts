@@ -1,19 +1,11 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
-import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
 import type { WithOptimisticState } from "@/utils/types";
+import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 import { useQuery } from "@tanstack/react-query";
-import type { ProjectDetail } from "../entitites/project-detail";
 import { getProjectDetail } from "../services/get-project-detail";
 
-export type ProjectDetailWithOptimisticState =
-	WithOptimisticState<ProjectDetail>;
-
-export type ProjectDetailWithOptimisticSections = Omit<
-	ProjectDetailWithOptimisticState,
-	"sections"
-> & {
-	sections: (SectionWithTodos | SectionWithOptimisticState)[];
+export type ProjectDetailWithOptimisticState  = Omit<WithOptimisticState<GetProjectDetailResponse> , 'sections'>& {
+	sections: WithOptimisticState<(GetProjectDetailResponse["sections"][number])>[];
 };
 
 interface UseGetProjectDetailParams {
@@ -30,12 +22,12 @@ export function useGetProjectDetail(params: UseGetProjectDetailParams) {
 				const projectDetail = await getProjectDetail({ projectId });
 				return projectDetail as ProjectDetailWithOptimisticState;
 			},
-			enabled: enabled && !!projectId, // Only fetch if enabled and projectId exists
+			enabled: enabled && !!projectId,
 		},
 	);
 
 	return {
-		projectDetail: data as ProjectDetailWithOptimisticSections | undefined,
+		projectDetail: data as ProjectDetailWithOptimisticState | undefined,
 		isErrorProjectDetail: isError,
 		isFetchingProjectDetail: isFetching || isPending || isLoading,
 		refetchProjectDetail: refetch,

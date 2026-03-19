@@ -56,8 +56,10 @@ export class SectionDynamoMapper
 			project_id: section.projectId,
 			name: section.name,
 			order: section.order,
-			deleted_at: section?.deletedAt ? new Date(section.deletedAt).toISOString() : null,
-created_at: new Date(section.createdAt).toISOString(),
+			deleted_at: section?.deletedAt
+				? new Date(section.deletedAt).toISOString()
+				: null,
+			created_at: new Date(section.createdAt).toISOString(),
 			updated_at: new Date(section.updatedAt).toISOString(),
 			entity_type: "SECTION",
 		};

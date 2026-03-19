@@ -3,10 +3,9 @@ import { makeDatabaseClient } from "@infra/db/dynamodb/factories/client/database
 import { SectionDynamoMapper } from "@infra/db/dynamodb/mappers/sections/section-mapper";
 import { SectionDynamoRepository } from "@infra/db/dynamodb/repositories/sections/section-dynamo-repository";
 
-
 export function makeSectionDynamoRepository(): ISectionRepository {
 	const mapper = new SectionDynamoMapper();
-		const databaseClient = makeDatabaseClient();
+	const databaseClient = makeDatabaseClient();
 
-	return new SectionDynamoRepository(databaseClient,mapper);
+	return new SectionDynamoRepository(databaseClient, mapper);
 }

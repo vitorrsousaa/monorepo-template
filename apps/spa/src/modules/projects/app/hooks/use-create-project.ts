@@ -36,6 +36,10 @@ export function useCreateProject() {
 			return { tempId };
 		},
 		onError: async (_error, _variables, context) => {
+			await queryClient.cancelQueries({
+				queryKey: QUERY_KEYS.PROJECTS.ALL,
+			});
+			
 			queryClient.setQueryData<ProjectWithOptimisticState[]>(
 				QUERY_KEYS.PROJECTS.ALL,
 				(oldData) =>
@@ -45,10 +49,6 @@ export function useCreateProject() {
 							: project,
 					),
 			);
-
-			await queryClient.cancelQueries({
-				queryKey: QUERY_KEYS.PROJECTS.ALL,
-			});
 		},
 		onSuccess: async (data, _variables, context) => {
 			const { project: projectResponse } = data;
@@ -68,7 +68,6 @@ export function useCreateProject() {
 			);
 		},
 	});
-
 
 
 	const retryProject = useCallback((projectId: string) => {

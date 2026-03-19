@@ -6,7 +6,10 @@ import type {
 } from "./dto";
 
 export interface IGetAllProjectsByUserService
-	extends IService<GetAllProjectsByUserInputService, GetAllProjectsByUserOutputService> {}
+	extends IService<
+		GetAllProjectsByUserInputService,
+		GetAllProjectsByUserOutputService
+	> {}
 
 export class GetAllProjectsByUserService
 	implements IGetAllProjectsByUserService

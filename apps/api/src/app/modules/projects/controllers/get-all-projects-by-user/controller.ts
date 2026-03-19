@@ -2,7 +2,6 @@ import { Controller } from "@application/interfaces/controller";
 import type { IGetAllProjectsByUserService } from "@application/modules/projects/services/get-all-projects-by-user";
 import { GetAllProjectsByUserResponse } from "@repo/contracts/projects/get-all";
 
-
 export class GetAllProjectsByUserController extends Controller<
 	"private",
 	GetAllProjectsByUserResponse
@@ -19,7 +18,7 @@ export class GetAllProjectsByUserController extends Controller<
 		const result = await this.getAllProjectsByUserService.execute({
 			userId: request.userId,
 		});
-		const body = result
+		const body = result;
 		return {
 			statusCode: 200,
 			body,

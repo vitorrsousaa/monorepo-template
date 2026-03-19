@@ -20,37 +20,38 @@ import { SECTION_DYNAMO_MOCKS } from "./section-dynamo-repository-mocks";
  * - Get section: PK = USER#userId#PROJECT#projectId AND SK = SECTION#sectionId
  */
 export class SectionDynamoRepository implements ISectionRepository {
-	
 	private dbSections: SectionDynamoDBEntity[] = [...SECTION_DYNAMO_MOCKS];
 
-	constructor(private readonly dynamoClient: IDatabaseClient, private readonly mapper: SectionMapper<SectionDynamoDBEntity>) {}
+	constructor(
+		private readonly dynamoClient: IDatabaseClient,
+		private readonly mapper: SectionMapper<SectionDynamoDBEntity>,
+	) {}
 
 	async getAllByProject(projectId: string, userId: string): Promise<Section[]> {
 		const pk = `USER#${userId}#PROJECT#${projectId}`;
 		const sk = `SECTION#`;
-			
-			const queryResult = await this.dynamoClient.query<SectionDynamoDBEntity[]>({
-				KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
-				ExpressionAttributeNames: {
-					"#deletedAt": "deleted_at",
-				},
-				ExpressionAttributeValues: {
-					":pk": pk,
-					":skPrefix": sk,
-					":null": null,
-					
-				},
-				FilterExpression: "attribute_not_exists(#deletedAt) OR #deletedAt = :null",
-				IndexName: undefined, // Use default index
-			});
-	
-			const resultSections = queryResult ? queryResult : [];
-	
-			const sections = resultSections.map(this.mapper.toDomain);
-	
-			return sections;
+
+		const queryResult = await this.dynamoClient.query<SectionDynamoDBEntity[]>({
+			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+			ExpressionAttributeNames: {
+				"#deletedAt": "deleted_at",
+			},
+			ExpressionAttributeValues: {
+				":pk": pk,
+				":skPrefix": sk,
+				":null": null,
+			},
+			FilterExpression:
+				"attribute_not_exists(#deletedAt) OR #deletedAt = :null",
+			IndexName: undefined, // Use default index
+		});
+
+		const resultSections = queryResult ? queryResult : [];
+
+		const sections = resultSections.map(this.mapper.toDomain);
+
+		return sections;
 	}
-					
 
 	async getById(
 		sectionId: string,
@@ -88,8 +89,8 @@ export class SectionDynamoRepository implements ISectionRepository {
 		};
 
 		const dbEntity = this.mapper.toDatabase(section);
-		
-		await this.dynamoClient.create(dbEntity)
+
+		await this.dynamoClient.create(dbEntity);
 
 		return this.mapper.toDomain(dbEntity);
 	}

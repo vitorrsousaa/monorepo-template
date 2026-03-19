@@ -1,7 +1,16 @@
 import { Controller } from "@application/interfaces/controller";
+import { IProjectParams } from "@application/interfaces/params";
 import type { IGetProjectDetailService } from "@application/modules/projects/services/get-project-detail";
+import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 
-export class GetProjectDetailController extends Controller<"private"> {
+type ControllerRequestBody = Record<string, unknown>;
+
+export class GetProjectDetailController extends Controller<
+	"private",
+	GetProjectDetailResponse,
+	ControllerRequestBody,
+	IProjectParams
+> {
 	constructor(
 		private readonly getProjectDetailService: IGetProjectDetailService,
 	) {
@@ -9,15 +18,19 @@ export class GetProjectDetailController extends Controller<"private"> {
 	}
 
 	protected override async handle(
-		request: Controller.Request<"private">,
-	): Promise<Controller.Response<undefined>> {
+		request: Controller.Request<
+			"private",
+			ControllerRequestBody,
+			IProjectParams
+		>,
+	): Promise<Controller.Response<GetProjectDetailResponse>> {
 		const result = await this.getProjectDetailService.execute({
 			userId: request.userId,
-			projectId: (request.params.projectId as string) ?? "",
+			projectId: request.params.projectId,
 		});
 		return {
 			statusCode: 200,
-			body: result,
+			body: result.data,
 		};
 	}
 }

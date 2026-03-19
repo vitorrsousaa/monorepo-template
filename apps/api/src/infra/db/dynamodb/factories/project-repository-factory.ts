@@ -5,9 +5,12 @@ import { ProjectDynamoRepository } from "@infra/db/dynamodb/repositories/project
 
 export function makeProjectDynamoRepository(): IProjectRepository {
 	const mapper = new ProjectDynamoMapper();
-		const databaseClient = makeDatabaseClient();
-	
-	const projectRepositoryInstance = new ProjectDynamoRepository(databaseClient,mapper);
+	const databaseClient = makeDatabaseClient();
+
+	const projectRepositoryInstance = new ProjectDynamoRepository(
+		databaseClient,
+		mapper,
+	);
 
 	return projectRepositoryInstance;
 }

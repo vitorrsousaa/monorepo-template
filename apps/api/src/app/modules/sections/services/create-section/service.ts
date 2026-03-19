@@ -1,6 +1,9 @@
 import type { IService } from "@application/interfaces/service";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
-import type { CreateSectionServiceInput, CreateSectionServiceOutput } from "./dto";
+import type {
+	CreateSectionServiceInput,
+	CreateSectionServiceOutput,
+} from "./dto";
 
 export interface ICreateSectionService
 	extends IService<CreateSectionServiceInput, CreateSectionServiceOutput> {}
@@ -8,7 +11,9 @@ export interface ICreateSectionService
 export class CreateSectionService implements ICreateSectionService {
 	constructor(private readonly sectionRepository: ISectionRepository) {}
 
-	async execute(data: CreateSectionServiceInput): Promise<CreateSectionServiceOutput> {
+	async execute(
+		data: CreateSectionServiceInput,
+	): Promise<CreateSectionServiceOutput> {
 		let order = data.order;
 
 		if (order === undefined) {

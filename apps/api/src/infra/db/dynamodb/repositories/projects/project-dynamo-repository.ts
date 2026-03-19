@@ -15,7 +15,6 @@ import { IDatabaseClient } from "../../contracts/client";
  * Uses a Mapper to convert between DB format and application format.
  */
 export class ProjectDynamoRepository implements IProjectRepository {
-
 	constructor(
 		private readonly dynamoClient: IDatabaseClient,
 		private readonly mapper: ProjectMapper<ProjectDynamoDBEntity>,
@@ -23,7 +22,7 @@ export class ProjectDynamoRepository implements IProjectRepository {
 
 	async getAllProjectsByUser(userId: string): Promise<Project[]> {
 		const pk = `USER#${userId}`;
-		const sk = 'PROJECT#';
+		const sk = "PROJECT#";
 
 		const result = await this.dynamoClient.query<ProjectDynamoDBEntity[]>({
 			KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
@@ -35,7 +34,8 @@ export class ProjectDynamoRepository implements IProjectRepository {
 			ExpressionAttributeNames: {
 				"#deletedAt": "deleted_at",
 			},
-			FilterExpression: "attribute_not_exists(#deletedAt) OR #deletedAt = :null",
+			FilterExpression:
+				"attribute_not_exists(#deletedAt) OR #deletedAt = :null",
 		});
 
 		const projects = result || [];
@@ -44,17 +44,16 @@ export class ProjectDynamoRepository implements IProjectRepository {
 	}
 
 	async getById(projectId: string, userId: string): Promise<Project | null> {
-	
 		const pk = `USER#${userId}`;
 		const sk = `PROJECT#${projectId}`;
-		
+
 		const result = await this.dynamoClient.get<ProjectDynamoDBEntity>({
 			Key: {
 				PK: pk,
 				SK: sk,
 			},
-		})
-		
+		});
+
 		return result ? this.mapper.toDomain(result) : null;
 	}
 
