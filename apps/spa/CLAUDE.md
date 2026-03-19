@@ -95,6 +95,40 @@ defaultOptions: {
 **Strategy: fetch once, invalidate manually via `queryClient.invalidateQueries()`.**
 Do NOT change these settings. Do NOT add `refetchOnMount: true` or remove `staleTime`.
 
+## Optimistic Updates — cancelQueries Order
+
+**Rule: always call `cancelQueries` BEFORE `setQueryData`.**
+
+`cancelQueries` cancels in-flight refetches that would overwrite the optimistic value. If called after `setQueryData`, a race condition can reset the cache with stale server data.
+
+**Wrong:**
+```ts
+// WRONG — race condition: in-flight query may overwrite the optimistic value
+onMutate: async (newData) => {
+  const previous = queryClient.getQueryData(queryKey);
+  queryClient.setQueryData(queryKey, newData);       // ← set first
+  await queryClient.cancelQueries({ queryKey });     // ← cancel too late
+  return { previous };
+},
+```
+
+**Correct:**
+```ts
+// CORRECT — cancel first, then write the optimistic value
+onMutate: async (newData) => {
+  await queryClient.cancelQueries({ queryKey });     // ← cancel first
+  const previous = queryClient.getQueryData(queryKey);
+  queryClient.setQueryData(queryKey, newData);       // ← then set
+  return { previous };
+},
+onError: (_err, _vars, context) => {
+  queryClient.setQueryData(queryKey, context?.previous);
+},
+onSettled: () => {
+  queryClient.invalidateQueries({ queryKey });
+},
+```
+
 ## HTTP Client
 
 File: `src/app/services/http-client.ts`

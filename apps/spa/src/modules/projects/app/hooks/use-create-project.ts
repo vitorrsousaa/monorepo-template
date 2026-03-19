@@ -1,5 +1,6 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import { createProject as createProjectService } from "@/modules/projects/app/services/create-project";
+import { generateTempId } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import type { CreateProjectInput } from "@repo/contracts/projects/create";
 import { PROJECT_COLORS } from "@repo/contracts/projects/create";
@@ -19,7 +20,7 @@ export function useCreateProject() {
 		mutationFn: createProjectService,
 		onMutate: (variables) => {
 			const { name, description, color } = variables;
-			const tempId = Math.random().toString(36).substr(2, 9);
+			const tempId = generateTempId();
 
 			queryClient.setQueryData<ProjectWithOptimisticState[]>(
 				QUERY_KEYS.PROJECTS.ALL,

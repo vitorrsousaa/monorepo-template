@@ -1,6 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
 import { createSection as createSectionService } from "@/modules/sections/app/services/create-section";
+import { generateTempId } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import type { Section } from "@repo/contracts/sections/entities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ export function useCreateSection() {
 		mutationFn: createSectionService,
 		onMutate: async (variables) => {
 			const { projectId, name, order } = variables;
-			const tempId = Math.random().toString(36).substr(2, 9);
+			const tempId = generateTempId()
 
 			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
