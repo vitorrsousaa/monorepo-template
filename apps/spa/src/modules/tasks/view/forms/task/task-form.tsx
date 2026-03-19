@@ -18,6 +18,7 @@ import {
 } from "@repo/ui/select";
 import { Textarea } from "@repo/ui/textarea";
 import { cn } from "@repo/ui/utils";
+import { useTranslation } from "react-i18next";
 import { RecurrencePanel } from "./recurrence-panel";
 import { useTaskFormHook } from "./task-form.hook";
 import type { TTaskFormSchema } from "./task-form.schema";
@@ -50,6 +51,7 @@ function isDateInPast(date: Date): boolean {
 
 export function TaskForm(props: TaskFormProps) {
 	const { onCancel, mode, metadata } = props;
+	const { t } = useTranslation();
 
 	const {
 		methods,
@@ -92,7 +94,7 @@ export function TaskForm(props: TaskFormProps) {
 										<FormItem className="w-full min-w-0 mb-0">
 											<FormControl>
 												<Input
-													placeholder="Task title"
+													placeholder={t("tasks.form.titlePlaceholder")}
 													type="text"
 													required
 													className="text-lg font-medium w-full border-0 shadow-none focus-visible:ring-0 px-0"
@@ -109,7 +111,7 @@ export function TaskForm(props: TaskFormProps) {
 
 						{/* Description */}
 						<div className="px-5 py-3 border-b border-border">
-							<label className={sidebarLabelClass}>Description</label>
+							<label className={sidebarLabelClass}>{t("tasks.form.description")}</label>
 							<FormField
 								control={methods.control}
 								name="description"
@@ -117,7 +119,7 @@ export function TaskForm(props: TaskFormProps) {
 									<FormItem className="mt-1.5">
 										<FormControl>
 											<Textarea
-												placeholder="Add a description..."
+												placeholder={t("tasks.form.descriptionPlaceholder")}
 												rows={3}
 												className="min-h-[60px] border-0 shadow-none focus-visible:ring-0 resize-none bg-transparent px-0"
 												{...field}
@@ -136,10 +138,10 @@ export function TaskForm(props: TaskFormProps) {
 
 						{/* Comments placeholder */}
 						<div className="px-5 py-4 flex-1">
-							<label className={sidebarLabelClass}>Comments</label>
+							<label className={sidebarLabelClass}>{t("tasks.form.comments")}</label>
 							<Textarea
 								disabled
-								placeholder="Comments coming soon..."
+								placeholder={t("tasks.form.commentsSoon")}
 								className="mt-1.5 min-h-[60px] bg-muted/30"
 							/>
 						</div>
@@ -153,21 +155,21 @@ export function TaskForm(props: TaskFormProps) {
 							name="project"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>Project</label>
+									<label className={sidebarLabelClass}>{t("tasks.form.project")}</label>
 									<Select
 										value={field.value}
 										onValueChange={handleProjectChange}
 									>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
-												<SelectValue placeholder="Select project" />
+												<SelectValue placeholder={t("tasks.form.selectProject")} />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
 											<SelectItem value="inbox">
 												<span className="flex items-center gap-2">
 													<span className="w-1.5 h-1.5 rounded-full bg-muted-foreground shrink-0" />
-													Inbox
+													{t("tasks.form.inbox")}
 												</span>
 											</SelectItem>
 											{projects.map((project) => (
@@ -198,7 +200,7 @@ export function TaskForm(props: TaskFormProps) {
 							name="section"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>Section</label>
+									<label className={sidebarLabelClass}>{t("tasks.form.section")}</label>
 									<Select
 										value={field.value}
 										onValueChange={field.onChange}
@@ -213,16 +215,16 @@ export function TaskForm(props: TaskFormProps) {
 												<SelectValue
 													placeholder={
 														!isProjectSelected
-															? "Select project first"
+															? t("tasks.form.selectProjectFirst")
 															: isFetchingSections
-																? "Loading..."
-																: "No section"
+																? t("tasks.form.loading")
+																: t("tasks.form.noSection")
 													}
 												/>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="none">No section</SelectItem>
+											<SelectItem value="none">{t("tasks.form.noSection")}</SelectItem>
 											{sections.map((section) => (
 												<SelectItem key={section.id} value={section.id}>
 													{section.name}
@@ -241,12 +243,12 @@ export function TaskForm(props: TaskFormProps) {
 							name="dueDate"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>Due date</label>
+									<label className={sidebarLabelClass}>{t("tasks.form.dueDate")}</label>
 									<FormControl>
 										<DatePicker
 											value={field.value}
 											onChange={field.onChange}
-											placeholder="No due date"
+											placeholder={t("tasks.form.noDueDate")}
 											className="h-[30px] text-[11px] mt-1"
 											disabledDates={isDateInPast}
 										/>
@@ -262,23 +264,23 @@ export function TaskForm(props: TaskFormProps) {
 							name="priority"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>Priority</label>
+									<label className={sidebarLabelClass}>{t("tasks.form.priority")}</label>
 									<Select value={field.value} onValueChange={field.onChange}>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
-												<SelectValue placeholder="Priority" />
+												<SelectValue placeholder={t("tasks.form.priority")} />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="none">No priority</SelectItem>
+											<SelectItem value="none">{t("tasks.form.noPriority")}</SelectItem>
 											<SelectItem value="low">
-												<span className={cn("text-blue-500")}>Low</span>
+												<span className={cn("text-blue-500")}>{t("tasks.form.low")}</span>
 											</SelectItem>
 											<SelectItem value="medium">
-												<span className={cn("text-amber-500")}>Medium</span>
+												<span className={cn("text-amber-500")}>{t("tasks.form.medium")}</span>
 											</SelectItem>
 											<SelectItem value="high">
-												<span className={cn("text-red-500")}>High</span>
+												<span className={cn("text-red-500")}>{t("tasks.form.high")}</span>
 											</SelectItem>
 										</SelectContent>
 									</Select>
@@ -293,7 +295,7 @@ export function TaskForm(props: TaskFormProps) {
 							name="goal"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>Goal</label>
+									<label className={sidebarLabelClass}>{t("tasks.form.goal")}</label>
 									<Select
 										value={field.value ?? "none"}
 										onValueChange={(v) =>
@@ -302,12 +304,12 @@ export function TaskForm(props: TaskFormProps) {
 									>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
-												<SelectValue placeholder="No goal" />
+												<SelectValue placeholder={t("tasks.form.noGoal")} />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
 											<SelectItem value="none">
-												<span className="text-muted-foreground">No goal</span>
+												<span className="text-muted-foreground">{t("tasks.form.noGoal")}</span>
 											</SelectItem>
 											{goals.map((goal) => (
 												<SelectItem key={goal.id} value={goal.id}>
@@ -330,7 +332,7 @@ export function TaskForm(props: TaskFormProps) {
 								<div className="pt-4 border-t border-border space-y-0.5">
 									{metadata.createdAt && (
 										<p className="text-[11px] text-muted-foreground">
-											Created{" "}
+											{t("tasks.form.created")}{" "}
 											{new Date(metadata.createdAt).toLocaleDateString(
 												"en-US",
 												{
@@ -343,7 +345,7 @@ export function TaskForm(props: TaskFormProps) {
 									)}
 									{metadata.updatedAt && (
 										<p className="text-[11px] text-muted-foreground">
-											Updated{" "}
+											{t("tasks.form.updated")}{" "}
 											{new Date(metadata.updatedAt).toLocaleDateString(
 												"en-US",
 												{
@@ -362,7 +364,7 @@ export function TaskForm(props: TaskFormProps) {
 				{/* FOOTER */}
 				<div className="flex items-center justify-between px-5 py-3 border-t border-border shrink-0">
 					<span className="text-xs text-muted-foreground">
-						{mode === "edit" ? "Editing task" : "New task"}
+						{mode === "edit" ? t("tasks.form.editingTask") : t("tasks.form.newTask")}
 					</span>
 					<div className="flex gap-2">
 						<Button
@@ -371,10 +373,10 @@ export function TaskForm(props: TaskFormProps) {
 							size="sm"
 							onClick={onCancel}
 						>
-							Discard
+							{t("tasks.form.discard")}
 						</Button>
 						<Button type="submit" size="sm">
-							{mode === "edit" ? "Save changes" : "Create task"}
+							{mode === "edit" ? t("tasks.form.saveChanges") : t("tasks.form.createTask")}
 						</Button>
 					</div>
 				</div>

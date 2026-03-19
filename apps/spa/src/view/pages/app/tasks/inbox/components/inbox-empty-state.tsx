@@ -1,12 +1,15 @@
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Inbox } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface InboxEmptyStateProps {
 	onCreateTask: () => void;
 }
 
 export function InboxEmptyState({ onCreateTask }: InboxEmptyStateProps) {
+	const { t } = useTranslation();
+
 	return (
 		<div className="flex items-center justify-center min-h-[400px] px-4">
 			<Card className="max-w-md w-full p-8 text-center space-y-6 border-dashed">
@@ -20,10 +23,9 @@ export function InboxEmptyState({ onCreateTask }: InboxEmptyStateProps) {
 				</div>
 
 				<div className="space-y-2">
-					<h3 className="text-2xl font-semibold">Your inbox is empty</h3>
+					<h3 className="text-2xl font-semibold">{t("tasks.inbox.emptyTitle")}</h3>
 					<p className="text-muted-foreground text-sm leading-relaxed">
-						Start organizing your tasks by creating your first todo. Keep track
-						of everything you need to do in one place.
+						{t("tasks.inbox.emptyDesc")}
 					</p>
 				</div>
 
@@ -33,11 +35,9 @@ export function InboxEmptyState({ onCreateTask }: InboxEmptyStateProps) {
 						className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
 						size="lg"
 					>
-						Create your first task
+						{t("tasks.inbox.createFirst")}
 					</Button>
-					<p className="text-xs text-muted-foreground">
-						Tip: Use the "New Task" button in the header anytime
-					</p>
+					<p className="text-xs text-muted-foreground">{t("tasks.inbox.tip")}</p>
 				</div>
 			</Card>
 		</div>

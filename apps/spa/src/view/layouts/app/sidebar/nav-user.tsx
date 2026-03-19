@@ -1,4 +1,5 @@
 import { BadgeCheck, Bell, LogOut, Settings } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarFallback } from "@repo/ui/avatar";
 import {
@@ -18,6 +19,7 @@ export function NavUser() {
 	const { isMobile } = useSidebar();
 	const navigate = useNavigate();
 	const { user, signout } = useAuth();
+	const { t } = useTranslation();
 
 	const handleNavigateToProfile = () => {
 		navigate(ROUTES.USER.PROFILE);
@@ -55,15 +57,15 @@ export function NavUser() {
 					>
 						<DropdownMenuItem onSelect={handleNavigateToProfile}>
 							<BadgeCheck className="w-4 h-4 mr-2" />
-							Perfil
+							{t("common.navUser.profile")}
 						</DropdownMenuItem>
 						<DropdownMenuItem>
 							<Bell className="w-4 h-4 mr-2" />
-							Notifications
+							{t("common.navUser.notifications")}
 						</DropdownMenuItem>
 						<DropdownMenuItem onSelect={handleNavigateToSettings}>
 							<Settings className="w-4 h-4 mr-2" />
-							Settings
+							{t("common.navUser.settings")}
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
@@ -71,7 +73,7 @@ export function NavUser() {
 							onClick={signout}
 						>
 							<LogOut className="w-4 h-4 mr-2" />
-							Logout
+							{t("common.navUser.logout")}
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

@@ -10,6 +10,7 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { PROJECTS_MOCK, TASKS_MOCK } from "./dashboard.mocks";
 import { TaskCard } from "./task-card";
@@ -50,6 +51,8 @@ function ProgressBar({
 
 export function Dashboard() {
 	const navigate = useNavigate();
+	const { user } = useAuth();
+	const { t } = useTranslation();
 	const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
 
 	// Mock data - substituir por hooks da API quando integrar
@@ -78,51 +81,51 @@ export function Dashboard() {
 	const stats = [
 		{
 			key: "ok",
-			label: "Concluídas",
+			label: t("dashboard.stats.completed"),
 			value: completed,
 			icon: CheckCircle2,
 			iconBg: "bg-emerald-100 dark:bg-emerald-900/30",
 			iconColor: "text-emerald-600 dark:text-emerald-400",
-			trend: "+1 hoje",
+			trend: t("dashboard.stats.today"),
 			trendVariant: "up" as const,
-			sublabel: "Hoje",
+			sublabel: t("dashboard.stats.today"),
 			stripeClass: "bg-emerald-500",
 		},
 		{
 			key: "warn",
-			label: "Atrasada",
+			label: t("dashboard.stats.overdue"),
 			value: overdueTasks,
 			icon: AlertCircle,
 			iconBg: "bg-amber-100 dark:bg-amber-900/30",
 			iconColor: "text-amber-600 dark:text-amber-400",
-			trend: overdueTasks === 0 ? "em dia" : "requer atenção",
+			trend: overdueTasks === 0 ? t("dashboard.stats.onTrack") : t("dashboard.stats.needsAttention"),
 			trendVariant: overdueTasks > 0 ? "down" : "flat",
-			sublabel: "Ver agora →",
+			sublabel: t("dashboard.stats.seeNow"),
 			stripeClass: "bg-amber-500",
 			tintedBg: true,
 		},
 		{
 			key: "info",
-			label: "Para hoje",
+			label: t("dashboard.stats.forToday"),
 			value: todayTasks.length,
 			icon: Calendar,
 			iconBg: "bg-blue-100 dark:bg-blue-900/30",
 			iconColor: "text-blue-600 dark:text-blue-400",
-			trend: `${todayDone} de ${todayTasks.length} feitas`,
+			trend: t("dashboard.stats.doneOf", { done: todayDone, total: todayTasks.length }),
 			trendVariant: "flat" as const,
-			sublabel: `${Math.max(0, todayTasks.length - todayDone)} pendentes`,
+			sublabel: t("dashboard.stats.pending", { count: Math.max(0, todayTasks.length - todayDone) }),
 			stripeClass: "bg-blue-500",
 		},
 		{
 			key: "meta",
-			label: "Eficiência",
+			label: t("dashboard.stats.efficiency"),
 			value: `${efficiency}%`,
 			icon: TrendingUp,
 			iconBg: "bg-violet-100 dark:bg-violet-900/30",
 			iconColor: "text-violet-600 dark:text-violet-400",
-			trend: "geral",
+			trend: t("dashboard.stats.overall"),
 			trendVariant: "flat" as const,
-			sublabel: "Meta: 70%",
+			sublabel: t("dashboard.stats.goal"),
 			stripeClass: "bg-violet-500",
 			showArc: true,
 		},
@@ -131,18 +134,16 @@ export function Dashboard() {
 	const recentProjects = projects.slice(0, 4);
 
 	const weekStats = [
-		{ label: "Tarefas concluídas", value: completed + 3 },
-		{ label: "Horas focadas", value: "12h 40m" },
+		{ label: t("dashboard.weekSummary.completedTasks"), value: completed + 3 },
+		{ label: t("dashboard.weekSummary.focusedHours"), value: "12h 40m" },
 		{
-			label: "Metas em andamento",
+			label: t("dashboard.weekSummary.activeGoals"),
 			value: projects.filter((p) => p.isGoal && p.status === "ativo").length,
 		},
 	];
 
 	const pendingToday = todayTasks.filter((t) => t.status === "pendente").length;
 	const hasOverdue = overdueTasks > 0;
-
-	const { user } = useAuth();
 
 	const firstName = user?.name.split(" ")[0];
 
@@ -159,15 +160,11 @@ export function Dashboard() {
 					})}
 				</p>
 				<h2 className="text-[26px] font-semibold text-foreground tracking-tight leading-tight">
-					Bom dia, {firstName} 👋
+					{t("dashboard.greeting", { name: firstName })}
 				</h2>
 				<p className="text-sm text-muted-foreground mt-1">
-					Você tem{" "}
-					<strong className="text-foreground font-semibold">
-						{pendingToday} tarefas
-					</strong>{" "}
-					para concluir hoje
-					{hasOverdue ? " — 1 requer atenção." : "."}
+					{t("dashboard.pendingTasks", { count: pendingToday })}
+					{hasOverdue ? t("dashboard.needsAttention") : ""}
 				</p>
 			</div>
 
@@ -281,14 +278,14 @@ export function Dashboard() {
 				<div className="bg-card border border-border rounded-[14px] shadow-sm overflow-hidden">
 					<div className="flex items-center justify-between px-5 py-4 border-b border-border/70">
 						<h3 className="text-[13px] font-semibold text-foreground">
-							Tarefas de Hoje
+							{t("dashboard.panels.todayTasks")}
 						</h3>
 						<button
 							type="button"
 							onClick={() => setView("hoje")}
 							className="text-xs font-medium text-primary hover:text-primary/90 flex items-center gap-0.5 no-underline"
 						>
-							Ver todas
+							{t("dashboard.panels.seeAll")}
 							<ArrowRight className="w-3 h-3" />
 						</button>
 					</div>
@@ -296,16 +293,16 @@ export function Dashboard() {
 						<div className="flex flex-col items-center justify-center py-12 text-center">
 							<CheckCircle2 className="w-10 h-10 text-muted-foreground/40 mb-3" />
 							<p className="font-medium text-muted-foreground">
-								Nada para hoje!
+								{t("dashboard.panels.nothingToday")}
 							</p>
 							<p className="text-sm text-muted-foreground/60 mt-1">
-								Aproveite o dia ou crie uma nova tarefa
+								{t("dashboard.panels.nothingTodayDesc")}
 							</p>
 							<button
 								onClick={() => setIsNewTaskOpen(true)}
 								className="mt-4 text-sm text-primary font-medium hover:underline"
 							>
-								Criar tarefa
+								{t("dashboard.panels.createTask")}
 							</button>
 						</div>
 					) : (
@@ -332,20 +329,20 @@ export function Dashboard() {
 				<div className="bg-card border border-border rounded-[14px] shadow-sm overflow-hidden">
 					<div className="flex items-center justify-between px-5 py-4 border-b border-border/70">
 						<h3 className="text-[13px] font-semibold text-foreground">
-							Projetos
+							{t("dashboard.panels.projects")}
 						</h3>
 						<button
 							type="button"
 							onClick={() => navigate(ROUTES.PROJECTS.LIST)}
 							className="text-xs font-medium text-primary hover:text-primary/90 flex items-center gap-0.5 no-underline"
 						>
-							Ver todos
+							{t("dashboard.panels.seeAllProjects")}
 							<ArrowRight className="w-3 h-3" />
 						</button>
 					</div>
 					<div className="divide-y divide-border/70">
 						{recentProjects.map((p) => {
-							const projectTasks = tasks.filter((t) => t.projectId === p.id);
+							const projectTasks = tasks.filter((task) => task.projectId === p.id);
 							const doneTasks = projectTasks.filter(
 								(t) => t.status === "concluida",
 							).length;
@@ -392,10 +389,10 @@ export function Dashboard() {
 										</div>
 										<span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 shrink-0">
 											{p.status === "ativo"
-												? "Ativo"
+												? t("dashboard.panels.active")
 												: p.status === "concluido"
-													? "Concluído"
-													: "Arquivado"}
+													? t("dashboard.panels.completed")
+													: t("dashboard.panels.archived")}
 										</span>
 									</div>
 									<div className="flex items-center gap-3">
@@ -415,8 +412,8 @@ export function Dashboard() {
 									</div>
 									<div className="text-[11px] text-muted-foreground mt-1.5">
 										{projectTasks.length > 0
-											? `${doneTasks} / ${projectTasks.length} tarefas`
-											: "0 / 0 tarefas"}
+											? t("dashboard.stats.tasksOf", { done: doneTasks, total: projectTasks.length })
+											: t("dashboard.stats.noTasks")}
 									</div>
 									{p.isGoal && p.targetValue != null && (
 										<div className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5 rounded mt-2">
@@ -433,7 +430,7 @@ export function Dashboard() {
 
 			{/* Resumo da semana */}
 			<div className="bg-card border border-border rounded-xl p-5">
-				<h3 className="font-semibold text-foreground mb-4">Resumo da semana</h3>
+				<h3 className="font-semibold text-foreground mb-4">{t("dashboard.weekSummary.title")}</h3>
 				<div className="grid grid-cols-3 gap-4">
 					{weekStats.map(({ label, value }) => (
 						<div key={label} className="text-center">

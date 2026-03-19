@@ -1,3 +1,4 @@
+import "@/libs/i18n";
 import { AuthProvider } from "@/contexts/auth";
 import { QueryClientProvider } from "@/libs/query";
 import { ThemeProvider } from "@repo/ui/providers";

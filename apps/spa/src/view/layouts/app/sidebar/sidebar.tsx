@@ -10,6 +10,7 @@ import {
 	User,
 } from "lucide-react";
 import type * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "@/config/routes";
@@ -27,27 +28,39 @@ import { NavProjects } from "./nav-projects";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
 
-const data = {
-	user: {
-		name: "shadcn",
-		email: "m@example.com",
-		avatar: "/avatars/shadcn.jpg",
-	},
-	navMain: [
-		{ url: ROUTES.TASKS.INBOX, label: "Inbox", icon: Inbox },
-		{ url: ROUTES.TODO.DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
-		{ url: ROUTES.TODO.TODAY, label: "Today", icon: CalendarDays },
-		{ url: ROUTES.TODO.UPCOMING, label: "Soon", icon: CalendarClock },
-		{ url: ROUTES.GOALS_DASHBOARD, label: "Metas", icon: Target },
-	],
-	navSecondary: [
-		{ title: "Perfil", url: ROUTES.USER.PROFILE, icon: User },
-		{ title: "Configurações", url: ROUTES.USER.SETTINGS, icon: Settings },
-		{ title: "Suporte", url: ROUTES.USER.SUPPORT, icon: HelpCircle },
-	],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+	const { t } = useTranslation();
+
+	const navMain = [
+		{ url: ROUTES.TASKS.INBOX, label: t("sidebar.inbox"), icon: Inbox },
+		{
+			url: ROUTES.TODO.DASHBOARD,
+			label: t("sidebar.dashboard"),
+			icon: LayoutDashboard,
+		},
+		{ url: ROUTES.TODO.TODAY, label: t("sidebar.today"), icon: CalendarDays },
+		{
+			url: ROUTES.TODO.UPCOMING,
+			label: t("sidebar.soon"),
+			icon: CalendarClock,
+		},
+		{ url: ROUTES.GOALS_DASHBOARD, label: t("sidebar.goals"), icon: Target },
+	];
+
+	const navSecondary = [
+		{ title: t("sidebar.profile"), url: ROUTES.USER.PROFILE, icon: User },
+		{
+			title: t("sidebar.settings"),
+			url: ROUTES.USER.SETTINGS,
+			icon: Settings,
+		},
+		{
+			title: t("sidebar.support"),
+			url: ROUTES.USER.SUPPORT,
+			icon: HelpCircle,
+		},
+	];
+
 	return (
 		<Sidebar variant="inset" {...props}>
 			<SidebarHeader>
@@ -68,9 +81,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
+				<NavMain items={navMain} />
 				<NavProjects />
-				<NavSecondary items={data.navSecondary} className="mt-auto" />
+				<NavSecondary items={navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />

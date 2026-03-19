@@ -1,3 +1,4 @@
+import { languageStorage } from "@/storage/language-storage";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { Label } from "@repo/ui/label";
@@ -15,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import { cn } from "@repo/ui/utils";
 import { AlertTriangle, Monitor, Moon, Sun } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
 	return (
@@ -46,6 +48,7 @@ function SettingRow({
 
 export function Settings() {
 	const { theme, setTheme } = useTheme();
+	const { t, i18n } = useTranslation();
 	const [notifs, setNotifs] = useState({
 		email: true,
 		push: false,
@@ -57,38 +60,45 @@ export function Settings() {
 	const toggleNotif = (key: keyof typeof notifs) =>
 		setNotifs((n) => ({ ...n, [key]: !n[key] }));
 
+	function handleLangChange(lang: string) {
+		i18n.changeLanguage(lang);
+		languageStorage.set(lang);
+	}
+
 	return (
 		<div className="flex-1 p-6 max-w-4xl mx-auto space-y-6 w-full">
 			<div>
-				<h2 className="text-xl font-bold text-foreground">Configurações</h2>
+				<h2 className="text-xl font-bold text-foreground">
+					{t("settings.title")}
+				</h2>
 				<p className="text-sm text-muted-foreground mt-0.5">
-					Notificações, segurança, assinatura e preferências
+					{t("settings.subtitle")}
 				</p>
 			</div>
 
 			<Tabs defaultValue="notificacoes" className="space-y-6 w-full">
 				<TabsList className="flex h-auto gap-1 w-full">
 					<TabsTrigger value="notificacoes" className="flex-1">
-						Notificações
+						{t("settings.tabs.notifications")}
 					</TabsTrigger>
 					<TabsTrigger value="seguranca" className="flex-1">
-						Segurança
+						{t("settings.tabs.security")}
 					</TabsTrigger>
 					<TabsTrigger value="assinatura" className="flex-1">
-						Assinatura
+						{t("settings.tabs.subscription")}
 					</TabsTrigger>
 					<TabsTrigger value="preferencias" className="flex-1">
-						Preferências
+						{t("settings.tabs.preferences")}
 					</TabsTrigger>
 				</TabsList>
 
-				{/* Notificações */}
+				{/* Notifications */}
 				<TabsContent value="notificacoes" className="space-y-4">
 					<div className="bg-card border border-border rounded-xl p-6 space-y-1 divide-y divide-border">
-						<SectionTitle>Canais</SectionTitle>
+						<SectionTitle>{t("settings.notifications.channels")}</SectionTitle>
 						<SettingRow
-							label="Notificações por email"
-							description="Receba atualizações no seu email"
+							label={t("settings.notifications.emailNotifs")}
+							description={t("settings.notifications.emailNotifsDesc")}
 						>
 							<Switch
 								checked={notifs.email}
@@ -96,8 +106,8 @@ export function Settings() {
 							/>
 						</SettingRow>
 						<SettingRow
-							label="Notificações push"
-							description="Notificações no navegador"
+							label={t("settings.notifications.pushNotifs")}
+							description={t("settings.notifications.pushNotifsDesc")}
 						>
 							<Switch
 								checked={notifs.push}
@@ -106,11 +116,11 @@ export function Settings() {
 						</SettingRow>
 
 						<div className="pt-4">
-							<SectionTitle>Eventos</SectionTitle>
+							<SectionTitle>{t("settings.notifications.events")}</SectionTitle>
 						</div>
 						<SettingRow
-							label="Vencimento de tarefas"
-							description="Alertas quando uma tarefa está prestes a vencer"
+							label={t("settings.notifications.taskDue")}
+							description={t("settings.notifications.taskDueDesc")}
 						>
 							<Switch
 								checked={notifs.tarefas}
@@ -118,8 +128,8 @@ export function Settings() {
 							/>
 						</SettingRow>
 						<SettingRow
-							label="Atualização de metas"
-							description="Acompanhamento do progresso de metas"
+							label={t("settings.notifications.goalUpdates")}
+							description={t("settings.notifications.goalUpdatesDesc")}
 						>
 							<Switch
 								checked={notifs.metas}
@@ -127,8 +137,8 @@ export function Settings() {
 							/>
 						</SettingRow>
 						<SettingRow
-							label="Resumo semanal"
-							description="Resumo de produtividade toda segunda-feira"
+							label={t("settings.notifications.weeklySummary")}
+							description={t("settings.notifications.weeklySummaryDesc")}
 						>
 							<Switch
 								checked={notifs.resumo}
@@ -138,104 +148,102 @@ export function Settings() {
 					</div>
 				</TabsContent>
 
-				{/* Segurança */}
+				{/* Security */}
 				<TabsContent value="seguranca" className="space-y-4">
 					<div className="bg-card border border-border rounded-xl p-6 space-y-4">
-						<SectionTitle>Alterar senha</SectionTitle>
+						<SectionTitle>{t("settings.security.changePassword")}</SectionTitle>
 						<div className="space-y-3">
 							<div className="space-y-1.5">
-								<Label htmlFor="current-pw">Senha atual</Label>
+								<Label htmlFor="current-pw">
+									{t("settings.security.currentPassword")}
+								</Label>
 								<Input id="current-pw" type="password" />
 							</div>
 							<div className="space-y-1.5">
-								<Label htmlFor="new-pw">Nova senha</Label>
+								<Label htmlFor="new-pw">
+									{t("settings.security.newPassword")}
+								</Label>
 								<Input id="new-pw" type="password" />
 							</div>
 							<div className="space-y-1.5">
-								<Label htmlFor="confirm-pw">Confirmar nova senha</Label>
+								<Label htmlFor="confirm-pw">
+									{t("settings.security.confirmPassword")}
+								</Label>
 								<Input id="confirm-pw" type="password" />
 							</div>
 							<div className="flex justify-end pt-1">
-								<Button>Atualizar senha</Button>
+								<Button>{t("settings.security.updatePassword")}</Button>
 							</div>
 						</div>
 					</div>
 
 					<div className="bg-card border border-border rounded-xl p-6 divide-y divide-border space-y-1">
-						<SectionTitle>Segurança adicional</SectionTitle>
+						<SectionTitle>
+							{t("settings.security.additionalSecurity")}
+						</SectionTitle>
 						<SettingRow
-							label="Autenticação em dois fatores"
-							description="Adicione uma camada extra de segurança"
+							label={t("settings.security.twoFactor")}
+							description={t("settings.security.twoFactorDesc")}
 						>
 							<Button variant="outline" size="sm">
-								Ativar 2FA
+								{t("settings.security.enable2FA")}
 							</Button>
 						</SettingRow>
 						<SettingRow
-							label="Sessões ativas"
-							description="1 dispositivo logado"
+							label={t("settings.security.activeSessions")}
+							description={t("settings.security.activeSessionsDesc")}
 						>
 							<Button variant="outline" size="sm">
-								Gerenciar
+								{t("settings.security.manage")}
 							</Button>
 						</SettingRow>
 					</div>
 				</TabsContent>
 
-				{/* Assinatura */}
+				{/* Subscription */}
 				<TabsContent value="assinatura" className="space-y-4">
 					<div className="bg-card border border-border rounded-xl p-6 space-y-4">
-						<SectionTitle>Plano atual</SectionTitle>
+						<SectionTitle>
+							{t("settings.subscription.currentPlan")}
+						</SectionTitle>
 						<div className="flex items-center justify-between p-4 bg-primary/10 border border-primary/20 rounded-lg">
 							<div>
-								<p className="font-semibold text-foreground">Plano Free</p>
+								<p className="font-semibold text-foreground">
+									{t("settings.subscription.freePlan")}
+								</p>
 								<p className="text-sm text-muted-foreground">
-									Projetos ilimitados, até 5 metas
+									{t("settings.subscription.freePlanDesc")}
 								</p>
 							</div>
-							<Button size="sm">Fazer upgrade</Button>
+							<Button size="sm">{t("settings.subscription.upgrade")}</Button>
 						</div>
 
 						<Separator />
 						<div className="space-y-2">
 							<h4 className="text-sm font-semibold text-foreground">
-								Planos disponíveis
+								{t("settings.subscription.availablePlans")}
 							</h4>
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-								{[
-									{
-										name: "Pro",
-										price: "R$ 19/mês",
-										features: [
-											"Metas ilimitadas",
-											"Integrações",
-											"Suporte prioritário",
-										],
-									},
-									{
-										name: "Família",
-										price: "R$ 39/mês",
-										features: [
-											"5 usuários",
-											"Agenda compartilhada",
-											"Tudo do Pro",
-										],
-									},
-								].map((plan) => (
+								{(["pro", "family"] as const).map((key) => (
 									<div
-										key={plan.name}
+										key={key}
 										className="border border-border rounded-lg p-4 space-y-2"
 									>
 										<div className="flex items-center justify-between">
 											<span className="font-semibold text-foreground">
-												{plan.name}
+												{t(`settings.subscription.plans.${key}.name`)}
 											</span>
 											<span className="text-sm text-primary font-medium">
-												{plan.price}
+												{t(`settings.subscription.plans.${key}.price`)}
 											</span>
 										</div>
 										<ul className="space-y-1">
-											{plan.features.map((f) => (
+											{(
+												t(
+													`settings.subscription.plans.${key}.features`,
+													{ returnObjects: true },
+												) as string[]
+											).map((f) => (
 												<li
 													key={f}
 													className="text-xs text-muted-foreground flex items-center gap-1.5"
@@ -246,7 +254,7 @@ export function Settings() {
 											))}
 										</ul>
 										<Button variant="outline" size="sm" className="w-full">
-											Assinar
+											{t("settings.subscription.subscribe")}
 										</Button>
 									</div>
 								))}
@@ -255,16 +263,28 @@ export function Settings() {
 					</div>
 				</TabsContent>
 
-				{/* Preferências */}
+				{/* Preferences */}
 				<TabsContent value="preferencias" className="space-y-4">
 					<div className="bg-card border border-border rounded-xl p-6 space-y-5">
-						<SectionTitle>Tema</SectionTitle>
+						<SectionTitle>{t("settings.preferences.theme")}</SectionTitle>
 						<div className="grid grid-cols-3 gap-3">
 							{[
-								{ id: "light", label: "Claro", icon: Sun },
-								{ id: "dark", label: "Escuro", icon: Moon },
-								{ id: "system", label: "Sistema", icon: Monitor },
-							].map(({ id, label, icon: Icon }) => (
+								{
+									id: "light",
+									labelKey: "settings.preferences.themeLight",
+									icon: Sun,
+								},
+								{
+									id: "dark",
+									labelKey: "settings.preferences.themeDark",
+									icon: Moon,
+								},
+								{
+									id: "system",
+									labelKey: "settings.preferences.themeSystem",
+									icon: Monitor,
+								},
+							].map(({ id, labelKey, icon: Icon }) => (
 								<button
 									key={id}
 									type="button"
@@ -288,7 +308,7 @@ export function Settings() {
 											theme === id ? "text-primary" : "text-muted-foreground",
 										)}
 									>
-										{label}
+										{t(labelKey)}
 									</span>
 								</button>
 							))}
@@ -296,25 +316,24 @@ export function Settings() {
 
 						<Separator />
 						<div className="space-y-1.5">
-							<Label htmlFor="lang">Idioma</Label>
-							<Select defaultValue="pt-BR">
+							<Label htmlFor="lang">{t("settings.preferences.language")}</Label>
+							<Select value={i18n.language} onValueChange={handleLangChange}>
 								<SelectTrigger className="w-48">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="pt-BR">Português (Brasil)</SelectItem>
 									<SelectItem value="en">English</SelectItem>
-									<SelectItem value="es">Español</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
 
 						<Separator />
 						<div className="space-y-3 divide-y divide-border">
-							<SectionTitle>Privacidade</SectionTitle>
+							<SectionTitle>{t("settings.preferences.privacy")}</SectionTitle>
 							<SettingRow
-								label="Análises de uso"
-								description="Ajude a melhorar o LifeOS compartilhando dados anônimos"
+								label={t("settings.preferences.usageAnalytics")}
+								description={t("settings.preferences.usageAnalyticsDesc")}
 							>
 								<Switch defaultChecked />
 							</SettingRow>
@@ -323,22 +342,21 @@ export function Settings() {
 						<Separator />
 						<div className="space-y-3">
 							<h3 className="text-base font-semibold text-destructive">
-								Zona de perigo
+								{t("settings.preferences.dangerZone")}
 							</h3>
 							<div className="p-4 border border-destructive/30 rounded-lg bg-destructive/5">
 								<div className="flex items-start gap-3">
 									<AlertTriangle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
 									<div className="flex-1">
 										<p className="text-sm font-medium text-foreground">
-											Excluir conta
+											{t("settings.preferences.deleteAccount")}
 										</p>
 										<p className="text-xs text-muted-foreground mt-0.5">
-											Esta ação é permanente e não pode ser desfeita. Todos os
-											seus dados serão removidos.
+											{t("settings.preferences.deleteAccountDesc")}
 										</p>
 									</div>
 									<Button variant="destructive" size="sm">
-										Excluir conta
+										{t("settings.preferences.deleteAccount")}
 									</Button>
 								</div>
 							</div>
