@@ -1,11 +1,1 @@
-export type Section = {
-	id: string;
-	userId: string;
-	projectId: string;
-	name: string;
-	description?: string;
-	deletedAt?: Date;
-	createdAt: Date;
-	updatedAt: Date;
-	order: number;
-};
+export type { Section } from "@repo/contracts/sections/entities";

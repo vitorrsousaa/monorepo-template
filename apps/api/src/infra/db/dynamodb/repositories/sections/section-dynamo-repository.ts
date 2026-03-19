@@ -1,8 +1,9 @@
-import type { Section } from "@core/domain/section/section";
 import type { SectionMapper } from "@data/protocols/sections/section-mapper";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
 import type { SectionDynamoDBEntity } from "@infra/db/dynamodb/mappers/sections/types";
+import { Section } from "@repo/contracts/sections/entities";
 import { randomUUID } from "node:crypto";
+import { IDatabaseClient } from "../../contracts/client";
 import { SECTION_DYNAMO_MOCKS } from "./section-dynamo-repository-mocks";
 
 /**
@@ -17,34 +18,39 @@ import { SECTION_DYNAMO_MOCKS } from "./section-dynamo-repository-mocks";
  * Access patterns per docs/database-design.md:
  * - List sections: PK = USER#userId#PROJECT#projectId AND SK begins_with SECTION#
  * - Get section: PK = USER#userId#PROJECT#projectId AND SK = SECTION#sectionId
- *
- * TODO: Implement real DynamoDB integration
- * For now, keeps data in memory for development.
  */
 export class SectionDynamoRepository implements ISectionRepository {
-	// TODO: Replace with DynamoDB client
-	// private dynamoClient: DynamoDBDocumentClient;
-	// private tableName: string;
-
-	// Temporary: In-memory simulation using shared mocks
+	
 	private dbSections: SectionDynamoDBEntity[] = [...SECTION_DYNAMO_MOCKS];
 
-	constructor(private readonly mapper: SectionMapper<SectionDynamoDBEntity>) {}
+	constructor(private readonly dynamoClient: IDatabaseClient, private readonly mapper: SectionMapper<SectionDynamoDBEntity>) {}
 
 	async getAllByProject(projectId: string, userId: string): Promise<Section[]> {
-		// Docs: PK = USER#userId#PROJECT#projectId AND SK begins_with SECTION#
-		// TODO: DynamoDB Query KeyConditionExpression: PK = :pk AND begins_with(SK, 'SECTION#')
-		// FilterExpression: attribute_not_exists(deletedAt) - ALWAYS exclude soft-deleted items
 		const pk = `USER#${userId}#PROJECT#${projectId}`;
-
-		const sections = this.dbSections
-			.filter((s) => s.PK === pk && s.SK.startsWith("SECTION#"))
-			.filter((s) => !s.deleted_at) // Exclude soft-deleted sections
-			.sort((a, b) => a.order - b.order) // Sort by order
-			.map((dbSection) => this.mapper.toDomain(dbSection));
-
-		return sections;
+		const sk = `SECTION#`;
+			
+			const queryResult = await this.dynamoClient.query<SectionDynamoDBEntity[]>({
+				KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+				ExpressionAttributeNames: {
+					"#deletedAt": "deleted_at",
+				},
+				ExpressionAttributeValues: {
+					":pk": pk,
+					":skPrefix": sk,
+					":null": null,
+					
+				},
+				FilterExpression: "attribute_not_exists(#deletedAt) OR #deletedAt = :null",
+				IndexName: undefined, // Use default index
+			});
+	
+			const resultSections = queryResult ? queryResult : [];
+	
+			const sections = resultSections.map(this.mapper.toDomain);
+	
+			return sections;
 	}
+					
 
 	async getById(
 		sectionId: string,
@@ -66,11 +72,10 @@ export class SectionDynamoRepository implements ISectionRepository {
 	async create(
 		data: Omit<Section, "id" | "createdAt" | "updatedAt" | "deletedAt">,
 	): Promise<Section> {
-		// Generate unique ID and timestamps
 		const sectionId = randomUUID();
 		const now = new Date();
+		const nowIso = now.toISOString();
 
-		// Build complete Section domain entity
 		const section: Section = {
 			id: sectionId,
 			userId: data.userId,
@@ -78,23 +83,15 @@ export class SectionDynamoRepository implements ISectionRepository {
 			name: data.name,
 			order: data.order,
 			deletedAt: undefined,
-			createdAt: now,
-			updatedAt: now,
+			createdAt: nowIso,
+			updatedAt: nowIso,
 		};
 
-		// Convert to DynamoDB entity using mapper
 		const dbEntity = this.mapper.toDatabase(section);
+		
+		await this.dynamoClient.create(dbEntity)
 
-		// TODO: Replace with DynamoDB PutItem
-		// await this.dynamoClient.put({
-		//   TableName: this.tableName,
-		//   Item: dbEntity,
-		// });
-
-		// Temporary: Add to in-memory array
-		this.dbSections.push(dbEntity);
-
-		return section;
+		return this.mapper.toDomain(dbEntity);
 	}
 
 	async update(

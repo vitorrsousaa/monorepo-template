@@ -5,29 +5,35 @@ export type TControllerType = "public" | "private";
 
 export abstract class Controller<
 	TType extends TControllerType = "private",
-	TBody = undefined,
+	TResponseBody = undefined,
+	TRequestBody extends Record<string, unknown> = Record<string, unknown>,
+	TRequestParams extends Record<string, unknown> = Record<string, unknown>,
 > {
 	protected schema?: z.ZodSchema<Record<string, unknown>>;
 	protected abstract handle(
-		request: Controller.Request<TType>,
-	): Promise<Controller.Response<TBody>>;
+		request: Controller.Request<TType, TRequestBody, TRequestParams>,
+	): Promise<Controller.Response<TResponseBody>>;
 
 	public execute(
-		request: Controller.Request<TType>,
-	): Promise<Controller.Response<TBody>> {
+		request: Controller.Request<TType, TRequestBody, TRequestParams>,
+	): Promise<Controller.Response<TResponseBody>> {
 		const parsedBody = this.validateBody(request?.body || {});
 
 		return this.handle({ ...request, body: parsedBody });
 	}
 
 	private validateBody(
-		body: Controller.Request<TType>["body"],
-	): Controller.Request<TType>["body"] {
+		body: Controller.Request<TType, TRequestBody, TRequestParams>["body"],
+	): Controller.Request<TType, TRequestBody, TRequestParams>["body"] {
 		if (!this.schema) return body;
 
 		const parsedBody = missingFields(this.schema, body);
 
-		return parsedBody;
+		return parsedBody as Controller.Request<
+			TType,
+			TRequestBody,
+			TRequestParams
+		>["body"];
 	}
 }
 
