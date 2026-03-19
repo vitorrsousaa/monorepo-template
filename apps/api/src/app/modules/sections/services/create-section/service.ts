@@ -1,14 +1,14 @@
 import type { IService } from "@application/interfaces/service";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
-import type { CreateSectionInput, CreateSectionOutput } from "./dto";
+import type { CreateSectionServiceInput, CreateSectionServiceOutput } from "./dto";
 
 export interface ICreateSectionService
-	extends IService<CreateSectionInput, CreateSectionOutput> {}
+	extends IService<CreateSectionServiceInput, CreateSectionServiceOutput> {}
 
 export class CreateSectionService implements ICreateSectionService {
 	constructor(private readonly sectionRepository: ISectionRepository) {}
 
-	async execute(data: CreateSectionInput): Promise<CreateSectionOutput> {
+	async execute(data: CreateSectionServiceInput): Promise<CreateSectionServiceOutput> {
 		let order = data.order;
 
 		if (order === undefined) {
@@ -29,14 +29,6 @@ export class CreateSectionService implements ICreateSectionService {
 			order,
 		});
 
-		return {
-			section: {
-				id: section.id,
-				name: section.name,
-				order: section.order,
-				createdAt: section.createdAt,
-				updatedAt: section.updatedAt,
-			},
-		};
+		return { section };
 	}
 }

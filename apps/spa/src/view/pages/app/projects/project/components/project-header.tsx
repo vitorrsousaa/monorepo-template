@@ -2,19 +2,16 @@ import { cn } from "@repo/ui/utils";
 import { Calendar, Clock } from "lucide-react";
 
 type ProjectHeaderProps = {
-	icon?: string | null;
 	name: string;
 	description?: string | null;
 	completedCount: number;
 	totalCount: number;
-	/** Optional project accent color for progress (CSS color or Tailwind class). */
 	progressColor?: string;
 	deadlineLabel?: string | null;
 	statusLabel?: string | null;
 };
 
 export function ProjectHeader({
-	icon,
 	name,
 	description,
 	completedCount,
@@ -30,11 +27,6 @@ export function ProjectHeader({
 	return (
 		<header className="mb-7">
 			<div className="mb-1.5 flex items-center gap-3">
-				{icon && (
-					<span className="text-[26px] leading-none" aria-hidden>
-						{icon}
-					</span>
-				)}
 				<h1 className="text-2xl font-semibold tracking-tight text-foreground">
 					{name}
 				</h1>

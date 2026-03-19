@@ -1,20 +1,11 @@
-import { z } from "zod";
+import type { CreateSectionInput } from "@repo/contracts/sections/create";
+import type { Section } from "@core/domain/section/section";
 
-export const CreateSectionInputDTO = z.object({
-	userId: z.string().uuid(),
-	projectId: z.string().uuid(),
-	name: z.string().min(1),
-	order: z.number().int().positive().optional(),
-});
+export interface CreateSectionServiceInput extends CreateSectionInput {
+	userId: string;
+	projectId: string;
+}
 
-export type CreateSectionInput = z.infer<typeof CreateSectionInputDTO>;
-
-export interface CreateSectionOutput {
-	section: {
-		id: string;
-		name: string;
-		order: number;
-		createdAt: Date;
-		updatedAt: Date;
-	};
+export interface CreateSectionServiceOutput {
+	section: Section;
 }

@@ -1,12 +1,8 @@
-import type { Section } from "@core/domain/section/section";
-import { z } from "zod";
-
-export const GetAllByProjectInputDTO = z.object({
-	userId: z.string().uuid(),
-	projectId: z.string().uuid(),
-});
-
-export type GetAllByProjectInput = z.infer<typeof GetAllByProjectInputDTO>;
+import { Section, } from "@repo/contracts/sections/entities";
+export interface GetAllByProjectInput {
+	userId: string;
+	projectId: string;
+}
 
 export interface GetAllByProjectOutput {
 	sections: Section[];

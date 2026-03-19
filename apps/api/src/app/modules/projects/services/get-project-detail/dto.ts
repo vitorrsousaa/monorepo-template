@@ -1,5 +1,5 @@
 import type { Project } from "@core/domain/project/project";
-import type { Section } from "@core/domain/section/section";
+import { Section } from "@repo/contracts/sections/entities";
 import type { Task } from "@repo/contracts/tasks";
 import { z } from "zod";
 

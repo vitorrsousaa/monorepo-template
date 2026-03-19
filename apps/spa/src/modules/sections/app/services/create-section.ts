@@ -1,11 +1,16 @@
-import type { CreateSectionInput } from "@/modules/sections/app/entities/create-section";
+import type { CreateSectionInput } from "@repo/contracts/sections/create";
+import type { CreateSectionOutput } from "@repo/contracts/sections/create";
 import { httpClient } from "@/services/http-client";
-import type { Section } from "../entities/section";
 
-export async function createSection(input: CreateSectionInput) {
-	const { data } = await httpClient.post<{ section: Section }>(
-		`/projects/${input.projectId}/sections`,
-		input,
+export interface CreateSectionServiceInput extends CreateSectionInput {
+	projectId: string; // URL path param, not sent in body
+}
+
+export async function createSection(input: CreateSectionServiceInput) {
+	const { projectId, ...body } = input;
+	const { data } = await httpClient.post<CreateSectionOutput>(
+		`/projects/${projectId}/sections`,
+		body,
 	);
 
 	return data;

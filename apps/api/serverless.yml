@@ -176,7 +176,7 @@ functions:
           method: post
           authorizer: 
             name: CognitoAuthorizer
-  getAllByProject:
+  getAllSectionsByProject:
     handler: src/server/functions/sections/get-all-by-project/index.handler
     events:
       - httpApi:

@@ -1,5 +1,5 @@
-import type { Section } from "@core/domain/section/section";
 import type { SectionMapper } from "@data/protocols/sections/section-mapper";
+import { Section } from "@repo/contracts/sections/entities";
 import type { SectionDynamoDBEntity } from "./types";
 
 const USER_PREFIX = "USER#";
@@ -31,10 +31,10 @@ export class SectionDynamoMapper
 			name: dbEntity.name,
 			order: dbEntity.order,
 			deletedAt: dbEntity.deleted_at
-				? new Date(dbEntity.deleted_at)
-				: undefined,
-			createdAt: new Date(dbEntity.created_at),
-			updatedAt: new Date(dbEntity.updated_at),
+				? new Date(dbEntity.deleted_at).toISOString()
+				: null,
+			createdAt: new Date(dbEntity.created_at).toISOString(),
+			updatedAt: new Date(dbEntity.updated_at).toISOString(),
 		};
 	}
 
@@ -56,9 +56,9 @@ export class SectionDynamoMapper
 			project_id: section.projectId,
 			name: section.name,
 			order: section.order,
-			deleted_at: section.deletedAt?.toISOString() ?? null,
-			created_at: section.createdAt.toISOString(),
-			updated_at: section.updatedAt.toISOString(),
+			deleted_at: section?.deletedAt ? new Date(section.deletedAt).toISOString() : null,
+created_at: new Date(section.createdAt).toISOString(),
+			updated_at: new Date(section.updatedAt).toISOString(),
 			entity_type: "SECTION",
 		};
 	}

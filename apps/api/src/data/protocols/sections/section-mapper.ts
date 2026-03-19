@@ -1,4 +1,4 @@
-import type { Section } from "@core/domain/section/section";
+import { Section } from "@repo/contracts/sections/entities";
 
 /**
  * SectionMapper
