@@ -22,6 +22,10 @@ Organized by domain with clear separation of concerns:
 - **`src/projects/`** — Project entity and routes (get-all).
   - `entities/` — shared `ProjectDto` entity
   - `get-all/` — response type
+- **`src/sections/`** — Section entity and routes (create, get-all).
+  - `entities/` — shared `SectionDto` entity
+  - `create/` — `schema.ts` (Zod + constants), `input.ts`, `output.ts`
+  - `get-all/` — response type
 - **`src/todo/`** — todo (legacy, do not create new todo symbols).
 
 Each route folder has an `index.ts` barrel that exports request/response interfaces and re-exports shared entities.
@@ -60,6 +64,7 @@ Package exports (see `package.json`) are subpath-based: `@repo/contracts/*` maps
 |--------|---------|
 | `@repo/contracts/tasks/entities` | `Task`, `TaskDto` |
 | `@repo/contracts/projects/entities` | `ProjectDto` |
+| `@repo/contracts/sections/entities` | `SectionDto` |
 | `@repo/contracts/auth/entities` | `User` |
 
 ### Task routes
@@ -73,6 +78,12 @@ Package exports (see `package.json`) are subpath-based: `@repo/contracts/*` maps
 | Import | Content |
 |--------|---------|
 | `@repo/contracts/projects/get-all` | `GetAllProjectsByUserResponse`, `ProjectDto` |
+
+### Section routes
+| Import | Content |
+|--------|---------|
+| `@repo/contracts/sections/create` | `CreateSectionInput`, `CreateSectionOutput`, `createSectionSchema`, `SECTION_NAME_MIN`, `SECTION_NAME_MAX` |
+| `@repo/contracts/sections/get-all` | `GetAllSectionsResponse`, `SectionDto` |
 
 ### Auth routes
 | Import | Content |
