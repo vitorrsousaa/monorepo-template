@@ -55,4 +55,13 @@ export interface ITasksRepository {
 		projectId: string,
 		userId: string,
 	): Promise<Todo[]>;
+
+	/**
+	 * Get all pending tasks for a project (with or without section)
+	 * Uses PK = USER#userId#PROJECT#projectId, SK begins_with TASK#PENDING#
+	 * @param projectId - Project ID
+	 * @param userId - User ID (for multi-tenancy)
+	 * @returns Array of pending tasks ordered by SK
+	 */
+	getAllPendingByProject(projectId: string, userId: string): Promise<Task[]>;
 }

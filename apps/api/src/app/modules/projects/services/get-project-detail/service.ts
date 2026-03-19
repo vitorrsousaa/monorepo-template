@@ -2,7 +2,8 @@ import type { IService } from "@application/interfaces/service";
 import { ProjectNotFound } from "@application/modules/projects/errors/project-not-found";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
-import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
+import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
+import type { Task } from "@repo/contracts/tasks";
 import type {
 	GetProjectDetailInput,
 	GetProjectDetailOutput,
@@ -16,55 +17,54 @@ export interface IGetProjectDetailService
  * GetProjectDetailService
  *
  * Service responsible for fetching project details including sections and todos.
- * Orchestrates multiple repositories to compose the final DTO.
- *
- * Architecture note:
- * - Repositories return domain entities only
- * - Service composes the DTO by calling multiple repositories
- * - Uses Promise.all for parallel queries where possible
+ * Orchestrates 3 parallel queries (project + sections + all pending tasks)
+ * and regroups tasks by sectionId in-memory.
  */
 export class GetProjectDetailService implements IGetProjectDetailService {
 	constructor(
 		private readonly projectRepository: IProjectRepository,
 		private readonly sectionRepository: ISectionRepository,
-		private readonly todoRepository: ITodoRepository,
+		private readonly taskRepository: ITasksRepository,
 	) {}
 
 	async execute(input: GetProjectDetailInput): Promise<GetProjectDetailOutput> {
 		const { projectId, userId } = input;
 
-		// Query 1 & 2: Fetch project and sections in parallel (independent queries)
-		const [project, sections] = await Promise.all([
+		// 3 parallel queries
+		const [project, sections, allPendingTasks] = await Promise.all([
 			this.projectRepository.getById(projectId, userId),
 			this.sectionRepository.getAllByProject(projectId, userId),
+			this.taskRepository.getAllPendingByProject(projectId, userId),
 		]);
 
 		if (!project) {
 			throw new ProjectNotFound();
 		}
 
-		// Query 3: Fetch todos without section + todos per section in parallel
-		const [todosWithoutSection, ...sectionsWithTodosArrays] = await Promise.all(
-			[
-				this.todoRepository.getTodosByProjectWithoutSection(projectId, userId),
-				...sections.map((section) =>
-					this.todoRepository.getAllBySection(section.id, projectId, userId),
-				),
-			],
-		);
+		// Group tasks by sectionId
+		const tasksBySectionId = new Map<string, Task[]>();
+		const tasksWithoutSection: Task[] = [];
 
-		const sectionsWithTodos: SectionWithTodos[] = sections.map(
-			(section, index) => ({
-				...section,
-				todos: sectionsWithTodosArrays[index] ?? [],
-			}),
-		);
+		for (const task of allPendingTasks) {
+			if (task.sectionId) {
+				const existing = tasksBySectionId.get(task.sectionId) ?? [];
+				existing.push(task);
+				tasksBySectionId.set(task.sectionId, existing);
+			} else {
+				tasksWithoutSection.push(task);
+			}
+		}
+
+		const sectionsWithTodos: SectionWithTodos[] = sections.map((section) => ({
+			...section,
+			todos: tasksBySectionId.get(section.id) ?? [],
+		}));
 
 		return {
 			data: {
 				project,
 				sections: sectionsWithTodos,
-				todosWithoutSection,
+				todosWithoutSection: tasksWithoutSection,
 			},
 		};
 	}

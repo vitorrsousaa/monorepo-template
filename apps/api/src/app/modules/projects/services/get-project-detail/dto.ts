@@ -1,6 +1,6 @@
 import type { Project } from "@core/domain/project/project";
 import type { Section } from "@core/domain/section/section";
-import type { Todo } from "@core/domain/todo/todo";
+import type { Task } from "@repo/contracts/tasks";
 import { z } from "zod";
 
 /**
@@ -10,7 +10,7 @@ import { z } from "zod";
  * Used only for data transfer, not a domain entity.
  */
 export interface SectionWithTodos extends Section {
-	todos: Todo[];
+	todos: Task[];
 }
 
 /**
@@ -22,8 +22,8 @@ export interface SectionWithTodos extends Section {
 export interface ProjectDetailDTO {
 	project: Project;
 	sections: SectionWithTodos[];
-	/** Todos that belong to this project but have no section assigned */
-	todosWithoutSection: Todo[];
+	/** Tasks that belong to this project but have no section assigned */
+	todosWithoutSection: Task[];
 }
 
 /**

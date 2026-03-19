@@ -228,6 +228,29 @@ export class TasksDynamoRepository implements ITasksRepository {
 			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 
+	async getAllPendingByProject(
+		projectId: string,
+		userId: string,
+	): Promise<Task[]> {
+		const pk = `USER#${userId}#PROJECT#${projectId}`;
+
+		const queryResult = await this.dynamoClient.query<TasksDynamoDBEntity[]>({
+			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+			ExpressionAttributeNames: {
+				"#deletedAt": "deleted_at",
+			},
+			ExpressionAttributeValues: {
+				":pk": pk,
+				":skPrefix": "TASK#PENDING#",
+			},
+			FilterExpression: "attribute_not_exists(#deletedAt)",
+			IndexName: undefined,
+		});
+
+		const results = queryResult ? queryResult : [];
+		return results.map((dbEntity) => this.mapper.toDomain(dbEntity));
+	}
+
 	async getTodosByProjectWithoutSection(
 		projectId: string,
 		userId: string,
