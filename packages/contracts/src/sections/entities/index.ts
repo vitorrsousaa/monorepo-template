@@ -1,3 +1,5 @@
+import { Task } from "../../tasks/entities";
+
 export interface Section {
 	id: string;
 	userId: string;
@@ -7,4 +9,8 @@ export interface Section {
 	deletedAt?: string | null;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface SectionsWithTasks extends Section { 
+	tasks: Task[];
 }

@@ -11,6 +11,7 @@ export default defineConfig({
 		"src/projects/**/*.ts",
 		"src/sections/**/*.ts",
 		"src/common/index.ts",
+		"src/enums/**.ts",
 	],
 	format: ["esm"],
 	dts: true,
