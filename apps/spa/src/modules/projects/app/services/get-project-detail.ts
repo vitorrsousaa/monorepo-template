@@ -6,9 +6,9 @@ export interface GetProjectDetailInput {
 }
 
 export async function getProjectDetail(input: GetProjectDetailInput) {
-	const { data } = await httpClient.get<{ data: GetProjectDetailResponse }>(
+	const { data } = await httpClient.get<GetProjectDetailResponse>(
 		`/projects/${input.projectId}/detail`,
 	);
-
-	return data.data;
+	
+	return data;
 }
