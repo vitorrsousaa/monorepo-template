@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import { createProject as createProjectService } from "@/modules/projects/app/services/create-project";
-import { generateTempId } from "@/utils/optimistic";
+import { cancelRelatedQueries, generateTempId } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import type { CreateProjectInput } from "@repo/contracts/projects/create";
 import { PROJECT_COLORS } from "@repo/contracts/projects/create";
@@ -37,9 +37,9 @@ export function useCreateProject() {
 			return { tempId };
 		},
 		onError: async (_error, _variables, context) => {
-			await queryClient.cancelQueries({
-				queryKey: QUERY_KEYS.PROJECTS.ALL,
-			});
+			await cancelRelatedQueries(queryClient, [
+				QUERY_KEYS.PROJECTS.ALL,
+			]);
 			
 			queryClient.setQueryData<ProjectWithOptimisticState[]>(
 				QUERY_KEYS.PROJECTS.ALL,
@@ -54,9 +54,9 @@ export function useCreateProject() {
 		onSuccess: async (data, _variables, context) => {
 			const { project: projectResponse } = data;
 
-			await queryClient.cancelQueries({
-				queryKey: QUERY_KEYS.PROJECTS.ALL,
-			});
+			await cancelRelatedQueries(queryClient, [
+				QUERY_KEYS.PROJECTS.ALL,
+			]);
 
 			queryClient.setQueryData<ProjectWithOptimisticState[]>(
 				QUERY_KEYS.PROJECTS.ALL,

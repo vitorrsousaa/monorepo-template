@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
 import { createSection as createSectionService } from "@/modules/sections/app/services/create-section";
-import { generateTempId } from "@/utils/optimistic";
+import { cancelRelatedQueries, generateTempId } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import type { Section } from "@repo/contracts/sections/entities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -54,9 +54,9 @@ export function useCreateSection() {
 		onError: async (_error, variables, context) => {
 			const projectId = context?.projectId ?? variables.projectId;
 			
-			await queryClient.cancelQueries({
-				queryKey: QUERY_KEYS.PROJECTS.DETAIL(projectId),
-			});
+			await cancelRelatedQueries(queryClient, [
+				QUERY_KEYS.PROJECTS.DETAIL(projectId),
+			]);
 			
 			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
@@ -94,9 +94,9 @@ export function useCreateSection() {
 			const projectId = context?.projectId ?? variables.projectId;
 			const { section: sectionResponse } = data;
 
-			await queryClient.cancelQueries({
-				queryKey: QUERY_KEYS.PROJECTS.DETAIL(projectId),
-			});
+			await cancelRelatedQueries(queryClient, [
+				QUERY_KEYS.PROJECTS.DETAIL(projectId),
+			]);
 
 		queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
