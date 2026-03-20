@@ -32,10 +32,11 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 			description: task.description ?? undefined,
 			dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
 			completed: task.completed,
+			section: task.sectionId ?? "none",
 			headerMeta: {
 				updatedAt: task.updatedAt, createdAt: task.createdAt,
 				projectName,
-			}
+			},
 		});
 		toggleIsEditModalOpen();
 

@@ -1,5 +1,6 @@
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import type { Task } from "@repo/contracts/tasks/entities";
+import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
 import { Calendar } from "lucide-react";
 
@@ -153,43 +154,52 @@ export function TaskRow({
 				>
 					{task.title}
 				</div>
-				{showDescription && task.description?.trim() && (
-					<div className="text-[11px] text-muted-foreground truncate mt-0.5">
-						{task.description}
-					</div>
-				)}
+				<RenderIf
+					condition={showDescription && !!task.description?.trim()}
+					render={
+						<div className="text-[11px] text-muted-foreground truncate mt-0.5">
+							{task.description}
+						</div>
+					}
+				/>
 			</div>
 
 			{/* Meta: date chip, priority badge, slots */}
 			<div className="flex shrink-0 items-center gap-2">
-				{showDueDate && dueDateLabel && chipStatus && (
-					<span
-						className={cn(
-							"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
-							chipStatus === "overdue" &&
-							"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-							chipStatus === "late" && "bg-destructive/10 text-destructive",
-							chipStatus === "ok" && "bg-muted text-muted-foreground",
-						)}
-					>
-						<Calendar className="h-3 w-3" aria-hidden />
-						{dueDateLabel}
-					</span>
-				)}
-				{showPriority && priority && (
-					<span
-						className={cn(
-							"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-							priority === "high" && "bg-destructive/10 text-destructive",
-							priority === "medium" &&
-							"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-							priority === "low" && "bg-primary/10 text-primary",
-						)}
-					>
-						<PriorityBarsIcon level={priority} />
-						{priority}
-					</span>
-				)}
+				<RenderIf
+					condition={showDueDate && !!dueDateLabel && !!chipStatus}
+					render={
+						<span
+							className={cn(
+								"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
+								chipStatus === "overdue" &&
+								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+								chipStatus === "late" && "bg-destructive/10 text-destructive",
+								chipStatus === "ok" && "bg-muted text-muted-foreground",
+							)}
+						>
+							<Calendar className="h-3 w-3" aria-hidden />
+							{dueDateLabel}
+						</span>
+					}
+				/>
+				<RenderIf
+					condition={showPriority && !!priority}
+					render={
+						<span
+							className={cn(
+								"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+								priority === "high" && "bg-destructive/10 text-destructive",
+								priority === "medium" &&
+								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+								priority === "low" && "bg-primary/10 text-primary",
+							)}
+						>
+							<PriorityBarsIcon level={priority as "high" | "medium" | "low"} />
+							{priority}
+						</span>
+					}
+				/>
 				{children}
 			</div>
 		</div>
