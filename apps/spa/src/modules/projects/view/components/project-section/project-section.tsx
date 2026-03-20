@@ -1,40 +1,45 @@
-import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
-import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
-import type { Todo } from "@/modules/todo/app/entities/todo";
-import type { TaskRowTask } from "@/components/task-row";
+import { ProjectSectionBlock } from "@/components/project-section-block";
+import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
+import { EditTaskModal, type EditTaskModalProps } from "@/modules/tasks/view/modals/edit-task-modal";
 import { OptimisticState } from "@/utils/types";
+import type { Task } from "@repo/contracts/tasks/entities";
 import { cn } from "@repo/ui/utils";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { ProjectSectionBlock } from "@/components/project-section-block";
+import { useReducer, useState } from "react";
 
-function todoToTaskRowTask(t: Todo): TaskRowTask {
-	return {
-		id: t.id,
-		title: t.title,
-		description: t.description ?? null,
-		completed: t.completed,
-		dueDate: t.dueDate ?? null,
-		priority: t.priority ?? null,
-	};
-}
+type EditModalValuesState = Partial<TTaskFormSchema> & { headerMeta: EditTaskModalProps['headerMeta'] }
 
 export type ProjectSectionProps = {
-	section: SectionWithTodos | SectionWithOptimisticState;
+	section: ProjectDetailWithOptimisticState["sections"][number];
 	projectId: string;
 	projectName: string;
-	onTaskClick: (task: TaskRowTask) => void;
-	onAddTask: () => void;
 };
 
 export const ProjectSection = (props: ProjectSectionProps) => {
-	const { section, onTaskClick, onAddTask } = props;
-	const sectionTodos = section.todos;
-	const optimisticState =
-		"optimisticState" in section ? section.optimisticState : undefined;
+	const { section, projectId, projectName } = props;
+	const sectionsTasks = section.tasks;
+	const optimisticState = section?.optimisticState
 	const isPending = optimisticState === OptimisticState.PENDING;
 	const isError = optimisticState === OptimisticState.ERROR;
 
-	const tasks = sectionTodos.map(todoToTaskRowTask);
+	const [isEditModalOpen, toggleIsEditModalOpen] = useReducer((state) => !state, false);
+	const [editModalInitialValues, setEditModalInitialValues] = useState<EditModalValuesState>({} as EditModalValuesState);
+
+	const handleTaskClick = (task: Task) => {
+		setEditModalInitialValues({
+			title: task.title,
+			description: task.description ?? undefined,
+			dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
+			completed: task.completed,
+			headerMeta: {
+				updatedAt: task.updatedAt, createdAt: task.createdAt,
+				projectName,
+			}
+		});
+		toggleIsEditModalOpen();
+
+	}
 
 	return (
 		<div
@@ -42,9 +47,17 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				"transition-opacity",
 				isPending && "opacity-60 pointer-events-none",
 				isError &&
-					"rounded-lg border-2 border-destructive bg-destructive/5 p-3",
+				"rounded-lg border-2 border-destructive bg-destructive/5 p-3",
 			)}
 		>
+
+			<EditTaskModal
+				isOpen={isEditModalOpen}
+				onClose={toggleIsEditModalOpen}
+				initialValues={editModalInitialValues}
+				headerMeta={editModalInitialValues?.headerMeta ?? undefined}
+			/>
+
 			{isError && (
 				<div className="mb-3 flex items-center gap-2 text-sm text-destructive">
 					<AlertCircle className="h-4 w-4 shrink-0" />
@@ -61,9 +74,10 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				uppercase
 				dimmed={false}
 				showDragHandle={true}
-				tasks={tasks}
-				onTaskClick={onTaskClick}
-				onAddTask={onAddTask}
+				tasks={sectionsTasks}
+				onTaskClick={handleTaskClick}
+				projectId={projectId}
+				sectionId={section.id}
 			/>
 		</div>
 	);

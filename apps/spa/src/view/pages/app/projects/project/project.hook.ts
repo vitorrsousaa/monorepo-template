@@ -65,7 +65,6 @@ export function useProjectHook() {
 	);
 
 	return {
-		projectId,
 		projectDetail,
 		isErrorProjectDetail,
 		isFetchingProjectDetail,

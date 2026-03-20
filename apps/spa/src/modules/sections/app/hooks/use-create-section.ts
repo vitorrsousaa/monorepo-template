@@ -7,7 +7,7 @@ import type { Section } from "@repo/contracts/sections/entities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export type SectionWithOptimisticState = WithOptimisticState<
-	Partial<Section>
+	Section
 >;
 
 export function useCreateSection() {

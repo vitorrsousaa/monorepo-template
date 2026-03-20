@@ -4,7 +4,7 @@ import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { Copy, Trash2, X } from "lucide-react";
 
-interface EditTaskModalProps {
+export interface EditTaskModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	initialValues: Partial<TTaskFormSchema>;

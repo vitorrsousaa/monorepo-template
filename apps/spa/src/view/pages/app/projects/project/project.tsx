@@ -1,37 +1,15 @@
-import type { ProjectDetail } from "@/modules/projects/app/entitites/project-detail";
-import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
-import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
-import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
-import type { SectionWithOptimisticState } from "@/modules/sections/app/hooks/use-create-section";
-import type { SectionWithTodos } from "@/modules/sections/app/entities/section-with-todos";
-import type { Todo } from "@/modules/todo/app/entities/todo";
-import type { TaskRowTask } from "@/components/task-row";
 import { ProjectSection } from "@/modules/projects/view/components/project-section";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { GripVertical, Plus } from "lucide-react";
-import { useState, useCallback } from "react";
 import { ProjectErrorState } from "./components/project-error-state";
 import { ProjectHeader } from "./components/project-header";
 import { ProjectLoadingSkeleton } from "./components/project-loading-skeleton";
-import { ProjectSectionBlock } from "@/components/project-section-block";
 import { ProjectTopbar } from "./components/project-topbar";
 import { useProjectHook } from "./project.hook";
 
-function todoToTaskRowTask(t: Todo): TaskRowTask {
-	return {
-		id: t.id,
-		title: t.title,
-		description: t.description ?? null,
-		completed: t.completed,
-		dueDate: t.dueDate ?? null,
-		priority: t.priority ?? null,
-	};
-}
-
 export function Projects() {
 	const {
-		projectId,
 		projectDetail,
 		isErrorProjectDetail,
 		isFetchingProjectDetail,
@@ -44,50 +22,6 @@ export function Projects() {
 		handleKeyDownInputToAddSection,
 		handleChangeInputToAddSection,
 	} = useProjectHook();
-
-	const [isNewTodoModalOpen, setIsNewTodoModalOpen] = useState(false);
-	const [newTodoSectionId, setNewTodoSectionId] = useState<string | undefined>(
-		undefined,
-	);
-	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const [editModalInitialValues, setEditModalInitialValues] =
-		useState<Partial<TTaskFormSchema> | null>(null);
-	const [editModalHeaderMeta, setEditModalHeaderMeta] = useState<{
-		projectName: string;
-		createdAt: string;
-	} | null>(null);
-
-	const openEditModal = useCallback(
-		(task: TaskRowTask, sectionId: string | null, projectName: string) => {
-			const todo = findTodoFromDetail(projectDetail, task.id);
-			const rawCreatedAt =
-				todo && "createdAt" in todo ? todo.createdAt : undefined;
-			const createdAt =
-				typeof rawCreatedAt === "string"
-					? rawCreatedAt
-					: rawCreatedAt instanceof Date
-						? rawCreatedAt.toISOString()
-						: new Date().toISOString();
-			setEditModalInitialValues({
-				id: task.id,
-				title: task.title,
-				description: task.description ?? undefined,
-				project: projectId ?? "inbox",
-				section: sectionId ?? "none",
-				priority: task.priority ?? "none",
-				dueDate: task.dueDate ? new Date(task.dueDate as string) : undefined,
-			});
-			setEditModalHeaderMeta({ projectName, createdAt });
-			setIsEditModalOpen(true);
-		},
-		[projectDetail, projectId],
-	);
-
-	const closeEditModal = useCallback(() => {
-		setEditModalInitialValues(null);
-		setEditModalHeaderMeta(null);
-		setIsEditModalOpen(false);
-	}, []);
 
 	if (isFetchingProjectDetail) {
 		return <ProjectLoadingSkeleton />;
@@ -111,28 +45,24 @@ export function Projects() {
 		);
 	}
 
-	const { project, sections, todosWithoutSection } = projectDetail;
-	const allTodos = [
-		...todosWithoutSection,
-		...sections.flatMap((s) => s.todos),
+	const { project, sections } = projectDetail;
+	const allTasks = [
+		...sections.flatMap((s) => s.tasks),
 	];
-	const completedCount = allTodos.filter((t) => t.completed).length;
-	const totalCount = allTodos.length;
+	const completedCount = allTasks.filter((t) => t.completed).length;
+	const totalCount = allTasks.length;
 
 	return (
 		<div className="flex h-full w-full flex-col overflow-hidden bg-background">
 			<ProjectTopbar
 				projectName={project.name}
-				onAddTask={() => {
-					setNewTodoSectionId(undefined);
-					setIsNewTodoModalOpen(true);
-				}}
+				projectId={project.id}
+
 			/>
 
 			<div className="flex-1 min-h-0 overflow-y-auto">
 				<div className="mx-auto max-w-[740px] px-8 pb-20 pt-8">
 					<ProjectHeader
-						icon="🐍"
 						name={project.name}
 						description={project.description}
 						completedCount={completedCount}
@@ -141,33 +71,13 @@ export function Projects() {
 						statusLabel="Active"
 					/>
 
-					{/* Unsectioned */}
-					<ProjectSectionBlock
-						name="Unsectioned"
-						dimmed
-						showDragHandle={false}
-						tasks={todosWithoutSection.map(todoToTaskRowTask)}
-						onTaskClick={(task) => openEditModal(task, null, project.name)}
-						onAddTask={() => {
-							setNewTodoSectionId(undefined);
-							setIsNewTodoModalOpen(true);
-						}}
-					/>
-
 					{/* Sections */}
 					{sections.map((section) => (
 						<ProjectSection
 							key={section.id}
 							section={section}
-							projectId={projectId}
+							projectId={project.id}
 							projectName={project.name}
-							onTaskClick={(task) =>
-								openEditModal(task, section.id, project.name)
-							}
-							onAddTask={() => {
-								setNewTodoSectionId(section.id);
-								setIsNewTodoModalOpen(true);
-							}}
 						/>
 					))}
 
@@ -207,33 +117,7 @@ export function Projects() {
 				</div>
 			</div>
 
-			<NewTaskModal
-				isOpen={isNewTodoModalOpen}
-				onClose={() => setIsNewTodoModalOpen(false)}
-				projectId={projectId}
-				sectionId={newTodoSectionId}
-			/>
 
-			<EditTaskModal
-				isOpen={isEditModalOpen}
-				onClose={closeEditModal}
-				initialValues={editModalInitialValues ?? {}}
-				headerMeta={editModalHeaderMeta ?? undefined}
-			/>
 		</div>
 	);
-}
-
-function findTodoFromDetail(
-	detail: ProjectDetail | undefined,
-	taskId: string,
-): Todo | undefined {
-	if (!detail) return undefined;
-	const fromUnsected = detail.todosWithoutSection.find((t) => t.id === taskId);
-	if (fromUnsected) return fromUnsected;
-	for (const section of detail.sections) {
-		const found = section.todos.find((t) => t.id === taskId);
-		if (found) return found;
-	}
-	return undefined;
 }

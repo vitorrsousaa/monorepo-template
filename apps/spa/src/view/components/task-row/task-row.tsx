@@ -1,7 +1,24 @@
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
+import type { Task } from "@repo/contracts/tasks/entities";
 import { cn } from "@repo/ui/utils";
-import { Calendar, Flag } from "lucide-react";
-import type { TaskRowProps, TaskRowTask } from "./task-row-types";
+import { Calendar } from "lucide-react";
+
+export type TaskRowProps = {
+	task: Task;
+	/** Called when the row (or checkbox) is activated. */
+	onClick?: (task: Task) => void;
+	/** Called when completion state should toggle. If not provided, row still shows checkbox but no action. */
+	onCheck?: (task: Task, checked: boolean) => void;
+	/** Show description/subtitle line. Default true. */
+	showDescription?: boolean;
+	/** Show due date chip. Default true when task has dueDate. */
+	showDueDate?: boolean;
+	/** Show priority badge. Default true when task has priority. */
+	showPriority?: boolean;
+	/** Optional extra content to render after date/priority (e.g. menu). */
+	children?: React.ReactNode;
+	className?: string;
+};
 
 const PRIORITY_CLASSES = {
 	high: "task-row-priority-high",
@@ -150,7 +167,7 @@ export function TaskRow({
 						className={cn(
 							"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
 							chipStatus === "overdue" &&
-								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+							"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
 							chipStatus === "late" && "bg-destructive/10 text-destructive",
 							chipStatus === "ok" && "bg-muted text-muted-foreground",
 						)}
@@ -165,7 +182,7 @@ export function TaskRow({
 							"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
 							priority === "high" && "bg-destructive/10 text-destructive",
 							priority === "medium" &&
-								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+							"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
 							priority === "low" && "bg-primary/10 text-primary",
 						)}
 					>
@@ -178,5 +195,3 @@ export function TaskRow({
 		</div>
 	);
 }
-
-export type { TaskRowProps, TaskRowTask } from "./task-row-types";
