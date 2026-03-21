@@ -38,6 +38,7 @@ provider:
         - GET
         - POST
         - PUT
+        - PATCH
         - DELETE
         - OPTIONS
   iam:
@@ -198,5 +199,13 @@ functions:
       - httpApi:
           path: /tasks/create
           method: post
-          authorizer: 
+          authorizer:
+            name: CognitoAuthorizer
+  updateTaskCompletion:
+    handler: src/server/functions/tasks/update-task-completion/index.handler
+    events:
+      - httpApi:
+          path: /tasks/{taskId}/completion
+          method: patch
+          authorizer:
             name: CognitoAuthorizer

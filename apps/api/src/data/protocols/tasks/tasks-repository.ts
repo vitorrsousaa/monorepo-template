@@ -76,4 +76,29 @@ export interface ITasksRepository {
 		projectId: string,
 		userId: string,
 	): Promise<{ pending: number; completed: number }>;
+
+	/**
+	 * Find a task by ID for a given user.
+	 * Queries PK (inbox or project) and filters by id attribute.
+	 * Returns both PENDING and COMPLETED tasks.
+	 * @param taskId - Task ID
+	 * @param userId - User ID (for multi-tenancy)
+	 * @param projectId - Project ID (null for inbox tasks)
+	 * @returns Task or null if not found
+	 */
+	getByUserId(
+		taskId: string,
+		userId: string,
+		projectId: string | null | undefined,
+	): Promise<Task | null>;
+
+	/**
+	 * Update task completion status.
+	 * Because SK changes (PENDING ↔ COMPLETED), this performs a delete of the
+	 * old item followed by a put of the new item.
+	 * @param oldTask - Task in its current state (used to derive the old SK)
+	 * @param updatedTask - Task with the new completion state
+	 * @returns The updated task
+	 */
+	updateCompletion(oldTask: Task, updatedTask: Task): Promise<Task>;
 }

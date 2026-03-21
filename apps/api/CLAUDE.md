@@ -48,6 +48,7 @@ From `serverless.yml`. All routes are **private** (require auth / `userId`); whe
 | `/projects/{projectId}/detail` | GET | Project detail | private |
 | `/projects/{projectId}/sections` | GET | List sections of project | private |
 | `/projects/{projectId}/sections` | POST | Create section | private |
+| `/tasks/{taskId}/completion` | PATCH | Toggle task completion | private |
 
 ## Public vs private routes (controller type)
 
