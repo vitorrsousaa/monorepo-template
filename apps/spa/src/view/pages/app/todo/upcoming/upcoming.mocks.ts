@@ -3,8 +3,8 @@
  * Tarefas com datas futuras nos próximos 7 dias.
  */
 import { addDays } from "@/utils/date-utils";
-import { MOCK_USER_ID } from "../dashboard/dashboard.mocks";
-import type { DashboardTask } from "../dashboard/dashboard.mocks";
+import type { DashboardTask } from "../../tasks/dashboard/dashboard.mocks";
+import { MOCK_USER_ID } from "../../tasks/dashboard/dashboard.mocks";
 
 function dateIso(d: Date): string {
 	return d.toISOString().split("T")[0];

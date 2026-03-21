@@ -1,5 +1,5 @@
 import { cn } from "@repo/ui/utils";
-import type { DashboardTask } from "../dashboard/dashboard.mocks";
+import type { DashboardTask } from "../../tasks/dashboard/dashboard.mocks";
 
 type UpcomingTaskCardProps = {
 	task: DashboardTask;

@@ -8,7 +8,7 @@ import {
 import {
 	PROJECTS_MOCK,
 	TASKS_MOCK,
-} from "@/pages/app/todo/dashboard/dashboard.mocks";
+} from "@/pages/app/tasks/dashboard/dashboard.mocks";
 import { Avatar, AvatarFallback } from "@repo/ui/avatar";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";

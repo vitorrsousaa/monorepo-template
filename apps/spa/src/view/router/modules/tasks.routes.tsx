@@ -4,7 +4,7 @@ import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
 const Dashboard = lazy(() =>
-	import("@/pages/app/todo/dashboard").then((module) => ({
+	import("@/pages/app/tasks/dashboard").then((module) => ({
 		default: module.Dashboard,
 	})),
 );
@@ -29,7 +29,7 @@ export const tasksRoutes: RouteObject = {
 	element: <TasksLayout />,
 	children: [
 		{
-			path: ROUTES.TODO.DASHBOARD,
+			path: ROUTES.TASKS.DASHBOARD,
 			element: <Dashboard />,
 		},
 		{

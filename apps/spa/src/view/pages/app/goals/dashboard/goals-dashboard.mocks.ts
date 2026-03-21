@@ -3,7 +3,7 @@
  * Alinhado com o domínio: Project em modo objetivo = Goal.
  * Reutiliza MOCK_USER_ID do dashboard.
  */
-import { MOCK_USER_ID } from "../../todo/dashboard/dashboard.mocks";
+import { MOCK_USER_ID } from "../../tasks/dashboard/dashboard.mocks";
 
 function todayIso() {
 	return new Date().toISOString().split("T")[0];
