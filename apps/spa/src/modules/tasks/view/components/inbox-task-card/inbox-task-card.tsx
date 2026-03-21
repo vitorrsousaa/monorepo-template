@@ -60,21 +60,6 @@ export function InboxTaskCard(props: InboxTaskCardProps) {
 				isError && "border-2 border-destructive bg-destructive/5",
 			)}
 		>
-			<RenderIf
-				condition={isError}
-				render={
-					<div className="absolute top-1 right-12 flex items-center gap-1.5">
-						<AlertCircle className="h-3.5 w-3.5 text-destructive" />
-						<button
-							type="button"
-							className="text-[11px] text-destructive underline"
-							onClick={() => onRetry?.(task.id!)}
-						>
-							Retry
-						</button>
-					</div>
-				}
-			/>
 			{/* Faixa lateral baseada na prioridade */}
 			<RenderIf
 				condition={task.priority != null}
@@ -164,6 +149,19 @@ export function InboxTaskCard(props: InboxTaskCardProps) {
 					/>
 				</div>
 			</div>
+			<RenderIf
+				condition={isError}
+				render={
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8 shrink-0 text-destructive hover:text-destructive"
+						onClick={() => onRetry?.(task.id!)}
+					>
+						<AlertCircle className="h-4 w-4" />
+					</Button>
+				}
+			/>
 			<RenderIf
 				condition={isPending}
 				render={
