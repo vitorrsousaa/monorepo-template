@@ -6,11 +6,15 @@ import {
 import { tasksInboxCache } from "@/modules/tasks/app/cache/tasks-inbox.cache";
 import { createTasks as createTasksService } from "@/modules/tasks/app/services/create-tasks";
 import { cancelRelatedQueries, generateTempId } from "@/utils/optimistic";
+import type { WithOptimisticState } from "@/utils/types";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { CreateTaskInput } from "@repo/contracts/tasks/create";
+import type { Task } from "@repo/contracts/tasks/entities";
 import type { QueryKey } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
+
+export type TaskWithOptimisticState = WithOptimisticState<Task>;
 
 function resolveDetailSectionId(
 	sectionId: string | null | undefined,

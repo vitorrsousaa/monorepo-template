@@ -1,14 +1,9 @@
-import type { OptimisticState } from "@/utils/types";
-import type { Task } from "@repo/contracts/tasks/entities";
-
-export type TaskRowTask = Task & {
-	optimisticState?: OptimisticState;
-};
+import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 
 export type TaskRowProps = {
-	task: TaskRowTask;
-	onClick?: (task: TaskRowTask) => void;
-	onCheck?: (task: TaskRowTask, checked: boolean) => void;
+	task: TaskWithOptimisticState;
+	onClick?: (task: TaskWithOptimisticState) => void;
+	onCheck?: (task: TaskWithOptimisticState, checked: boolean) => void;
 	showDescription?: boolean;
 	showDueDate?: boolean;
 	showPriority?: boolean;

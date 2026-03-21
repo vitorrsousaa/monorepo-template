@@ -1,4 +1,5 @@
-import { TaskRow, type TaskRowTask } from "@/components/task-row";
+import { TaskRow } from "@/components/task-row";
+import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { PROJECTS_DEFAULT_IDS } from '@repo/contracts/enums';
 import { cn } from "@repo/ui/utils";
@@ -14,11 +15,11 @@ export type ProjectSectionBlockProps = {
 	dimmed?: boolean;
 	/** Show drag handle. Default true for normal sections. */
 	showDragHandle?: boolean;
-	tasks: TaskRowTask[];
+	tasks: TaskWithOptimisticState[];
 	projectId: string;
 	sectionId: string;
-	onTaskClick?: (task: TaskRowTask) => void;
-	onTaskCheck?: (task: TaskRowTask, checked: boolean) => void;
+	onTaskClick?: (task: TaskWithOptimisticState) => void;
+	onTaskCheck?: (task: TaskWithOptimisticState, checked: boolean) => void;
 };
 
 export function ProjectSectionBlock({

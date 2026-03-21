@@ -1,6 +1,6 @@
 import { ProjectSectionBlock } from "@/components/project-section-block";
-import type { TaskRowTask } from "@/components/task-row";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
+import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { EditTaskModal, type EditTaskModalProps } from "@/modules/tasks/view/modals/edit-task-modal";
 import { OptimisticState } from "@/utils/types";
@@ -26,7 +26,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 	const [isEditModalOpen, toggleIsEditModalOpen] = useReducer((state) => !state, false);
 	const [editModalInitialValues, setEditModalInitialValues] = useState<EditModalValuesState>({} as EditModalValuesState);
 
-	const handleTaskClick = (task: TaskRowTask) => {
+	const handleTaskClick = (task: TaskWithOptimisticState) => {
 		setEditModalInitialValues({
 			title: task.title,
 			description: task.description ?? undefined,
