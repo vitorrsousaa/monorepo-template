@@ -82,6 +82,7 @@ export function TaskForm(props: TaskFormProps) {
 												<Checkbox
 													checked={field.value ?? false}
 													onCheckedChange={field.onChange}
+													disabled={mode === "create"}
 												/>
 											</FormControl>
 										</FormItem>

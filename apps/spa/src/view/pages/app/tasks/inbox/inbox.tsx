@@ -1,3 +1,4 @@
+import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { InboxTaskCard } from "@/modules/tasks/view/components/inbox-task-card";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { Button } from "@repo/ui/button";
@@ -18,6 +19,7 @@ export function Inbox() {
 		refetchInboxTasks,
 	} = useInboxHook();
 
+	const { retryTask } = useCreateTasks();
 	const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
 	return (
@@ -62,7 +64,11 @@ export function Inbox() {
 						<div className="mx-auto max-w-3xl rounded-xl border border-border bg-card overflow-hidden">
 							<div className="divide-y divide-border">
 								{inboxTasks.map((task) => (
-									<InboxTaskCard key={task.id} task={task} />
+									<InboxTaskCard
+										key={task.id}
+										task={task}
+										onRetry={retryTask}
+									/>
 								))}
 							</div>
 						</div>

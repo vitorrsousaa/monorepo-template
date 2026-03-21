@@ -1,9 +1,18 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import type { GetInboxTasksResponse } from "@repo/contracts/tasks/inbox";
+import { OptimisticState, type WithOptimisticState } from "@/utils/types";
+import type { Task } from "@repo/contracts/tasks/entities";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { getInboxTasks } from "../services/get-inbox";
 
-const EMPTY_INBOX_TASKS: GetInboxTasksResponse = { tasks: [], total: 0 };
+type InboxTaskItem = WithOptimisticState<Partial<Task>>;
+
+type InboxTasksResult = {
+	tasks: InboxTaskItem[];
+	total: number;
+};
+
+const EMPTY_INBOX_TASKS: InboxTasksResult = { tasks: [], total: 0 };
 
 export function useGetInboxTasks() {
 	const { data, isError, isPending, isFetching, isLoading, refetch } = useQuery(
@@ -13,8 +22,20 @@ export function useGetInboxTasks() {
 		},
 	);
 
+	const inboxTasks: InboxTasksResult = useMemo(() => {
+		if (!data) return EMPTY_INBOX_TASKS;
+		return {
+			tasks: data.tasks.map((t) => ({
+				...t,
+				optimisticState:
+					(t as InboxTaskItem).optimisticState ?? OptimisticState.SYNCED,
+			})),
+			total: data.total,
+		};
+	}, [data]);
+
 	return {
-		inboxTasks: data ?? EMPTY_INBOX_TASKS,
+		inboxTasks,
 		isErrorInboxTasks: isError,
 		isFetchingTasks: isFetching || isPending || isLoading,
 		refetchTasks: refetch,
