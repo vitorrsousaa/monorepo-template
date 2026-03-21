@@ -2,8 +2,10 @@ import { NewProjectModal } from "@/modules/projects/view/modals/new-project-moda
 import { Button } from "@repo/ui/button";
 import { FolderPlus, Plus } from "lucide-react";
 import { useReducer } from "react";
+import { useTranslation } from "react-i18next";
 
 export const ProjectPanelEmptyState = () => {
+	const { t } = useTranslation();
 	const [isOpen, toggle] = useReducer((s: boolean) => !s, false);
 
 	return (
@@ -12,14 +14,16 @@ export const ProjectPanelEmptyState = () => {
 				<FolderPlus className="h-6 w-6 text-muted-foreground" />
 			</div>
 			<div className="space-y-1">
-				<p className="text-[13px] font-medium text-foreground">No projects yet</p>
+				<p className="text-[13px] font-medium text-foreground">
+					{t("dashboard.panels.projectsEmpty")}
+				</p>
 				<p className="text-xs text-muted-foreground">
-					Create your first project to track your tasks
+					{t("dashboard.panels.projectsEmptyDesc")}
 				</p>
 			</div>
 			<Button variant="outline" size="sm" className="h-8 text-xs" onClick={toggle}>
 				<Plus className="h-3 w-3 mr-1.5" />
-				New Project
+				{t("dashboard.panels.projectsNewButton")}
 			</Button>
 			<NewProjectModal isOpen={isOpen} onClose={toggle} />
 		</div>

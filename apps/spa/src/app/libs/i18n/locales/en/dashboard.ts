@@ -31,6 +31,12 @@ export default {
 		active: "Active",
 		completed: "Completed",
 		archived: "Archived",
+		projectsEmpty: "No projects yet",
+		projectsEmptyDesc: "Create your first project to track your tasks",
+		projectsNewButton: "New Project",
+		projectsError: "Failed to load projects",
+		projectsErrorDesc: "Something went wrong. Please try again.",
+		projectsRetryButton: "Try Again",
 	},
 	weekSummary: {
 		title: "Weekly Summary",
