@@ -1,5 +1,4 @@
 import { LoadingScreen } from "@/components/loading-screen";
-import { QUERY_KEYS } from "@/config/query-keys";
 import { useGetProfile } from "@/modules/auth/app/hooks/use-get-profile";
 import { tokenStorage } from "@/storage/token-storage";
 import type { ProfileResponse } from "@repo/contracts/auth/profile";
@@ -59,14 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const signout = useCallback(() => {
 		tokenStorage.remove();
-		queryClient.removeQueries({ queryKey: QUERY_KEYS.AUTH.PROFILE });
+		queryClient.clear();
 		setSignedIn(false);
 	}, [queryClient]);
 
 	const signin = useCallback(
 		(accessToken: string) => {
 			tokenStorage.set(accessToken);
-			queryClient.removeQueries({ queryKey: QUERY_KEYS.AUTH.PROFILE });
+			queryClient.clear();
 			setSignedIn(true);
 		},
 		[queryClient],
