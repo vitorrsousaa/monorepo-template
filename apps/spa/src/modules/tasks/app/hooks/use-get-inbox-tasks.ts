@@ -1,14 +1,13 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import { OptimisticState, type WithOptimisticState } from "@/utils/types";
-import type { Task } from "@repo/contracts/tasks/entities";
+import { OptimisticState } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { getInboxTasks } from "../services/get-inbox";
+import type { TaskWithOptimisticState } from "./use-create-tasks";
 
-type InboxTaskItem = WithOptimisticState<Partial<Task>>;
 
 type InboxTasksResult = {
-	tasks: InboxTaskItem[];
+	tasks: TaskWithOptimisticState[];
 	total: number;
 };
 
@@ -28,7 +27,7 @@ export function useGetInboxTasks() {
 			tasks: data.tasks.map((t) => ({
 				...t,
 				optimisticState:
-					(t as InboxTaskItem).optimisticState ?? OptimisticState.SYNCED,
+					(t as TaskWithOptimisticState).optimisticState ?? OptimisticState.SYNCED,
 			})),
 			total: data.total,
 		};

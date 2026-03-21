@@ -1,6 +1,10 @@
+import { TaskListCard } from "@/components/task-list-card";
 import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
-import { InboxTaskCard } from "@/modules/tasks/view/components/inbox-task-card";
+import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
+import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
+import { OptimisticState } from "@/utils/types";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import { Plus } from "lucide-react";
@@ -20,7 +24,19 @@ export function Inbox() {
 	} = useInboxHook();
 
 	const { retryTask } = useCreateTasks();
+	const { toggleTaskCompletion } = useUpdateTaskCompletion();
 	const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
+
+	const handleInboxTaskCheck = (
+		task: TaskWithOptimisticState,
+		_checked: boolean,
+	) => {
+		if (!task.id || task.optimisticState !== OptimisticState.SYNCED) return;
+		toggleTaskCompletion({
+			taskId: task.id,
+			projectId: task.projectId ?? null,
+		});
+	};
 
 	return (
 		<div className="p-8 space-y-8">
@@ -61,16 +77,15 @@ export function Inbox() {
 				condition={shouldRenderInboxTasks}
 				render={
 					<div className="max-h-[calc(100vh-220px)] overflow-y-auto pb-10">
-						<div className="mx-auto max-w-3xl rounded-xl border border-border bg-card overflow-hidden">
-							<div className="divide-y divide-border">
-								{inboxTasks.map((task) => (
-									<InboxTaskCard
-										key={task.id}
-										task={task}
-										onRetry={retryTask}
-									/>
-								))}
-							</div>
+						<div className="mx-auto max-w-3xl">
+							<TaskListCard
+								sectionId={PROJECTS_DEFAULT_IDS.INBOX}
+								projectId={PROJECTS_DEFAULT_IDS.INBOX}
+								tasks={inboxTasks}
+								onTaskClick={undefined}
+								onTaskCheck={handleInboxTaskCheck}
+								onRetry={retryTask}
+							/>
 						</div>
 					</div>
 				}

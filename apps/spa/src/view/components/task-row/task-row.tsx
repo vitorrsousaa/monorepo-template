@@ -1,5 +1,6 @@
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { OptimisticState } from "@/utils/types";
+import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
 import { AlertCircle, Calendar, Loader2 } from "lucide-react";
@@ -58,6 +59,7 @@ export function TaskRow({
 	task,
 	onClick,
 	onCheck,
+	onRetry,
 	showDescription = true,
 	showDueDate = true,
 	showPriority = true,
@@ -79,6 +81,11 @@ export function TaskRow({
 	const handleCheck = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onCheck?.(task, !task.completed);
+	};
+
+	const handleRetryClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		if (task.id) onRetry?.(task.id);
 	};
 
 	const priorityClass =
@@ -120,11 +127,13 @@ export function TaskRow({
 			<button
 				type="button"
 				onClick={handleCheck}
+				disabled={isPending || isError}
 				className={cn(
 					"flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-[3px] border-[1.5px] transition-colors",
 					task.completed
 						? "border-primary bg-primary text-primary-foreground"
 						: "border-border bg-background hover:border-primary/60",
+					(isPending || isError) && "pointer-events-none opacity-50",
 				)}
 				aria-pressed={task.completed}
 				aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
@@ -161,7 +170,7 @@ export function TaskRow({
 							className={cn(
 								"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
 								chipStatus === "overdue" &&
-								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+									"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
 								chipStatus === "late" && "bg-destructive/10 text-destructive",
 								chipStatus === "ok" && "bg-muted text-muted-foreground",
 							)}
@@ -179,7 +188,7 @@ export function TaskRow({
 								"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
 								priority === "high" && "bg-destructive/10 text-destructive",
 								priority === "medium" &&
-								"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+									"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
 								priority === "low" && "bg-primary/10 text-primary",
 							)}
 						>
@@ -196,10 +205,22 @@ export function TaskRow({
 					}
 				/>
 				<RenderIf
-					condition={isError}
+					condition={isError && onRetry != null}
 					render={
-						<AlertCircle className="h-3.5 w-3.5 text-destructive" />
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="h-7 w-7 shrink-0 text-destructive hover:text-destructive"
+							onClick={handleRetryClick}
+						>
+							<AlertCircle className="h-3.5 w-3.5" />
+						</Button>
 					}
+				/>
+				<RenderIf
+					condition={isError && onRetry == null}
+					render={<AlertCircle className="h-3.5 w-3.5 text-destructive" />}
 				/>
 			</div>
 		</div>
