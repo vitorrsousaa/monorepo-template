@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { ProjectPanel } from "./components/project-panel";
 import { PROJECTS_MOCK, TASKS_MOCK } from "./dashboard.mocks";
 import { TaskCard } from "./task-card";
 
@@ -33,27 +34,15 @@ function getProjectCategory(
 	}
 }
 
-function ProgressBar({
-	value,
-	max,
-	color = "bg-primary",
-}: { value: number; max: number; color?: string }) {
-	const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0;
-	return (
-		<div className="h-1 bg-muted rounded-full overflow-hidden flex-1 min-w-0">
-			<div
-				className={cn("h-full rounded-full transition-all duration-500", color)}
-				style={{ width: `${pct}%` }}
-			/>
-		</div>
-	);
-}
+
 
 export function Dashboard() {
 	const navigate = useNavigate();
 	const { user } = useAuth();
 	const { t } = useTranslation();
 	const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+
+
 
 	// Mock data - substituir por hooks da API quando integrar
 	const [tasks] = useState(TASKS_MOCK);
@@ -131,7 +120,6 @@ export function Dashboard() {
 		},
 	];
 
-	const recentProjects = projects.slice(0, 4);
 
 	const weekStats = [
 		{ label: t("dashboard.weekSummary.completedTasks"), value: completed + 3 },
@@ -190,7 +178,7 @@ export function Dashboard() {
 							className={cn(
 								"relative rounded-[14px] p-5 overflow-hidden bg-card border border-border shadow-sm",
 								tintedBg &&
-									"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
+								"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
 							)}
 						>
 							{/* Left accent stripe */}
@@ -219,9 +207,9 @@ export function Dashboard() {
 									className={cn(
 										"text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
 										trendVariant === "up" &&
-											"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+										"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 										trendVariant === "down" &&
-											"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+										"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
 										trendVariant === "flat" && "bg-muted text-muted-foreground",
 									)}
 								>
@@ -326,106 +314,7 @@ export function Dashboard() {
 				</div>
 
 				{/* Projetos — panel */}
-				<div className="bg-card border border-border rounded-[14px] shadow-sm overflow-hidden">
-					<div className="flex items-center justify-between px-5 py-4 border-b border-border/70">
-						<h3 className="text-[13px] font-semibold text-foreground">
-							{t("dashboard.panels.projects")}
-						</h3>
-						<button
-							type="button"
-							onClick={() => navigate(ROUTES.PROJECTS.LIST)}
-							className="text-xs font-medium text-primary hover:text-primary/90 flex items-center gap-0.5 no-underline"
-						>
-							{t("dashboard.panels.seeAllProjects")}
-							<ArrowRight className="w-3 h-3" />
-						</button>
-					</div>
-					<div className="divide-y divide-border/70">
-						{recentProjects.map((p) => {
-							const projectTasks = tasks.filter((task) => task.projectId === p.id);
-							const doneTasks = projectTasks.filter(
-								(t) => t.status === "concluida",
-							).length;
-							const pct =
-								projectTasks.length > 0
-									? Math.round((doneTasks / projectTasks.length) * 100)
-									: 0;
-							const progressColor =
-								p.id === "1"
-									? "bg-violet-600"
-									: p.id === "2"
-										? "bg-emerald-600"
-										: p.id === "3"
-											? "bg-blue-600"
-											: "bg-amber-600";
-							return (
-								<button
-									key={p.id}
-									type="button"
-									onClick={() => setView({ type: "projeto", id: p.id })}
-									className="w-full text-left px-5 py-4 hover:bg-muted/50 transition-colors"
-								>
-									<div className="flex items-start gap-3 mb-3">
-										<div
-											className={cn(
-												"w-[30px] h-[30px] rounded-md flex items-center justify-center text-[15px] shrink-0",
-												p.id === "1" && "bg-violet-100 dark:bg-violet-900/30",
-												p.id === "2" && "bg-emerald-100 dark:bg-emerald-900/30",
-												p.id === "3" && "bg-blue-100 dark:bg-blue-900/30",
-												p.id === "4" && "bg-amber-100 dark:bg-amber-900/30",
-											)}
-										>
-											{p.emoji}
-										</div>
-										<div className="flex-1 min-w-0">
-											<div className="text-[13px] font-semibold text-foreground">
-												{p.name}
-											</div>
-											{p.description && (
-												<div className="text-[11px] text-muted-foreground truncate">
-													{p.description}
-												</div>
-											)}
-										</div>
-										<span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 shrink-0">
-											{p.status === "ativo"
-												? t("dashboard.panels.active")
-												: p.status === "concluido"
-													? t("dashboard.panels.completed")
-													: t("dashboard.panels.archived")}
-										</span>
-									</div>
-									<div className="flex items-center gap-3">
-										<ProgressBar
-											value={doneTasks}
-											max={Math.max(projectTasks.length, 1)}
-											color={progressColor}
-										/>
-										<span
-											className={cn(
-												"text-[11px] font-semibold min-w-[30px] text-right",
-												pct > 0 ? "text-foreground" : "text-muted-foreground",
-											)}
-										>
-											{pct}%
-										</span>
-									</div>
-									<div className="text-[11px] text-muted-foreground mt-1.5">
-										{projectTasks.length > 0
-											? t("dashboard.stats.tasksOf", { done: doneTasks, total: projectTasks.length })
-											: t("dashboard.stats.noTasks")}
-									</div>
-									{p.isGoal && p.targetValue != null && (
-										<div className="inline-flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5 rounded mt-2">
-											<Calendar className="w-2.5 h-2.5" />
-											Meta: {p.currentValue ?? 0} / {p.targetValue} {p.unit}
-										</div>
-									)}
-								</button>
-							);
-						})}
-					</div>
-				</div>
+				<ProjectPanel />
 			</div>
 
 			{/* Resumo da semana */}

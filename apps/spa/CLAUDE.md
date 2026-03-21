@@ -153,3 +153,36 @@ File: `src/app/services/http-client.ts`
 - Icons: `lucide-react`
 - Class merging: `cn()` from `@repo/ui/utils`
 - Never import raw Tailwind utilities directly in shared components — use `@repo/ui`
+
+## Conditional Rendering — RenderIf
+
+**Always use `RenderIf` from `@repo/ui/render-if`. Never use `&&` or ternaries in JSX.**
+
+```tsx
+// Single condition
+<RenderIf condition={isLoading} render={<Skeleton />} />
+
+// Binary (replaces ternary A : B)
+<RenderIf condition={hasValue} render={<Value />} fallback={<Empty />} />
+
+// Multiple mutually exclusive states — use separate RenderIf per state
+<RenderIf condition={isLoading}       render={<Skeleton />} />
+<RenderIf condition={isError}         render={<ErrorState onRetry={refetch} />} />
+<RenderIf condition={isEmpty}         render={<EmptyState />} />
+<RenderIf condition={shouldShowList}  render={<List />} />
+```
+
+## Component File Organization
+
+Loading skeletons, empty states, and error states must be in **separate files** — never as local functions inside the parent. Name them `<parent>-skeleton.tsx`, `<parent>-empty-state.tsx`, `<parent>-error-state.tsx` in the same folder.
+
+```
+project-panel/
+  project-panel.tsx
+  project-panel-skeleton.tsx
+  project-panel-empty-state.tsx
+  project-panel-error-state.tsx
+  index.ts
+```
+
+Full rules: `apps/spa/.cursor/rules/react-patterns.mdc`

@@ -25,7 +25,6 @@ export function NewTaskModal(props: NewTaskModalProps) {
 	async function handleSubmit(data: TTaskFormSchema) {
 		const taskInput = mapTaskFormToCreateInput(data);
 		createTasks(taskInput);
-
 		onClose();
 	}
 

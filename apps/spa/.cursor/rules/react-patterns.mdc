@@ -45,39 +45,38 @@ export class ProjectListError extends React.Component {
 
 **Rule:** Always use `RenderIf` for conditional rendering. Never use `{condition && (...)}` or ternaries for showing/hiding JSX.
 
+Import from `@repo/ui/render-if`.
+
+**Props:**
+- `condition: boolean` — controls rendering
+- `render: ReactNode` — shown when condition is true
+- `fallback?: ReactNode` — shown when condition is false (optional; replaces `condition ? A : B` ternaries)
+
 ```typescript
-// ✅ GOOD - Clean and readable
+// ✅ GOOD - Single condition
 <RenderIf
   condition={isLoading}
   render={<LoadingSkeleton />}
 />
 
+// ✅ GOOD - With fallback (replaces ternary)
 <RenderIf
-  condition={hasProjects}
-  render={
-    <>
-      {projects.map(project => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </>
-  }
+  condition={p.totalCount > 0}
+  render={t("stats.tasksOf", { done, total })}
+  fallback={t("stats.noTasks")}
 />
 
-// ✅ GOOD - Conditional UI within a component (e.g. hide dropdown for Inbox)
-<RenderIf
-  condition={project.id !== PROJECT_INBOX_ID}
-  render={
-    <DropdownMenu>
-      {/* ... menu items ... */}
-    </DropdownMenu>
-  }
-/>
+// ✅ GOOD - Multiple mutually exclusive states (use separate RenderIf per state)
+<RenderIf condition={isLoading} render={<Skeleton />} />
+<RenderIf condition={isError} render={<ErrorState onRetry={refetch} />} />
+<RenderIf condition={isEmpty} render={<EmptyState />} />
+<RenderIf condition={shouldShowList} render={<List items={data} />} />
 
 // ❌ BAD - Inline condition with &&
 {project.id !== PROJECT_INBOX_ID && <DropdownMenu>...</DropdownMenu>}
 {isLoading && <LoadingSkeleton />}
 
-// ❌ BAD - Messy ternaries
+// ❌ BAD - Ternaries in JSX
 {isLoading ? <LoadingSkeleton /> : null}
 {isError ? <ErrorMessage /> : hasProjects ? <ProjectList /> : <EmptyState />}
 ```
@@ -180,17 +179,37 @@ export function ProjectsList() {
 
 ## Component Organization
 
-### Extract Sub-components
-When a component grows beyond 150 lines, extract parts into sub-components:
+### Extract Sub-components into Separate Files
+
+**Rule:** Loading skeletons, empty states, and error states must always be extracted into their own files — even when simple. Never define them as local functions inside the parent component file.
+
+**Naming convention:** `<parent-component>-<variant>.tsx`
+**Location:** same folder as the parent component
+
+```
+project-panel/
+  project-panel.tsx             ← main component (imports the rest)
+  project-panel-skeleton.tsx    ← loading state
+  project-panel-empty-state.tsx ← empty state
+  project-panel-error-state.tsx ← error state
+  index.ts                      ← barrel export
+```
 
 ```typescript
-// ✅ GOOD - Extracted into separate files
-import { ProjectListSkeleton } from "@/view/components/project-list-skeleton";
-import { ProjectListError } from "@/view/components/project-list-error";
-import { ProjectListEmpty } from "@/view/components/project-list-empty";
+// ✅ GOOD - Each state in its own file, imported into the parent
+import { ProjectPanelSkeleton } from "./project-panel-skeleton";
+import { ProjectPanelEmptyState } from "./project-panel-empty-state";
+import { ProjectPanelErrorState } from "./project-panel-error-state";
 
-// Each component in its own file with focused responsibility
+// ❌ BAD - Inline local functions for states inside the parent file
+function ProjectSkeleton() { ... }
+function ProjectEmptyState() { ... }
+function ProjectErrorState() { ... }
+
+export function ProjectPanel() { ... }
 ```
+
+**Why:** Keeps each file focused, makes states independently testable, and prevents parent files from growing unmanageably.
 
 ## Object Props
 

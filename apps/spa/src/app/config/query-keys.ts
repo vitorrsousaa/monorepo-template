@@ -11,6 +11,7 @@ export const TASKS = {
 export const PROJECTS = {
 	ALL: ["projects", "all"],
 	DETAIL: (projectId: string) => ["projects", "detail", projectId],
+	SUMMARY: ["projects", "summary"],
 };
 
 export const SECTIONS = {
