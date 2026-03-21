@@ -1,10 +1,10 @@
-import { TaskRow } from "@/components/task-row";
 import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { PROJECTS_DEFAULT_IDS } from '@repo/contracts/enums';
 import { cn } from "@repo/ui/utils";
 import { ChevronDown, GripVertical, Plus } from "lucide-react";
 import { useReducer, useState } from "react";
+import { TaskListCard } from "../task-list-card";
 
 export type ProjectSectionBlockProps = {
 	/** Section name, e.g. "Unsectioned" or "Backlog". */
@@ -100,32 +100,18 @@ export function ProjectSectionBlock({
 
 				{!collapsed && (
 					<>
-						<div className="overflow-hidden rounded-xl border border-border bg-card">
-							{tasks.length === 0 ? (
-								<div className="py-6 text-center text-sm text-muted-foreground">
-									No tasks
-								</div>
-							) : (
-								tasks.map((task) => (
-									<TaskRow
-										key={task.id}
-										task={task}
-										onClick={onTaskClick}
-										onCheck={onTaskCheck}
-									/>
-								))
-							)}
-							<button
-								type="button"
-								className="flex w-full items-center gap-2 border-t border-dashed border-border py-2 pl-[18px] pr-3.5 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-								onClick={toggleIsNewTaskModalOpen}
-							>
-								<Plus className="h-3 w-3" />
-								Add task
-							</button>
-						</div>
+						<TaskListCard
+							sectionId={sectionId}
+							projectId={projectId}
+							tasks={tasks}
+							onTaskClick={onTaskClick}
+							onTaskCheck={onTaskCheck}
+						/>
 					</>
 				)}
+
+
+
 
 
 			</section>
