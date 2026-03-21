@@ -3,6 +3,7 @@ import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/ho
 import { createSection as createSectionService } from "@/modules/sections/app/services/create-section";
 import { cancelRelatedQueries, generateTempId } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
+import type { GetAllSectionsResponse } from "@repo/contracts/sections/get-all";
 import type { Section } from "@repo/contracts/sections/entities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -96,6 +97,7 @@ export function useCreateSection() {
 
 			await cancelRelatedQueries(queryClient, [
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
+				QUERY_KEYS.SECTIONS.BY_PROJECT(projectId),
 			]);
 
 		queryClient.setQueryData<ProjectDetailWithOptimisticState>(
@@ -114,6 +116,18 @@ export function useCreateSection() {
 										}
 									: section,
 						),
+					};
+				},
+			);
+
+			queryClient.setQueryData<GetAllSectionsResponse>(
+				QUERY_KEYS.SECTIONS.BY_PROJECT(projectId),
+				(oldData) => {
+					if (!oldData) return oldData;
+					return {
+						...oldData,
+						sections: [...oldData.sections, sectionResponse],
+						total: oldData.total + 1,
 					};
 				},
 			);
