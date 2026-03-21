@@ -1,4 +1,5 @@
-import { truncateText } from "@/utils/truncate-text";
+import { Calendar, Flag, MoreVertical } from "lucide-react";
+
 import type { TaskDto } from "@repo/contracts/tasks/entities";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
@@ -11,7 +12,9 @@ import {
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
 import { cn } from "@repo/ui/utils";
-import { Calendar, Flag, MoreVertical } from "lucide-react";
+
+import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
+import { truncateText } from "@/utils/truncate-text";
 
 const DESCRIPTION_MAX_LENGTH = 100;
 
@@ -40,6 +43,7 @@ function formatDueDate(dueDate: string | null | undefined): {
 
 export function InboxTaskCard(props: InboxTaskCardProps) {
 	const { task } = props;
+	const { toggleTaskCompletion } = useUpdateTaskCompletion();
 	const dueDateInfo = formatDueDate(task.dueDate);
 	return (
 		<div className="relative flex items-center gap-4 bg-card px-5 py-3.5 hover:bg-muted/60">
@@ -57,6 +61,12 @@ export function InboxTaskCard(props: InboxTaskCardProps) {
 			/>
 			<Checkbox
 				checked={task.completed}
+				onCheckedChange={() =>
+					toggleTaskCompletion({
+						taskId: task.id,
+						projectId: task.projectId,
+					})
+				}
 				className="mt-0.5 h-4 w-4 shrink-0 rounded border-2"
 			/>
 			<div className="flex-1 min-w-0">
