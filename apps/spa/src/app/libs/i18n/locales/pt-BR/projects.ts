@@ -48,6 +48,9 @@ export default {
 			viewProject: "Ver projeto",
 			viewActivity: "Ver atividade",
 			deleteProject: "Excluir projeto",
+			saving: "Salvando...",
+			saveFailed: "Falha ao salvar",
+			retry: "Tentar novamente",
 		},
 		empty: {
 			title: "Nenhum projeto encontrado",
