@@ -2,6 +2,7 @@ import {
 	DeleteCommandInput,
 	GetCommandInput,
 	QueryCommandInput,
+	TransactWriteCommandInput,
 	UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import { BaseDynamoDBEntity, ValidIndexName } from "./entity";
@@ -19,6 +20,26 @@ export type IDatabaseClientQueryArgs<T> = Omit<
 	IndexName?: ValidIndexName;
 };
 
+/**
+ * A single item in a transact write operation.
+ * TableName is omitted — the client injects it automatically for each item,
+ * keeping the repository unaware of the physical table name.
+ */
+export type TransactWriteItem = {
+	Put?: Omit<
+		NonNullable<
+			NonNullable<TransactWriteCommandInput["TransactItems"]>[number]["Put"]
+		>,
+		"TableName"
+	>;
+	Delete?: Omit<
+		NonNullable<
+			NonNullable<TransactWriteCommandInput["TransactItems"]>[number]["Delete"]
+		>,
+		"TableName"
+	>;
+};
+
 export interface IDatabaseClient {
 	create<T extends BaseDynamoDBEntity>(attributes: T): Promise<void>;
 	update(args: Omit<UpdateCommandInput, "TableName">): Promise<void>;
@@ -26,4 +47,9 @@ export interface IDatabaseClient {
 	queryCount<T>(args: IDatabaseClientQueryArgs<T>): Promise<number>;
 	get<T>(args: IDatabaseClientGetArgs): Promise<T | undefined>;
 	delete(args: Omit<DeleteCommandInput, "TableName">): Promise<void>;
+	/**
+	 * Executes multiple write operations atomically.
+	 * TableName is injected automatically for each item.
+	 */
+	transactWrite(items: TransactWriteItem[]): Promise<void>;
 }

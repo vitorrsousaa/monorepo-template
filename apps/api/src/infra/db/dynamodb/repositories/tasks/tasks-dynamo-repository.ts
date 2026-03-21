@@ -279,6 +279,51 @@ export class TasksDynamoRepository implements ITasksRepository {
 		return { pending, completed };
 	}
 
+	async getByUserId(
+		taskId: string,
+		userId: string,
+		projectId: string | null | undefined,
+	): Promise<Task | null> {
+		// Inbox tasks: PK = USER#userId, SK begins_with TASK#INBOX#
+		// Project tasks: PK = USER#userId#PROJECT#projectId, SK begins_with TASK#
+		const pk = projectId
+			? `USER#${userId}#PROJECT#${projectId}`
+			: `USER#${userId}`;
+		const skPrefix = projectId ? "TASK#" : "TASK#INBOX#";
+
+		const queryResult = await this.dynamoClient.query<TasksDynamoDBEntity[]>({
+			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+			ExpressionAttributeNames: {
+				"#id": "id",
+			},
+			ExpressionAttributeValues: {
+				":pk": pk,
+				":skPrefix": skPrefix,
+				":taskId": taskId,
+			},
+			FilterExpression: "#id = :taskId",
+			IndexName: undefined,
+		});
+
+		const results = queryResult ? queryResult : [];
+		if (results.length === 0) return null;
+
+		const first = results[0];
+		return first ? this.mapper.toDomain(first) : null;
+	}
+
+	async updateCompletion(oldTask: Task, updatedTask: Task): Promise<Task> {
+		const oldDbEntity = this.mapper.toDatabase(oldTask);
+		const newDbEntity = this.mapper.toDatabase(updatedTask);
+
+		await this.dynamoClient.transactWrite([
+			{ Delete: { Key: { PK: oldDbEntity.PK, SK: oldDbEntity.SK } } },
+			{ Put: { Item: newDbEntity } },
+		]);
+
+		return updatedTask;
+	}
+
 	async getTodosByProjectWithoutSection(
 		projectId: string,
 		userId: string,

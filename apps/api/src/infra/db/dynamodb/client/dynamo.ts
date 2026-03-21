@@ -15,7 +15,11 @@ import {
 	UpdateCommand,
 	UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-import { IDatabaseClient, IDatabaseClientQueryArgs } from "../contracts/client";
+import {
+	IDatabaseClient,
+	IDatabaseClientQueryArgs,
+	TransactWriteItem,
+} from "../contracts/client";
 import { BaseDynamoDBEntity } from "../contracts/entity";
 
 export class DatabaseClient implements IDatabaseClient {
@@ -25,12 +29,20 @@ export class DatabaseClient implements IDatabaseClient {
 	) {}
 	async batchWrite(args: BatchWriteCommandInput): Promise<void> {
 		const command = new BatchWriteCommand({ ...args });
-
 		await this.dynamoClient.send(command);
 	}
-	async transactWrite(args: TransactWriteCommandInput): Promise<void> {
-		const command = new TransactWriteCommand({ ...args });
 
+	async transactWrite(items: TransactWriteItem[]): Promise<void> {
+		const command = new TransactWriteCommand({
+			TransactItems: items.map((item) => ({
+				...(item.Put && {
+					Put: { TableName: this.table.TABLE_NAME, ...item.Put },
+				}),
+				...(item.Delete && {
+					Delete: { TableName: this.table.TABLE_NAME, ...item.Delete },
+				}),
+			})),
+		});
 		await this.dynamoClient.send(command);
 	}
 
