@@ -12,6 +12,7 @@ Parte da aplicação organizada por **módulos** (feature-sliced). Cada módulo 
 <module>/
 ├── app/                    # Camada de aplicação/domínio (regras, dados, API)
 │   ├── entities/           # Tipos e modelos de domínio
+│   ├── cache/              # Cache helpers (optimistic updates por query key)
 │   ├── hooks/              # Hooks (React Query, estado)
 │   ├── services/           # Chamadas à API via httpClient
 │   └── mappers/            # Conversão de dados (form → API input, etc.)
@@ -25,6 +26,7 @@ Parte da aplicação organizada por **módulos** (feature-sliced). Cada módulo 
 
 | Subpasta | Propósito |
 |----------|-----------|
+| **cache/** | Cache helpers tipados para optimistic updates. Um arquivo por query key. Ver [padrão de cache](#padrão-de-cache). |
 | **entities/** | Tipos e modelos de domínio (ex.: `Todo`, `Project`, `Section`). Podem existir DTOs de criação (ex.: `CreateProjectInput`). |
 | **hooks/** | Hooks que encapsulam React Query e estado (ex.: `useGetInboxTodos`, `useGetAllProjectsByUser`). Usam `@/config/query-keys` e os services do próprio módulo. |
 | **services/** | Funções que chamam a API via `httpClient` (ex.: `getInboxTodos`, `createProject`). Retornam dados para os hooks. |
@@ -37,6 +39,60 @@ Parte da aplicação organizada por **módulos** (feature-sliced). Cada módulo 
 | **components/** | Componentes de UI específicos do fluxo (cartões, listas, colunas, botões, etc.). |
 | **forms/** | Formulários reutilizáveis, geralmente com schema (Zod), hook de submit e componente; usados por modais e páginas. Form schemas importam **constantes de validação do `@repo/contracts`** (ex.: `TASK_TITLE_MAX`) para manter min/max em sincronia com a API. Ver [docs/schema-pattern.md](../../../../../docs/schema-pattern.md). |
 | **modals/** | Modais que envolvem conteúdo (frequentemente um form) em `Dialog`. |
+
+## Padrão de Cache
+
+Cache helpers encapsulam manipulação tipada do `queryClient` para optimistic updates. Evitam boilerplate repetitivo de `queryClient.setQueryData<Type>(QUERY_KEYS.X, ...)` nos hooks de mutação.
+
+### Estrutura
+
+```
+<module>/app/cache/
+  <cache-name>.cache.ts      ← Um arquivo por query key
+  index.ts                    ← Barrel export
+```
+
+### Padrão de Implementação
+
+**Nomenclatura:** `<cacheName>Cache(queryClient)` — factory que recebe `QueryClient` e retorna métodos tipados.
+
+**Métodos padrão:**
+
+| Método | Propósito |
+|--------|-----------|
+| `get()` | Lê o cache (retorna `[]` se vazio) |
+| `addOptimistic(tempId, data)` | Insere item com `OptimisticState.PENDING` |
+| `markError(tempId)` | Marca item como `OptimisticState.ERROR` |
+| `replaceWithReal(tempId, realEntity)` | Substitui item otimista pelo dado real do servidor |
+| `remove(id)` | Remove item do cache |
+
+**Cada arquivo é concreto** — embute defaults de domínio (ex.: `completedCount: 0` para summary de projeto novo), não é genérico.
+
+### Exemplo de Uso (em hook de mutação)
+
+```typescript
+const allCache = projectsAllCache(queryClient);
+const summaryCache = projectsSummaryCache(queryClient);
+
+// onMutate
+await cancelRelatedQueries(queryClient, RELATED_KEYS);
+allCache.addOptimistic(tempId, data);
+summaryCache.addOptimistic(tempId, data);
+
+// onError
+allCache.markError(context!.tempId);
+summaryCache.markError(context!.tempId);
+
+// onSuccess
+allCache.replaceWithReal(context!.tempId, project);
+summaryCache.replaceWithReal(context!.tempId, project);
+```
+
+### Referência
+
+- Implementação: `projects/app/cache/` (projects-all, projects-summary)
+- Tipos de suporte: `@/utils/types` (`WithOptimisticState`, `OptimisticState`)
+- Utilitários: `@/utils/optimistic` (`cancelRelatedQueries`, `generateTempId`)
 
 ## Padrão de Mappers
 
