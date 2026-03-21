@@ -24,4 +24,40 @@ export default {
 		title: "Error loading project",
 		desc: "Could not load this project. Check your connection and try again.",
 	},
+
+	allProjects: {
+		title: "All projects",
+		count_one: "{{count}} project total",
+		count_other: "{{count}} projects total",
+		newProject: "New project",
+		searchPlaceholder: "Search project...",
+		filters: {
+			all: "All",
+			active: "Active",
+			completed: "Completed",
+		},
+		status: {
+			active: "Active",
+			completed: "Completed",
+		},
+		card: {
+			tasksOf: "{{done}} of {{total}} tasks",
+			finished: "Finished",
+			remaining_one: "{{count}} remaining",
+			remaining_other: "{{count}} remaining",
+			viewProject: "View project",
+			viewActivity: "View activity",
+			deleteProject: "Delete project",
+		},
+		empty: {
+			title: "No projects found",
+			filteredDesc: "Try a different search term or filter",
+			emptyDesc: "Create a project to get started",
+		},
+		errorState: {
+			title: "Error loading projects",
+			desc: "Could not load your projects. Please try again.",
+			retry: "Try again",
+		},
+	},
 };
