@@ -16,7 +16,7 @@ export function Signup() {
 	const { signupAsync, isSignupPending } = useSignup();
 
 	const redirectToDashboard = () => {
-		navigate(ROUTES.TODO.DASHBOARD);
+		navigate(ROUTES.TASKS.DASHBOARD);
 	};
 
 	const { signin } = useAuth();

@@ -34,7 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const navMain = [
 		{ url: ROUTES.TASKS.INBOX, label: t("sidebar.inbox"), icon: Inbox },
 		{
-			url: ROUTES.TODO.DASHBOARD,
+			url: ROUTES.TASKS.DASHBOARD,
 			label: t("sidebar.dashboard"),
 			icon: LayoutDashboard,
 		},
@@ -67,7 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton size="lg" asChild>
-							<Link to={ROUTES.TODO.DASHBOARD}>
+							<Link to={ROUTES.TASKS.DASHBOARD}>
 								<div className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg shrink-0">
 									<CheckSquare className="w-4 h-4 text-primary-foreground" />
 								</div>

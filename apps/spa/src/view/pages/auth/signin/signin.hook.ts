@@ -39,7 +39,7 @@ export function useSigninPageHook() {
 	};
 
 	const redirectToDashboard = () => {
-		navigate(ROUTES.TODO.DASHBOARD);
+		navigate(ROUTES.TASKS.DASHBOARD);
 	};
 
 	return {
