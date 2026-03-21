@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import type { Project } from "@/modules/projects/app/entitites/project";
 import { getAllProjectsByUser } from "@/modules/projects/app/services/get-all-projects-by-user";
 import type { WithOptimisticState } from "@/utils/types";
+import type { Project } from "@repo/contracts/projects/entities";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetAllProjectsByUser() {
