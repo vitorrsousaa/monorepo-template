@@ -1,25 +1,9 @@
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
-import type { Task } from "@repo/contracts/tasks/entities";
+import { OptimisticState } from "@/utils/types";
 import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
-import { Calendar } from "lucide-react";
-
-export type TaskRowProps = {
-	task: Task;
-	/** Called when the row (or checkbox) is activated. */
-	onClick?: (task: Task) => void;
-	/** Called when completion state should toggle. If not provided, row still shows checkbox but no action. */
-	onCheck?: (task: Task, checked: boolean) => void;
-	/** Show description/subtitle line. Default true. */
-	showDescription?: boolean;
-	/** Show due date chip. Default true when task has dueDate. */
-	showDueDate?: boolean;
-	/** Show priority badge. Default true when task has priority. */
-	showPriority?: boolean;
-	/** Optional extra content to render after date/priority (e.g. menu). */
-	children?: React.ReactNode;
-	className?: string;
-};
+import { AlertCircle, Calendar, Loader2 } from "lucide-react";
+import type { TaskRowProps } from "./task-row-types";
 
 const PRIORITY_CLASSES = {
 	high: "task-row-priority-high",
@@ -80,6 +64,8 @@ export function TaskRow({
 	children,
 	className,
 }: TaskRowProps) {
+	const isPending = task.optimisticState === OptimisticState.PENDING;
+	const isError = task.optimisticState === OptimisticState.ERROR;
 	const priority = task.priority ?? null;
 	const dueDate = task.dueDate
 		? typeof task.dueDate === "string"
@@ -114,6 +100,8 @@ export function TaskRow({
 			className={cn(
 				"task-row group relative flex items-center gap-2.5 py-2.5 pl-[18px] pr-3.5 border-b border-border/70 last:border-b-0 cursor-pointer transition-colors hover:bg-muted/50",
 				priorityClass,
+				isPending && "opacity-60 pointer-events-none",
+				isError && "bg-destructive/5",
 				className,
 			)}
 		>
@@ -201,6 +189,18 @@ export function TaskRow({
 					}
 				/>
 				{children}
+				<RenderIf
+					condition={isPending}
+					render={
+						<Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+					}
+				/>
+				<RenderIf
+					condition={isError}
+					render={
+						<AlertCircle className="h-3.5 w-3.5 text-destructive" />
+					}
+				/>
 			</div>
 		</div>
 	);

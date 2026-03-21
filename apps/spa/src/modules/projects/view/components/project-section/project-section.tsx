@@ -1,9 +1,9 @@
 import { ProjectSectionBlock } from "@/components/project-section-block";
+import type { TaskRowTask } from "@/components/task-row";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { EditTaskModal, type EditTaskModalProps } from "@/modules/tasks/view/modals/edit-task-modal";
 import { OptimisticState } from "@/utils/types";
-import type { Task } from "@repo/contracts/tasks/entities";
 import { cn } from "@repo/ui/utils";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useReducer, useState } from "react";
@@ -26,7 +26,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 	const [isEditModalOpen, toggleIsEditModalOpen] = useReducer((state) => !state, false);
 	const [editModalInitialValues, setEditModalInitialValues] = useState<EditModalValuesState>({} as EditModalValuesState);
 
-	const handleTaskClick = (task: Task) => {
+	const handleTaskClick = (task: TaskRowTask) => {
 		setEditModalInitialValues({
 			title: task.title,
 			description: task.description ?? undefined,

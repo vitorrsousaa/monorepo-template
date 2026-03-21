@@ -1,17 +1,8 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import { OptimisticState, type WithOptimisticState } from "@/utils/types";
-import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
+import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
+import { OptimisticState } from "@/utils/types";
 import type { Task } from "@repo/contracts/tasks/entities";
 import type { QueryClient } from "@tanstack/react-query";
-
-type ProjectDetailData = Omit<
-	WithOptimisticState<GetProjectDetailResponse>,
-	"sections"
-> & {
-	sections: WithOptimisticState<
-		GetProjectDetailResponse["sections"][number]
-	>[];
-};
 
 export function projectDetailCache(
 	queryClient: QueryClient,
@@ -29,7 +20,7 @@ export function projectDetailCache(
 			tempId: string,
 			data: Partial<Task>,
 		) {
-			queryClient.setQueryData<ProjectDetailData>(queryKey, (old) => {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(queryKey, (old) => {
 				if (!old) return old;
 				return {
 					...old,
@@ -66,7 +57,7 @@ export function projectDetailCache(
 			tempId: string,
 			realTask: Task,
 		) {
-			queryClient.setQueryData<ProjectDetailData>(queryKey, (old) => {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(queryKey, (old) => {
 				if (!old) return old;
 				return {
 					...old,
@@ -89,7 +80,7 @@ export function projectDetailCache(
 		},
 
 		removeTaskFromSection(sectionId: string, taskId: string) {
-			queryClient.setQueryData<ProjectDetailData>(queryKey, (old) => {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(queryKey, (old) => {
 				if (!old) return old;
 				return {
 					...old,

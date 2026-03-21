@@ -1,11 +1,22 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import type { WithOptimisticState } from "@/utils/types";
+import type { OptimisticState, WithOptimisticState } from "@/utils/types";
 import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
+import type { Task } from "@repo/contracts/tasks/entities";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectDetail } from "../services/get-project-detail";
 
-export type ProjectDetailWithOptimisticState  = Omit<WithOptimisticState<GetProjectDetailResponse> , 'sections'>& {
-	sections: WithOptimisticState<(GetProjectDetailResponse["sections"][number])>[];
+type SectionWithOptimisticTasks = Omit<
+	WithOptimisticState<GetProjectDetailResponse["sections"][number]>,
+	"tasks"
+> & {
+	tasks: (Task & { optimisticState?: OptimisticState })[];
+};
+
+export type ProjectDetailWithOptimisticState = Omit<
+	WithOptimisticState<GetProjectDetailResponse>,
+	"sections"
+> & {
+	sections: SectionWithOptimisticTasks[];
 };
 
 interface UseGetProjectDetailParams {

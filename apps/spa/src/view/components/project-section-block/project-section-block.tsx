@@ -1,7 +1,6 @@
-import { TaskRow } from "@/components/task-row";
+import { TaskRow, type TaskRowTask } from "@/components/task-row";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { PROJECTS_DEFAULT_IDS } from '@repo/contracts/enums';
-import type { Task } from "@repo/contracts/tasks/entities";
 import { cn } from "@repo/ui/utils";
 import { ChevronDown, GripVertical, Plus } from "lucide-react";
 import { useReducer, useState } from "react";
@@ -15,11 +14,11 @@ export type ProjectSectionBlockProps = {
 	dimmed?: boolean;
 	/** Show drag handle. Default true for normal sections. */
 	showDragHandle?: boolean;
-	tasks: Task[];
+	tasks: TaskRowTask[];
 	projectId: string;
 	sectionId: string;
-	onTaskClick?: (task: Task) => void;
-	onTaskCheck?: (task: Task, checked: boolean) => void;
+	onTaskClick?: (task: TaskRowTask) => void;
+	onTaskCheck?: (task: TaskRowTask, checked: boolean) => void;
 };
 
 export function ProjectSectionBlock({
