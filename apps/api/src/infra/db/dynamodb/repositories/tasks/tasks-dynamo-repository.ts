@@ -251,6 +251,34 @@ export class TasksDynamoRepository implements ITasksRepository {
 		return results.map((dbEntity) => this.mapper.toDomain(dbEntity));
 	}
 
+	async getTaskCountsByProject(
+		projectId: string,
+		userId: string,
+	): Promise<{ pending: number; completed: number }> {
+		const pk = `USER#${userId}#PROJECT#${projectId}`;
+
+		const [pending, completed] = await Promise.all([
+			this.dynamoClient.queryCount<TasksDynamoDBEntity>({
+				KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+				ExpressionAttributeValues: {
+					":pk": pk,
+					":skPrefix": "TASK#PENDING#",
+				},
+				IndexName: undefined,
+			}),
+			this.dynamoClient.queryCount<TasksDynamoDBEntity>({
+				KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",
+				ExpressionAttributeValues: {
+					":pk": pk,
+					":skPrefix": "TASK#COMPLETED#",
+				},
+				IndexName: undefined,
+			}),
+		]);
+
+		return { pending, completed };
+	}
+
 	async getTodosByProjectWithoutSection(
 		projectId: string,
 		userId: string,

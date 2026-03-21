@@ -64,4 +64,16 @@ export interface ITasksRepository {
 	 * @returns Array of pending tasks ordered by SK
 	 */
 	getAllPendingByProject(projectId: string, userId: string): Promise<Task[]>;
+
+	/**
+	 * Get pending and completed task counts for a project
+	 * Uses PK = USER#userId#PROJECT#projectId with SK prefix filters
+	 * @param projectId - Project ID
+	 * @param userId - User ID (for multi-tenancy)
+	 * @returns Object with pending and completed counts
+	 */
+	getTaskCountsByProject(
+		projectId: string,
+		userId: string,
+	): Promise<{ pending: number; completed: number }>;
 }

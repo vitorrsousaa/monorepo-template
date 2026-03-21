@@ -23,6 +23,7 @@ export interface IDatabaseClient {
 	create<T extends BaseDynamoDBEntity>(attributes: T): Promise<void>;
 	update(args: Omit<UpdateCommandInput, "TableName">): Promise<void>;
 	query<T>(args: IDatabaseClientQueryArgs<T>): Promise<T | undefined>;
+	queryCount<T>(args: IDatabaseClientQueryArgs<T>): Promise<number>;
 	get<T>(args: IDatabaseClientGetArgs): Promise<T | undefined>;
 	delete(args: Omit<DeleteCommandInput, "TableName">): Promise<void>;
 }

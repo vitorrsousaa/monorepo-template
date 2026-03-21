@@ -75,6 +75,17 @@ export class DatabaseClient implements IDatabaseClient {
 		return Items as T | undefined;
 	}
 
+	async queryCount<T>(args: IDatabaseClientQueryArgs<T>): Promise<number> {
+		const command = new QueryCommand({
+			TableName: this.table.TABLE_NAME,
+			IndexName: args.IndexName ? args.IndexName : undefined,
+			...args,
+			Select: "COUNT",
+		});
+		const { Count } = await this.dynamoClient.send(command);
+		return Count ?? 0;
+	}
+
 	async get<T>(
 		args: Omit<GetCommandInput, "TableName">,
 	): Promise<T | undefined> {

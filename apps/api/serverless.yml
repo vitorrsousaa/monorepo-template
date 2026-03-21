@@ -168,6 +168,14 @@ functions:
           method: get
           authorizer: 
             name: CognitoAuthorizer
+  getProjectsSummary:
+    handler: src/server/functions/projects/get-projects-summary/index.handler
+    events:
+      - httpApi:
+          path: /projects/summary
+          method: get
+          authorizer:
+            name: CognitoAuthorizer
   createSection:
     handler: src/server/functions/sections/create-section/index.handler
     events:
