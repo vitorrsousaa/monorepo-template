@@ -6,6 +6,6 @@ export async function createTasks(input: CreateTaskInput) {
 		"/tasks/create",
 		input,
 	);
-
+	
 	return data.task;
 }

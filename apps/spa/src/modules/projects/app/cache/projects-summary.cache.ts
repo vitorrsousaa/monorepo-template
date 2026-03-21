@@ -76,5 +76,41 @@ export function projectsSummaryCache(queryClient: QueryClient) {
 				old?.filter((p) => p.id !== id),
 			);
 		},
+
+		incrementTotalCount(projectId: string) {
+			queryClient.setQueryData<ProjectSummaryItem[]>(queryKey, (old) => {
+				if (!old) return old;
+				return old.map((p) => {
+					if (p.id !== projectId) return p;
+					const totalCount = p.totalCount + 1;
+					return {
+						...p,
+						totalCount,
+						percentageCompleted:
+							totalCount > 0
+								? Math.round((p.completedCount / totalCount) * 100)
+								: 0,
+					};
+				});
+			});
+		},
+
+		decrementTotalCount(projectId: string) {
+			queryClient.setQueryData<ProjectSummaryItem[]>(queryKey, (old) => {
+				if (!old) return old;
+				return old.map((p) => {
+					if (p.id !== projectId) return p;
+					const totalCount = Math.max(0, p.totalCount - 1);
+					return {
+						...p,
+						totalCount,
+						percentageCompleted:
+							totalCount > 0
+								? Math.round((p.completedCount / totalCount) * 100)
+								: 0,
+					};
+				});
+			});
+		},
 	};
 }
