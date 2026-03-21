@@ -18,7 +18,7 @@ export type ProjectSectionBlockProps = {
 	tasks: TaskWithOptimisticState[];
 	projectId: string;
 	sectionId: string;
-	onTaskClick?: (task: TaskWithOptimisticState) => void;
+	projectName?: string;
 	onTaskCheck?: (task: TaskWithOptimisticState, checked: boolean) => void;
 };
 
@@ -30,7 +30,7 @@ export function ProjectSectionBlock({
 	tasks,
 	sectionId,
 	projectId,
-	onTaskClick,
+	projectName,
 	onTaskCheck,
 }: ProjectSectionBlockProps) {
 	const [collapsed, setCollapsed] = useState(false);
@@ -99,21 +99,14 @@ export function ProjectSectionBlock({
 				</button>
 
 				{!collapsed && (
-					<>
-						<TaskListCard
-							sectionId={sectionId}
-							projectId={projectId}
-							tasks={tasks}
-							onTaskClick={onTaskClick}
-							onTaskCheck={onTaskCheck}
-						/>
-					</>
+					<TaskListCard
+						sectionId={sectionId}
+						projectId={projectId}
+						tasks={tasks}
+						onTaskCheck={onTaskCheck}
+						projectName={projectName}
+					/>
 				)}
-
-
-
-
-
 			</section>
 		</>
 	);

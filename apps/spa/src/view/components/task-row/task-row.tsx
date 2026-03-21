@@ -1,9 +1,12 @@
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { OptimisticState } from "@/utils/types";
+import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
 import { AlertCircle, Calendar, Loader2 } from "lucide-react";
+import { useReducer } from "react";
 import type { TaskRowProps } from "./task-row-types";
 
 const PRIORITY_CLASSES = {
@@ -57,15 +60,17 @@ function PriorityBarsIcon({ level }: { level: "high" | "medium" | "low" }) {
 
 export function TaskRow({
 	task,
-	onClick,
 	onCheck,
 	onRetry,
+	projectName,
 	showDescription = true,
 	showDueDate = true,
 	showPriority = true,
 	children,
 	className,
 }: TaskRowProps) {
+	const [isEditModalOpen, toggleIsEditModalOpen] = useReducer((state) => !state, false);
+
 	const isPending = task.optimisticState === OptimisticState.PENDING;
 	const isError = task.optimisticState === OptimisticState.ERROR;
 	const priority = task.priority ?? null;
@@ -77,7 +82,24 @@ export function TaskRow({
 	const chipStatus = dueDate ? getDueDateChipStatus(dueDate) : null;
 	const dueDateLabel = dueDate ? formatDueDateChip(dueDate) : null;
 
-	const handleClick = () => onClick?.(task);
+	const editModalInitialValues: Partial<TTaskFormSchema> = {
+		id: task.id,
+		title: task.title,
+		description: task.description ?? undefined,
+		dueDate: dueDate ?? undefined,
+		completed: task.completed,
+		section: task.sectionId ?? "none",
+		project: task.projectId ?? "inbox",
+		priority: task.priority ?? "none",
+	};
+
+	const editModalHeaderMeta = {
+		projectName,
+		createdAt: task.createdAt,
+		updatedAt: task.updatedAt,
+	};
+
+	const handleClick = () => toggleIsEditModalOpen();
 	const handleCheck = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onCheck?.(task, !task.completed);
@@ -94,6 +116,13 @@ export function TaskRow({
 			: null;
 
 	return (
+		<>
+		<EditTaskModal
+			isOpen={isEditModalOpen}
+			onClose={toggleIsEditModalOpen}
+			initialValues={editModalInitialValues}
+			headerMeta={editModalHeaderMeta}
+		/>
 		<div
 			role="button"
 			tabIndex={0}
@@ -224,5 +253,6 @@ export function TaskRow({
 				/>
 			</div>
 		</div>
+		</>
 	);
 }

@@ -82,7 +82,6 @@ export function Inbox() {
 								sectionId={PROJECTS_DEFAULT_IDS.INBOX}
 								projectId={PROJECTS_DEFAULT_IDS.INBOX}
 								tasks={inboxTasks}
-								onTaskClick={undefined}
 								onTaskCheck={handleInboxTaskCheck}
 								onRetry={retryTask}
 							/>

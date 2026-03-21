@@ -9,15 +9,15 @@ export interface TaskListCardProps {
 	sectionId: string;
 	projectId: string;
 	tasks: TaskWithOptimisticState[];
-	onTaskClick: ((task: TaskWithOptimisticState) => void) | undefined;
 	onTaskCheck:
 		| ((task: TaskWithOptimisticState, checked: boolean) => void)
 		| undefined;
 	onRetry?: (taskId: string) => void;
+	projectName?: string;
 }
 
 export function TaskListCard(props: TaskListCardProps) {
-	const { sectionId, projectId, tasks, onTaskClick, onTaskCheck, onRetry } =
+	const { sectionId, projectId, tasks, onTaskCheck, onRetry, projectName } =
 		props;
 
 	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
@@ -47,9 +47,9 @@ export function TaskListCard(props: TaskListCardProps) {
 						<TaskRow
 							key={task.id}
 							task={task}
-							onClick={onTaskClick}
 							onCheck={onTaskCheck}
 							onRetry={onRetry}
+							projectName={projectName}
 						/>
 					))
 				)}
