@@ -21,7 +21,8 @@
     "ci:format": "turbo run ci:format --",
     "ci:typecheck": "turbo run ci:typecheck",
     "ci:test": "turbo run ci:test --",
-    "ci:audit": "pnpm audit --audit-level=high"
+    "ci:audit": "pnpm audit --audit-level=high",
+    "ci:semgrep": "semgrep scan --error --config p/typescript --config p/nodejs --config p/jwt --config p/secrets"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
