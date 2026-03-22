@@ -49,7 +49,7 @@ export class GetProjectsSummaryService implements IGetProjectsSummaryService {
 				...p,
 				completedCount: taskCount.completed,
 				totalCount: taskCount.pending + taskCount.completed,
-				percentageCompleted,
+				percentageCompleted: percentageCompleted ?? 0,
 			};
 		});
 
