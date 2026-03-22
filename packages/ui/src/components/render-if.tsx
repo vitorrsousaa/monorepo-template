@@ -6,6 +6,10 @@ interface RenderIfProps {
 	fallback?: ReactNode;
 }
 
-export function RenderIf({ condition, render, fallback = null }: RenderIfProps) {
+export function RenderIf({
+	condition,
+	render,
+	fallback = null,
+}: RenderIfProps) {
 	return condition ? render : fallback;
 }
