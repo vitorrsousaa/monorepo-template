@@ -1,0 +1,91 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "group:monorepos",
+    "group:recommended"
+  ],
+  "packageManager": "pnpm",
+  "pnpmfile": true,
+  "schedule": [
+    "before 9am on Monday"
+  ],
+  "timezone": "America/Sao_Paulo",
+  "labels": [
+    "dependencies"
+  ],
+  "assignees": [
+    "vitorsousa"
+  ],
+  "dependencyDashboard": true,
+  "packageRules": [
+    {
+      "description": "Group all GitHub Actions updates together",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "automerge": true
+    },
+    {
+      "description": "Group all devDependencies patch and minor updates",
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "devDependencies (non-major)",
+      "automerge": false
+    },
+    {
+      "description": "Group TypeScript ecosystem together",
+      "matchPackageNames": [
+        "typescript",
+        "/^@types\\//"
+      ],
+      "groupName": "TypeScript",
+      "automerge": false
+    },
+    {
+      "description": "Group React ecosystem together",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "/^@types\\/react/"
+      ],
+      "groupName": "React",
+      "automerge": false
+    },
+    {
+      "description": "Group Vite / Vitest together",
+      "matchPackageNames": [
+        "/^vite/",
+        "/^vitest/",
+        "/^@vitejs\\//"
+      ],
+      "groupName": "Vite & Vitest",
+      "automerge": false
+    },
+    {
+      "description": "Group TanStack together",
+      "matchPackageNames": [
+        "/^@tanstack\\//"
+      ],
+      "groupName": "TanStack",
+      "automerge": false
+    },
+    {
+      "description": "Major updates: one PR per package, no automerge",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false,
+      "labels": [
+        "dependencies",
+        "major"
+      ]
+    }
+  ]
+}
