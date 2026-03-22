@@ -1,6 +1,9 @@
 import { Card } from "@repo/ui/card";
 import { Skeleton } from "@repo/ui/skeleton";
 
+const SKELETON_CARD_KEYS = ["card-a", "card-b", "card-c"] as const;
+const SKELETON_COLUMN_KEYS = ["col-a", "col-b", "col-c", "col-d"] as const;
+
 function ColumnSkeleton() {
 	return (
 		<div className="flex-shrink-0 w-80 flex flex-col">
@@ -15,8 +18,8 @@ function ColumnSkeleton() {
 
 			{/* Cards */}
 			<div className="flex-1 space-y-3">
-				{Array.from({ length: 3 }).map((_, i) => (
-					<Card key={i} className="p-4 bg-card border-border">
+				{SKELETON_CARD_KEYS.map((id) => (
+					<Card key={id} className="p-4 bg-card border-border">
 						<div className="space-y-3">
 							<div className="flex items-start gap-3">
 								<Skeleton className="h-5 w-5 rounded shrink-0" />
@@ -46,8 +49,8 @@ function ColumnSkeleton() {
 export function TodayLoadingSkeleton() {
 	return (
 		<div className="p-6 flex gap-4" style={{ minWidth: "max-content" }}>
-			{Array.from({ length: 4 }).map((_, i) => (
-				<ColumnSkeleton key={i} />
+			{SKELETON_COLUMN_KEYS.map((id) => (
+				<ColumnSkeleton key={id} />
 			))}
 		</div>
 	);

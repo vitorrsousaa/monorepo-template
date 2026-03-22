@@ -23,7 +23,9 @@ export function InboxEmptyState({ onCreateTask }: InboxEmptyStateProps) {
 				</div>
 
 				<div className="space-y-2">
-					<h3 className="text-2xl font-semibold">{t("tasks.inbox.emptyTitle")}</h3>
+					<h3 className="text-2xl font-semibold">
+						{t("tasks.inbox.emptyTitle")}
+					</h3>
 					<p className="text-muted-foreground text-sm leading-relaxed">
 						{t("tasks.inbox.emptyDesc")}
 					</p>
@@ -37,7 +39,9 @@ export function InboxEmptyState({ onCreateTask }: InboxEmptyStateProps) {
 					>
 						{t("tasks.inbox.createFirst")}
 					</Button>
-					<p className="text-xs text-muted-foreground">{t("tasks.inbox.tip")}</p>
+					<p className="text-xs text-muted-foreground">
+						{t("tasks.inbox.tip")}
+					</p>
 				</div>
 			</Card>
 		</div>

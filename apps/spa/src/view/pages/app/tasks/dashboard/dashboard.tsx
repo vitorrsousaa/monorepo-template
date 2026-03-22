@@ -34,15 +34,11 @@ function getProjectCategory(
 	}
 }
 
-
-
 export function Dashboard() {
 	const navigate = useNavigate();
 	const { user } = useAuth();
 	const { t } = useTranslation();
 	const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
-
-
 
 	// Mock data - substituir por hooks da API quando integrar
 	const [tasks] = useState(TASKS_MOCK);
@@ -87,7 +83,10 @@ export function Dashboard() {
 			icon: AlertCircle,
 			iconBg: "bg-amber-100 dark:bg-amber-900/30",
 			iconColor: "text-amber-600 dark:text-amber-400",
-			trend: overdueTasks === 0 ? t("dashboard.stats.onTrack") : t("dashboard.stats.needsAttention"),
+			trend:
+				overdueTasks === 0
+					? t("dashboard.stats.onTrack")
+					: t("dashboard.stats.needsAttention"),
 			trendVariant: overdueTasks > 0 ? "down" : "flat",
 			sublabel: t("dashboard.stats.seeNow"),
 			stripeClass: "bg-amber-500",
@@ -100,9 +99,14 @@ export function Dashboard() {
 			icon: Calendar,
 			iconBg: "bg-blue-100 dark:bg-blue-900/30",
 			iconColor: "text-blue-600 dark:text-blue-400",
-			trend: t("dashboard.stats.doneOf", { done: todayDone, total: todayTasks.length }),
+			trend: t("dashboard.stats.doneOf", {
+				done: todayDone,
+				total: todayTasks.length,
+			}),
 			trendVariant: "flat" as const,
-			sublabel: t("dashboard.stats.pending", { count: Math.max(0, todayTasks.length - todayDone) }),
+			sublabel: t("dashboard.stats.pending", {
+				count: Math.max(0, todayTasks.length - todayDone),
+			}),
 			stripeClass: "bg-blue-500",
 		},
 		{
@@ -119,7 +123,6 @@ export function Dashboard() {
 			showArc: true,
 		},
 	];
-
 
 	const weekStats = [
 		{ label: t("dashboard.weekSummary.completedTasks"), value: completed + 3 },
@@ -178,7 +181,7 @@ export function Dashboard() {
 							className={cn(
 								"relative rounded-[14px] p-5 overflow-hidden bg-card border border-border shadow-sm",
 								tintedBg &&
-								"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
+									"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
 							)}
 						>
 							{/* Left accent stripe */}
@@ -207,9 +210,9 @@ export function Dashboard() {
 									className={cn(
 										"text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
 										trendVariant === "up" &&
-										"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+											"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 										trendVariant === "down" &&
-										"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+											"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
 										trendVariant === "flat" && "bg-muted text-muted-foreground",
 									)}
 								>
@@ -240,7 +243,9 @@ export function Dashboard() {
 										height="60"
 										viewBox="0 0 60 60"
 										className="text-violet-500"
+										aria-hidden
 									>
+										<title>Decorative progress arc</title>
 										<circle
 											cx="30"
 											cy="30"
@@ -287,6 +292,7 @@ export function Dashboard() {
 								{t("dashboard.panels.nothingTodayDesc")}
 							</p>
 							<button
+								type="button"
 								onClick={() => setIsNewTaskOpen(true)}
 								className="mt-4 text-sm text-primary font-medium hover:underline"
 							>
@@ -319,7 +325,9 @@ export function Dashboard() {
 
 			{/* Resumo da semana */}
 			<div className="bg-card border border-border rounded-xl p-5">
-				<h3 className="font-semibold text-foreground mb-4">{t("dashboard.weekSummary.title")}</h3>
+				<h3 className="font-semibold text-foreground mb-4">
+					{t("dashboard.weekSummary.title")}
+				</h3>
 				<div className="grid grid-cols-3 gap-4">
 					{weekStats.map(({ label, value }) => (
 						<div key={label} className="text-center">

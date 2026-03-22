@@ -11,9 +11,7 @@ export function projectsSummaryCache(queryClient: QueryClient) {
 
 	return {
 		get(): ProjectSummaryItem[] {
-			return (
-				queryClient.getQueryData<ProjectSummaryItem[]>(queryKey) ?? []
-			);
+			return queryClient.getQueryData<ProjectSummaryItem[]>(queryKey) ?? [];
 		},
 
 		addOptimistic(
@@ -22,21 +20,19 @@ export function projectsSummaryCache(queryClient: QueryClient) {
 		) {
 			const now = new Date().toISOString();
 
-			queryClient.setQueryData<ProjectSummaryItem[]>(
-				queryKey,
-				(old) =>
-					(old ?? []).concat({
-						id: tempId,
-						optimisticState: OptimisticState.PENDING,
-						name: data.name,
-						description: data.description,
-						color: data.color,
-						completedCount: 0,
-						totalCount: 0,
-						percentageCompleted: 0,
-						createdAt: now,
-						updatedAt: now,
-					}),
+			queryClient.setQueryData<ProjectSummaryItem[]>(queryKey, (old) =>
+				(old ?? []).concat({
+					id: tempId,
+					optimisticState: OptimisticState.PENDING,
+					name: data.name,
+					description: data.description,
+					color: data.color,
+					completedCount: 0,
+					totalCount: 0,
+					percentageCompleted: 0,
+					createdAt: now,
+					updatedAt: now,
+				}),
 			);
 		},
 

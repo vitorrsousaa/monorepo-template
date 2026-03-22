@@ -21,7 +21,12 @@ export const ProjectPanelEmptyState = () => {
 					{t("dashboard.panels.projectsEmptyDesc")}
 				</p>
 			</div>
-			<Button variant="outline" size="sm" className="h-8 text-xs" onClick={toggle}>
+			<Button
+				variant="outline"
+				size="sm"
+				className="h-8 text-xs"
+				onClick={toggle}
+			>
 				<Plus className="h-3 w-3 mr-1.5" />
 				{t("dashboard.panels.projectsNewButton")}
 			</Button>

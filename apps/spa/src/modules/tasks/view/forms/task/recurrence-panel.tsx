@@ -44,6 +44,7 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 				render={({ field: enabledField }) => (
 					<FormItem>
 						{/* Card-style row: icon box + "Repeat" label + hint + toggle; whole row clickable except Switch */}
+						{/* biome-ignore lint/a11y/useSemanticElements: row wraps Switch; <button> would nest interactive controls */}
 						<div
 							role="button"
 							tabIndex={0}
@@ -99,6 +100,7 @@ export function RecurrencePanel({ control }: RecurrencePanelProps) {
 									)}
 								</p>
 							</div>
+							{/* biome-ignore lint/a11y/useKeyWithClickEvents: only stops propagation; Switch handles focus/keyboard */}
 							<div onClick={(e) => e.stopPropagation()} className="shrink-0">
 								<FormControl>
 									<Switch

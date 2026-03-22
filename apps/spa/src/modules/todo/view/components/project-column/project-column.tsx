@@ -1,15 +1,15 @@
-import { useMemo } from "react";
+import { PROJECT_INBOX_ID } from "@/config/constants";
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
+import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
+import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
 import { Card } from "@repo/ui/card";
 import { Checkbox } from "@repo/ui/checkbox";
-import { cn } from "@repo/ui/utils";
 import { RenderIf } from "@repo/ui/render-if";
+import { cn } from "@repo/ui/utils";
 import { Calendar, Plus } from "lucide-react";
-import { PROJECT_INBOX_ID } from "@/config/constants";
-import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
-import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
-import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
-import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
+import { useMemo } from "react";
 import { ProjectColumnHeader } from "../project-column-header";
 import { useProjectColumnHook } from "./project-column.hook";
 
@@ -53,7 +53,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 		return {
 			id: selectedTask.id,
 			title: selectedTask.title,
-			description: selectedTask.description,
+			description: selectedTask.description ?? undefined,
 			project: selectedTask.projectId ?? "inbox",
 			section: selectedTask.sectionId ?? "none",
 			priority: selectedTask.priority ?? "none",
@@ -150,14 +150,14 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 													<Calendar className="w-3 h-3 shrink-0" />
 													<span
 														className={
-															dateInfo!.isOverdue
+															dateInfo?.isOverdue
 																? "text-destructive"
 																: "text-muted-foreground"
 														}
 													>
-														{dateInfo!.text}
+														{dateInfo?.text}
 													</span>
-													{dateInfo!.isOverdue && !task.completed && (
+													{dateInfo?.isOverdue && !task.completed && (
 														<span className="text-[10px] font-semibold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 px-1.5 py-0.5 rounded">
 															overdue
 														</span>

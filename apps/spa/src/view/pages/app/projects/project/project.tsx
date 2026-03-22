@@ -46,19 +46,13 @@ export function Projects() {
 	}
 
 	const { project, sections } = projectDetail;
-	const allTasks = [
-		...sections.flatMap((s) => s.tasks),
-	];
+	const allTasks = [...sections.flatMap((s) => s.tasks)];
 	const completedCount = allTasks.filter((t) => t.completed).length;
 	const totalCount = allTasks.length;
 
 	return (
 		<div className="flex h-full w-full flex-col overflow-hidden bg-background">
-			<ProjectTopbar
-				projectName={project.name}
-				projectId={project.id}
-
-			/>
+			<ProjectTopbar projectName={project.name} projectId={project.id} />
 
 			<div className="flex-1 min-h-0 overflow-y-auto">
 				<div className="mx-auto max-w-[740px] px-8 pb-20 pt-8">
@@ -116,8 +110,6 @@ export function Projects() {
 					)}
 				</div>
 			</div>
-
-
 		</div>
 	);
 }

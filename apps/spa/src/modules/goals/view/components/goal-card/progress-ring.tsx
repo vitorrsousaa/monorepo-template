@@ -15,9 +15,17 @@ export function ProgressRing({
 	const r = (size - 8) / 2;
 	const circ = 2 * Math.PI * r;
 	const dash = circ * pct;
+	const percentLabel = `${Math.round(pct * 100)}%`;
 
 	return (
-		<svg width={size} height={size} className="shrink-0 -rotate-90">
+		<svg
+			width={size}
+			height={size}
+			className="shrink-0 -rotate-90"
+			role="img"
+			aria-label={`Progress: ${percentLabel}`}
+		>
+			<title>{percentLabel} progress</title>
 			<circle
 				cx={size / 2}
 				cy={size / 2}

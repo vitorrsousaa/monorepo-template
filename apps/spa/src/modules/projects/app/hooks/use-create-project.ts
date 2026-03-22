@@ -35,8 +35,8 @@ export function useCreateProject() {
 			const allCache = projectsAllCache(queryClient);
 			const summaryCache = projectsSummaryCache(queryClient);
 
-			allCache.markError(context!.tempId);
-			summaryCache.markError(context!.tempId);
+			allCache.markError(context?.tempId ?? "");
+			summaryCache.markError(context?.tempId ?? "");
 		},
 		onSuccess: async (data, _variables, context) => {
 			const { project: projectResponse } = data;
@@ -46,8 +46,8 @@ export function useCreateProject() {
 			const allCache = projectsAllCache(queryClient);
 			const summaryCache = projectsSummaryCache(queryClient);
 
-			allCache.replaceWithReal(context!.tempId, projectResponse);
-			summaryCache.replaceWithReal(context!.tempId, projectResponse);
+			allCache.replaceWithReal(context?.tempId ?? "", projectResponse);
+			summaryCache.replaceWithReal(context?.tempId ?? "", projectResponse);
 		},
 	});
 

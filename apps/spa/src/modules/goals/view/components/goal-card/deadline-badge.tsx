@@ -9,7 +9,7 @@ type DeadlineBadgeProps = {
 export function DeadlineBadge({ deadline }: DeadlineBadgeProps) {
 	if (!deadline) return null;
 
-	const diff = differenceInDays(new Date(deadline + "T12:00:00"), new Date());
+	const diff = differenceInDays(new Date(`${deadline}T12:00:00`), new Date());
 	const label =
 		diff < 0
 			? "Atrasada"
@@ -17,7 +17,7 @@ export function DeadlineBadge({ deadline }: DeadlineBadgeProps) {
 				? "Vence hoje"
 				: diff <= 7
 					? `${diff}d restantes`
-					: formatDateWithYear(new Date(deadline + "T12:00:00"));
+					: formatDateWithYear(new Date(`${deadline}T12:00:00`));
 
 	return (
 		<span

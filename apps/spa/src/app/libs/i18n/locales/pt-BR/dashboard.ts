@@ -1,8 +1,7 @@
 export default {
 	greeting: "Bom dia, {{name}} 👋",
 	pendingTasks_one: "Você tem {{count}} tarefa para concluir hoje",
-	pendingTasks_other:
-		"Você tem {{count}} tarefas para concluir hoje",
+	pendingTasks_other: "Você tem {{count}} tarefas para concluir hoje",
 	needsAttention: " — 1 requer atenção.",
 	stats: {
 		completed: "Concluídas",

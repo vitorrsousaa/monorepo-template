@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { getInboxTasks } from "../services/get-inbox";
 import type { TaskWithOptimisticState } from "./use-create-tasks";
 
-
 type InboxTasksResult = {
 	tasks: TaskWithOptimisticState[];
 	total: number;
@@ -27,7 +26,8 @@ export function useGetInboxTasks() {
 			tasks: data.tasks.map((t) => ({
 				...t,
 				optimisticState:
-					(t as TaskWithOptimisticState).optimisticState ?? OptimisticState.SYNCED,
+					(t as TaskWithOptimisticState).optimisticState ??
+					OptimisticState.SYNCED,
 			})),
 			total: data.total,
 		};

@@ -1,4 +1,10 @@
-import { AlertCircle, Calendar, Flag, Loader2, MoreVertical } from "lucide-react";
+import {
+	AlertCircle,
+	Calendar,
+	Flag,
+	Loader2,
+	MoreVertical,
+} from "lucide-react";
 
 import type { Task } from "@repo/contracts/tasks/entities";
 import { Badge } from "@repo/ui/badge";
@@ -156,7 +162,7 @@ export function InboxTaskCard(props: InboxTaskCardProps) {
 						variant="ghost"
 						size="icon"
 						className="h-8 w-8 shrink-0 text-destructive hover:text-destructive"
-						onClick={() => onRetry?.(task.id!)}
+						onClick={() => onRetry?.(task.id ?? "")}
 					>
 						<AlertCircle className="h-4 w-4" />
 					</Button>

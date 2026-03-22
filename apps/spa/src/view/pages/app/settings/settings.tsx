@@ -239,10 +239,9 @@ export function Settings() {
 										</div>
 										<ul className="space-y-1">
 											{(
-												t(
-													`settings.subscription.plans.${key}.features`,
-													{ returnObjects: true },
-												) as string[]
+												t(`settings.subscription.plans.${key}.features`, {
+													returnObjects: true,
+												}) as string[]
 											).map((f) => (
 												<li
 													key={f}

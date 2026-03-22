@@ -11,7 +11,10 @@ type ProjectTopbarProps = {
 };
 
 export function ProjectTopbar({ projectName, projectId }: ProjectTopbarProps) {
-	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer((state) => !state, false);
+	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
+		(state) => !state,
+		false,
+	);
 
 	return (
 		<>
@@ -53,7 +56,6 @@ export function ProjectTopbar({ projectName, projectId }: ProjectTopbarProps) {
 				isOpen={isNewTaskModalOpen}
 				onClose={toggleIsNewTaskModalOpen}
 				projectId={projectId}
-
 			/>
 		</>
 	);

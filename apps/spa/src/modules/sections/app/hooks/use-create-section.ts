@@ -7,9 +7,7 @@ import type { GetAllSectionsResponse } from "@repo/contracts/sections/get-all";
 import type { Section } from "@repo/contracts/sections/entities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export type SectionWithOptimisticState = WithOptimisticState<
-	Section
->;
+export type SectionWithOptimisticState = WithOptimisticState<Section>;
 
 export function useCreateSection() {
 	const queryClient = useQueryClient();
@@ -18,16 +16,16 @@ export function useCreateSection() {
 		mutationFn: createSectionService,
 		onMutate: async (variables) => {
 			const { projectId, name, order } = variables;
-			const tempId = generateTempId()
+			const tempId = generateTempId();
 
 			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
 				(oldData) => {
 					if (!oldData) return oldData;
-					
+
 					const now = new Date();
 					const isoNow = now.toISOString();
-					
+
 					const newSection: WithOptimisticState<Section> = {
 						createdAt: isoNow,
 						id: tempId,
@@ -37,59 +35,61 @@ export function useCreateSection() {
 						updatedAt: isoNow,
 						userId: "temp-user-id",
 						optimisticState: OptimisticState.PENDING,
-					}
-					
-					const sections: ProjectDetailWithOptimisticState["sections"] = oldData.sections ?? [];
-					sections.push({...newSection, tasks: []})
-					
+					};
+
+					const sections: ProjectDetailWithOptimisticState["sections"] =
+						oldData.sections ?? [];
+					sections.push({ ...newSection, tasks: [] });
+
 					const project: ProjectDetailWithOptimisticState = {
-						...oldData, sections
-					}
-					
-					return project
-				 }
-			)
+						...oldData,
+						sections,
+					};
+
+					return project;
+				},
+			);
 
 			return { tempId, projectId: variables.projectId };
 		},
 		onError: async (_error, variables, context) => {
 			const projectId = context?.projectId ?? variables.projectId;
-			
+
 			await cancelRelatedQueries(queryClient, [
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
 			]);
-			
+
 			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
 				(oldData) => {
 					if (!oldData) return oldData;
-					
-					
-					
-					const sections = oldData.sections
-					
+
+					const sections = oldData.sections;
+
 					const sectionsWithOptimisticState = sections.map((section) => {
 						if (section.id === context?.tempId) {
-							const sectionWithOptimisticState: ProjectDetailWithOptimisticState['sections'][number]= {
-								...section,
-								optimisticState: OptimisticState.ERROR,
-							}
-							
+							const sectionWithOptimisticState: ProjectDetailWithOptimisticState["sections"][number] =
+								{
+									...section,
+									optimisticState: OptimisticState.ERROR,
+								};
+
 							return {
-								...sectionWithOptimisticState, tasks: []
+								...sectionWithOptimisticState,
+								tasks: [],
 							};
 						}
-						return {...section};
-					})
-					
+						return { ...section };
+					});
+
 					const project: ProjectDetailWithOptimisticState = {
-						...oldData, sections: sectionsWithOptimisticState
-					}
-					
-					return project
+						...oldData,
+						sections: sectionsWithOptimisticState,
+					};
+
+					return project;
 				},
 			);
-			
 		},
 		onSuccess: async (data, variables, context) => {
 			const projectId = context?.projectId ?? variables.projectId;
@@ -100,14 +100,16 @@ export function useCreateSection() {
 				QUERY_KEYS.SECTIONS.BY_PROJECT(projectId),
 			]);
 
-		queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId),
 				(oldData) => {
 					if (!oldData) return oldData;
 					return {
 						...oldData,
 						sections: oldData.sections.map(
-							(section): ProjectDetailWithOptimisticState["sections"][number] =>
+							(
+								section,
+							): ProjectDetailWithOptimisticState["sections"][number] =>
 								section.id === context?.tempId
 									? {
 											...sectionResponse,

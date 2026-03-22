@@ -153,7 +153,7 @@ const mockTickets: Ticket[] = [
 
 // ---------- Subcomponentes ----------
 function FaqAccordion({ category }: { category: FaqCategory }) {
-	const [openIndex, setOpenIndex] = useState<number | null>(null);
+	const [openQuestion, setOpenQuestion] = useState<string | null>(null);
 	const Icon = category.icon;
 
 	return (
@@ -168,22 +168,27 @@ function FaqAccordion({ category }: { category: FaqCategory }) {
 			</div>
 
 			<div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
-				{category.items.map((item, i) => (
-					<div key={i}>
+				{category.items.map((item) => (
+					<div key={item.question}>
 						<button
-							onClick={() => setOpenIndex(openIndex === i ? null : i)}
+							type="button"
+							onClick={() =>
+								setOpenQuestion(
+									openQuestion === item.question ? null : item.question,
+								)
+							}
 							className="flex items-center justify-between w-full px-4 py-3.5 text-left hover:bg-muted/50 transition-colors"
 						>
 							<span className="text-sm font-medium text-foreground pr-4">
 								{item.question}
 							</span>
-							{openIndex === i ? (
+							{openQuestion === item.question ? (
 								<ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
 							) : (
 								<ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
 							)}
 						</button>
-						{openIndex === i && (
+						{openQuestion === item.question && (
 							<div className="px-4 pb-4 pt-1 bg-muted/30">
 								<p className="text-sm text-muted-foreground leading-relaxed">
 									{item.answer}

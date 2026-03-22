@@ -112,7 +112,10 @@ export function TaskForm(props: TaskFormProps) {
 
 						{/* Description */}
 						<div className="px-5 py-3 border-b border-border">
-							<label className={sidebarLabelClass}>{t("tasks.form.description")}</label>
+							{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; Textarea is in FormField below */}
+							<label className={sidebarLabelClass}>
+								{t("tasks.form.description")}
+							</label>
 							<FormField
 								control={methods.control}
 								name="description"
@@ -139,7 +142,10 @@ export function TaskForm(props: TaskFormProps) {
 
 						{/* Comments placeholder */}
 						<div className="px-5 py-4 flex-1">
-							<label className={sidebarLabelClass}>{t("tasks.form.comments")}</label>
+							{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; disabled Textarea below */}
+							<label className={sidebarLabelClass}>
+								{t("tasks.form.comments")}
+							</label>
 							<Textarea
 								disabled
 								placeholder={t("tasks.form.commentsSoon")}
@@ -156,14 +162,19 @@ export function TaskForm(props: TaskFormProps) {
 							name="project"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>{t("tasks.form.project")}</label>
+									{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; Radix Select trigger is sibling */}
+									<label className={sidebarLabelClass}>
+										{t("tasks.form.project")}
+									</label>
 									<Select
 										value={field.value}
 										onValueChange={handleProjectChange}
 									>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
-												<SelectValue placeholder={t("tasks.form.selectProject")} />
+												<SelectValue
+													placeholder={t("tasks.form.selectProject")}
+												/>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
@@ -201,7 +212,10 @@ export function TaskForm(props: TaskFormProps) {
 							name="section"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>{t("tasks.form.section")}</label>
+									{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; Radix Select trigger is sibling */}
+									<label className={sidebarLabelClass}>
+										{t("tasks.form.section")}
+									</label>
 									<Select
 										value={field.value}
 										onValueChange={field.onChange}
@@ -225,7 +239,9 @@ export function TaskForm(props: TaskFormProps) {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="none">{t("tasks.form.noSection")}</SelectItem>
+											<SelectItem value="none">
+												{t("tasks.form.noSection")}
+											</SelectItem>
 											{sections.map((section) => (
 												<SelectItem key={section.id} value={section.id}>
 													{section.name}
@@ -244,7 +260,10 @@ export function TaskForm(props: TaskFormProps) {
 							name="dueDate"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>{t("tasks.form.dueDate")}</label>
+									{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; DatePicker control is sibling */}
+									<label className={sidebarLabelClass}>
+										{t("tasks.form.dueDate")}
+									</label>
 									<FormControl>
 										<DatePicker
 											value={field.value}
@@ -265,7 +284,10 @@ export function TaskForm(props: TaskFormProps) {
 							name="priority"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>{t("tasks.form.priority")}</label>
+									{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; Radix Select trigger is sibling */}
+									<label className={sidebarLabelClass}>
+										{t("tasks.form.priority")}
+									</label>
 									<Select value={field.value} onValueChange={field.onChange}>
 										<FormControl>
 											<SelectTrigger variant="compact" className="mt-1">
@@ -273,15 +295,23 @@ export function TaskForm(props: TaskFormProps) {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="none">{t("tasks.form.noPriority")}</SelectItem>
+											<SelectItem value="none">
+												{t("tasks.form.noPriority")}
+											</SelectItem>
 											<SelectItem value="low">
-												<span className={cn("text-blue-500")}>{t("tasks.form.low")}</span>
+												<span className={cn("text-blue-500")}>
+													{t("tasks.form.low")}
+												</span>
 											</SelectItem>
 											<SelectItem value="medium">
-												<span className={cn("text-amber-500")}>{t("tasks.form.medium")}</span>
+												<span className={cn("text-amber-500")}>
+													{t("tasks.form.medium")}
+												</span>
 											</SelectItem>
 											<SelectItem value="high">
-												<span className={cn("text-red-500")}>{t("tasks.form.high")}</span>
+												<span className={cn("text-red-500")}>
+													{t("tasks.form.high")}
+												</span>
 											</SelectItem>
 										</SelectContent>
 									</Select>
@@ -296,7 +326,10 @@ export function TaskForm(props: TaskFormProps) {
 							name="goal"
 							render={({ field }) => (
 								<FormItem>
-									<label className={sidebarLabelClass}>{t("tasks.form.goal")}</label>
+									{/* biome-ignore lint/a11y/noLabelWithoutControl: visual caption; Radix Select trigger is sibling */}
+									<label className={sidebarLabelClass}>
+										{t("tasks.form.goal")}
+									</label>
 									<Select
 										value={field.value ?? "none"}
 										onValueChange={(v) =>
@@ -310,7 +343,9 @@ export function TaskForm(props: TaskFormProps) {
 										</FormControl>
 										<SelectContent>
 											<SelectItem value="none">
-												<span className="text-muted-foreground">{t("tasks.form.noGoal")}</span>
+												<span className="text-muted-foreground">
+													{t("tasks.form.noGoal")}
+												</span>
 											</SelectItem>
 											{goals.map((goal) => (
 												<SelectItem key={goal.id} value={goal.id}>
@@ -365,7 +400,9 @@ export function TaskForm(props: TaskFormProps) {
 				{/* FOOTER */}
 				<div className="flex items-center justify-between px-5 py-3 border-t border-border shrink-0">
 					<span className="text-xs text-muted-foreground">
-						{mode === "edit" ? t("tasks.form.editingTask") : t("tasks.form.newTask")}
+						{mode === "edit"
+							? t("tasks.form.editingTask")
+							: t("tasks.form.newTask")}
 					</span>
 					<div className="flex gap-2">
 						<Button
@@ -377,7 +414,9 @@ export function TaskForm(props: TaskFormProps) {
 							{t("tasks.form.discard")}
 						</Button>
 						<Button type="submit" size="sm">
-							{mode === "edit" ? t("tasks.form.saveChanges") : t("tasks.form.createTask")}
+							{mode === "edit"
+								? t("tasks.form.saveChanges")
+								: t("tasks.form.createTask")}
 						</Button>
 					</div>
 				</div>

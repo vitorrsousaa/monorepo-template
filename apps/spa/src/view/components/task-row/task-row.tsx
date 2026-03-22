@@ -1,7 +1,7 @@
+import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
+import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { OptimisticState } from "@/utils/types";
-import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
-import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
@@ -25,6 +25,7 @@ function CheckIcon() {
 			className="text-white"
 			aria-hidden
 		>
+			<title>Check mark</title>
 			<path
 				d="M1 2L2.5 3.5L6 0.5"
 				stroke="currentColor"
@@ -53,6 +54,7 @@ function PriorityBarsIcon({ level }: { level: "high" | "medium" | "low" }) {
 			strokeWidth="1.8"
 			aria-hidden
 		>
+			<title>Priority bars</title>
 			<path d={paths} />
 		</svg>
 	);
@@ -69,7 +71,10 @@ export function TaskRow({
 	children,
 	className,
 }: TaskRowProps) {
-	const [isEditModalOpen, toggleIsEditModalOpen] = useReducer((state) => !state, false);
+	const [isEditModalOpen, toggleIsEditModalOpen] = useReducer(
+		(state) => !state,
+		false,
+	);
 
 	const isPending = task.optimisticState === OptimisticState.PENDING;
 	const isError = task.optimisticState === OptimisticState.ERROR;
@@ -117,142 +122,145 @@ export function TaskRow({
 
 	return (
 		<>
-		<EditTaskModal
-			isOpen={isEditModalOpen}
-			onClose={toggleIsEditModalOpen}
-			initialValues={editModalInitialValues}
-			headerMeta={editModalHeaderMeta}
-		/>
-		<div
-			role="button"
-			tabIndex={0}
-			onClick={handleClick}
-			onKeyDown={(e) => {
-				if (e.key === "Enter" || e.key === " ") {
-					e.preventDefault();
-					handleClick();
-				}
-			}}
-			className={cn(
-				"task-row group relative flex items-center gap-2.5 py-2.5 pl-[18px] pr-3.5 border-b border-border/70 last:border-b-0 cursor-pointer transition-colors hover:bg-muted/50",
-				priorityClass,
-				isPending && "opacity-60 pointer-events-none",
-				isError && "bg-destructive/5",
-				className,
-			)}
-		>
-			{/* Priority stripe (left) — visible on hover or when priority set */}
-			<div
-				className={cn(
-					"absolute left-0 top-[7px] bottom-[7px] w-[3px] rounded-r opacity-0 transition-opacity group-hover:opacity-60",
-					priority === "high" && "bg-destructive opacity-70",
-					priority === "medium" && "bg-amber-500 opacity-50",
-					priority === "low" && "bg-primary/60 opacity-40",
-				)}
-				aria-hidden
+			<EditTaskModal
+				isOpen={isEditModalOpen}
+				onClose={toggleIsEditModalOpen}
+				initialValues={editModalInitialValues}
+				headerMeta={editModalHeaderMeta}
 			/>
-
-			{/* Checkbox */}
-			<button
-				type="button"
-				onClick={handleCheck}
-				disabled={isPending || isError}
+			{/* biome-ignore lint/a11y/useSemanticElements: row wrapper must stay a div (nested buttons if <button>) */}
+			<div
+				role="button"
+				tabIndex={0}
+				onClick={handleClick}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						handleClick();
+					}
+				}}
 				className={cn(
-					"flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-[3px] border-[1.5px] transition-colors",
-					task.completed
-						? "border-primary bg-primary text-primary-foreground"
-						: "border-border bg-background hover:border-primary/60",
-					(isPending || isError) && "pointer-events-none opacity-50",
+					"task-row group relative flex items-center gap-2.5 py-2.5 pl-[18px] pr-3.5 border-b border-border/70 last:border-b-0 cursor-pointer transition-colors hover:bg-muted/50",
+					priorityClass,
+					isPending && "opacity-60 pointer-events-none",
+					isError && "bg-destructive/5",
+					className,
 				)}
-				aria-pressed={task.completed}
-				aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
 			>
-				{task.completed && <CheckIcon />}
-			</button>
-
-			{/* Body */}
-			<div className="min-w-0 flex-1">
+				{/* Priority stripe (left) — visible on hover or when priority set */}
 				<div
 					className={cn(
-						"text-[13px] font-medium truncate",
-						task.completed && "text-muted-foreground line-through",
+						"absolute left-0 top-[7px] bottom-[7px] w-[3px] rounded-r opacity-0 transition-opacity group-hover:opacity-60",
+						priority === "high" && "bg-destructive opacity-70",
+						priority === "medium" && "bg-amber-500 opacity-50",
+						priority === "low" && "bg-primary/60 opacity-40",
 					)}
-				>
-					{task.title}
-				</div>
-				<RenderIf
-					condition={showDescription && !!task.description?.trim()}
-					render={
-						<div className="text-[11px] text-muted-foreground truncate mt-0.5">
-							{task.description}
-						</div>
-					}
+					aria-hidden
 				/>
-			</div>
 
-			{/* Meta: date chip, priority badge, slots */}
-			<div className="flex shrink-0 items-center gap-2">
-				<RenderIf
-					condition={showDueDate && !!dueDateLabel && !!chipStatus}
-					render={
-						<span
-							className={cn(
-								"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
-								chipStatus === "overdue" &&
-									"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-								chipStatus === "late" && "bg-destructive/10 text-destructive",
-								chipStatus === "ok" && "bg-muted text-muted-foreground",
-							)}
-						>
-							<Calendar className="h-3 w-3" aria-hidden />
-							{dueDateLabel}
-						</span>
-					}
-				/>
-				<RenderIf
-					condition={showPriority && !!priority}
-					render={
-						<span
-							className={cn(
-								"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-								priority === "high" && "bg-destructive/10 text-destructive",
-								priority === "medium" &&
-									"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-								priority === "low" && "bg-primary/10 text-primary",
-							)}
-						>
-							<PriorityBarsIcon level={priority as "high" | "medium" | "low"} />
-							{priority}
-						</span>
-					}
-				/>
-				{children}
-				<RenderIf
-					condition={isPending}
-					render={
-						<Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
-					}
-				/>
-				<RenderIf
-					condition={isError && onRetry != null}
-					render={
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							className="h-7 w-7 shrink-0 text-destructive hover:text-destructive"
-							onClick={handleRetryClick}
-						>
-							<AlertCircle className="h-3.5 w-3.5" />
-						</Button>
-					}
-				/>
-				<RenderIf
-					condition={isError && onRetry == null}
-					render={<AlertCircle className="h-3.5 w-3.5 text-destructive" />}
-				/>
+				{/* Checkbox */}
+				<button
+					type="button"
+					onClick={handleCheck}
+					disabled={isPending || isError}
+					className={cn(
+						"flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-[3px] border-[1.5px] transition-colors",
+						task.completed
+							? "border-primary bg-primary text-primary-foreground"
+							: "border-border bg-background hover:border-primary/60",
+						(isPending || isError) && "pointer-events-none opacity-50",
+					)}
+					aria-pressed={task.completed}
+					aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
+				>
+					{task.completed && <CheckIcon />}
+				</button>
+
+				{/* Body */}
+				<div className="min-w-0 flex-1">
+					<div
+						className={cn(
+							"text-[13px] font-medium truncate",
+							task.completed && "text-muted-foreground line-through",
+						)}
+					>
+						{task.title}
+					</div>
+					<RenderIf
+						condition={showDescription && !!task.description?.trim()}
+						render={
+							<div className="text-[11px] text-muted-foreground truncate mt-0.5">
+								{task.description}
+							</div>
+						}
+					/>
+				</div>
+
+				{/* Meta: date chip, priority badge, slots */}
+				<div className="flex shrink-0 items-center gap-2">
+					<RenderIf
+						condition={showDueDate && !!dueDateLabel && !!chipStatus}
+						render={
+							<span
+								className={cn(
+									"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
+									chipStatus === "overdue" &&
+										"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+									chipStatus === "late" && "bg-destructive/10 text-destructive",
+									chipStatus === "ok" && "bg-muted text-muted-foreground",
+								)}
+							>
+								<Calendar className="h-3 w-3" aria-hidden />
+								{dueDateLabel}
+							</span>
+						}
+					/>
+					<RenderIf
+						condition={showPriority && !!priority}
+						render={
+							<span
+								className={cn(
+									"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+									priority === "high" && "bg-destructive/10 text-destructive",
+									priority === "medium" &&
+										"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+									priority === "low" && "bg-primary/10 text-primary",
+								)}
+							>
+								<PriorityBarsIcon
+									level={priority as "high" | "medium" | "low"}
+								/>
+								{priority}
+							</span>
+						}
+					/>
+					{children}
+					<RenderIf
+						condition={isPending}
+						render={
+							<Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+						}
+					/>
+					<RenderIf
+						condition={isError && onRetry != null}
+						render={
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="h-7 w-7 shrink-0 text-destructive hover:text-destructive"
+								onClick={handleRetryClick}
+							>
+								<AlertCircle className="h-3.5 w-3.5" />
+							</Button>
+						}
+					/>
+					<RenderIf
+						condition={isError && onRetry == null}
+						render={<AlertCircle className="h-3.5 w-3.5 text-destructive" />}
+					/>
+				</div>
 			</div>
-		</div>
 		</>
 	);
 }

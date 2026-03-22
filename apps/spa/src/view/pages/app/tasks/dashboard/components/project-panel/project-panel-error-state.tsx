@@ -23,7 +23,12 @@ export const ProjectPanelErrorState = (props: ProjectPanelErrorStateProps) => {
 					{t("dashboard.panels.projectsErrorDesc")}
 				</p>
 			</div>
-			<Button variant="outline" size="sm" className="h-8 text-xs" onClick={onRetry}>
+			<Button
+				variant="outline"
+				size="sm"
+				className="h-8 text-xs"
+				onClick={onRetry}
+			>
 				<RefreshCw className="h-3 w-3 mr-1.5" />
 				{t("dashboard.panels.projectsRetryButton")}
 			</Button>

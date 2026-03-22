@@ -36,15 +36,25 @@ const ProgressBar = (props: ProgressBarProps) => {
 };
 
 export const ProjectPanel = () => {
-	const { projectSummaries, isFetchingProjectsSummary, isErrorProjectsSummary, refetchProjectsSummary } =
-		useGetProjectsSummary();
+	const {
+		projectSummaries,
+		isFetchingProjectsSummary,
+		isErrorProjectsSummary,
+		refetchProjectsSummary,
+	} = useGetProjectsSummary();
 	const { retryProject } = useCreateProject();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
 	const recentProjects = projectSummaries?.slice(0, 4) ?? [];
-	const isEmpty = !isFetchingProjectsSummary && !isErrorProjectsSummary && recentProjects.length === 0;
-	const shouldShowList = !isFetchingProjectsSummary && !isErrorProjectsSummary && recentProjects.length > 0;
+	const isEmpty =
+		!isFetchingProjectsSummary &&
+		!isErrorProjectsSummary &&
+		recentProjects.length === 0;
+	const shouldShowList =
+		!isFetchingProjectsSummary &&
+		!isErrorProjectsSummary &&
+		recentProjects.length > 0;
 
 	const handleNavigateToProjects = () => navigate(ROUTES.PROJECTS.LIST);
 
@@ -64,8 +74,14 @@ export const ProjectPanel = () => {
 				</button>
 			</div>
 
-			<RenderIf condition={isFetchingProjectsSummary} render={<ProjectPanelSkeleton />} />
-			<RenderIf condition={isErrorProjectsSummary} render={<ProjectPanelErrorState onRetry={refetchProjectsSummary} />} />
+			<RenderIf
+				condition={isFetchingProjectsSummary}
+				render={<ProjectPanelSkeleton />}
+			/>
+			<RenderIf
+				condition={isErrorProjectsSummary}
+				render={<ProjectPanelErrorState onRetry={refetchProjectsSummary} />}
+			/>
 			<RenderIf condition={isEmpty} render={<ProjectPanelEmptyState />} />
 			<RenderIf
 				condition={shouldShowList}
@@ -73,9 +89,11 @@ export const ProjectPanel = () => {
 					<div className="divide-y divide-border/70">
 						{recentProjects.map((p) => {
 							const isPending = p.optimisticState === OptimisticState.PENDING;
-							const isOptimisticError = p.optimisticState === OptimisticState.ERROR;
+							const isOptimisticError =
+								p.optimisticState === OptimisticState.ERROR;
 							const isSynced =
-								p.optimisticState === OptimisticState.SYNCED || !p.optimisticState;
+								p.optimisticState === OptimisticState.SYNCED ||
+								!p.optimisticState;
 
 							const itemContent = (
 								<>

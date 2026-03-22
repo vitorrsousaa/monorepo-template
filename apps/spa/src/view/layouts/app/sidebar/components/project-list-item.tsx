@@ -5,7 +5,7 @@ import {
 	Loader2,
 	MoreHorizontal,
 	RotateCw,
-	Trash2
+	Trash2,
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
@@ -72,7 +72,6 @@ export function ProjectListItem(props: ProjectListItemProps) {
 				>
 					<Frame />
 					<span>{project.name}</span>
-
 				</SidebarMenuButton>
 			)}
 

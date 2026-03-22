@@ -1,6 +1,6 @@
 import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
-import { PROJECTS_DEFAULT_IDS } from '@repo/contracts/enums';
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { cn } from "@repo/ui/utils";
 import { ChevronDown, GripVertical, Plus } from "lucide-react";
 import { useReducer, useState } from "react";
@@ -34,10 +34,13 @@ export function ProjectSectionBlock({
 	onTaskCheck,
 }: ProjectSectionBlockProps) {
 	const [collapsed, setCollapsed] = useState(false);
-	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer((state) => !state, false);
+	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
+		(state) => !state,
+		false,
+	);
 
-	const realSectionId = sectionId === PROJECTS_DEFAULT_IDS.INBOX ? undefined : sectionId;
-
+	const realSectionId =
+		sectionId === PROJECTS_DEFAULT_IDS.INBOX ? undefined : sectionId;
 
 	return (
 		<>
@@ -46,7 +49,6 @@ export function ProjectSectionBlock({
 				onClose={toggleIsNewTaskModalOpen}
 				projectId={projectId}
 				sectionId={realSectionId}
-
 			/>
 
 			<section className="group mb-6">
@@ -59,13 +61,14 @@ export function ProjectSectionBlock({
 					)}
 				>
 					{showDragHandle && (
-						<span
+						<button
+							type="button"
 							className="cursor-grab text-muted-foreground/80 p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
 							onClick={(e) => e.stopPropagation()}
 							aria-hidden
 						>
 							<GripVertical className="h-3 w-3" />
-						</span>
+						</button>
 					)}
 					<ChevronDown
 						className={cn(

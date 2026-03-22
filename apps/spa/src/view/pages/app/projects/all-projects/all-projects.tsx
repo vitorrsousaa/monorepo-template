@@ -182,9 +182,7 @@ export function AllProjects() {
 			/>
 			<RenderIf
 				condition={isErrorProjectsSummary}
-				render={
-					<AllProjectsErrorState onRetry={refetchProjectsSummary} />
-				}
+				render={<AllProjectsErrorState onRetry={refetchProjectsSummary} />}
 			/>
 			<RenderIf
 				condition={showEmpty}
@@ -229,7 +227,8 @@ export function AllProjects() {
 										isMuted &&
 											isSynced &&
 											"border-border/70 opacity-70 hover:opacity-90",
-										isPending && "cursor-not-allowed opacity-60 border-border/50",
+										isPending &&
+											"cursor-not-allowed opacity-60 border-border/50",
 										isOptimisticError &&
 											"cursor-not-allowed border-destructive/50 bg-destructive/5",
 									)}
@@ -295,9 +294,7 @@ export function AllProjects() {
 														{project.status !== "ativo" && isSynced && (
 															<span className="mt-0.5 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
 																<CheckCircle2 className="mr-1 h-3 w-3" />
-																{t(
-																	"projects.allProjects.status.completed",
-																)}
+																{t("projects.allProjects.status.completed")}
 															</span>
 														)}
 
@@ -307,9 +304,7 @@ export function AllProjects() {
 															render={
 																<span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
 																	<Loader2 className="h-3 w-3 animate-spin" />
-																	{t(
-																		"projects.allProjects.card.saving",
-																	)}
+																	{t("projects.allProjects.card.saving")}
 																</span>
 															}
 														/>
@@ -327,9 +322,7 @@ export function AllProjects() {
 																	className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive hover:bg-destructive/20 transition-colors"
 																>
 																	<AlertCircle className="h-3 w-3" />
-																	{t(
-																		"projects.allProjects.card.saveFailed",
-																	)}
+																	{t("projects.allProjects.card.saveFailed")}
 																	<RotateCw className="h-2.5 w-2.5 ml-0.5" />
 																</button>
 															}
@@ -344,9 +337,7 @@ export function AllProjects() {
 																		<button
 																			type="button"
 																			className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-muted hover:text-foreground"
-																			onClick={(e) =>
-																				e.stopPropagation()
-																			}
+																			onClick={(e) => e.stopPropagation()}
 																		>
 																			<MoreHorizontal className="h-4 w-4" />
 																		</button>

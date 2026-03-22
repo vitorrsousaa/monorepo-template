@@ -13,7 +13,7 @@ export type ProjectSectionProps = {
 export const ProjectSection = (props: ProjectSectionProps) => {
 	const { section, projectId, projectName } = props;
 	const sectionsTasks = section.tasks;
-	const optimisticState = section?.optimisticState
+	const optimisticState = section?.optimisticState;
 	const isPending = optimisticState === OptimisticState.PENDING;
 	const isError = optimisticState === OptimisticState.ERROR;
 
@@ -23,7 +23,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				"transition-opacity",
 				isPending && "opacity-60 pointer-events-none",
 				isError &&
-				"rounded-lg border-2 border-destructive bg-destructive/5 p-3",
+					"rounded-lg border-2 border-destructive bg-destructive/5 p-3",
 			)}
 		>
 			{isError && (

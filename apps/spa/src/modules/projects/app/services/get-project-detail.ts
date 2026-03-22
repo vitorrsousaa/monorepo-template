@@ -9,6 +9,6 @@ export async function getProjectDetail(input: GetProjectDetailInput) {
 	const { data } = await httpClient.get<GetProjectDetailResponse>(
 		`/projects/${input.projectId}/detail`,
 	);
-	
+
 	return data;
 }

@@ -1,15 +1,15 @@
 import type { Goal, GoalProgress } from "@/modules/goals/app/entities/goal";
+import { formatDateShort } from "@/utils/date-utils";
 import {
+	CheckCircle2,
 	ChevronDown,
 	ChevronRight,
 	Circle,
-	CheckCircle2,
 	FolderKanban,
 	Pencil,
 	Trash2,
 	TrendingUp,
 } from "lucide-react";
-import { formatDateShort } from "@/utils/date-utils";
 import { DeadlineBadge } from "./deadline-badge";
 import { ProgressBar } from "./progress-bar";
 
@@ -132,7 +132,7 @@ export function GoalCard({
 							<span
 								className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md font-medium"
 								style={{
-									backgroundColor: (goal.color ?? "#7C3AED") + "12",
+									backgroundColor: `${goal.color ?? "#7C3AED"}12`,
 									color: goal.color ?? "#7C3AED",
 								}}
 							>
@@ -207,7 +207,7 @@ export function GoalCard({
 									<span className="truncate">{t.title}</span>
 									{t.dueDate && (
 										<span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
-											{formatDateShort(new Date(t.dueDate + "T12:00:00"))}
+											{formatDateShort(new Date(`${t.dueDate}T12:00:00`))}
 										</span>
 									)}
 								</div>

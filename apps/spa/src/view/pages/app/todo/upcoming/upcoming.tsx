@@ -19,7 +19,7 @@ export function Upcoming() {
 	const inTwoDays = addDays(today, 2);
 
 	function diffInDaysFromToday(dateIso: string) {
-		const date = new Date(dateIso + "T12:00:00");
+		const date = new Date(`${dateIso}T12:00:00`);
 		date.setHours(0, 0, 0, 0);
 		return Math.round(
 			(date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),

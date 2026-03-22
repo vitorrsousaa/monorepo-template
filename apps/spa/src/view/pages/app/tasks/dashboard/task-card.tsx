@@ -102,7 +102,9 @@ export function TaskCard({
 						viewBox="0 0 8 5"
 						fill="none"
 						className="text-white"
+						aria-hidden
 					>
+						<title>Check mark</title>
 						<path
 							d="M1 2.5L3 4.5L7 0.5"
 							stroke="currentColor"

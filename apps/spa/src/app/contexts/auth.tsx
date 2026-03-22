@@ -33,8 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const { user, isProfileError, isProfileFetching, isProfileSuccess } =
 		useGetProfile({ enabled: signedIn, staleTime: Number.POSITIVE_INFINITY });
 
-	console.log(isProfileError, isProfileFetching, signedIn, isProfileSuccess)
-
+	console.log(isProfileError, isProfileFetching, signedIn, isProfileSuccess);
 
 	// const { data, isFetching, isSuccess, isError } = useQuery({
 	//   queryKey: QUERY_KEYS.PROFILE,
@@ -88,7 +87,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		}),
 		[signedIn, isProfileSuccess, user, signInWithGoogle, signout, signin],
 	);
-
 
 	useEffect(() => {
 		if (isProfileError) {

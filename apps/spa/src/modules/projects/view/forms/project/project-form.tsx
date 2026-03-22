@@ -126,7 +126,7 @@ export function ProjectForm(props: ProjectFormProps) {
 														onClick={() => field.onChange(hex)}
 														className="relative flex h-8 w-8 items-center justify-center rounded-full transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 														style={{ backgroundColor: hex }}
-														aria-label={t("projects.form.colors." + hex)}
+														aria-label={t(`projects.form.colors.${hex}`)}
 													>
 														<span
 															className="absolute inset-[-3px] rounded-full border-2 border-transparent transition-colors"
@@ -152,7 +152,7 @@ export function ProjectForm(props: ProjectFormProps) {
 											<p className="text-[11px] text-muted-foreground">
 												{t("projects.form.selectedColor")}{" "}
 												<span className="font-medium text-foreground">
-													{t("projects.form.colors." + field.value)}
+													{t(`projects.form.colors.${field.value}`)}
 												</span>
 											</p>
 										</div>

@@ -37,11 +37,13 @@ export default {
 		createFirst: "Create your first task",
 		tip: 'Tip: Use the "New Task" button in the header anytime',
 		errorTitle: "Error loading inbox",
-		errorDesc: "Could not load your tasks. Check your connection and try again.",
+		errorDesc:
+			"Could not load your tasks. Check your connection and try again.",
 	},
 
 	today: {
 		errorTitle: "Error loading today's tasks",
-		errorDesc: "Could not load your tasks. Check your connection and try again.",
+		errorDesc:
+			"Could not load your tasks. Check your connection and try again.",
 	},
 };

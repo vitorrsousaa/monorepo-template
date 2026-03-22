@@ -9,13 +9,7 @@ export type UseGetProfileParams = Omit<
 >;
 
 export function useGetProfile(params: UseGetProfileParams) {
-	const {
-		data,
-		isError,
-		isFetching,
-		isSuccess,
-		refetch,
-	} = useQuery({
+	const { data, isError, isFetching, isSuccess, refetch } = useQuery({
 		queryKey: QUERY_KEYS.AUTH.PROFILE,
 		queryFn: getProfile,
 		...params,

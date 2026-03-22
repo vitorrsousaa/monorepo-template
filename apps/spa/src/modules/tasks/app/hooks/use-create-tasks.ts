@@ -16,9 +16,7 @@ import { useCallback } from "react";
 
 export type TaskWithOptimisticState = WithOptimisticState<Task>;
 
-function resolveDetailSectionId(
-	sectionId: string | null | undefined,
-): string {
+function resolveDetailSectionId(sectionId: string | null | undefined): string {
 	return sectionId ?? PROJECTS_DEFAULT_IDS.INBOX;
 }
 
@@ -65,21 +63,14 @@ export function useCreateTasks() {
 				const summaryCache = projectsSummaryCache(queryClient);
 				summaryCache.incrementTotalCount(projectId);
 
-				const detailCache = projectDetailCache(
-					queryClient,
-					projectId,
-				);
+				const detailCache = projectDetailCache(queryClient, projectId);
 				if (detailCache.exists()) {
-					detailCache.addTaskToSection(
-						detailSectionId!,
-						tempId,
-						{
-							title: variables.title,
-							description: variables.description,
-							priority: variables.priority,
-							dueDate: variables.dueDate,
-						},
-					);
+					detailCache.addTaskToSection(detailSectionId ?? "", tempId, {
+						title: variables.title,
+						description: variables.description,
+						priority: variables.priority,
+						dueDate: variables.dueDate,
+					});
 				}
 			}
 
@@ -96,9 +87,7 @@ export function useCreateTasks() {
 
 			if (context.projectId) {
 				relatedKeys.push(QUERY_KEYS.PROJECTS.SUMMARY);
-				relatedKeys.push(
-					QUERY_KEYS.PROJECTS.DETAIL(context.projectId),
-				);
+				relatedKeys.push(QUERY_KEYS.PROJECTS.DETAIL(context.projectId));
 			}
 
 			await cancelRelatedQueries(queryClient, relatedKeys);
@@ -112,13 +101,10 @@ export function useCreateTasks() {
 				const summaryCache = projectsSummaryCache(queryClient);
 				summaryCache.decrementTotalCount(context.projectId);
 
-				const detailCache = projectDetailCache(
-					queryClient,
-					context.projectId,
-				);
+				const detailCache = projectDetailCache(queryClient, context.projectId);
 				if (detailCache.exists()) {
 					detailCache.removeTaskFromSection(
-						context.detailSectionId!,
+						context.detailSectionId ?? "",
 						context.tempId,
 					);
 				}
@@ -134,9 +120,7 @@ export function useCreateTasks() {
 			}
 
 			if (context.projectId) {
-				relatedKeys.push(
-					QUERY_KEYS.PROJECTS.DETAIL(context.projectId),
-				);
+				relatedKeys.push(QUERY_KEYS.PROJECTS.DETAIL(context.projectId));
 			}
 
 			await cancelRelatedQueries(queryClient, relatedKeys);
@@ -147,13 +131,10 @@ export function useCreateTasks() {
 			}
 
 			if (context.projectId) {
-				const detailCache = projectDetailCache(
-					queryClient,
-					context.projectId,
-				);
+				const detailCache = projectDetailCache(queryClient, context.projectId);
 				if (detailCache.exists()) {
 					detailCache.replaceTaskInSection(
-						context.detailSectionId!,
+						context.detailSectionId ?? "",
 						context.tempId,
 						data,
 					);

@@ -34,7 +34,10 @@ export function NavUser() {
 			<SidebarMenuItem>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-sidebar-accent transition-colors">
+						<button
+							type="button"
+							className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-sidebar-accent transition-colors"
+						>
 							<Avatar className="h-7 w-7 shrink-0">
 								<AvatarFallback className="text-xs bg-primary text-primary-foreground">
 									MC

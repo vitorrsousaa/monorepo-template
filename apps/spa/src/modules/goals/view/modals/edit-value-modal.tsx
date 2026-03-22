@@ -22,7 +22,7 @@ export function EditValueModal({
 	const [value, setValue] = useState(String(currentValue));
 
 	const handleSave = () => {
-		const num = parseFloat(value);
+		const num = Number.parseFloat(value);
 		if (!Number.isNaN(num)) {
 			onSave(goalId, num);
 		}
@@ -34,6 +34,7 @@ export function EditValueModal({
 			className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
 			onClick={onClose}
 			onKeyDown={(e) => e.key === "Escape" && onClose()}
+			// biome-ignore lint/a11y/useSemanticElements: full-screen modal backdrop; div for overlay + stopPropagation
 			role="button"
 			tabIndex={0}
 			aria-label="Fechar modal"
