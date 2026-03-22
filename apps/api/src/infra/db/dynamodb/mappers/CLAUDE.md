@@ -69,6 +69,26 @@ Toda a lógica de **construção de chaves** (PK, SK, GSI*PK, GSI*SK) deve ficar
 - Não usar mappers desta pasta para converter domínio → DTO HTTP; usar os mappers do módulo em `src/app/modules/<domain>/mappers/`.
 - User é um caso especial: o domínio/contrato pode vir de `@repo/contracts/auth/user`; o mapper continua tendo `UserDynamoDBEntity` em `types.ts` (podendo estender `BaseDynamoDBEntity` em `../contracts/entity`).
 
+## Unit Tests
+
+Mapper tests are co-located: `{entity}-mapper.test.ts` next to `{entity}-mapper.ts`. They are pure input/output tests with no mocks.
+
+Key test patterns:
+- **toDomain**: verify snake_case → camelCase conversion, null handling
+- **toDatabase**: verify PK/SK construction for different scenarios (inbox vs project, pending vs completed)
+- **Roundtrip**: `toDomain(toDatabase(entity))` should preserve all domain data
+
+```ts
+import { buildTask } from "@test/builders";
+import { TasksDynamoMapper } from "./task-mapper";
+
+it("should build inbox PK for task without projectId", () => {
+  const task = buildTask({ userId: "u-1", projectId: null });
+  const result = new TasksDynamoMapper().toDatabase(task);
+  expect(result.PK).toBe("USER#u-1");
+});
+```
+
 ## Referências
 
 - Protocolos de mapper: `src/data/protocols/` (ex: `todo/todo-mapper.ts`, `projects/project-mapper.ts`)

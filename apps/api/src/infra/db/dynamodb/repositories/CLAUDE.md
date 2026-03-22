@@ -75,6 +75,29 @@ repositories/
 5. Criar a factory em `../factories/{entity}-repository-factory.ts` que instancia o mapper e o repositório e retorna a interface.
 6. Se for mock em memória, criar `{entity}-dynamo-repository.mocks.ts` e referenciar em `repositories/CLAUDE.md`.
 
+## Integration Tests
+
+Repository integration tests use DynamoDB Local via Docker. Files follow the naming pattern `*.integration.test.ts`.
+
+```bash
+pnpm --filter api test:integration:up    # start DynamoDB Local
+pnpm --filter api test:integration       # run tests
+pnpm --filter api test:integration:down  # stop container
+```
+
+`src/test/setup-integration.ts` handles table creation (PK/SK + GSI1/GSI3/GSI6) in `beforeAll` and clears all items in `beforeEach`.
+
+```ts
+// Example: tasks-dynamo-repository.integration.test.ts
+import { createTestDynamoClient } from "@test/setup-integration";
+import { buildTask } from "@test/builders";
+
+describe("TasksDynamoRepository", () => {
+  const { docClient, tableName } = createTestDynamoClient();
+  // ... test with real DynamoDB operations
+});
+```
+
 ## Referências
 
 - Protocolos (interfaces): `src/data/protocols/`

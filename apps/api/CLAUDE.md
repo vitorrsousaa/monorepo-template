@@ -165,6 +165,24 @@ Repositórios implementam acesso ao DynamoDB via `IDatabaseClient`. Verificar co
 - DB schema reference: `docs/database-design.md` (single-table, PK/SK pattern)
 - Remover arquivos `*-repository.mocks.ts` quando não mais necessários
 
+## Testing
+
+| Command | Description |
+|---------|-------------|
+| `pnpm --filter api test:unit` | Unit tests (co-located `*.test.ts`) |
+| `pnpm --filter api test:integration` | Integration tests (`*.integration.test.ts`) |
+| `pnpm --filter api test:watch` | Watch mode |
+| `pnpm --filter api test:integration:up` | Start DynamoDB Local (Docker) |
+| `pnpm --filter api test:integration:down` | Stop DynamoDB Local |
+
+**Conventions:**
+- Unit tests are co-located with source files (e.g., `service.test.ts` next to `service.ts`)
+- Services are tested with mocked repositories; controllers with mocked services
+- Builders and mocks live in `src/test/` — import from `@test/builders` and `@test/mocks`
+- Integration tests use DynamoDB Local via Docker (`docker-compose.test.yml`)
+
+See [`src/test/CLAUDE.md`](src/test/CLAUDE.md) for full testing patterns and examples.
+
 ## Local Dev
 
 ```bash
