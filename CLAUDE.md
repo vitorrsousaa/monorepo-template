@@ -54,7 +54,25 @@ Shared DTOs live in `packages/contracts/`. **Always import from `@repo/contracts
 - **Linter/formatter: Biome** (not ESLint, not Prettier) — `biome.json` at root
 - **Git hooks: Lefthook** — `lefthook.yml` at root
 - **Commit format: CommitLint** — conventional commits enforced
+- **Dead code / unused deps: Knip** — `knip.config.ts` at root
 - Never suggest ESLint/Prettier setup
+
+### Knip
+
+`pnpm knip` — interactive report. `pnpm ci:knip` — CI (no progress output, exits non-zero on findings).
+
+Config: `knip.config.ts` at root. Each workspace declares explicit `entry` + `project` globs.
+
+**When to update `knip.config.ts`:**
+- **New workspace added** — add a new entry under `workspaces` with its `entry` and `project` globs.
+- **New Lambda handler path** — add the glob to `entry` in `apps/api`; handlers not listed as entry points are flagged as unused files.
+- **New SPA route file** — add it to `entry` in `apps/spa` if it's not reachable from `src/main.tsx`.
+- **Confirmed false positive** — add to `ignoreDependencies` (for deps) or `ignore` (for files/exports) inside the relevant workspace block.
+
+**Gotchas:**
+- `apps/spa` has `vite: false` — Knip cannot load `vite.config.ts` from root because `@vitejs/plugin-react` is not root-resolvable. Entry points are declared manually instead.
+- API Lambda handlers are under `src/server/functions/**/*.ts` (not `src/handlers/`). Must stay in `entry` or Knip flags them as unused.
+- First-run report contains both real dead code and false positives — triage before enforcing CI failure. Use `ignoreDependencies`/`ignore` in `knip.config.ts` to suppress confirmed false positives.
 
 ## Current Dev State
 

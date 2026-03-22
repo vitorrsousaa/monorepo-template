@@ -82,7 +82,7 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        check: [format, lint, typecheck, tests]
+        check: [format, lint, typecheck, tests, knip]
 
     steps:
       - name: Checkout
@@ -146,6 +146,10 @@ jobs:
       - name: Tests
         if: matrix.check == 'tests'
         run: pnpm -w ci:test
+
+      - name: Knip
+        if: matrix.check == 'knip'
+        run: pnpm -w ci:knip
 
       - name: Upload coverage reports
         if: matrix.check == 'tests'

@@ -38,6 +38,7 @@
     },
     "typecheck": {},
     "ci:typecheck": {},
+    "ci:knip": {},
     "test": {
       "dependsOn": [
         "^build"
