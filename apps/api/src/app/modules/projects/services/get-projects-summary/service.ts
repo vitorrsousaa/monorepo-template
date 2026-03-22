@@ -41,9 +41,15 @@ export class GetProjectsSummaryService implements IGetProjectsSummaryService {
 
 		const projectsSummaries: ProjectSummary[] = projects.map((p, index) => {
 			const taskCount = taskCounts[index] ?? { pending: 0, completed: 0 };
+			
+			
+			const completedCount = taskCount.completed ?? 0;
+			const pendingCount = taskCount.pending ?? 0;
+			
+			const totalCount = completedCount + pendingCount;
 
 			const percentageCompleted =
-				taskCount.completed / (taskCount.pending + taskCount.completed);
+				totalCount > 0 ? completedCount / totalCount : 0;
 
 			return {
 				...p,
