@@ -18,7 +18,8 @@
     "ci:lint": "turbo run ci:lint --",
     "ci:format": "turbo run ci:format --",
     "ci:typecheck": "turbo run ci:typecheck",
-    "ci:test": "turbo run ci:test --"
+    "ci:test": "turbo run ci:test --",
+    "ci:audit": "pnpm audit --audit-level=high"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
