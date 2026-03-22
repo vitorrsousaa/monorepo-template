@@ -3,6 +3,7 @@ import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { OptimisticState } from "@/utils/types";
 import { Button } from "@repo/ui/button";
+import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
 import { AlertCircle, Calendar, Loader2 } from "lucide-react";
@@ -14,28 +15,6 @@ const PRIORITY_CLASSES = {
 	medium: "task-row-priority-medium",
 	low: "task-row-priority-low",
 } as const;
-
-function CheckIcon() {
-	return (
-		<svg
-			width="7"
-			height="4"
-			viewBox="0 0 7 4"
-			fill="none"
-			className="text-white"
-			aria-hidden
-		>
-			<title>Check mark</title>
-			<path
-				d="M1 2L2.5 3.5L6 0.5"
-				stroke="currentColor"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			/>
-		</svg>
-	);
-}
 
 function PriorityBarsIcon({ level }: { level: "high" | "medium" | "low" }) {
 	const paths =
@@ -105,10 +84,6 @@ export function TaskRow({
 	};
 
 	const handleClick = () => toggleIsEditModalOpen();
-	const handleCheck = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		onCheck?.(task, !task.completed);
-	};
 
 	const handleRetryClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -158,23 +133,22 @@ export function TaskRow({
 					aria-hidden
 				/>
 
-				{/* Checkbox */}
-				<button
-					type="button"
-					onClick={handleCheck}
+				<Checkbox
+					checked={task.completed}
+					onCheckedChange={(c) => {
+						if (c === "indeterminate") return;
+						onCheck?.(task, c);
+					}}
 					disabled={isPending || isError}
+					onClick={(e) => e.stopPropagation()}
+					aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
 					className={cn(
-						"flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-[3px] border-[1.5px] transition-colors",
-						task.completed
-							? "border-primary bg-primary text-primary-foreground"
-							: "border-border bg-background hover:border-primary/60",
+						"h-[15px] w-[15px] shrink-0 rounded-[3px] border-[1.5px] shadow-none transition-colors [&_svg]:h-2.5 [&_svg]:w-2.5",
+						"border-border bg-background data-[state=checked]:border-primary",
+						"data-[state=unchecked]:hover:border-primary/60",
 						(isPending || isError) && "pointer-events-none opacity-50",
 					)}
-					aria-pressed={task.completed}
-					aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
-				>
-					{task.completed && <CheckIcon />}
-				</button>
+				/>
 
 				{/* Body */}
 				<div className="min-w-0 flex-1">
