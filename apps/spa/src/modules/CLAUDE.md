@@ -183,6 +183,7 @@ O módulo **auth** não segue exatamente a divisão `app/` + `view/`. Usa **form
 
 ## Referências
 
+- Tasks (completion otimista, inbox vs projeto): [`tasks/CLAUDE.md`](./tasks/CLAUDE.md).
 - Convenção de estrutura de módulo: [.cursor/rules/project-standards.mdc](../../.cursor/rules/project-standards.mdc) (Module Structure).
 - Padrão de mappers (form → API): [`tasks/app/mappers/MAPPER_PATTERN.md`](./tasks/app/mappers/MAPPER_PATTERN.md).
 - Visão geral do SPA: [../CLAUDE.md](../CLAUDE.md).

@@ -95,5 +95,50 @@ export function projectDetailCache(
 				},
 			);
 		},
+
+		patchTaskCompletionOptimistic(taskId: string, nextCompleted: boolean) {
+			const completedAt = nextCompleted ? new Date().toISOString() : null;
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						sections: old.sections.map((section) => ({
+							...section,
+							tasks: section.tasks.map((t) =>
+								t.id === taskId
+									? { ...t, completed: nextCompleted, completedAt }
+									: t,
+							),
+						})),
+					};
+				},
+			);
+		},
+
+		/** Replace task by id across all sections with server payload (source of truth). */
+		replaceTaskFromServer(task: Task) {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						sections: old.sections.map((section) => ({
+							...section,
+							tasks: section.tasks.map((t) =>
+								t.id === task.id
+									? {
+											...task,
+											optimisticState: OptimisticState.SYNCED,
+										}
+									: t,
+							),
+						})),
+					};
+				},
+			);
+		},
 	};
 }

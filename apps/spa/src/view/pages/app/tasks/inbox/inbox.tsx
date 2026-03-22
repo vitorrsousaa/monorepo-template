@@ -29,12 +29,13 @@ export function Inbox() {
 
 	const handleInboxTaskCheck = (
 		task: TaskWithOptimisticState,
-		_checked: boolean,
+		checked: boolean,
 	) => {
 		if (!task.id || task.optimisticState !== OptimisticState.SYNCED) return;
 		toggleTaskCompletion({
 			taskId: task.id,
 			projectId: task.projectId ?? null,
+			nextCompleted: checked,
 		});
 	};
 

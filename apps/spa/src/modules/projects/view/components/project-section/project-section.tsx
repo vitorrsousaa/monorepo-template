@@ -1,5 +1,7 @@
 import { ProjectSectionBlock } from "@/components/project-section-block";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
+import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
+import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
 import { OptimisticState } from "@/utils/types";
 import { cn } from "@repo/ui/utils";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -12,10 +14,20 @@ type ProjectSectionProps = {
 
 export const ProjectSection = (props: ProjectSectionProps) => {
 	const { section, projectId, projectName } = props;
+	const { toggleTaskCompletion } = useUpdateTaskCompletion();
 	const sectionsTasks = section.tasks;
 	const optimisticState = section?.optimisticState;
 	const isPending = optimisticState === OptimisticState.PENDING;
 	const isError = optimisticState === OptimisticState.ERROR;
+
+	const handleTaskCheck = (task: TaskWithOptimisticState, checked: boolean) => {
+		if (!task.id || task.optimisticState !== OptimisticState.SYNCED) return;
+		toggleTaskCompletion({
+			taskId: task.id,
+			projectId,
+			nextCompleted: checked,
+		});
+	};
 
 	return (
 		<div
@@ -46,6 +58,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				projectId={projectId}
 				sectionId={section.id}
 				projectName={projectName}
+				onTaskCheck={handleTaskCheck}
 			/>
 		</div>
 	);

@@ -80,5 +80,35 @@ export function tasksInboxCache(queryClient: QueryClient) {
 				};
 			});
 		},
+
+		patchTaskCompletionOptimistic(taskId: string, nextCompleted: boolean) {
+			const nowIso = new Date().toISOString();
+			const completedAt = nextCompleted ? nowIso : null;
+			queryClient.setQueryData<TasksInboxData>(queryKey, (old) => {
+				if (!old) return old;
+				return {
+					...old,
+					tasks: old.tasks.map((t) =>
+						t.id === taskId
+							? { ...t, completed: nextCompleted, completedAt }
+							: t,
+					),
+				};
+			});
+		},
+
+		replaceTaskFromServer(task: Task) {
+			queryClient.setQueryData<TasksInboxData>(queryKey, (old) => {
+				if (!old) return old;
+				return {
+					...old,
+					tasks: old.tasks.map((t) =>
+						t.id === task.id
+							? { ...task, optimisticState: OptimisticState.SYNCED }
+							: t,
+					),
+				};
+			});
+		},
 	};
 }
