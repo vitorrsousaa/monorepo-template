@@ -20,7 +20,9 @@ module.exports = defineConfig({
 			],
 		],
 		coverage: {
-			provider: "v8",
+			provider: 'v8',
+			thresholds: { lines: 60, functions: 60 },
+			exclude: ['**/*.dto.ts', '**/index.ts']
 		},
 		globals: true,
 	},
