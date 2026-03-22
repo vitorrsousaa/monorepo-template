@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "marketing-ideas": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "6463f11419704994d58248c398b99c6b097eac24f72f4c86bea1565e435e222e"
+    }
+  }
+}
