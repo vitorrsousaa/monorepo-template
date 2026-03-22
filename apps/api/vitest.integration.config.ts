@@ -8,8 +8,9 @@ export default mergeConfig(
 	defineProject({
 		test: {
 			globals: true,
-			include: ["src/**/*.test.ts"],
-			exclude: ["src/**/*.integration.test.ts"],
+			include: ["src/**/*.integration.test.ts"],
+			setupFiles: ["src/test/setup-integration.ts"],
+			testTimeout: 10_000,
 		},
 		resolve: {
 			alias: {

@@ -19,6 +19,9 @@
 			],
 			"@infra/*": [
 				"./src/infra/*"
+			],
+			"@test/*": [
+				"./src/test/*"
 			]
 		}
 	}

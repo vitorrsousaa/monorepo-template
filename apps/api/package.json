@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "scripts": {
     "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:integration:up": "docker compose -f docker-compose.test.yml up -d",
+    "test:integration:down": "docker compose -f docker-compose.test.yml down",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:watch": "vitest",
     "ci:test": "vitest run",
     "lint": "biome lint --write ./src",
     "ci:lint": "biome lint ./src",
