@@ -1,0 +1,21 @@
+# Build outputs
+dist/
+.next/
+.serverless/
+out/
+build/
+
+# Dependencies
+node_modules/
+
+# Test files (reduce noise; secrets/jwt rules still valuable in tests but optional)
+**/*.test.ts
+**/*.spec.ts
+**/__tests__/
+
+# Coverage
+coverage/
+
+# Generated / config
+*.d.ts
+pnpm-lock.yaml

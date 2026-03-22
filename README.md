@@ -45,6 +45,7 @@ This monorepo consist in these packages:
 - [Lefthook](/docs/tools/lefthook.md) - Git hooks
 - [TypeScript](/docs/tools/typescript.md) - Configuração TypeScript
 - [Vitest](/docs/tools/vitest.md) - Configuração de testes
+- [Semgrep](/docs/tools/semgrep.md) - Análise estática de segurança (SAST)
 
 ### Lib | `react`
 

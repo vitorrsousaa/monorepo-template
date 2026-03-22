@@ -1,39 +1,29 @@
-name: Security
+name: Security (Semgrep)
 
 on:
   pull_request:
     branches: ["**"]
+  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  CI: true
+permissions:
+  contents: read
 
 jobs:
-  audit:
-    name: Dependency Audit
+  semgrep:
+    name: Semgrep (OSS rules)
     runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.0.0
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
-
-      - name: Audit dependencies
-        run: pnpm run ci:audit
-        # Fails CI if high or critical vulnerabilities are found
+      # Rule packs from the public registry: TypeScript, Node.js, JWT-focused rules.
+      # Remove --error if you want findings to be reported without failing the job.
+      - name: Run Semgrep
+        run: semgrep scan --error --config p/typescript --config p/nodejs --config p/jwt --config p/aws-lambda --config p/secrets
