@@ -14,6 +14,8 @@
     "lint": "turbo run lint --",
     "typecheck": "turbo run typecheck",
     "cosmos": "node apps/cli/dist/index.js",
+    "audit": "pnpm audit",
+    "audit:fix": "pnpm audit --fix",
     "ci:build": "turbo build",
     "ci:lint": "turbo run ci:lint --",
     "ci:format": "turbo run ci:format --",
