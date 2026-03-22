@@ -1,1 +1,1 @@
-export { type Task, type TaskDto } from "./entities";
+export type { Task, TaskDto } from "./entities";

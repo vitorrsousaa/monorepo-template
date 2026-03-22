@@ -1,4 +1,4 @@
-import { z } from "zod";
-import { createTaskSchema } from "./schema";
+import type { z } from "zod";
+import type { createTaskSchema } from "./schema";
 
 export type CreateTaskInput = z.infer<typeof createTaskSchema>;

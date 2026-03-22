@@ -1,4 +1,4 @@
-import { Task } from "../../tasks/entities";
+import type { Task } from "../../tasks/entities";
 
 export interface Section {
 	id: string;
@@ -11,6 +11,6 @@ export interface Section {
 	updatedAt: string;
 }
 
-export interface SectionsWithTasks extends Section { 
+export interface SectionsWithTasks extends Section {
 	tasks: Task[];
 }

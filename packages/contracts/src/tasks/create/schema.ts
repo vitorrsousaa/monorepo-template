@@ -10,10 +10,16 @@ export const createTaskSchema = z.object({
 	title: z
 		.string()
 		.min(TASK_TITLE_MIN, "Title cannot be empty")
-		.max(TASK_TITLE_MAX, `Title must have at most ${TASK_TITLE_MAX} characters`),
+		.max(
+			TASK_TITLE_MAX,
+			`Title must have at most ${TASK_TITLE_MAX} characters`,
+		),
 	description: z
 		.string()
-		.max(TASK_DESCRIPTION_MAX, `Description must have at most ${TASK_DESCRIPTION_MAX} characters`)
+		.max(
+			TASK_DESCRIPTION_MAX,
+			`Description must have at most ${TASK_DESCRIPTION_MAX} characters`,
+		)
 		.optional()
 		.nullable(),
 	priority: z.enum(TASK_PRIORITIES).optional().nullable(),

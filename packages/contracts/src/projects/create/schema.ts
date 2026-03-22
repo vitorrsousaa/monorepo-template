@@ -15,11 +15,13 @@ export const PROJECT_COLORS = [
 ] as const;
 
 export const createProjectSchema = z.object({
-	name: z
-		.string(),
+	name: z.string(),
 	description: z
 		.string()
-		.max(PROJECT_DESCRIPTION_MAX, `Description must have at most ${PROJECT_DESCRIPTION_MAX} characters`)
+		.max(
+			PROJECT_DESCRIPTION_MAX,
+			`Description must have at most ${PROJECT_DESCRIPTION_MAX} characters`,
+		)
 		.optional()
 		.nullable(),
 	color: z.enum(PROJECT_COLORS),

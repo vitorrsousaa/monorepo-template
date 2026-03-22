@@ -7,6 +7,9 @@ export const createSectionSchema = z.object({
 	name: z
 		.string()
 		.min(SECTION_NAME_MIN, "Section name cannot be empty")
-		.max(SECTION_NAME_MAX, `Section name must have at most ${SECTION_NAME_MAX} characters`),
+		.max(
+			SECTION_NAME_MAX,
+			`Section name must have at most ${SECTION_NAME_MAX} characters`,
+		),
 	order: z.number().int().positive().optional(),
 });
