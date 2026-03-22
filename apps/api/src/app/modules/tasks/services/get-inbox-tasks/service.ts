@@ -31,8 +31,12 @@ export class GetInboxTasksService implements IGetInboxTasksService {
 			const priorDiff = priorityValue(b.priority) - priorityValue(a.priority);
 			if (priorDiff !== 0) return priorDiff;
 
-			const aTime = a.dueDate ? new Date(a.dueDate).getTime() : Number.POSITIVE_INFINITY;
-			const bTime = b.dueDate ? new Date(b.dueDate).getTime() : Number.POSITIVE_INFINITY;
+			const aTime = a.dueDate
+				? new Date(a.dueDate).getTime()
+				: Number.POSITIVE_INFINITY;
+			const bTime = b.dueDate
+				? new Date(b.dueDate).getTime()
+				: Number.POSITIVE_INFINITY;
 
 			return aTime - bTime;
 		});
