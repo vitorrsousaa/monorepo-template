@@ -1,17 +1,17 @@
 import { QUERY_KEYS } from "@/config/query-keys";
+import { queryClient } from "@/libs/query";
 import { projectsAllCache } from "@/modules/projects/app/cache/projects-all.cache";
 import { projectsSummaryCache } from "@/modules/projects/app/cache/projects-summary.cache";
 import { createProject as createProjectService } from "@/modules/projects/app/services/create-project";
 import { cancelRelatedQueries, generateTempId } from "@/utils/optimistic";
 import type { CreateProjectInput } from "@repo/contracts/projects/create";
 import { PROJECT_COLORS } from "@repo/contracts/projects/create";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 const RELATED_KEYS = [QUERY_KEYS.PROJECTS.ALL, QUERY_KEYS.PROJECTS.SUMMARY];
 
 export function useCreateProject() {
-	const queryClient = useQueryClient();
 
 	const { mutate: createProject, isPending } = useMutation({
 		mutationFn: createProjectService,

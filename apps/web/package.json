@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
-    "next": "^15.1.0",
-    "tailwindcss-animate": "^1.0.7"
+    "next": "^15.1.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

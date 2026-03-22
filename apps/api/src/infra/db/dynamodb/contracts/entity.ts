@@ -23,7 +23,7 @@ export interface BaseDynamoDBEntity extends BaseIndexes {
 	deleted_at?: string | null;
 }
 
-export interface BaseIndexes {
+interface BaseIndexes {
 	PK: string;
 	SK: string;
 }

@@ -1,4 +1,4 @@
-import { CreateTasksController } from "@application/modules/tasks/controllers/create/controller";
+import { CreateTasksController } from "@application/modules/tasks/controllers/create";
 import { makeCreateTasksService } from "@factories/services/tasks/create-task";
 
 export function makeCreateTasksController(): CreateTasksController {

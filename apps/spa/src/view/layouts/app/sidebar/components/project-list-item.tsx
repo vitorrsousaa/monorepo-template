@@ -10,10 +10,10 @@ import {
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 
-import type { Project } from "@/modules/projects/app/entitites/project";
 import { useCreateProject } from "@/modules/projects/app/hooks/use-create-project";
 import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
+import type { Project } from "@repo/contracts/projects/entities";
 import {
 	DropdownMenu,
 	DropdownMenuContent,

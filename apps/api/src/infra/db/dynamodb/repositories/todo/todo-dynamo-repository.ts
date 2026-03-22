@@ -1,8 +1,11 @@
 import type { Todo } from "@core/domain/todo/todo";
-import type { TodoMapper } from "@data/protocols/todo/todo-mapper";
 import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/todo/types";
 import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
+type TodoMapper<TDBEntity = unknown> = {
+	toDomain(dbEntity: TDBEntity): Todo;
+	toDatabase(todo: Todo): TDBEntity;
+};
 
 /**
  * TodoDynamoRepository

@@ -1,5 +1,4 @@
 import type { Todo } from "@core/domain/todo/todo";
-import type { TodoMapper } from "@data/protocols/todo/todo-mapper";
 import type { TodoDynamoDBEntity } from "./types";
 
 const USER_PREFIX = "USER#";
@@ -10,6 +9,11 @@ const TODO_INBOX_PENDING = "TODO#INBOX#PENDING#";
 const TODO_INBOX_COMPLETED = "TODO#INBOX#COMPLETED#";
 const TODO_PENDING = "TODO#PENDING#";
 const TODO_COMPLETED = "TODO#COMPLETED#";
+
+type TodoMapper<TDBEntity = unknown> = {
+	toDomain(dbEntity: TDBEntity): Todo;
+	toDatabase(todo: Todo): TDBEntity;
+};
 
 function buildPK(userId: string, projectId?: string | null): string {
 	if (projectId) {

@@ -10,7 +10,7 @@ const Projects = lazy(() =>
 );
 
 const AllProjects = lazy(() =>
-	import("@/pages/app/projects/all-projects/all-projects").then((module) => ({
+	import("@/pages/app/projects/all-projects").then((module) => ({
 		default: module.AllProjects,
 	})),
 );

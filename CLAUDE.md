@@ -100,28 +100,60 @@ When entering Plan Mode or creating implementation/architecture plans, **always 
 - **Format:** Include sections like Context, Phases/Steps, Implementation Details, and any relevant notes
 - **Update:** If the plan changes during implementation, update the file to reflect the current state
 
-## CRITICAL: Documentation Update on Every Plan
+## CRITICAL: Documentation Analysis on Every Plan
 
-After finalizing any plan, you MUST update the project documentation with **every piece of new knowledge** you learned during the planning process. This is mandatory — do not skip it.
+Every plan **must include an explicit phase** called `## Documentation Analysis` as the **last phase** before closing. This phase is non-optional and must be executed as part of the plan, not after it.
 
-### What to update
+### What this phase does
 
-Analyze everything you discovered while researching and planning (code patterns, architecture decisions, domain rules, data flows, conventions, gotchas) and persist it in `CLAUDE.md` files so future conversations have this context without re-discovering it.
+During planning you read code, discovered patterns, and understood the area deeply. That context must be persisted so future conversations don't rediscover it. The phase analyzes what was learned and creates/updates `CLAUDE.md` files accordingly.
 
-### How to update
+### Mandatory steps inside the Documentation Analysis phase
 
-1. **Update existing `CLAUDE.md` files** — If the new knowledge relates to an area already documented (e.g., `apps/api/CLAUDE.md`, `apps/spa/CLAUDE.md`, `packages/contracts/CLAUDE.md`), add the information to the relevant section or create a new section in that file.
+1. **List areas explored** — enumerate every module, file, or flow you read during planning.
+2. **Identify knowledge gaps** — for each area, check if a `CLAUDE.md` already covers it. If not, flag it as a candidate for a new file.
+3. **Create or update `CLAUDE.md` files** — execute the changes (see rules below).
+4. **Update `Related documentation` links** — add links in the nearest parent `CLAUDE.md`.
 
-2. **Create new `CLAUDE.md` files** — If the knowledge is specific to a directory/module that doesn't have its own `CLAUDE.md` yet, create one. Examples:
-   - `apps/spa/src/modules/tasks/CLAUDE.md` — if you learned deep details about the tasks module
-   - `apps/api/src/core/domain/CLAUDE.md` — if you uncovered domain rules not documented elsewhere
-   - `packages/ui/CLAUDE.md` — if you discovered patterns in the UI package
+### Rules for CLAUDE.md files
 
-3. **Update the root `CLAUDE.md`** — If the knowledge is cross-cutting or architectural (affects multiple apps/packages), add it here and link to detailed docs if needed.
+- **Max 250 lines per file** — stay focused. Trim if a file grows beyond this.
+- **Must include at least one code example** per non-trivial pattern. Examples are the fastest way for future Claude to understand intent.
+- **Structure:** title → one-line purpose → sections with headers → examples inline.
+- Check existing files first — never duplicate content.
 
-4. **Update `Related documentation` links** — When creating new `CLAUDE.md` files, add them to the nearest parent `CLAUDE.md`'s related documentation section.
+#### Example of a good CLAUDE.md section
 
-### What qualifies as "new knowledge"
+```markdown
+## Cache Helpers
+
+Never call `queryClient.setQueryData` directly — always use a cache helper factory.
+
+**Why:** keeps invalidation logic in one place; hooks stay thin.
+
+\`\`\`ts
+// ✅ correct
+import { makeProjectsAllCache } from "../cache/projects-all.cache";
+const cache = makeProjectsAllCache(queryClient);
+cache.add(newProject);
+
+// ❌ wrong — direct mutation leaks cache shape into hooks
+queryClient.setQueryData(["projects"], (old) => [...old, newProject]);
+\`\`\`
+
+Files: `modules/<feature>/app/cache/<name>.cache.ts`
+```
+
+### Where to create new CLAUDE.md files
+
+| Scope | Location |
+|-------|----------|
+| Module-specific (SPA) | `apps/spa/src/modules/<feature>/CLAUDE.md` |
+| Module-specific (API) | `apps/api/src/core/<layer>/CLAUDE.md` |
+| Package-specific | `packages/<name>/CLAUDE.md` |
+| Cross-cutting / architectural | Root `CLAUDE.md` (this file) |
+
+### What qualifies as "new knowledge" worth persisting
 
 - Architecture patterns or conventions not yet documented
 - Domain rules or business logic discovered in code
@@ -135,7 +167,7 @@ Analyze everything you discovered while researching and planning (code patterns,
 
 - Ephemeral/temporary implementation details (those go in the plan file)
 - Information already documented — check existing `CLAUDE.md` files first
-- Overly verbose explanations — keep it concise and scannable like the existing docs
+- Overly verbose prose without examples — keep it concise and scannable
 
 ## Related documentation
 

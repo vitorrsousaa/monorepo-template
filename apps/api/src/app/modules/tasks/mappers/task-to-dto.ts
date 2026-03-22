@@ -1,6 +1,6 @@
+import type { TodayProjectOutput } from "@application/modules/tasks/services/get-today-tasks";
 import type { Task } from "@core/domain/task/task";
 import type { TaskDto, TodayProjectDto } from "@repo/contracts/tasks/today";
-import type { TodayProjectOutput } from "@application/modules/tasks/services/get-today-tasks";
 
 function toIso(date: Date | null | undefined): string | null {
 	if (date == null) return null;
@@ -8,7 +8,7 @@ function toIso(date: Date | null | undefined): string | null {
 }
 
 /** Converts domain Task to API contract TaskDto (dates → ISO strings). */
-export function taskToDto(task: Task): TaskDto {
+function taskToDto(task: Task): TaskDto {
 	return {
 		id: task.id,
 		userId: task.userId,

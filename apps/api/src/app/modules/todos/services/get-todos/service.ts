@@ -1,8 +1,8 @@
 import type { IService } from "@application/interfaces/service";
-import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
 import type { Todo } from "@core/domain/todo/todo";
+import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
 
-export interface GetTodosOutput {
+interface GetTodosOutput {
 	todos: Todo[];
 	total: number;
 }

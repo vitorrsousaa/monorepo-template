@@ -1,5 +1,5 @@
 import type { CreateSectionInput } from "@repo/contracts/sections/create";
-import type { Section } from "@core/domain/section/section";
+import { Section } from "@repo/contracts/sections/entities";
 
 export interface CreateSectionServiceInput extends CreateSectionInput {
 	userId: string;

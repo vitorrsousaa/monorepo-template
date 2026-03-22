@@ -53,7 +53,7 @@ export type TTaskFormSchema = z.infer<typeof TaskFormSchema>;
 
 export type TRecurrenceForm = z.infer<typeof recurrenceSchema>;
 
-export const defaultInitialValues: TTaskFormSchema = {
+const defaultInitialValues: TTaskFormSchema = {
 	title: "",
 	description: "",
 	project: "inbox",

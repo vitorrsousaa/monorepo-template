@@ -2,7 +2,6 @@ import { PROJECT_INBOX_ID } from "@/config/constants";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
-import { RenderIf } from "@repo/ui/render-if";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,9 +9,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
+import { RenderIf } from "@repo/ui/render-if";
 import { Info, MoreVertical } from "lucide-react";
 
-export interface ProjectColumnHeaderProps {
+interface ProjectColumnHeaderProps {
 	project: TodayProjectDto;
 	onViewProjectDetails: (projectId: string) => void;
 	onDeleteProject: (project: TodayProjectDto) => void;

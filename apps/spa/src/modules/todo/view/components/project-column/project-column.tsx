@@ -24,7 +24,7 @@ function getProjectStripeColor(projectId: string): string {
 	return colors[idx];
 }
 
-export type ProjectColumnProps = {
+type ProjectColumnProps = {
 	project: TodayProjectDto;
 	onProjectDeleted?: () => void;
 };
@@ -65,9 +65,9 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 
 	const editTodoFormHeaderMeta = useMemo(():
 		| {
-				projectName: string;
-				createdAt: string;
-		  }
+			projectName: string;
+			createdAt: string;
+		}
 		| undefined => {
 		if (!selectedTask) return undefined;
 		return {
@@ -126,7 +126,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 													className={cn(
 														"font-medium text-balance leading-tight",
 														task.completed &&
-															"line-through text-muted-foreground",
+														"line-through text-muted-foreground",
 													)}
 												>
 													{task.title}

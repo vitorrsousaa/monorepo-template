@@ -3,11 +3,11 @@ import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/ho
 import { createSection as createSectionService } from "@/modules/sections/app/services/create-section";
 import { cancelRelatedQueries, generateTempId } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
-import type { GetAllSectionsResponse } from "@repo/contracts/sections/get-all";
 import type { Section } from "@repo/contracts/sections/entities";
+import type { GetAllSectionsResponse } from "@repo/contracts/sections/get-all";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export type SectionWithOptimisticState = WithOptimisticState<Section>;
+type SectionWithOptimisticState = WithOptimisticState<Section>;
 
 export function useCreateSection() {
 	const queryClient = useQueryClient();

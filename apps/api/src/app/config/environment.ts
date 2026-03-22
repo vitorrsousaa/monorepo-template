@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import * as z from "zod";
 
-export const envSchema = z.object({
+const envSchema = z.object({
 	STAGE: z.literal("dev").or(z.literal("prod")),
 	AUTH_GOOGLE_CLIENT_ID: z.string(),
 	AUTH_GOOGLE_CLIENT_SECRET: z.string(),
