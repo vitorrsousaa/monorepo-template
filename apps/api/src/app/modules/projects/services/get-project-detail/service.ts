@@ -66,7 +66,7 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 				tasksBySectionId.set(task.sectionId, []);
 			}
 
-			tasksBySectionId.get(task.sectionId)!.push(task);
+			tasksBySectionId.get(task.sectionId)?.push(task);
 		}
 
 		const sectionsWithTasks = sections.map((section) => ({

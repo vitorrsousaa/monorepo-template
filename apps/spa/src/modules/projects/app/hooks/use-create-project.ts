@@ -13,7 +13,6 @@ import { useCallback } from "react";
 const RELATED_KEYS = [QUERY_KEYS.PROJECTS.ALL, QUERY_KEYS.PROJECTS.SUMMARY];
 
 export function useCreateProject() {
-
 	const { mutate: createProject, isPending } = useMutation({
 		mutationFn: createProjectService,
 		onMutate: async (variables) => {
@@ -50,7 +49,10 @@ export function useCreateProject() {
 			allCache.replaceWithReal(context?.tempId ?? "", projectResponse);
 			summaryCache.replaceWithReal(context?.tempId ?? "", projectResponse);
 
-			const sectionsCache = sectionsByProjectCache(queryClient, projectResponse.id);
+			const sectionsCache = sectionsByProjectCache(
+				queryClient,
+				projectResponse.id,
+			);
 			sectionsCache.set([]);
 		},
 	});

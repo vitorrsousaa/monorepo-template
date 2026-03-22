@@ -1,7 +1,7 @@
+import type { Todo } from "@core/domain/todo/todo";
+import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
 import { buildProject } from "@test/builders";
 import { mockProjectsRepository } from "@test/mocks";
-import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
-import type { Todo } from "@core/domain/todo/todo";
 import { GetTodayTasksService } from "./service";
 
 function buildTodo(overrides?: Partial<Todo>): Todo {
@@ -67,9 +67,9 @@ describe("GetTodayTasksService", () => {
 		const result = await sut.execute({ userId: "u-1" });
 
 		expect(result.projects).toHaveLength(1);
-		expect(result.projects[0]!.id).toBe("inbox");
-		expect(result.projects[0]!.name).toBe("Inbox");
-		expect(result.projects[0]!.tasks).toHaveLength(2);
+		expect(result.projects[0]?.id).toBe("inbox");
+		expect(result.projects[0]?.name).toBe("Inbox");
+		expect(result.projects[0]?.tasks).toHaveLength(2);
 	});
 
 	it("should group project todos and fetch project names", async () => {
@@ -85,8 +85,8 @@ describe("GetTodayTasksService", () => {
 		const result = await sut.execute({ userId: "u-1" });
 
 		expect(result.projects).toHaveLength(1);
-		expect(result.projects[0]!.name).toBe("Work");
-		expect(result.projects[0]!.tasks).toHaveLength(2);
+		expect(result.projects[0]?.name).toBe("Work");
+		expect(result.projects[0]?.tasks).toHaveLength(2);
 	});
 
 	it("should put Inbox first, then projects sorted by name", async () => {
@@ -96,24 +96,18 @@ describe("GetTodayTasksService", () => {
 			buildTodo({ id: "t-3", projectId: "p-1" }),
 		];
 		vi.mocked(todoRepo.findTodayTodos).mockResolvedValue(todos);
-		vi.mocked(projectRepo.getById).mockImplementation(
-			(projectId: string) => {
-				if (projectId === "p-1")
-					return Promise.resolve(
-						buildProject({ id: "p-1", name: "Alpha" }),
-					);
-				return Promise.resolve(
-					buildProject({ id: "p-2", name: "Beta" }),
-				);
-			},
-		);
+		vi.mocked(projectRepo.getById).mockImplementation((projectId: string) => {
+			if (projectId === "p-1")
+				return Promise.resolve(buildProject({ id: "p-1", name: "Alpha" }));
+			return Promise.resolve(buildProject({ id: "p-2", name: "Beta" }));
+		});
 
 		const result = await sut.execute({ userId: "u-1" });
 
 		expect(result.projects).toHaveLength(3);
-		expect(result.projects[0]!.name).toBe("Inbox");
-		expect(result.projects[1]!.name).toBe("Alpha");
-		expect(result.projects[2]!.name).toBe("Beta");
+		expect(result.projects[0]?.name).toBe("Inbox");
+		expect(result.projects[1]?.name).toBe("Alpha");
+		expect(result.projects[2]?.name).toBe("Beta");
 	});
 
 	it("should use 'Unknown' for project name when project not found", async () => {
@@ -123,6 +117,6 @@ describe("GetTodayTasksService", () => {
 
 		const result = await sut.execute({ userId: "u-1" });
 
-		expect(result.projects[0]!.name).toBe("Unknown");
+		expect(result.projects[0]?.name).toBe("Unknown");
 	});
 });

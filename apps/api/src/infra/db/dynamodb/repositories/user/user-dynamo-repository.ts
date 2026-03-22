@@ -1,11 +1,11 @@
 import type { UserMapper } from "@data/protocols/auth/user-mapper";
 import type { IUserRepository } from "@data/protocols/auth/user-repository";
-import type { User } from "@repo/contracts/auth/entities";
 import type {
 	IDatabaseClient,
 	IDatabaseClientGetArgs,
 } from "@infra/db/dynamodb/contracts/client";
 import type { UserDynamoDBEntity } from "@infra/db/dynamodb/mappers/user/types";
+import type { User } from "@repo/contracts/auth/entities";
 
 export class UserDynamoRepository implements IUserRepository {
 	constructor(
@@ -33,7 +33,7 @@ export class UserDynamoRepository implements IUserRepository {
 		const getArgs: IDatabaseClientGetArgs = {
 			Key: {
 				PK: `USER#${userId}`,
-				SK: `PROFILE`,
+				SK: "PROFILE",
 			},
 		};
 

@@ -97,7 +97,7 @@ async function clearTable() {
 				RequestItems: {
 					[TABLE_NAME]: batch.map((item) => ({
 						DeleteRequest: {
-							Key: { PK: item.PK!.S!, SK: item.SK!.S! },
+							Key: { PK: item.PK?.S ?? "", SK: item.SK?.S ?? "" },
 						},
 					})),
 				},

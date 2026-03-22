@@ -11,7 +11,10 @@ describe("GetInboxTasksService", () => {
 	});
 
 	it("should return tasks from repository", async () => {
-		const tasks = [buildTask({ title: "Task 1" }), buildTask({ title: "Task 2" })];
+		const tasks = [
+			buildTask({ title: "Task 1" }),
+			buildTask({ title: "Task 2" }),
+		];
 		vi.mocked(repo.getInbox).mockResolvedValue(tasks);
 
 		const result = await sut.execute({ userId: "u-1" });
@@ -40,34 +43,46 @@ describe("GetInboxTasksService", () => {
 
 		const result = await sut.execute({ userId: "u-1" });
 
-		expect(result.tasks[0]!.id).toBe("high");
-		expect(result.tasks[1]!.id).toBe("med");
-		expect(result.tasks[2]!.id).toBe("low");
+		expect(result.tasks[0]?.id).toBe("high");
+		expect(result.tasks[1]?.id).toBe("med");
+		expect(result.tasks[2]?.id).toBe("low");
 	});
 
 	it("should sort by dueDate within same priority (earliest first)", async () => {
 		const tasks = [
-			buildTask({ id: "later", priority: "high", dueDate: "2024-06-20T00:00:00.000Z" }),
-			buildTask({ id: "sooner", priority: "high", dueDate: "2024-06-10T00:00:00.000Z" }),
+			buildTask({
+				id: "later",
+				priority: "high",
+				dueDate: "2024-06-20T00:00:00.000Z",
+			}),
+			buildTask({
+				id: "sooner",
+				priority: "high",
+				dueDate: "2024-06-10T00:00:00.000Z",
+			}),
 		];
 		vi.mocked(repo.getInbox).mockResolvedValue(tasks);
 
 		const result = await sut.execute({ userId: "u-1" });
 
-		expect(result.tasks[0]!.id).toBe("sooner");
-		expect(result.tasks[1]!.id).toBe("later");
+		expect(result.tasks[0]?.id).toBe("sooner");
+		expect(result.tasks[1]?.id).toBe("later");
 	});
 
 	it("should place tasks without dueDate after those with dueDate", async () => {
 		const tasks = [
 			buildTask({ id: "no-date", priority: "high", dueDate: null }),
-			buildTask({ id: "has-date", priority: "high", dueDate: "2024-06-10T00:00:00.000Z" }),
+			buildTask({
+				id: "has-date",
+				priority: "high",
+				dueDate: "2024-06-10T00:00:00.000Z",
+			}),
 		];
 		vi.mocked(repo.getInbox).mockResolvedValue(tasks);
 
 		const result = await sut.execute({ userId: "u-1" });
 
-		expect(result.tasks[0]!.id).toBe("has-date");
-		expect(result.tasks[1]!.id).toBe("no-date");
+		expect(result.tasks[0]?.id).toBe("has-date");
+		expect(result.tasks[1]?.id).toBe("no-date");
 	});
 });

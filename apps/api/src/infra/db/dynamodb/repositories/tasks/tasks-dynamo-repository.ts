@@ -65,7 +65,8 @@ export class TasksDynamoRepository implements ITasksRepository {
 				":skPrefix": "TASK#INBOX#PENDING#",
 				":falseValue": false,
 			},
-			FilterExpression: `attribute_not_exists(#deletedAt) AND #completed = :falseValue`,
+			FilterExpression:
+				"attribute_not_exists(#deletedAt) AND #completed = :falseValue",
 			IndexName: undefined,
 		});
 

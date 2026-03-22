@@ -10,10 +10,8 @@ export interface IGetDashboardAnalyticsService
 export class GetDashboardAnalyticsService
 	implements IGetDashboardAnalyticsService
 {
-	constructor() {}
-
 	async execute(
-		input: GetDashboardAnalyticsInput,
+		_input: GetDashboardAnalyticsInput,
 	): Promise<GetDashboardAnalyticsOutput> {
 		// Implement calcs to get efficiency
 		// tasksConcluídasHoje / tasksConcluídasHoje + tasksPendentesHoje

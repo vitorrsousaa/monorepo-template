@@ -29,7 +29,7 @@ export class SectionDynamoRepository implements ISectionRepository {
 
 	async getAllByProject(projectId: string, userId: string): Promise<Section[]> {
 		const pk = `USER#${userId}#PROJECT#${projectId}`;
-		const sk = `SECTION#`;
+		const sk = "SECTION#";
 
 		const queryResult = await this.dynamoClient.query<SectionDynamoDBEntity[]>({
 			KeyConditionExpression: "PK = :pk AND begins_with(SK, :skPrefix)",

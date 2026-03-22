@@ -22,9 +22,9 @@ describe("UpdateTaskCompletionService", () => {
 	it("should throw TaskNotFound when task does not exist", async () => {
 		vi.mocked(repo.getByUserId).mockResolvedValue(null);
 
-		await expect(
-			sut.execute({ taskId: "t-1", userId: "u-1" }),
-		).rejects.toThrow(TaskNotFound);
+		await expect(sut.execute({ taskId: "t-1", userId: "u-1" })).rejects.toThrow(
+			TaskNotFound,
+		);
 	});
 
 	it("should delegate to completeService when task is pending", async () => {

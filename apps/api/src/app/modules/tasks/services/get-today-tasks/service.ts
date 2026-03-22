@@ -48,11 +48,11 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 		const projectEntries = await Promise.all(
 			projectIds.map(async (projectId) => {
 				const project = await this.projectRepository.getById(
-					projectId!,
+					projectId ?? "",
 					data.userId,
 				);
 				return {
-					id: projectId!,
+					id: projectId ?? "",
 					name: project?.name ?? "Unknown",
 					tasks: byProject.get(projectId) ?? [],
 				};

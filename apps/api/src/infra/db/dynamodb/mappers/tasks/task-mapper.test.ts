@@ -134,9 +134,7 @@ describe("TasksDynamoMapper", () => {
 			});
 			const result = mapper.toDatabase(task);
 
-			expect(result.SK).toBe(
-				"TASK#COMPLETED#2024-06-10T15:30:00.000Z#t-1",
-			);
+			expect(result.SK).toBe("TASK#COMPLETED#2024-06-10T15:30:00.000Z#t-1");
 		});
 
 		it("should convert domain fields to snake_case", () => {
