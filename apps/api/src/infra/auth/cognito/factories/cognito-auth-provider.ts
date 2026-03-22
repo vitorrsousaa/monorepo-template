@@ -1,4 +1,4 @@
-import { IAuthProvider } from "@data/protocols/auth/auth-provider";
+import type { IAuthProvider } from "@data/protocols/auth/auth-provider";
 import { makeConfig } from "@factories/config";
 import { makeCognitoClient } from "@factories/libs/cognito";
 import { CognitoAuthProvider } from "../cognito-auth-provider";

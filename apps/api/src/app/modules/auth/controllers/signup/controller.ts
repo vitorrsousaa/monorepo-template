@@ -1,7 +1,7 @@
 import { Controller } from "@application/interfaces/controller";
 import type { ISignupService } from "@application/modules/auth/services/signup";
 import type { SignupResponse } from "@repo/contracts/auth/signup";
-import { signupSchema, SignupSchema } from "./schema";
+import { signupSchema, type SignupSchema } from "./schema";
 
 export class SignupController extends Controller<"public", SignupResponse> {
 	protected override schema = signupSchema;

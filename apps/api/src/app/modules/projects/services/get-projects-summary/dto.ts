@@ -1,7 +1,7 @@
-import { GetProjectsSummaryResponse } from "@repo/contracts/projects/summary";
+import type { GetProjectsSummaryResponse } from "@repo/contracts/projects/summary";
 
 export type GetProjectsSummaryInputService = {
 	userId: string;
 };
 
-export type GetProjectsSummaryOutputService = GetProjectsSummaryResponse
+export type GetProjectsSummaryOutputService = GetProjectsSummaryResponse;

@@ -3,8 +3,8 @@ import type { TasksMapper } from "@data/protocols/tasks/tasks-mapper";
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/todo/types";
 import type { Task } from "@repo/contracts/tasks";
-import { IDatabaseClient } from "../../contracts/client";
-import { TasksDynamoDBEntity } from "../../mappers/tasks/types";
+import type { IDatabaseClient } from "../../contracts/client";
+import type { TasksDynamoDBEntity } from "../../mappers/tasks/types";
 import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
 
 /**

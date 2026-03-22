@@ -1,5 +1,5 @@
 import {
-	IProfileService,
+	type IProfileService,
 	ProfileService,
 } from "@application/modules/auth/services/profile";
 import { makeUserDynamoRepository } from "@infra/db/dynamodb/factories/user-repository-factory";

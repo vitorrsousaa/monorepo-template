@@ -1,5 +1,5 @@
-import { TasksMapper } from "@data/protocols/tasks/tasks-mapper";
-import { Task } from "@repo/contracts/tasks";
+import type { TasksMapper } from "@data/protocols/tasks/tasks-mapper";
+import type { Task } from "@repo/contracts/tasks";
 import type { TasksDynamoDBEntity } from "./types";
 
 // Task na Inbox:

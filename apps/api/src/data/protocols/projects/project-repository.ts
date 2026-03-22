@@ -1,4 +1,4 @@
-import { Project } from "@repo/contracts/projects";
+import type { Project } from "@repo/contracts/projects";
 
 /**
  * IProjectRepository

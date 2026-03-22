@@ -1,4 +1,4 @@
-import { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
+import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 
 export type GetProjectDetailInputService = {
 	userId: string;

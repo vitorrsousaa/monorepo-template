@@ -1,4 +1,4 @@
-import { Section } from "@repo/contracts/sections/entities";
+import type { Section } from "@repo/contracts/sections/entities";
 export interface GetAllByProjectInput {
 	userId: string;
 	projectId: string;

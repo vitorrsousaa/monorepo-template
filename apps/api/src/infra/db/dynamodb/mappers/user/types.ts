@@ -1,4 +1,4 @@
-import { BaseDynamoDBEntity } from "../../contracts/entity";
+import type { BaseDynamoDBEntity } from "../../contracts/entity";
 
 export interface UserDynamoDBEntity extends BaseDynamoDBEntity {
 	email: string;

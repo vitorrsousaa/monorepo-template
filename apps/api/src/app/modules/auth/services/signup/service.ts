@@ -1,7 +1,7 @@
 import type { IService } from "@application/interfaces/service";
-import { IAuthProvider } from "@data/protocols/auth/auth-provider";
-import { IUserRepository } from "@data/protocols/auth/user-repository";
-import { SignupInput, SignupOutput } from "./dto";
+import type { IAuthProvider } from "@data/protocols/auth/auth-provider";
+import type { IUserRepository } from "@data/protocols/auth/user-repository";
+import type { SignupInput, SignupOutput } from "./dto";
 
 export interface ISignupService extends IService<SignupInput, SignupOutput> {}
 

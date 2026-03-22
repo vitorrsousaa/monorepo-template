@@ -1,9 +1,9 @@
 import type { SectionMapper } from "@data/protocols/sections/section-mapper";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
 import type { SectionDynamoDBEntity } from "@infra/db/dynamodb/mappers/sections/types";
-import { Section } from "@repo/contracts/sections/entities";
+import type { Section } from "@repo/contracts/sections/entities";
 import { randomUUID } from "node:crypto";
-import { IDatabaseClient } from "../../contracts/client";
+import type { IDatabaseClient } from "../../contracts/client";
 import { SECTION_DYNAMO_MOCKS } from "./section-dynamo-repository-mocks";
 
 /**

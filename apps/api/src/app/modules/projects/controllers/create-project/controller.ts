@@ -1,7 +1,7 @@
 import { Controller } from "@application/interfaces/controller";
 import type { ICreateProjectService } from "@application/modules/projects/services/create-project";
 import {
-	CreateProjectInput,
+	type CreateProjectInput,
 	createProjectSchema,
 	type CreateProjectOutput,
 } from "@repo/contracts/projects/create";

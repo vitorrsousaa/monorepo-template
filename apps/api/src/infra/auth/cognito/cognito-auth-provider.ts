@@ -1,7 +1,7 @@
-import { Config } from "@application/config/environment";
+import type { Config } from "@application/config/environment";
 import { AppError } from "@application/errors/app-error";
 import {
-	CognitoIdentityProviderClient,
+	type CognitoIdentityProviderClient,
 	InitiateAuthCommand,
 	InvalidParameterException,
 	InvalidPasswordException,

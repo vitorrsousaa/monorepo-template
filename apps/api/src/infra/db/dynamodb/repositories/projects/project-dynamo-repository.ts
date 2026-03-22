@@ -1,9 +1,9 @@
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ProjectDynamoDBEntity } from "@infra/db/dynamodb/mappers/projects/types";
-import { Project } from "@repo/contracts/projects";
+import type { Project } from "@repo/contracts/projects";
 import { randomUUID } from "node:crypto";
-import { IDatabaseClient } from "../../contracts/client";
+import type { IDatabaseClient } from "../../contracts/client";
 
 /**
  * ProjectDynamoRepository

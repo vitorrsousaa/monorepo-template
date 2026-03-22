@@ -1,5 +1,5 @@
 import type { IService } from "@application/interfaces/service";
-import { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
+import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type { Task } from "@repo/contracts/tasks";
 import type {
 	GetInboxTasksInputService,
@@ -31,8 +31,8 @@ export class GetInboxTasksService implements IGetInboxTasksService {
 			const priorDiff = priorityValue(b.priority) - priorityValue(a.priority);
 			if (priorDiff !== 0) return priorDiff;
 
-			const aTime = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
-			const bTime = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+			const aTime = a.dueDate ? new Date(a.dueDate).getTime() : Number.POSITIVE_INFINITY;
+			const bTime = b.dueDate ? new Date(b.dueDate).getTime() : Number.POSITIVE_INFINITY;
 
 			return aTime - bTime;
 		});

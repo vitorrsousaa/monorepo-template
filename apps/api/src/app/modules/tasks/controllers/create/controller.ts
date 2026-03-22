@@ -4,7 +4,7 @@ import type {
 	CreateTaskOutput,
 } from "@repo/contracts/tasks/create";
 import { createTaskSchema } from "@repo/contracts/tasks/create";
-import { ICreateTasksService } from "../../services/create";
+import type { ICreateTasksService } from "../../services/create";
 
 export class CreateTasksController extends Controller<
 	"private",

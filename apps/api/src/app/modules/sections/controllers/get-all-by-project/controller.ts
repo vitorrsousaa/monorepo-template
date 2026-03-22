@@ -1,5 +1,5 @@
 import { Controller } from "@application/interfaces/controller";
-import { IProjectParams } from "@application/interfaces/params";
+import type { IProjectParams } from "@application/interfaces/params";
 import type { IGetAllByProjectService } from "@application/modules/sections/services/get-all-by-project";
 import type { GetAllSectionsResponse } from "@repo/contracts/sections/get-all";
 

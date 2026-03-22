@@ -1,4 +1,4 @@
-import { BaseDynamoDBEntity } from "../../contracts/entity";
+import type { BaseDynamoDBEntity } from "../../contracts/entity";
 
 /**
  * ProjectDynamoDBEntity

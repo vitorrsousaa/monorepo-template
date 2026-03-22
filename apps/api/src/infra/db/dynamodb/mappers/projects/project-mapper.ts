@@ -1,5 +1,5 @@
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
-import { Project } from "@repo/contracts/projects";
+import type { Project } from "@repo/contracts/projects";
 import type { ProjectDynamoDBEntity } from "./types";
 
 const USER_PREFIX = "USER#";

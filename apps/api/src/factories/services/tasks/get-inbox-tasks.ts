@@ -1,6 +1,6 @@
 import {
 	GetInboxTasksService,
-	IGetInboxTasksService,
+	type IGetInboxTasksService,
 } from "@application/modules/tasks/services/get-inbox-tasks/service";
 import { makeTasksDynamoRepository } from "@infra/db/dynamodb/factories/tasks-repository-factory";
 

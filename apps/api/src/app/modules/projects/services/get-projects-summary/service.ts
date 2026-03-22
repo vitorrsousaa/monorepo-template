@@ -1,7 +1,7 @@
 import type { IService } from "@application/interfaces/service";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
-import { ProjectSummary } from "@repo/contracts/projects/summary";
+import type { ProjectSummary } from "@repo/contracts/projects/summary";
 import type {
 	GetProjectsSummaryInputService,
 	GetProjectsSummaryOutputService,
@@ -30,31 +30,33 @@ export class GetProjectsSummaryService implements IGetProjectsSummaryService {
 		input: GetProjectsSummaryInputService,
 	): Promise<GetProjectsSummaryOutputService> {
 		const { userId } = input;
-		
+
 		const projects = await this.projectRepository.getAllProjectsByUser(userId);
-		
-		const taskCounts = await Promise.all(projects.map(p => this.taskRepository.getTaskCountsByProject(p.id, userId)))
-		
-		const projectsSummaries:ProjectSummary[] = projects.map((p, index) => {
-			
+
+		const taskCounts = await Promise.all(
+			projects.map((p) =>
+				this.taskRepository.getTaskCountsByProject(p.id, userId),
+			),
+		);
+
+		const projectsSummaries: ProjectSummary[] = projects.map((p, index) => {
 			const taskCount = taskCounts[index] ?? { pending: 0, completed: 0 };
-			
-			const percentageCompleted = taskCount.completed / (taskCount.pending + taskCount.completed);
-			
+
+			const percentageCompleted =
+				taskCount.completed / (taskCount.pending + taskCount.completed);
+
 			return {
 				...p,
 				completedCount: taskCount.completed,
 				totalCount: taskCount.pending + taskCount.completed,
-				percentageCompleted
-			}
+				percentageCompleted,
+			};
 		});
-
 
 		const data: GetProjectsSummaryOutputService = {
 			projects: projectsSummaries,
 		};
-		
-		
+
 		return data;
 	}
 }

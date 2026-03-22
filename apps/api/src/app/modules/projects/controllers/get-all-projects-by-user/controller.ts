@@ -1,6 +1,6 @@
 import { Controller } from "@application/interfaces/controller";
 import type { IGetAllProjectsByUserService } from "@application/modules/projects/services/get-all-projects-by-user";
-import { GetAllProjectsByUserResponse } from "@repo/contracts/projects/get-all";
+import type { GetAllProjectsByUserResponse } from "@repo/contracts/projects/get-all";
 
 export class GetAllProjectsByUserController extends Controller<
 	"private",

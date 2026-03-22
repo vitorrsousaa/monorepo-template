@@ -1,6 +1,6 @@
 import { Controller } from "@application/interfaces/controller";
-import { GetInboxTasksResponse } from "@repo/contracts/tasks/inbox";
-import { IGetInboxTasksService } from "../../services/get-inbox-tasks";
+import type { GetInboxTasksResponse } from "@repo/contracts/tasks/inbox";
+import type { IGetInboxTasksService } from "../../services/get-inbox-tasks";
 
 export class GetInboxTasksController extends Controller<
 	"private",

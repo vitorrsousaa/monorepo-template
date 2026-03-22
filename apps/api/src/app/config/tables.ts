@@ -1,4 +1,4 @@
-import { IConfig } from "./environment";
+import type { IConfig } from "./environment";
 
 export class DatabaseTable implements IDatabaseTable {
 	constructor(private readonly config: IConfig) {}

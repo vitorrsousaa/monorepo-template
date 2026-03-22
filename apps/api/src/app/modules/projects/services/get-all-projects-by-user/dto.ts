@@ -1,4 +1,4 @@
-import { Project } from "@repo/contracts/projects/entities";
+import type { Project } from "@repo/contracts/projects/entities";
 
 export type GetAllProjectsByUserInputService = {
 	userId: string;

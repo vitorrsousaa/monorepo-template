@@ -1,26 +1,26 @@
-import { IDatabaseTable } from "@application/config/tables";
+import type { IDatabaseTable } from "@application/config/tables";
 import {
 	BatchWriteCommand,
-	BatchWriteCommandInput,
+	type BatchWriteCommandInput,
 	DeleteCommand,
-	DeleteCommandInput,
-	DynamoDBDocumentClient,
+	type DeleteCommandInput,
+	type DynamoDBDocumentClient,
 	GetCommand,
-	GetCommandInput,
+	type GetCommandInput,
 	PutCommand,
 	QueryCommand,
 	QueryCommandInput,
 	TransactWriteCommand,
 	TransactWriteCommandInput,
 	UpdateCommand,
-	UpdateCommandInput,
+	type UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-import {
+import type {
 	IDatabaseClient,
 	IDatabaseClientQueryArgs,
 	TransactWriteItem,
 } from "../contracts/client";
-import { BaseDynamoDBEntity } from "../contracts/entity";
+import type { BaseDynamoDBEntity } from "../contracts/entity";
 
 export class DatabaseClient implements IDatabaseClient {
 	constructor(

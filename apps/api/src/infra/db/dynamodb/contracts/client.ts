@@ -1,11 +1,11 @@
-import {
+import type {
 	DeleteCommandInput,
 	GetCommandInput,
 	QueryCommandInput,
 	TransactWriteCommandInput,
 	UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-import { BaseDynamoDBEntity, ValidIndexName } from "./entity";
+import type { BaseDynamoDBEntity, ValidIndexName } from "./entity";
 
 export type IDatabaseClientGetArgs = Omit<GetCommandInput, "TableName">;
 

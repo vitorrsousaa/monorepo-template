@@ -7,7 +7,7 @@ import {
 	PROJECTS_DEFAULT_IDS,
 	SECTION_DEFAULT_NAMES,
 } from "@repo/contracts/enums";
-import { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
+import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 import type { SectionsWithTasks } from "@repo/contracts/sections/entities";
 import type { Task } from "@repo/contracts/tasks";
 import type {

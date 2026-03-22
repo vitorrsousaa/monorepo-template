@@ -22,7 +22,11 @@ export class UpdateTaskCompletionController extends Controller<
 	protected override schema = updateTaskCompletionSchema;
 
 	protected override async handle(
-		request: Controller.Request<"private", UpdateTaskCompletionInput, ITaskParams>,
+		request: Controller.Request<
+			"private",
+			UpdateTaskCompletionInput,
+			ITaskParams
+		>,
 	): Promise<Controller.Response<UpdateTaskCompletionOutput>> {
 		const result = await this.updateTaskCompletionService.execute({
 			userId: request.userId,

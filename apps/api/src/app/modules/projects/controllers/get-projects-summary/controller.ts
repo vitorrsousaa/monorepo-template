@@ -1,6 +1,6 @@
 import { Controller } from "@application/interfaces/controller";
-import { IGetProjectsSummaryService } from "@application/modules/projects/services/get-projects-summary";
-import { GetProjectsSummaryResponse } from "@repo/contracts/projects/summary";
+import type { IGetProjectsSummaryService } from "@application/modules/projects/services/get-projects-summary";
+import type { GetProjectsSummaryResponse } from "@repo/contracts/projects/summary";
 
 export class GetProjectsSummaryController extends Controller<
 	"private",
@@ -13,9 +13,7 @@ export class GetProjectsSummaryController extends Controller<
 	}
 
 	protected override async handle(
-		request: Controller.Request<
-			"private"
-		>,
+		request: Controller.Request<"private">,
 	): Promise<Controller.Response<GetProjectsSummaryResponse>> {
 		const result = await this.getProjectsSummaryService.execute({
 			userId: request.userId,

@@ -1,5 +1,5 @@
 import type { IService } from "@application/interfaces/service";
-import { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
+import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type { CreateTasksInputService, CreateTasksOutputService } from "./dto";
 
 export interface ICreateTasksService

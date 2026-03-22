@@ -1,6 +1,6 @@
-import { UserMapper } from "@data/protocols/auth/user-mapper";
-import { User } from "@repo/contracts/auth/entities";
-import { UserDynamoDBEntity } from "./types";
+import type { UserMapper } from "@data/protocols/auth/user-mapper";
+import type { User } from "@repo/contracts/auth/entities";
+import type { UserDynamoDBEntity } from "./types";
 
 export class UserDynamoMapper implements UserMapper<UserDynamoDBEntity> {
 	toDomain(dbEntity: UserDynamoDBEntity): User {

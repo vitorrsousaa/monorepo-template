@@ -1,5 +1,5 @@
 import { Controller } from "@application/interfaces/controller";
-import { IProjectParams } from "@application/interfaces/params";
+import type { IProjectParams } from "@application/interfaces/params";
 import type { ICreateSectionService } from "@application/modules/sections/services/create-section";
 
 import {

@@ -1,5 +1,5 @@
-import { Project } from "@repo/contracts/projects";
-import { CreateProjectInput } from "@repo/contracts/projects/create";
+import type { Project } from "@repo/contracts/projects";
+import type { CreateProjectInput } from "@repo/contracts/projects/create";
 
 export interface CreateProjectInputService extends CreateProjectInput {
 	userId: string;

@@ -1,5 +1,5 @@
 import type { SectionMapper } from "@data/protocols/sections/section-mapper";
-import { Section } from "@repo/contracts/sections/entities";
+import type { Section } from "@repo/contracts/sections/entities";
 import type { SectionDynamoDBEntity } from "./types";
 
 const USER_PREFIX = "USER#";

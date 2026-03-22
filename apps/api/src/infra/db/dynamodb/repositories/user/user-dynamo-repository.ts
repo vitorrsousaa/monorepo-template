@@ -1,11 +1,11 @@
-import { UserMapper } from "@data/protocols/auth/user-mapper";
-import { IUserRepository } from "@data/protocols/auth/user-repository";
-import { User } from "@repo/contracts/auth/entities";
-import {
+import type { UserMapper } from "@data/protocols/auth/user-mapper";
+import type { IUserRepository } from "@data/protocols/auth/user-repository";
+import type { User } from "@repo/contracts/auth/entities";
+import type {
 	IDatabaseClient,
 	IDatabaseClientGetArgs,
 } from "@infra/db/dynamodb/contracts/client";
-import { UserDynamoDBEntity } from "@infra/db/dynamodb/mappers/user/types";
+import type { UserDynamoDBEntity } from "@infra/db/dynamodb/mappers/user/types";
 
 export class UserDynamoRepository implements IUserRepository {
 	constructor(

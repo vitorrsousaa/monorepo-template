@@ -73,6 +73,52 @@ Contracts is the **single source of truth** for validation. See [docs/schema-pat
 - **API Service DTO**: pure TS interface (extends contracts type + `userId`) — no Zod
 - **SPA Form schema**: imports constants from contracts for min/max sync
 
+## Plan Storage
+
+When entering Plan Mode or creating implementation/architecture plans, **always save the plan as a Markdown file** in the `plans/` directory at the monorepo root.
+
+- **File naming:** `plans/plan-<feature-name>.md` (kebab-case)
+- **When to save:** After the plan is finalized/approved by the user, write it to disk before starting implementation
+- **Format:** Include sections like Context, Phases/Steps, Implementation Details, and any relevant notes
+- **Update:** If the plan changes during implementation, update the file to reflect the current state
+
+## CRITICAL: Documentation Update on Every Plan
+
+After finalizing any plan, you MUST update the project documentation with **every piece of new knowledge** you learned during the planning process. This is mandatory — do not skip it.
+
+### What to update
+
+Analyze everything you discovered while researching and planning (code patterns, architecture decisions, domain rules, data flows, conventions, gotchas) and persist it in `CLAUDE.md` files so future conversations have this context without re-discovering it.
+
+### How to update
+
+1. **Update existing `CLAUDE.md` files** — If the new knowledge relates to an area already documented (e.g., `apps/api/CLAUDE.md`, `apps/spa/CLAUDE.md`, `packages/contracts/CLAUDE.md`), add the information to the relevant section or create a new section in that file.
+
+2. **Create new `CLAUDE.md` files** — If the knowledge is specific to a directory/module that doesn't have its own `CLAUDE.md` yet, create one. Examples:
+   - `apps/spa/src/modules/tasks/CLAUDE.md` — if you learned deep details about the tasks module
+   - `apps/api/src/core/domain/CLAUDE.md` — if you uncovered domain rules not documented elsewhere
+   - `packages/ui/CLAUDE.md` — if you discovered patterns in the UI package
+
+3. **Update the root `CLAUDE.md`** — If the knowledge is cross-cutting or architectural (affects multiple apps/packages), add it here and link to detailed docs if needed.
+
+4. **Update `Related documentation` links** — When creating new `CLAUDE.md` files, add them to the nearest parent `CLAUDE.md`'s related documentation section.
+
+### What qualifies as "new knowledge"
+
+- Architecture patterns or conventions not yet documented
+- Domain rules or business logic discovered in code
+- Data flows between modules/services
+- Naming conventions or code organization patterns
+- Integration points (API ↔ SPA, contracts usage, cache strategies)
+- Gotchas, edge cases, or non-obvious behaviors
+- Dependencies between modules or features
+
+### What NOT to add
+
+- Ephemeral/temporary implementation details (those go in the plan file)
+- Information already documented — check existing `CLAUDE.md` files first
+- Overly verbose explanations — keep it concise and scannable like the existing docs
+
 ## Related documentation
 
 - [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) — shared types and usage

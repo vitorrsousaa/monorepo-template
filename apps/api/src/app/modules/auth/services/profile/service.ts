@@ -1,7 +1,7 @@
 import type { IService } from "@application/interfaces/service";
 import { UserNotFound } from "@application/modules/auth/errors/user-not-found";
-import { IUserRepository } from "@data/protocols/auth/user-repository";
-import { ProfileInput, ProfileOutput } from "./dto";
+import type { IUserRepository } from "@data/protocols/auth/user-repository";
+import type { ProfileInput, ProfileOutput } from "./dto";
 
 export interface IProfileService
 	extends IService<ProfileInput, ProfileOutput> {}
