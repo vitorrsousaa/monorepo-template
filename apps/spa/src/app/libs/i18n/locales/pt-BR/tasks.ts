@@ -45,5 +45,13 @@ export default {
 		errorTitle: "Erro ao carregar tarefas de hoje",
 		errorDesc:
 			"Não foi possível carregar suas tarefas. Verifique sua conexão e tente novamente.",
+		emptyHeadline: "Nada para hoje",
+		emptySub:
+			"Você está em dia. Adicione uma tarefa para hoje ou organize a partir dos projetos.",
+		addTask: "Adicionar tarefa",
+		browseProjects: "Ver projetos",
+		nextSteps: "Próximos passos",
+		createProjectCard: "Novo projeto",
+		createProjectCardMeta: "Agrupe tarefas por contexto",
 	},
 };

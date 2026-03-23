@@ -1,8 +1,10 @@
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { useGetTodayTasks } from "@/modules/todo/app/hooks/use-get-today-tasks";
 import { ProjectColumn } from "@/modules/todo/view/components/project-column";
 import { TodayTasksHeader } from "@/modules/todo/view/components/today-header";
 import { RenderIf } from "@repo/ui/render-if";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { TodayEmptyState } from "./components/today-empty-state";
 import { TodayErrorState } from "./components/today-error-state";
 import { TodayLoadingSkeleton } from "./components/today-loading-skeleton";
 
@@ -13,6 +15,7 @@ export function Today() {
 		isErrorTodayTasks,
 		refetchTodayTasks,
 	} = useGetTodayTasks();
+	const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
 	const taskCount = useMemo(
 		() =>
@@ -42,7 +45,21 @@ export function Today() {
 					render={<TodayErrorState onRetry={() => refetchTodayTasks()} />}
 				/>
 				<RenderIf
-					condition={!isFetchingTodayTasks && !isErrorTodayTasks}
+					condition={
+						!isFetchingTodayTasks &&
+						!isErrorTodayTasks &&
+						todayData.projects.length === 0
+					}
+					render={
+						<TodayEmptyState onAddTask={() => setIsNewTaskModalOpen(true)} />
+					}
+				/>
+				<RenderIf
+					condition={
+						!isFetchingTodayTasks &&
+						!isErrorTodayTasks &&
+						todayData.projects.length > 0
+					}
 					render={
 						<div className="p-6 flex gap-4" style={{ minWidth: "max-content" }}>
 							{todayData.projects.map((project) => (
@@ -56,6 +73,11 @@ export function Today() {
 					}
 				/>
 			</div>
+
+			<NewTaskModal
+				isOpen={isNewTaskModalOpen}
+				onClose={() => setIsNewTaskModalOpen(false)}
+			/>
 		</div>
 	);
 }

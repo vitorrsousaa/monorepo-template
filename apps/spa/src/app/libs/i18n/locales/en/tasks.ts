@@ -45,5 +45,13 @@ export default {
 		errorTitle: "Error loading today's tasks",
 		errorDesc:
 			"Could not load your tasks. Check your connection and try again.",
+		emptyHeadline: "No tasks for today",
+		emptySub:
+			"You're all clear. Add something to work on today, or pull tasks from your projects.",
+		addTask: "Add task",
+		browseProjects: "Browse projects",
+		nextSteps: "Next steps",
+		createProjectCard: "New project",
+		createProjectCardMeta: "Group tasks by context",
 	},
 };
