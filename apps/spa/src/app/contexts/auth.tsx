@@ -1,7 +1,7 @@
 import { LoadingScreen } from "@/components/loading-screen";
-import { useGetProfile } from "@/modules/auth/app/hooks/use-get-profile";
+import { useGetAccountInfo } from "@/modules/auth/app/hooks/use-get-profile";
 import { tokenStorage } from "@/storage/token-storage";
-import type { ProfileResponse } from "@repo/contracts/auth/profile";
+import type { GetAccountInfoResponse } from "@repo/contracts/auth/account";
 import { useQueryClient } from "@tanstack/react-query";
 import {
 	createContext,
@@ -15,7 +15,7 @@ export interface IAuthContextValue {
 	signedIn: boolean;
 	signInWithGoogle: () => void;
 	signout: () => void;
-	user: ProfileResponse["user"];
+	user: GetAccountInfoResponse["user"];
 	signin: (accessToken: string) => void;
 }
 
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const queryClient = useQueryClient();
 
 	const { user, isProfileError, isProfileFetching, isProfileSuccess } =
-		useGetProfile({ enabled: signedIn, staleTime: Number.POSITIVE_INFINITY });
+		useGetAccountInfo({ enabled: signedIn, staleTime: Number.POSITIVE_INFINITY });
 
 	const signInWithGoogle = useCallback(() => {
 		// const CLIENT_ID = env.VITE_AUTH_GOOGLE_ID;

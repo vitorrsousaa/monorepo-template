@@ -1,15 +1,15 @@
 import type { IService } from "@application/interfaces/service";
 import { UserNotFound } from "@application/modules/auth/errors/user-not-found";
 import type { IUserRepository } from "@data/protocols/auth/user-repository";
-import type { ProfileInput, ProfileOutput } from "./dto";
+import type { GetAccountInfoInput, GetAccountInfoOutput } from "./dto";
 
-export interface IProfileService
-	extends IService<ProfileInput, ProfileOutput> {}
+export interface IGetAccountInfoService
+	extends IService<GetAccountInfoInput, GetAccountInfoOutput> {}
 
-export class ProfileService implements IProfileService {
+export class GetAccountInfoService implements IGetAccountInfoService {
 	constructor(private readonly userRepository: IUserRepository) {}
 
-	async execute(data: ProfileInput): Promise<ProfileOutput> {
+	async execute(data: GetAccountInfoInput): Promise<GetAccountInfoOutput> {
 		const user = await this.userRepository.getById(data.userId);
 
 		if (!user) {

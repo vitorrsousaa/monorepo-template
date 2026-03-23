@@ -18,7 +18,7 @@ const GOALS = {
 };
 
 const AUTH = {
-	PROFILE: ["auth", "profile"],
+	ACCOUNT_INFO: ["auth", "account-info"],
 };
 
 export const QUERY_KEYS = {

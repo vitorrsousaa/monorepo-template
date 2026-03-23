@@ -1,5 +1,5 @@
 import type { User } from "../entities";
 
-export interface ProfileResponse {
+export interface GetAccountInfoResponse {
 	user: User;
 }

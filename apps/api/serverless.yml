@@ -97,11 +97,11 @@ functions:
       - httpApi:
           path: /auth/signin
           method: post
-  profile:
-    handler: src/server/functions/auth/profile/index.handler
+  getAccountInfo:
+    handler: src/server/functions/auth/account/index.handler
     events:
       - httpApi:
-          path: /auth/profile
+          path: /auth/account-info
           method: get
           authorizer: 
             name: CognitoAuthorizer

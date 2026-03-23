@@ -34,7 +34,7 @@ export class UserDynamoMapper implements UserMapper<UserDynamoDBEntity> {
 	private buildPK(id: string): string {
 		return `USER#${id}`;
 	}
-	private buildSK(id: string): string {
-		return "PROFILE";
+	private buildSK(_id: string): string {
+		return "ACCOUNT_INFO";
 	}
 }

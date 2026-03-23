@@ -33,7 +33,7 @@ export class UserDynamoRepository implements IUserRepository {
 		const getArgs: IDatabaseClientGetArgs = {
 			Key: {
 				PK: `USER#${userId}`,
-				SK: "PROFILE",
+				SK: "ACCOUNT_INFO",
 			},
 		};
 

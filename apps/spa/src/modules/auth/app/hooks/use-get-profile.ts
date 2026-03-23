@@ -1,17 +1,17 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import { getProfile } from "@/modules/auth/app/services/profile";
-import type { ProfileResponse } from "@repo/contracts/auth/profile";
+import { getAccountInfo } from "@/modules/auth/app/services/account";
+import type { GetAccountInfoResponse } from "@repo/contracts/auth/account";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 
-export type UseGetProfileParams = Omit<
-	UseQueryOptions<ProfileResponse>,
+export type UseGetAccountInfoParams = Omit<
+	UseQueryOptions<GetAccountInfoResponse>,
 	"queryKey" | "queryFn"
 >;
 
-export function useGetProfile(params: UseGetProfileParams) {
+export function useGetAccountInfo(params: UseGetAccountInfoParams) {
 	const { data, isError, isFetching, isSuccess, refetch } = useQuery({
-		queryKey: QUERY_KEYS.AUTH.PROFILE,
-		queryFn: getProfile,
+		queryKey: QUERY_KEYS.AUTH.ACCOUNT_INFO,
+		queryFn: getAccountInfo,
 		...params,
 	});
 
