@@ -61,35 +61,70 @@ Exemplo: `projects/errors/project-not-found.ts`.
 modules/
 ├── auth/
 │   ├── controllers/
-│   │   └── signup/
-│   │       ├── controller.ts
-│   │       ├── schema.ts
-│   │       └── index.ts
-│   └── services/
-│       └── signup/
-│           ├── service.ts
-│           ├── dto.ts
-│           └── index.ts
+│   │   ├── signup/          (controller + schema + index)
+│   │   ├── signin/          (controller + schema + index)
+│   │   └── account-info/    (controller + index)
+│   ├── services/
+│   │   ├── signup/          (service + dto + index)
+│   │   ├── signin/          (service + dto + index)
+│   │   └── account-info/    (service + dto + index)
+│   └── errors/
+│       └── user-not-found.ts
 ├── projects/
 │   ├── controllers/
-│   │   └── get-all-projects-by-user/
-│   │       ├── controller.ts
-│   │       ├── schema.ts
-│   │       └── index.ts
+│   │   ├── create-project/
+│   │   ├── get-all-projects-by-user/
+│   │   ├── get-project-detail/
+│   │   └── get-projects-summary/
 │   ├── services/
-│   │   └── get-all-projects-by-user/
-│   │       ├── service.ts
-│   │       ├── dto.ts
-│   │       └── index.ts
+│   │   ├── create-project/
+│   │   ├── get-all-projects-by-user/
+│   │   ├── get-project-detail/
+│   │   └── get-projects-summary/
 │   ├── mappers/
 │   │   └── project-to-dto.ts
 │   └── errors/
 │       └── project-not-found.ts
+├── sections/
+│   ├── controllers/
+│   │   ├── create-section/
+│   │   └── get-all-by-project/
+│   └── services/
+│       ├── create-section/
+│       └── get-all-by-project/
+├── settings/
+│   ├── controllers/
+│   │   └── get-user-settings/
+│   ├── services/
+│   │   └── get-user-settings/
+│   └── errors/
+│       └── settings-not-found.ts
 ├── tasks/
 │   ├── controllers/
+│   │   ├── create/
+│   │   ├── get-inbox-tasks/
+│   │   ├── get-today-tasks/
+│   │   ├── get-dashboard-analytics/
+│   │   └── update-completion/
 │   ├── services/
+│   │   ├── create/
+│   │   ├── get-inbox-tasks/
+│   │   ├── get-today-tasks/
+│   │   ├── get-dashboard-analytics/
+│   │   ├── complete-task/
+│   │   ├── uncomplete-task/
+│   │   └── update-completion/
+│   ├── mappers/
+│   │   └── task-to-dto.ts
+│   └── errors/
+│       └── task-not-found.ts
+├── todos/ (legacy)
+│   ├── controllers/
+│   │   └── get-todos/
+│   ├── services/
+│   │   └── get-todos/
 │   └── mappers/
-│       └── task-to-dto.ts
+│       └── todo-to-dto.ts
 └── claude.md
 ```
 

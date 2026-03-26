@@ -16,11 +16,13 @@ Fluxo típico: `make*Controller()` → `make*Service()` → **`make*DynamoReposi
 factories/
 ├── CLAUDE.md
 ├── client/
-│   └── database-client-factory.ts   ← makeDatabaseClient() (usado por User e, no futuro, por outros)
-├── todo-repository-factory.ts      ← makeTodoDynamoRepository()
-├── project-repository-factory.ts   ← makeProjectDynamoRepository()
-├── section-repository-factory.ts  ← makeSectionDynamoRepository()
-└── user-repository-factory.ts      ← makeUserDynamoRepository() (usa makeDatabaseClient)
+│   └── database-client-factory.ts      ← makeDatabaseClient()
+├── todo-repository-factory.ts          ← makeTodoDynamoRepository()
+├── tasks-repository-factory.ts         ← makeTasksDynamoRepository()
+├── project-repository-factory.ts       ← makeProjectDynamoRepository()
+├── section-repository-factory.ts       ← makeSectionDynamoRepository()
+├── settings-repository-factory.ts      ← makeSettingsDynamoRepository()
+└── user-repository-factory.ts          ← makeUserDynamoRepository() (usa makeDatabaseClient)
 ```
 
 ## Convenções

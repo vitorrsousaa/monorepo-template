@@ -12,7 +12,7 @@ import {
 	useQueryClient,
 } from "@tanstack/react-query";
 
-export type UpdateTaskCompletionVariables = UpdateTaskCompletionInput & {
+type UpdateTaskCompletionVariables = UpdateTaskCompletionInput & {
 	taskId: string;
 	nextCompleted: boolean;
 };

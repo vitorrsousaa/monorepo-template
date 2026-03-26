@@ -16,16 +16,22 @@ Nunca usar mappers desta pasta em controllers ou services para converter para DT
 mappers/
 ├── CLAUDE.md
 ├── todo/
-│   ├── types.ts         ← TodoDynamoDBEntity (shape do item no DynamoDB)
-│   └── todo-mapper.ts   ← TodoDynamoMapper
+│   ├── types.ts            ← TodoDynamoDBEntity
+│   └── todo-mapper.ts      ← TodoDynamoMapper
+├── tasks/
+│   ├── types.ts            ← TasksDynamoDBEntity
+│   └── task-mapper.ts      ← TasksDynamoMapper (+ task-mapper.test.ts)
 ├── projects/
-│   ├── types.ts         ← ProjectDynamoDBEntity
-│   └── project-mapper.ts
+│   ├── types.ts            ← ProjectDynamoDBEntity
+│   └── project-mapper.ts   ← (+ project-mapper.test.ts)
 ├── sections/
-│   ├── types.ts         ← SectionDynamoDBEntity
-│   └── section-mapper.ts
+│   ├── types.ts            ← SectionDynamoDBEntity
+│   └── section-mapper.ts   ← (+ section-mapper.test.ts)
+├── settings/
+│   ├── types.ts            ← SettingsDynamoDBEntity
+│   └── settings-mapper.ts  ← (+ settings-mapper.test.ts)
 └── user/
-    ├── types.ts         ← UserDynamoDBEntity (estende BaseDynamoDBEntity)
+    ├── types.ts            ← UserDynamoDBEntity (estende BaseDynamoDBEntity)
     └── user-mapper.ts
 ```
 

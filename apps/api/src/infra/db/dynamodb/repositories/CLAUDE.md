@@ -17,16 +17,20 @@ repositories/
 ├── CLAUDE.md                          ← este arquivo
 ├── mock-ids.ts                        ← IDs compartilhados entre mocks (projetos, sections)
 ├── todo/
-│   ├── todo-dynamo-repository.ts      ← implementação
+│   ├── todo-dynamo-repository.ts
 │   └── todo-dynamo-repository.mocks.ts
+├── tasks/
+│   ├── tasks-dynamo-repository.ts
+│   └── todo-dynamo-repository.mocks.ts  ← legacy naming
 ├── projects/
-│   ├── project-dynamo-repository.ts
-│   └── project-dynamo-repository-mocks.ts
+│   └── project-dynamo-repository.ts
 ├── sections/
 │   ├── section-dynamo-repository.ts
 │   └── section-dynamo-repository-mocks.ts
+├── settings/
+│   └── settings-dynamo-repository.ts
 └── user/
-    └── user-dynamo-repository.ts      ← (sem mocks; usa client quando real)
+    └── user-dynamo-repository.ts      ← usa IDatabaseClient
 ```
 
 ## Convenções
@@ -41,8 +45,10 @@ repositories/
 
 - Cada repositório **implementa** a interface em `@data/protocols`:
   - `ITodoRepository` → `src/data/protocols/todo/todo-repository.ts`
+  - `ITasksRepository` → `src/data/protocols/tasks/tasks-repository.ts`
   - `IProjectRepository` → `src/data/protocols/projects/project-repository.ts`
   - `ISectionRepository` → `src/data/protocols/sections/section-repository.ts`
+  - `ISettingsRepository` → `src/data/protocols/settings/settings-repository.ts`
   - `IUserRepository` → `src/data/protocols/auth/user-repository.ts`
 - O repositório **não** conhece DTOs HTTP nem `@repo/contracts` (exceto User que usa tipo do contracts). Trabalha com entidades de domínio (`@core/domain/*`) e com o tipo de entidade DynamoDB definido em `../mappers/<entity>/types.ts`.
 

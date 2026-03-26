@@ -2,6 +2,44 @@
 
 Stack: AWS Lambda + Serverless Framework + TypeScript. Clean Architecture. Runs on **port 4000**.
 
+## Architecture Layers
+
+```
+Domain (core/domain/)          ← Pure entities, no dependencies
+  ↑
+Data (data/protocols/)         ← Interfaces: I*Repository, I*Mapper
+  ↑                  ↑
+App (app/modules/)   Infra (infra/)
+  services,            db/dynamodb/ (repos, mappers, factories, client)
+  controllers,         auth/cognito/ (auth provider)
+  mappers, errors
+  ↑                  ↑
+Factories (factories/)         ← DI: wires infra → app → presentation
+  ↑
+Server (server/functions/)     ← Lambda handlers + HTTP adapters
+```
+
+Dependencies always point inward. Services depend on interfaces (`I*Repository`), never on implementations.
+
+### Current modules
+
+| Module | Domain | Controllers | Services | Has Mappers | Has Errors |
+|--------|--------|-------------|----------|-------------|------------|
+| `auth` | signup, signin, account-info | 3 | 3 | - | `user-not-found` |
+| `projects` | CRUD, detail, summary | 4 | 4 | `project-to-dto` | `project-not-found` |
+| `sections` | create, get-all-by-project | 2 | 2 | - | - |
+| `settings` | get-user-settings | 1 | 1 | - | `settings-not-found` |
+| `tasks` | create, inbox, today, dashboard, completion | 5 | 7 | `task-to-dto` | `task-not-found` |
+| `todos` (legacy) | get-todos | 1 | 1 | `todo-to-dto` | - |
+
+### Infra implementations
+
+| Layer | Entities covered |
+|-------|-----------------|
+| DynamoDB repositories | todo, tasks, projects, sections, settings, user |
+| DynamoDB mappers | todo, tasks, projects, sections, settings, user |
+| Auth (Cognito) | signin, signup, auth-provider + presignup trigger |
+
 ## Request Flow
 
 Every Lambda handler follows this exact pipeline (handlers use `lambdaHttpAdapter(controller)` which wraps the steps below). Errors are handled in the lambda adapter (try/catch + `errorHandler`); controllers do not use try/catch.
@@ -34,30 +72,33 @@ Source: `apps/api/tsconfig.paths.json`
 
 ## API Routes
 
-From `serverless.yml`. All routes are **private** (require auth / `userId`); when auth is implemented, public routes will use `controllerType: "public"` and `userId` will be `null`.
+From `serverless.yml`. Auth routes (signup, signin) are **public**; all others require Cognito JWT authorizer.
 
 | Path | Method | Purpose | Auth |
 |------|--------|---------|------|
+| `/auth/signup` | POST | Register new user | public |
+| `/auth/signin` | POST | Sign in | public |
+| `/auth/account-info` | GET | Current user info | private |
+| `/settings/user-settings` | GET | Get user settings | private |
 | `/todos` | GET | List todos (legacy) | private |
-| `/todos/inbox` | GET | List inbox todos | private |
-| `/todos` | POST | Create todo | private |
+| `/tasks/inbox` | GET | List inbox tasks | private |
 | `/tasks/today` | GET | Today tasks (grouped by project) | private |
 | `/tasks/dashboard` | GET | Dashboard analytics | private |
+| `/tasks/create` | POST | Create task | private |
+| `/tasks/{taskId}/completion` | PATCH | Toggle task completion | private |
 | `/projects` | GET | List projects by user | private |
 | `/projects` | POST | Create project | private |
+| `/projects/summary` | GET | Projects summary | private |
 | `/projects/{projectId}/detail` | GET | Project detail | private |
 | `/projects/{projectId}/sections` | GET | List sections of project | private |
 | `/projects/{projectId}/sections` | POST | Create section | private |
-| `/tasks/{taskId}/completion` | PATCH | Toggle task completion | private |
 
 ## Public vs private routes (controller type)
 
-Controllers declare whether they are **public** or **private** so `request.userId` is correctly typed and the adapter injects the right value:
+- **Private** (`Controller<'private', TBody>`): `request.userId` is `string` (from JWT). Most endpoints.
+- **Public** (`Controller<'public', TBody>`): `request.userId` is `null`. Auth routes (signup, signin).
 
-- **Private** (`Controller<'private', TBody>`): `request.userId` is `string` (from JWT or `MOCK_USER_ID`). Use for all endpoints that require the current user.
-- **Public** (`Controller<'public', TBody>`): `request.userId` is `null`. Use for health, sign-in, or any unauthenticated endpoint.
-
-**How it works:** The lambda adapter calls `requestAdapter(event)` only (no second argument). Whether the route is public or private is determined by the serverless config (authorizer present or not); `userId` is set from JWT/mock when the event has authorizer claims, otherwise `null`. Controllers declare `Controller<'private', TBody>` or `Controller<'public', TBody>` and use `Controller.Request<'private'>` or `Controller.Request<'public'>` in `handle()` so TypeScript narrows `userId` to `string` or `null` correctly.
+Route visibility is determined by serverless.yml (authorizer present or not). The lambda adapter calls `requestAdapter(event)` which sets `userId` from JWT claims when present, `null` otherwise. Controllers use `Controller.Request<'private'>` or `Controller.Request<'public'>` for correct TypeScript narrowing.
 
 ## Modules structure
 
@@ -191,24 +232,19 @@ pnpm dev:api          # Start API on port 4000
 
 ## Deploy
 
-Full stack:
-
 ```bash
-pnpm run deploy:dev   # stage dev
-pnpm run deploy:prod  # stage prod
+pnpm run deploy:dev                              # full stack → dev
+pnpm run deploy:prod                             # full stack → prod
+pnpm run deploy:fn -- <functionName> <stage>     # single function
+pnpm run deploy:fn:dev -- --function <name>      # single function shortcut (dev)
+pnpm run deploy:fn:prod -- --function <name>     # single function shortcut (prod)
 ```
 
-Single function (obrigatório passar nome da função e stage na ordem indicada):
+## Related documentation
 
-```bash
-# Forma: pnpm run deploy:fn -- <nomeDaFunção> <stage>
-pnpm run deploy:fn -- getProjectDetail dev
-pnpm run deploy:fn -- getTodayTasks prod
-```
-
-Atalhos por stage (a função ainda precisa ser passada após `--`):
-
-```bash
-pnpm run deploy:fn:dev  -- --function getProjectDetail
-pnpm run deploy:fn:prod -- --function getTodayTasks
-```
+- [src/app/modules/claude.md](src/app/modules/claude.md) — module structure conventions (controllers, services, mappers, errors)
+- [src/infra/CLAUDE.md](src/infra/CLAUDE.md) — infrastructure layer overview (DynamoDB + Cognito)
+- [src/infra/db/dynamodb/mappers/CLAUDE.md](src/infra/db/dynamodb/mappers/CLAUDE.md) — DynamoDB mapper conventions
+- [src/infra/db/dynamodb/repositories/CLAUDE.md](src/infra/db/dynamodb/repositories/CLAUDE.md) — DynamoDB repository conventions
+- [src/infra/db/dynamodb/factories/CLAUDE.md](src/infra/db/dynamodb/factories/CLAUDE.md) — repository factory conventions
+- [src/test/CLAUDE.md](src/test/CLAUDE.md) — test utilities (builders, mocks, integration setup)
