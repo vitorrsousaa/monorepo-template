@@ -167,6 +167,52 @@ describe("TasksDynamoMapper", () => {
 
 			expect(result.SK).toBe("TASK#INBOX#PENDING#0#t-1");
 		});
+
+		it("should build GSI1PK without date for task with dueDate", () => {
+			const task = buildTask({
+				userId: "u-1",
+				dueDate: "2024-06-15T00:00:00.000Z",
+			});
+			const result = mapper.toDatabase(task);
+
+			expect(result.GSI1PK).toBe("USER#u-1#DUE_DATE#");
+		});
+
+		it("should include date in GSI1SK for pending task", () => {
+			const task = buildTask({
+				userId: "u-1",
+				dueDate: "2024-06-15T00:00:00.000Z",
+				priority: "high",
+				id: "t-1",
+				completed: false,
+			});
+			const result = mapper.toDatabase(task);
+
+			expect(result.GSI1SK).toBe("2024-06-15#TASK#PENDING#high#t-1");
+		});
+
+		it("should include date in GSI1SK for completed task", () => {
+			const task = buildTask({
+				userId: "u-1",
+				dueDate: "2024-06-15T00:00:00.000Z",
+				id: "t-1",
+				completed: true,
+				completedAt: "2024-06-16T10:00:00.000Z",
+			});
+			const result = mapper.toDatabase(task);
+
+			expect(result.GSI1SK).toBe(
+				"2024-06-15#TASK#COMPLETED#2024-06-16T10:00:00.000Z#t-1",
+			);
+		});
+
+		it("should not set GSI1 for task without dueDate", () => {
+			const task = buildTask({ dueDate: null });
+			const result = mapper.toDatabase(task);
+
+			expect(result.GSI1PK).toBeUndefined();
+			expect(result.GSI1SK).toBeUndefined();
+		});
 	});
 
 	describe("roundtrip", () => {

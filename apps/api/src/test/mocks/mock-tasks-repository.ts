@@ -6,7 +6,7 @@ export function mockTasksRepository(
 	return {
 		getInbox: vi.fn(),
 		create: vi.fn(),
-		findTodayTodos: vi.fn(),
+		getTodayTasks: vi.fn(),
 		findAll: vi.fn(),
 		findById: vi.fn(),
 		update: vi.fn(),

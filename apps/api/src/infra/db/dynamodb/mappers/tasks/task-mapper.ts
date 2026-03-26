@@ -38,20 +38,22 @@ function buildSK(task: Task): string {
 		: `${TASK_INBOX_PENDING}${order}#${task.id}`;
 }
 
-function buildGSI1PK(userId: string, dueDate: string): string {
-	const dateStr = new Date(dueDate).toISOString().split("T")[0]; // YYYY-MM-DD
-	return `${USER_PREFIX}${userId}${DUE_DATE_PREFIX}${dateStr}`;
+function buildGSI1PK(userId: string): string {
+	return `${USER_PREFIX}${userId}${DUE_DATE_PREFIX}`;
 }
 
 function buildGSI1SK(task: Task): string {
-	const priority = task.priority ?? "medium"; // Default priority for sorting
+	const dueDate = task.dueDate
+		? new Date(task.dueDate).toISOString().split("T")[0]
+		: "";
+	const priority = task.priority ?? "medium";
 	const completedAt = task?.completedAt
 		? new Date(task.completedAt).toISOString()
 		: "";
 
 	return task.completed
-		? `${TASK_COMPLETED}${completedAt}#${task.id}`
-		: `${TASK_PENDING}${priority}#${task.id}`;
+		? `${dueDate}#${TASK_COMPLETED}${completedAt}#${task.id}`
+		: `${dueDate}#${TASK_PENDING}${priority}#${task.id}`;
 }
 
 function buildGSI3PK(
@@ -113,9 +115,7 @@ export class TasksDynamoMapper implements TasksMapper<TasksDynamoDBEntity> {
 		const sk = buildSK(task);
 
 		// Build GSI1 (DueDateIndex) if task has dueDate
-		const gsi1pk = task.dueDate
-			? buildGSI1PK(task.userId, task.dueDate)
-			: undefined;
+		const gsi1pk = task.dueDate ? buildGSI1PK(task.userId) : undefined;
 		const gsi1sk = task.dueDate ? buildGSI1SK(task) : undefined;
 
 		// Build GSI3 (SectionIndex) if task belongs to a section
@@ -129,8 +129,8 @@ export class TasksDynamoMapper implements TasksMapper<TasksDynamoDBEntity> {
 		return {
 			PK: pk,
 			SK: sk,
-			// GSI1PK: gsi1pk,
-			// GSI1SK: gsi1sk,
+			GSI1PK: gsi1pk,
+			GSI1SK: gsi1sk,
 			// GSI3PK: gsi3pk,
 			// GSI3SK: gsi3sk,
 			id: task.id,

@@ -32,6 +32,9 @@ describe("UserSettingsDynamoMapper", () => {
 				id: "u-1",
 				userId: "u-1",
 				settings: { preferences: { language: "en" } },
+				createdAt: "2024-06-01T00:00:00.000Z",
+				updatedAt: "2024-06-02T00:00:00.000Z",
+				deletedAt: undefined,
 			});
 		});
 	});

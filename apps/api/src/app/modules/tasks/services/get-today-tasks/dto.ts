@@ -1,11 +1,8 @@
-import type { Task } from "@core/domain/task/task";
-import { z } from "zod";
+import type { Task } from "@repo/contracts/tasks";
 
-export const GetTodayTasksInputDTO = z.object({
-	userId: z.string().uuid(),
-});
-
-export type GetTodayTasksInput = z.infer<typeof GetTodayTasksInputDTO>;
+export type GetTodayTasksInput = {
+	userId: string;
+};
 
 export interface TodayProjectOutput {
 	id: string;

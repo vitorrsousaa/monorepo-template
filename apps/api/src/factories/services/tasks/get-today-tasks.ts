@@ -1,10 +1,10 @@
 import { GetTodayTasksService } from "@application/modules/tasks/services/get-today-tasks";
 import { makeProjectDynamoRepository } from "@infra/db/dynamodb/factories/project-repository-factory";
-import { makeTodoDynamoRepository } from "@infra/db/dynamodb/factories/todo-repository-factory";
+import { makeTasksDynamoRepository } from "@infra/db/dynamodb/factories/tasks-repository-factory";
 
 export function makeGetTodayTasksService(): GetTodayTasksService {
-	const todoRepository = makeTodoDynamoRepository();
+	const taskRepository = makeTasksDynamoRepository();
 	const projectRepository = makeProjectDynamoRepository();
 
-	return new GetTodayTasksService(todoRepository, projectRepository);
+	return new GetTodayTasksService(taskRepository, projectRepository);
 }

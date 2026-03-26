@@ -4,6 +4,7 @@ import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/todo/types";
 import type { Task } from "@repo/contracts/tasks";
 import type { IDatabaseClient } from "../../contracts/client";
+import { AvailableIndexes } from "../../contracts/entity";
 import type { TasksDynamoDBEntity } from "../../mappers/tasks/types";
 import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
 
@@ -77,26 +78,32 @@ export class TasksDynamoRepository implements ITasksRepository {
 		return tasks;
 	}
 
-	async findTodayTodos(userId: string): Promise<Todo[]> {
-		// Docs: GSI1 DueDateIndex - GSI1PK = USER#userId#DUE_DATE#YYYY-MM-DD
-		// Domain: dueDate <= hoje AND completed = false
-		const todayEnd = new Date();
-		todayEnd.setHours(23, 59, 59, 999);
-		const todayEndMs = todayEnd.getTime();
+	async getTodayTasks(userId: string): Promise<Task[]> {
+		// GSI1 DueDateIndex - range query: dueDate <= today AND completed = false
+		// GSI1PK = USER#userId#DUE_DATE#
+		// GSI1SK <= YYYY-MM-DD#TASK#PENDING#\uffff (includes overdue + today, excludes future)
+		const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+		const gsi1pk = `USER#${userId}#DUE_DATE#`;
+		const todayEnd = `${today}#TASK#PENDING#\uffff`;
 
-		return this.dbTodos
-			.filter((t) => t.user_id === userId && t.completed === false)
-			.filter((t) => {
-				if (!t.due_date) return false;
-				return new Date(t.due_date).getTime() <= todayEndMs;
-			})
-			.sort((a, b) => {
-				// Overdue first (domain: atrasadas no topo)
-				const aMs = a.due_date ? new Date(a.due_date).getTime() : 0;
-				const bMs = b.due_date ? new Date(b.due_date).getTime() : 0;
-				return aMs - bMs;
-			})
-			.map((dbTodo) => this.mapper.toDomain(dbTodo));
+		const queryResult = await this.dynamoClient.query<TasksDynamoDBEntity[]>({
+			KeyConditionExpression: "GSI1PK = :gsi1pk AND GSI1SK <= :todayEnd",
+			ExpressionAttributeNames: {
+				"#deletedAt": "deleted_at",
+				"#completed": "completed",
+			},
+			ExpressionAttributeValues: {
+				":gsi1pk": gsi1pk,
+				":todayEnd": todayEnd,
+				":falseValue": false,
+			},
+			FilterExpression:
+				"attribute_not_exists(#deletedAt) AND #completed = :falseValue",
+			IndexName: AvailableIndexes.GSI1,
+		});
+
+		const results = queryResult ?? [];
+		return results.map((dbEntity) => this.mapper.toDomain(dbEntity));
 	}
 
 	async findAll(): Promise<Todo[]> {

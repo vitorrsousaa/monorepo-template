@@ -1,26 +1,27 @@
 import type { BaseDynamoDBEntity } from "../../contracts/entity";
 
 /**
- * TodoDynamoDBEntity
+ * TasksDynamoDBEntity
  *
- * Represents the Todo entity structure in DynamoDB.
+ * Represents the Task entity structure in DynamoDB.
  * Aligned with docs/database-design.md: all access by user (PK includes USER#userId).
  *
- * - Inbox: PK = USER#userId, SK = TODO#INBOX#PENDING#order#todoId | TODO#INBOX#COMPLETED#completedAt#todoId
- * - Project: PK = USER#userId#PROJECT#projectId, SK = TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
+ * - Inbox: PK = USER#userId, SK = TASK#INBOX#PENDING#order#taskId | TASK#INBOX#COMPLETED#completedAt#taskId
+ * - Project: PK = USER#userId#PROJECT#projectId, SK = TASK#PENDING#order#taskId | TASK#COMPLETED#completedAt#taskId
  */
 export interface TasksDynamoDBEntity extends BaseDynamoDBEntity {
 	// Partition Key: always scoped by user
 	PK: string; // USER#userId (inbox) | USER#userId#PROJECT#projectId (project)
-	SK: string; // TODO#INBOX#PENDING#order#todoId | TODO#INBOX#COMPLETED#completedAt#todoId | TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
+	SK: string; // TASK#INBOX#PENDING#order#taskId | TASK#INBOX#COMPLETED#completedAt#taskId | TASK#PENDING#order#taskId | TASK#COMPLETED#completedAt#taskId
 
 	// GSI1: DueDateIndex - Search by due date (Today, Upcoming)
-	GSI1PK?: string; // USER#userId#DUE_DATE#YYYY-MM-DD
-	GSI1SK?: string; // TODO#PENDING#priority#todoId | TODO#COMPLETED#completedAt#todoId
+	// Range query: GSI1PK = USER#userId#DUE_DATE#, GSI1SK <= YYYY-MM-DD#TASK#PENDING#\uffff
+	GSI1PK?: string; // USER#userId#DUE_DATE#
+	GSI1SK?: string; // YYYY-MM-DD#TASK#PENDING#priority#taskId | YYYY-MM-DD#TASK#COMPLETED#completedAt#taskId
 
-	// GSI3: SectionIndex - Search todos by section within a project
+	// GSI3: SectionIndex - Search tasks by section within a project
 	GSI3PK?: string; // USER#userId#PROJECT#projectId#SECTION#sectionId
-	GSI3SK?: string; // TODO#PENDING#order#todoId | TODO#COMPLETED#completedAt#todoId
+	GSI3SK?: string; // TASK#PENDING#order#taskId | TASK#COMPLETED#completedAt#taskId
 
 	// Entity attributes (snake_case)
 	id: string;

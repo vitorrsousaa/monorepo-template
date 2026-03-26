@@ -65,12 +65,26 @@ repositories/
 - Exemplo: "Docs: PK = USER#userId AND SK begins_with TODO#INBOX#".
 - Manter esses comentários alinhados ao design da tabela para facilitar a implementação real depois.
 
-## Estado atual: mocks em memória
+## Estado atual: mocks em memória (com exceções)
 
-- **DynamoDB real:** ainda não conectado. Blocos `// TODO: Implement real DynamoDB` indicam onde entrarão chamadas ao client.
-- **Dados:** repositórios de Todo, Project e Section usam arrays em memória exportados pelos arquivos `*-repository.mocks.ts`. Os dados **não persistem** entre reinícios do `serverless-offline`.
+- **DynamoDB real ativo:** `TasksDynamoRepository.getTodayTasks` usa query real via GSI1 (DueDateIndex). Ver detalhes abaixo.
+- **DynamoDB real ativo:** `TasksDynamoRepository.getInbox`, `getAllPendingByProject`, `getTaskCountsByProject`, `getByUserId`, `updateCompletion` usam `IDatabaseClient` real.
+- **Mocks em memória:** `findAll`, `findById`, `update`, `delete`, `getAllBySection`, `getTodosByProjectWithoutSection` ainda usam `this.dbTodos` (array legacy).
+- **Dados:** repositórios de Todo, Project e Section usam arrays em memória exportados pelos arquivos `*-repository.mocks.ts`. Os dados **não persistem** entre reinícios.
 - **IDs compartilhados:** `mock-ids.ts` centraliza IDs de projetos (e seções) usados nos mocks para manter consistência entre repositórios.
-- **User:** `UserDynamoRepository` já recebe `IDatabaseClient` e `UserMapper`; quando o client for real, as operações irão para o DynamoDB.
+- **User:** `UserDynamoRepository` já recebe `IDatabaseClient` e `UserMapper`.
+
+## getTodayTasks — DynamoDB real (GSI1)
+
+`TasksDynamoRepository.getTodayTasks` usa query real no GSI1 (DueDateIndex):
+
+```ts
+// GSI1PK = "USER#userId#DUE_DATE#"
+// GSI1SK <= "YYYY-MM-DD#TASK#PENDING#\uffff"  (overdue + hoje, exclui futuras)
+// FilterExpression: attribute_not_exists(deleted_at) AND completed = false
+```
+
+O resultado inclui todas as tasks pendentes com `dueDate <= hoje` (overdue + hoje do dia). Tasks completadas são excluídas pelo `FilterExpression`. O GSI1 deve estar ativo no CloudFormation (`serverless/resources/Database.yml`) para esta query funcionar.
 
 ## Ao adicionar um novo repositório
 

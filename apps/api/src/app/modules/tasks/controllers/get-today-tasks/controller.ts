@@ -1,5 +1,4 @@
 import { Controller } from "@application/interfaces/controller";
-import { todayProjectToDto } from "@application/modules/tasks/mappers/task-to-dto";
 import type { IGetTodayTasksService } from "@application/modules/tasks/services/get-today-tasks";
 import type { GetTodayTasksResponse } from "@repo/contracts/tasks/today";
 
@@ -18,7 +17,7 @@ export class GetTodayTasksController extends Controller<
 			userId: request.userId,
 		});
 		const body: GetTodayTasksResponse = {
-			projects: result.projects.map(todayProjectToDto),
+			projects: result.projects,
 		};
 		return {
 			statusCode: 200,

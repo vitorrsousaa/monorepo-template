@@ -19,12 +19,13 @@ export interface ITasksRepository {
 	): Promise<Task>;
 
 	/**
-	 * Get todos for Today view: dueDate <= today AND completed = false.
+	 * Get tasks for Today view: dueDate <= today AND completed = false.
 	 * Per domain rules: overdue tasks at top, grouped by project.
+	 * Uses GSI1 (DueDateIndex) range query.
 	 * @param userId - User ID (for multi-tenancy)
-	 * @returns Array of todos (inbox and project) with dueDate <= today
+	 * @returns Array of tasks (inbox and project) with dueDate <= today
 	 */
-	findTodayTodos(userId: string): Promise<Todo[]>;
+	getTodayTasks(userId: string): Promise<Task[]>;
 
 	findAll(): Promise<Todo[]>;
 	findById(id: string): Promise<Todo | null>;

@@ -95,6 +95,20 @@ it("should build inbox PK for task without projectId", () => {
 });
 ```
 
+## GSI1 ativo no TasksDynamoMapper
+
+`TasksDynamoMapper.toDatabase()` escreve `GSI1PK` e `GSI1SK` para tasks com `dueDate`. O formato novo (range-query friendly) é:
+
+```
+GSI1PK = "USER#userId#DUE_DATE#"           ← sem data no PK
+GSI1SK = "YYYY-MM-DD#TASK#PENDING#priority#taskId"   ← data no início do SK
+```
+
+Isso permite range queries por data (`GSI1SK <= "YYYY-MM-DD#TASK#PENDING#\uffff"`), cobrindo overdue + hoje em uma query.
+
+- GSI3 permanece **comentado** em `toDatabase()` — ativado quando SectionIndex for necessário.
+- O index `GSI1` deve estar declarado em `serverless/resources/Database.yml` com atributos uppercase (`GSI1PK`, `GSI1SK`).
+
 ## Referências
 
 - Protocolos de mapper: `src/data/protocols/` (ex: `todo/todo-mapper.ts`, `projects/project-mapper.ts`)

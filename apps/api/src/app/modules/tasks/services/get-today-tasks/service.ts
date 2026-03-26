@@ -1,6 +1,6 @@
 import type { IService } from "@application/interfaces/service";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
-import type { ITodoRepository } from "@data/protocols/todo/todo-repository";
+import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type {
 	GetTodayTasksInput,
 	GetTodayTasksOutput,
@@ -15,12 +15,12 @@ const INBOX_PROJECT_NAME = "Inbox";
 
 export class GetTodayTasksService implements IGetTodayTasksService {
 	constructor(
-		private readonly todoRepository: ITodoRepository,
+		private readonly taskRepository: ITasksRepository,
 		private readonly projectRepository: IProjectRepository,
 	) {}
 
 	async execute(data: GetTodayTasksInput): Promise<GetTodayTasksOutput> {
-		const todos = await this.todoRepository.findTodayTodos(data.userId);
+		const todos = await this.taskRepository.getTodayTasks(data.userId);
 
 		// Group by projectId (null = Inbox)
 		const byProject = new Map<string | null, typeof todos>();

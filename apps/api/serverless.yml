@@ -60,7 +60,7 @@ provider:
             - dynamodb:BatchWriteItem
           Resource: 
             - !GetAtt DatabaseTable.Arn
-            - !Sub ${DatabaseTable.Arn}/index/GSI1Index
+            - !Sub ${DatabaseTable.Arn}/index/GSI1
 
 custom:
   userPoolName: ${self:service}-${self:provider.stage}-UserPool
