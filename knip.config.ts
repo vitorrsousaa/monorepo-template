@@ -15,6 +15,8 @@ const config: KnipConfig = {
       ],
       project: ["src/**/*.ts"],
       ignore: ["src/app/utils/types.ts"],
+      // Declared on @repo/vitest-presets; Vitest resolves it from the app root (hoisted).
+      ignoreDependencies: ["@vitest/coverage-v8"],
     },
     // SPA — Vite app (vite plugin disabled: @vitejs/plugin-react not resolvable from root)
     // Pages are added as entry points because React.lazy() dynamic imports with path aliases
@@ -28,6 +30,8 @@ const config: KnipConfig = {
       ],
       project: ["src/**/*.{ts,tsx}"],
       vite: false,
+      // Coverage + browser env come from @repo/vitest-presets (hoisted).
+      ignoreDependencies: ["@vitest/coverage-v8", "happy-dom"],
     },
     // Web — Next.js (app router)
     "apps/web": {
@@ -64,6 +68,8 @@ const config: KnipConfig = {
         "node/vitest.config.js",
       ],
       project: ["**/*.{js,ts}"],
+      // Loaded by Vitest when coverage.provider is v8, not a static import in this package.
+      ignoreDependencies: ["@vitest/coverage-v8"],
     },
   },
 };

@@ -100,9 +100,6 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.160
         version: 8.10.160
-      '@vitest/coverage-v8':
-        specifier: 3.2.4
-        version: 3.2.4(vitest@3.2.4)
 
   apps/cli:
     dependencies:
@@ -297,6 +294,10 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
 
   packages/vitest-preset:
+    dependencies:
+      '@vitest/coverage-v8':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4)
     devDependencies:
       '@vitest/spy':
         specifier: ^3.2.4
