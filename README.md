@@ -38,6 +38,27 @@ This monorepo consist in these packages:
 - [@repo/typescript-config](/docs/packages/typescript-config.md) - Configurações TypeScript compartilhadas
 - [@repo/vitest-presets](/docs/packages/vitest-presets.md) - Configurações Vitest compartilhadas
 
+### DevContainer (Claude Sandbox)
+
+O projeto inclui um ambiente Docker isolado para rodar o Claude Code com segurança. O container restringe o acesso de rede a apenas os serviços necessários (GitHub, npm, Anthropic API), sem expor credenciais ou arquivos do host.
+
+**VS Code** — abra o projeto e use `Cmd+Shift+P → Dev Containers: Reopen in Container`.
+
+**CLI (sem VS Code):**
+
+```bash
+# Subir o container
+docker compose -f .devcontainer/docker-compose.yml up -d
+
+# Entrar no container
+docker compose -f .devcontainer/docker-compose.yml exec claude-sandbox zsh
+
+# Parar
+docker compose -f .devcontainer/docker-compose.yml down
+```
+
+Detalhes sobre a configuração do firewall e dos volumes estão em [`CLAUDE.md`](./CLAUDE.md#devcontainer-claude-sandbox).
+
 ### Tools
 
 - [Biome](/docs/tools/biome.md) - Linting e formatação

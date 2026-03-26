@@ -169,6 +169,62 @@ Files: `modules/<feature>/app/cache/<name>.cache.ts`
 - Information already documented — check existing `CLAUDE.md` files first
 - Overly verbose prose without examples — keep it concise and scannable
 
+## DevContainer (Claude Sandbox)
+
+O Claude Code roda dentro de um container Docker isolado. Isso elimina qualquer risco de exposição de dados sensíveis do host (credenciais, arquivos pessoais, variáveis de ambiente locais) — o container só enxerga o workspace montado.
+
+### Por que usar
+
+- **Isolamento total**: Claude não tem acesso ao sistema de arquivos do host além do workspace.
+- **Firewall de rede restritivo**: ao iniciar, `init-firewall.sh` configura `iptables` para bloquear todo tráfego de saída **exceto**:
+  - IPs do GitHub (via `api.github.com/meta`)
+  - `registry.npmjs.org`
+  - `api.anthropic.com`
+  - `statsig.anthropic.com` / `statsig.com`
+  - `sentry.io`
+  - VS Code Marketplace (`marketplace.visualstudio.com`, `vscode.blob.core.windows.net`, `update.code.visualstudio.com`)
+- **Sem credenciais no container**: variáveis sensíveis (AWS, banco de dados, etc.) não são injetadas automaticamente — você controla o que passa.
+- **Configuração Claude persistida**: `~/.claude` fica em volume Docker nomeado, sobrevive a rebuilds.
+
+### Dois modos de uso
+
+**VS Code Dev Containers** (recomendado para desenvolvimento integrado):
+```
+Cmd+Shift+P → "Dev Containers: Reopen in Container"
+```
+O `devcontainer.json` instala a extensão `anthropic.claude-code` automaticamente.
+
+**Docker Compose (CLI standalone)**, sem VS Code:
+```bash
+# Subir o container
+docker compose -f .devcontainer/docker-compose.yml up -d
+
+# Entrar no container
+docker compose -f .devcontainer/docker-compose.yml exec claude-sandbox zsh
+
+# Parar
+docker compose -f .devcontainer/docker-compose.yml down
+```
+
+### Estrutura dos arquivos
+
+```
+.devcontainer/
+  Dockerfile          — imagem base node:20 + ferramentas + Claude Code global
+  devcontainer.json   — config VS Code Dev Containers
+  docker-compose.yml  — config standalone (equivalente ao devcontainer.json)
+  init-firewall.sh    — script de firewall executado no postStartCommand
+```
+
+### Volumes nomeados
+
+| Volume | Ponto de montagem | Propósito |
+|--------|-------------------|-----------|
+| `claude-code-config` | `/home/node/.claude` | Configuração e contexto do Claude |
+| `claude-code-bashhistory` | `/commandhistory` | Histórico de shell |
+
+Os volumes são criados por `devcontainerId` (modo VS Code) ou compartilhados por projeto (modo Compose).
+
 ## Related documentation
 
 - [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) — shared types and usage
