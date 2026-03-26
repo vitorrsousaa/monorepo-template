@@ -78,9 +78,30 @@ Check all criteria before marking done.
 Ask: "Would senior engineer flag this as overcomplicated?"
 
 - Yes → Simplify before continuing
-- No → Proceed to git commit
+- No → Proceed to code review
 
-### 7. Atomic Git Commit
+### 7. Code Review
+
+After passing self-check, trigger the `code-reviewer` agent to review all uncommitted changes before committing.
+
+**Steps:**
+1. Run `git diff` (and `git diff --cached` for staged files) to get all pending changes
+2. Launch the `code-reviewer` agent with the diff output, asking it to review for: code quality, security vulnerabilities, correctness, and adherence to existing patterns
+3. Address any critical or major issues raised before committing
+4. Minor/style issues: log them in STATE.md under "Deferred Ideas" if not worth fixing now
+
+**Invoke the agent:**
+```
+Use Agent tool with subagent_type=code-reviewer.
+Prompt: "Review the following uncommitted changes for code quality, security, correctness, and pattern adherence. Focus on blocking issues only — minor style notes can be noted but should not block the commit.\n\n[git diff output]"
+```
+
+**Gate:**
+- ❌ Critical/blocking issues found → Fix before commit
+- ⚠️ Minor issues found → Log in STATE.md, proceed to commit
+- ✅ No issues → Proceed to commit
+
+### 8. Atomic Git Commit
 
 Each task gets its own commit immediately after verification. Never batch multiple tasks into one commit.
 
@@ -150,7 +171,7 @@ for reuse across multiple endpoints.
 - Include only files listed in the task — never sneak in "while I'm here" changes
 - If tests are part of the task, include them in the same commit
 
-### 8. Scope Guardrail
+### 9. Scope Guardrail
 
 During implementation, you will notice things that could be improved, refactored, or added. **Do not act on them.** Instead:
 
@@ -160,7 +181,7 @@ During implementation, you will notice things that could be improved, refactored
 
 **The heuristic:** "Is this in my task definition?" If no, don't touch it.
 
-### 9. Update Task Status
+### 10. Update Task Status
 
 Mark task complete in tasks.md. Update requirement traceability in spec.md if requirement IDs are used.
 
@@ -190,6 +211,12 @@ Mark task complete in tasks.md. Update requirement traceability in spec.md if re
 - [x] Done when criterion 2
 - [x] No unnecessary changes made
 - [x] Matches existing patterns
+
+### Code Review
+
+- [ ] Triggered code-reviewer agent on uncommitted diff
+- [ ] Critical issues: [none | list]
+- [ ] Action: [committed clean | fixed X before commit | logged Y in STATE.md]
 
 **Status**: ✅ Complete | ❌ Blocked | ⚠️ Partial
 ```
