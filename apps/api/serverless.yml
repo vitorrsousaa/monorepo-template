@@ -105,6 +105,14 @@ functions:
           method: get
           authorizer: 
             name: CognitoAuthorizer
+  getUserSettingsByUserId:
+    handler: src/server/functions/settings/get-by-user-settings/handler
+    events:
+      - httpApi:
+          path: /settings/user-settings
+          method: get
+          authorizer: 
+            name: CognitoAuthorizer
   preSignUpTrigger:
     handler: src/server/triggers/auth/presignup/index.handler
     events:
