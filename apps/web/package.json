@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "tailwindcss": "^3.4.16",
-    "@repo/vitest-presets": "workspace:*"
+    "tailwindcss": "^3.4.16"
   }
 }

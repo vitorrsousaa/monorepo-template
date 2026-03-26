@@ -1,6 +1,5 @@
 import {
 	Eye,
-	Frame,
 	History,
 	Loader2,
 	MoreHorizontal,
@@ -53,12 +52,20 @@ export function ProjectListItem(props: ProjectListItemProps) {
 
 	const isNavigable = !isPendingState && !isError;
 
+	const colorDot = (
+		<span
+			className="size-2.5 shrink-0 rounded-full border border-sidebar-border/40 ring-1 ring-background"
+			style={{ backgroundColor: project.color }}
+			aria-hidden
+		/>
+	);
+
 	return (
 		<SidebarMenuItem>
 			{isNavigable ? (
 				<SidebarMenuButton asChild>
 					<Link to={`/projects/${project.id}`}>
-						<Frame />
+						{colorDot}
 						<span>{project.name}</span>
 					</Link>
 				</SidebarMenuButton>
@@ -70,7 +77,7 @@ export function ProjectListItem(props: ProjectListItemProps) {
 						isError && "text-destructive opacity-80",
 					)}
 				>
-					<Frame />
+					{colorDot}
 					<span>{project.name}</span>
 				</SidebarMenuButton>
 			)}
