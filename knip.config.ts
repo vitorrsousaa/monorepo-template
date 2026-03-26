@@ -49,6 +49,7 @@ const config: KnipConfig = {
         "src/components/**/*.{ts,tsx}",
       ],
       project: ["src/**/*.{ts,tsx}"],
+      ignoreDependencies: ["@hookform/resolvers"],
     },
     "packages/logger": {
       project: ["src/**/*.ts"],
