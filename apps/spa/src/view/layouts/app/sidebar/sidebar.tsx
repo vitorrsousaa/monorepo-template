@@ -2,12 +2,9 @@ import {
 	CalendarClock,
 	CalendarDays,
 	CheckSquare,
-	HelpCircle,
 	Inbox,
 	LayoutDashboard,
-	Settings,
-	Target,
-	User,
+	Target
 } from "lucide-react";
 import type * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -39,27 +36,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			label: t("sidebar.dashboard"),
 			icon: LayoutDashboard,
 		},
-		{ url: ROUTES.TODO.TODAY, label: t("sidebar.today"), icon: CalendarDays },
+		{ url: ROUTES.TASKS.TODAY, label: t("sidebar.today"), icon: CalendarDays },
 		{
 			url: ROUTES.TODO.UPCOMING,
 			label: t("sidebar.soon"),
 			icon: CalendarClock,
 		},
 		{ url: ROUTES.GOALS_DASHBOARD, label: t("sidebar.goals"), icon: Target },
-	];
-
-	const navSecondary = [
-		{ title: t("sidebar.profile"), url: ROUTES.USER.PROFILE, icon: User },
-		{
-			title: t("sidebar.settings"),
-			url: ROUTES.USER.SETTINGS,
-			icon: Settings,
-		},
-		{
-			title: t("sidebar.support"),
-			url: ROUTES.USER.SUPPORT,
-			icon: HelpCircle,
-		},
 	];
 
 	return (

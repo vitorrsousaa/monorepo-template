@@ -1,5 +1,4 @@
 export const TODO_ROUTES = {
-	TODAY: "/todo/today",
 	UPCOMING: "/todo/upcoming",
 	COMPLETED: "/todo/completed",
 } as const;
@@ -7,6 +6,7 @@ export const TODO_ROUTES = {
 export const TASKS_ROUTES = {
 	INBOX: "/tasks/inbox",
 	DASHBOARD: "/tasks/dashboard",
+	TODAY: "/tasks/today",
 } as const;
 
 export const PROJECTS_ROUTES = {

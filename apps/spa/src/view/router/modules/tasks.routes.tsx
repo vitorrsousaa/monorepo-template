@@ -37,7 +37,7 @@ export const tasksRoutes: RouteObject = {
 			element: <Inbox />,
 		},
 		{
-			path: ROUTES.TODO.TODAY,
+			path: ROUTES.TASKS.TODAY,
 			element: <Today />,
 		},
 		{

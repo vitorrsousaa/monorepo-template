@@ -46,14 +46,6 @@ export function Dashboard() {
 
 	const today = new Date().toISOString().split("T")[0];
 
-	const setView = (view: "hoje" | { type: "projeto"; id: string }) => {
-		if (view === "hoje") {
-			navigate(ROUTES.TODO.TODAY);
-		} else if (view.type === "projeto") {
-			navigate(ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", view.id));
-		}
-	};
-
 	const completed = tasks.filter((t) => t.status === "concluida").length;
 	const overdueTasks = tasks.filter(
 		(t) => t.dueDate < today && t.status === "pendente",
@@ -181,7 +173,7 @@ export function Dashboard() {
 							className={cn(
 								"relative rounded-[14px] p-5 overflow-hidden bg-card border border-border shadow-sm",
 								tintedBg &&
-									"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
+								"bg-[#FFFAF4] dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-800/30",
 							)}
 						>
 							{/* Left accent stripe */}
@@ -210,9 +202,9 @@ export function Dashboard() {
 									className={cn(
 										"text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
 										trendVariant === "up" &&
-											"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+										"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
 										trendVariant === "down" &&
-											"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+										"bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
 										trendVariant === "flat" && "bg-muted text-muted-foreground",
 									)}
 								>
@@ -275,7 +267,7 @@ export function Dashboard() {
 						</h3>
 						<button
 							type="button"
-							onClick={() => setView("hoje")}
+							onClick={() => navigate(ROUTES.TASKS.TODAY)}
 							className="text-xs font-medium text-primary hover:text-primary/90 flex items-center gap-0.5 no-underline"
 						>
 							{t("dashboard.panels.seeAll")}
