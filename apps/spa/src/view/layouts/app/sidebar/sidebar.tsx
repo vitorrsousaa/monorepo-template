@@ -38,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 		},
 		{ url: ROUTES.TASKS.TODAY, label: t("sidebar.today"), icon: CalendarDays },
 		{
-			url: ROUTES.TODO.UPCOMING,
+			url: ROUTES.TASKS.UPCOMING,
 			label: t("sidebar.soon"),
 			icon: CalendarClock,
 		},

@@ -82,4 +82,6 @@ File: `apps/spa/src/app/utils/priority.ts`
 
 - `view/components/project-column/project-column.tsx` — column + task card rendering
 - `view/components/project-column-header/` — column header (name, actions)
+- `app/hooks/use-get-today-tasks.ts` — React Query hook for the Today kanban (previously `modules/todo/app/hooks/`)
+- `app/services/get-today-tasks.ts` — HTTP GET `/tasks/today` (previously `modules/todo/app/services/`)
 

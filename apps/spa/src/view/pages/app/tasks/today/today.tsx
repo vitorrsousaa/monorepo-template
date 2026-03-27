@@ -1,5 +1,5 @@
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
-import { useGetTodayTasks } from "@/modules/todo/app/hooks/use-get-today-tasks";
+import { useGetTodayTasks } from "@/modules/tasks/app/hooks/use-get-today-tasks";
 import { ProjectColumn } from "@/modules/todo/view/components/project-column";
 import { TodayTasksHeader } from "@/modules/todo/view/components/today-header";
 import { RenderIf } from "@repo/ui/render-if";

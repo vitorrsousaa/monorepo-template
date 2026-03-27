@@ -22,7 +22,7 @@ export const todoRoutes: RouteObject = {
   element: <TodoLayout />,
   children: [
     { path: ROUTES.TASKS.DASHBOARD, element: <Dashboard /> },
-    { path: ROUTES.TODO.INBOX, element: <Inbox /> },
+    { path: ROUTES.TASKS.INBOX, element: <Inbox /> },
     // ...
   ],
 };

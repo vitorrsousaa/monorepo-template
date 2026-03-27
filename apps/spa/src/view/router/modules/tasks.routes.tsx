@@ -14,12 +14,12 @@ const Inbox = lazy(() =>
 	})),
 );
 const Today = lazy(() =>
-	import("@/pages/app/todo/today").then((module) => ({
+	import("@/pages/app/tasks/today").then((module) => ({
 		default: module.Today,
 	})),
 );
 const Upcoming = lazy(() =>
-	import("@/pages/app/todo/upcoming").then((module) => ({
+	import("@/pages/app/tasks/upcoming").then((module) => ({
 		default: module.Upcoming,
 	})),
 );
@@ -41,7 +41,7 @@ export const tasksRoutes: RouteObject = {
 			element: <Today />,
 		},
 		{
-			path: ROUTES.TODO.UPCOMING,
+			path: ROUTES.TASKS.UPCOMING,
 			element: <Upcoming />,
 		},
 	],
