@@ -20,6 +20,15 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 		private readonly projectRepository: IProjectRepository,
 	) {}
 
+	private sortByPriority(tasks: Awaited<ReturnType<ITasksRepository["getTodayTasks"]>>) {
+		const order: Record<string, number> = { high: 0, medium: 1, low: 2 };
+		return [...tasks].sort((a, b) => {
+			const pa = a.priority != null ? (order[a.priority] ?? 3) : 3;
+			const pb = b.priority != null ? (order[b.priority] ?? 3) : 3;
+			return pa - pb;
+		});
+	}
+
 	async execute(data: GetTodayTasksInput): Promise<GetTodayTasksOutput> {
 		const todos = await this.taskRepository.getTodayTasks(data.userId);
 
@@ -41,7 +50,7 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 				id: INBOX_PROJECT_ID,
 				name: INBOX_PROJECT_NAME,
 				color: INBOX_PROJECT_COLOR,
-				tasks: inboxTasks,
+				tasks: this.sortByPriority(inboxTasks),
 			});
 		}
 
@@ -57,7 +66,7 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 					id: projectId ?? "",
 					name: project?.name ?? "Unknown",
 					color: project?.color ?? "",
-					tasks: byProject.get(projectId) ?? [],
+					tasks: this.sortByPriority(byProject.get(projectId) ?? []),
 				};
 			}),
 		);
