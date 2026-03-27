@@ -1,12 +1,12 @@
-import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { useGetTodayTasks } from "@/modules/tasks/app/hooks/use-get-today-tasks";
-import { ProjectColumn } from "@/modules/todo/view/components/project-column";
-import { TodayTasksHeader } from "@/modules/todo/view/components/today-header";
+import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { RenderIf } from "@repo/ui/render-if";
 import { useMemo, useState } from "react";
 import { TodayEmptyState } from "./components/today-empty-state";
 import { TodayErrorState } from "./components/today-error-state";
+import { TodayTasksHeader } from "./components/today-header";
 import { TodayLoadingSkeleton } from "./components/today-loading-skeleton";
+import { TodayProjectColumn } from "./components/today-project-column";
 
 export function Today() {
 	const {
@@ -63,15 +63,15 @@ export function Today() {
 					render={
 						<div className="p-6 flex gap-4" style={{ minWidth: "max-content" }}>
 							{todayData.projects.map((project) => (
-								<ProjectColumn
+								<TodayProjectColumn
 									key={project.id}
 									project={project}
-									onProjectDeleted={refetchTodayTasks}
 								/>
 							))}
 						</div>
 					}
 				/>
+
 			</div>
 
 			<NewTaskModal

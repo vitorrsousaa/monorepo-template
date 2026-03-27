@@ -1,4 +1,6 @@
 import { PROJECT_INBOX_ID } from "@/config/constants";
+import { ROUTES } from "@/config/routes";
+import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
@@ -11,15 +13,33 @@ import {
 } from "@repo/ui/dropdown-menu";
 import { RenderIf } from "@repo/ui/render-if";
 import { Info, MoreVertical } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface ProjectColumnHeaderProps {
+interface TodayProjectColumnHeaderProps {
 	project: TodayProjectDto;
-	onViewProjectDetails: (projectId: string) => void;
-	onDeleteProject: (project: TodayProjectDto) => void;
 }
 
-export const ProjectColumnHeader = (props: ProjectColumnHeaderProps) => {
-	const { project, onViewProjectDetails, onDeleteProject } = props;
+export const TodayProjectColumnHeader = (props: TodayProjectColumnHeaderProps) => {
+	const { project } = props;
+
+	const navigate = useNavigate();
+
+	const [deleteProjectModal, setDeleteProjectModal] = useState<{
+		isOpen: boolean;
+		project: TodayProjectDto | null;
+	}>({
+		isOpen: false,
+		project: null,
+	});
+
+	const confirmDeleteProject = () => {
+		setDeleteProjectModal({ isOpen: false, project: null });
+	};
+
+	const handleViewProjectDetails = (projectId: string) => {
+		navigate(ROUTES.PROJECTS.PROJECT_DETAILS.replace(":id", projectId));
+	};
 
 	const getTodoCountText = (count: number) => {
 		return `${count}`;
@@ -38,7 +58,7 @@ export const ProjectColumnHeader = (props: ProjectColumnHeaderProps) => {
 				render={
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="icon" className="h-8 w-8">
+							<Button variant="ghost" size="icon" className="h-6 w-6">
 								<MoreVertical className="w-4 h-4" />
 							</Button>
 						</DropdownMenuTrigger>
@@ -46,7 +66,7 @@ export const ProjectColumnHeader = (props: ProjectColumnHeaderProps) => {
 							<DropdownMenuItem
 								onClick={(e) => {
 									e.stopPropagation();
-									onViewProjectDetails(project.id);
+									handleViewProjectDetails(project.id);
 								}}
 							>
 								<Info className="w-4 h-4 mr-2" />
@@ -57,7 +77,8 @@ export const ProjectColumnHeader = (props: ProjectColumnHeaderProps) => {
 								className="text-destructive"
 								onClick={(e) => {
 									e.stopPropagation();
-									onDeleteProject(project);
+									setDeleteProjectModal({ isOpen: true, project });
+									e.preventDefault();
 								}}
 							>
 								Delete Project
@@ -65,6 +86,13 @@ export const ProjectColumnHeader = (props: ProjectColumnHeaderProps) => {
 						</DropdownMenuContent>
 					</DropdownMenu>
 				}
+			/>
+
+			<DeleteProjectModal
+				isOpen={deleteProjectModal.isOpen}
+				onClose={() => setDeleteProjectModal({ isOpen: false, project: null })}
+				projectName={deleteProjectModal.project?.name || ""}
+				onConfirm={confirmDeleteProject}
 			/>
 		</div>
 	);

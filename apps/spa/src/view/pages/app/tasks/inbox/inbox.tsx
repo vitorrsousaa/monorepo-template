@@ -1,6 +1,6 @@
 import { TaskListCard } from "@/components/task-list-card";
-import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
 import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
+import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { OptimisticState } from "@/utils/types";
@@ -80,7 +80,6 @@ export function Inbox() {
 					<div className="max-h-[calc(100vh-220px)] overflow-y-auto pb-10">
 						<div className="mx-auto max-w-3xl">
 							<TaskListCard
-								sectionId={PROJECTS_DEFAULT_IDS.INBOX}
 								projectId={PROJECTS_DEFAULT_IDS.INBOX}
 								tasks={inboxTasks}
 								onTaskCheck={handleInboxTaskCheck}

@@ -1,17 +1,16 @@
 import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
-import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Plus } from "lucide-react";
 import { useReducer } from "react";
 import { TaskRow } from "../task-row";
 
 export interface TaskListCardProps {
-	sectionId: string;
+	sectionId?: string;
 	projectId: string;
 	tasks: TaskWithOptimisticState[];
 	onTaskCheck:
-		| ((task: TaskWithOptimisticState, checked: boolean) => void)
-		| undefined;
+	| ((task: TaskWithOptimisticState, checked: boolean) => void)
+	| undefined;
 	onRetry?: (taskId: string) => void;
 	projectName?: string;
 }
@@ -25,16 +24,13 @@ export function TaskListCard(props: TaskListCardProps) {
 		false,
 	);
 
-	const realSectionId =
-		sectionId === PROJECTS_DEFAULT_IDS.INBOX ? undefined : sectionId;
-
 	return (
 		<>
 			<NewTaskModal
 				isOpen={isNewTaskModalOpen}
 				onClose={toggleIsNewTaskModalOpen}
 				projectId={projectId}
-				sectionId={realSectionId}
+				sectionId={sectionId}
 			/>
 
 			<div className="overflow-hidden rounded-xl border border-border bg-card">
