@@ -248,3 +248,4 @@ pnpm run deploy:fn:prod -- --function <name>     # single function shortcut (pro
 - [src/infra/db/dynamodb/repositories/CLAUDE.md](src/infra/db/dynamodb/repositories/CLAUDE.md) — DynamoDB repository conventions
 - [src/infra/db/dynamodb/factories/CLAUDE.md](src/infra/db/dynamodb/factories/CLAUDE.md) — repository factory conventions
 - [src/test/CLAUDE.md](src/test/CLAUDE.md) — test utilities (builders, mocks, integration setup)
+- [src/app/modules/tasks/CLAUDE.md](src/app/modules/tasks/CLAUDE.md) — task domain rules (priority sort order, today grouping)

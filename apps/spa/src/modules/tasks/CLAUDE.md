@@ -36,6 +36,15 @@ Snapshots are restored with `restoreSnapshot`; user feedback uses `toast.error` 
 | HTTP | `app/services/update-task-completion.ts` |
 
 
+## Task ordering — server-side, do not re-sort client-side
+
+The API (`get-today-tasks`) returns tasks **pre-sorted** within each project column:
+`high → medium → low → null priority`.
+
+Projects are also pre-sorted: **Inbox first**, then named projects alphabetically.
+
+**Do not sort tasks or projects on the client.** Render the array in the order returned by the API. Re-sorting client-side will break the canonical order defined by the service.
+
 ## Column color accent
 
 Each column renders a 3px top bar using `project.color` (hex string from the API). Inbox receives `#8A8782` (gray) from the API — no hardcoded client-side color for Inbox.
