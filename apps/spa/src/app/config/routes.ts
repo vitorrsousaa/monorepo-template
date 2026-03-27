@@ -20,6 +20,19 @@ export const USER_ROUTES = {
 	SUPPORT: "/user/support",
 } as const;
 
+export const FINANCE_ROUTES = {
+	OVERVIEW: "/finance/overview",
+	TRANSACTIONS: "/finance/transactions",
+	BUDGETS: "/finance/budgets",
+	ACCOUNTS: "/finance/accounts",
+	REPORTS: "/finance/reports",
+} as const;
+
+export const SHARED_ROUTES = {
+	WITH_ME: "/shared/with-me",
+	MY_CONTENT: "/shared/my-content",
+} as const;
+
 export const ROUTES = {
 	USER: USER_ROUTES,
 	SIGNIN: "/login",
@@ -29,4 +42,6 @@ export const ROUTES = {
 	TODO: TODO_ROUTES,
 	PROJECTS: PROJECTS_ROUTES,
 	TASKS: TASKS_ROUTES,
+	FINANCE: FINANCE_ROUTES,
+	SHARED: SHARED_ROUTES,
 } as const;

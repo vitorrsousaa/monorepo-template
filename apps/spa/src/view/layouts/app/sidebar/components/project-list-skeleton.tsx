@@ -9,9 +9,6 @@ export const ProjectListSkeleton = () => {
 			<SidebarMenuItem>
 				<SidebarMenuSkeleton />
 			</SidebarMenuItem>
-			<SidebarMenuItem>
-				<SidebarMenuSkeleton />
-			</SidebarMenuItem>
 		</>
 	);
 };

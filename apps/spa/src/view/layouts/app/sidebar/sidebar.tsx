@@ -23,9 +23,10 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@repo/ui/sidebar";
+import { NavFinance } from "./nav-finance";
 import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
-import { NavSecondary } from "./nav-secondary";
+import { NavShared } from "./nav-shared";
 import { NavUser } from "./nav-user";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -83,7 +84,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			<SidebarContent>
 				<NavMain items={navMain} />
 				<NavProjects />
-				<NavSecondary items={navSecondary} className="mt-auto" />
+				<NavFinance />
+				<NavShared />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />

@@ -1,4 +1,5 @@
-import { FolderOpen, Plus } from "lucide-react";
+import { ChevronRight, FolderOpen, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "@/config/routes";
@@ -7,10 +8,11 @@ import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-
 import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
-import { Button } from "@repo/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@repo/ui/collapsible";
 import { RenderIf } from "@repo/ui/render-if";
 import {
 	SidebarGroup,
+	SidebarGroupAction,
 	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuButton,
@@ -20,6 +22,7 @@ import { useReducer } from "react";
 import { ProjectListItem } from "./components/project-list-item";
 
 export function NavProjects() {
+	const { t } = useTranslation();
 	const { projects, isErrorProjects, isFetchingProjects, refetchProjects } =
 		useGetAllProjectsByUser();
 
@@ -40,71 +43,75 @@ export function NavProjects() {
 
 	return (
 		<SidebarGroup className="group-data-[collapsible=icon]:hidden">
-			<SidebarGroupLabel className="pr-0">
-				Projects{" "}
-				<Button variant="ghost" size="icon" onClick={toggleNewProjectModal}>
-					<Plus className="w-4 h-4" />
-				</Button>
-			</SidebarGroupLabel>
+			<Collapsible defaultOpen className="group/collapsible">
+				<SidebarGroupLabel asChild>
+					<CollapsibleTrigger>
+						Projects
+						<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+					</CollapsibleTrigger>
+				</SidebarGroupLabel>
+				<SidebarGroupAction onClick={toggleNewProjectModal} title="New project">
+					<Plus />
+				</SidebarGroupAction>
 
-			<SidebarMenu>
-				{/* Loading State */}
-				<RenderIf
-					condition={isFetchingProjects}
-					render={<ProjectListSkeleton />}
-				/>
+				<CollapsibleContent>
+					<SidebarMenu>
+						{/* Loading State */}
+						<RenderIf
+							condition={isFetchingProjects}
+							render={<ProjectListSkeleton />}
+						/>
 
-				{/* Error State */}
-				<RenderIf
-					condition={isErrorProjects}
-					render={<ProjectListError onRetry={refetchProjects} />}
-				/>
+						{/* Error State */}
+						<RenderIf
+							condition={isErrorProjects}
+							render={<ProjectListError onRetry={refetchProjects} />}
+						/>
 
-				{/* Empty State */}
-				<RenderIf
-					condition={shouldRenderEmptyState}
-					render={<ProjectListEmptyState />}
-				/>
+						{/* Empty State */}
+						<RenderIf
+							condition={shouldRenderEmptyState}
+							render={<ProjectListEmptyState />}
+						/>
 
-				{/* Projects List */}
-				<RenderIf
-					condition={shouldRenderProjects}
-					render={
-						<>
-							{displayedProjects.map((item) => (
-								<ProjectListItem
-									key={`project-list-item-${item.id}-${Math.random().toString(36).substring(2, 15)}`}
-									project={item}
-								/>
-							))}
-							<RenderIf
-								condition={hasMoreProjects}
-								render={
-									<SidebarMenuItem>
-										<SidebarMenuButton asChild>
-											<Link
-												to={ROUTES.PROJECTS.LIST}
-												className="text-sidebar-foreground/70"
-											>
-												<FolderOpen />
-												<span>+{remainingCount} project</span>
-												<span className="sr-only">
-													View all {projects.length} projects
-												</span>
-											</Link>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								}
-							/>
-						</>
-					}
-				/>
+						{/* Projects List */}
+						<RenderIf
+							condition={shouldRenderProjects}
+							render={
+								<>
+									{displayedProjects.map((item) => (
+										<ProjectListItem
+											key={`project-list-item-${item.id}-${Math.random().toString(36).substring(2, 15)}`}
+											project={item}
+										/>
+									))}
+									<RenderIf
+										condition={hasMoreProjects}
+										render={
+											<SidebarMenuItem>
+												<SidebarMenuButton asChild>
+													<Link
+														to={ROUTES.PROJECTS.LIST}
+														className="text-sidebar-foreground/70"
+													>
+														<FolderOpen />
+														<span>{t("sidebar.allProjects")}</span>
+													</Link>
+												</SidebarMenuButton>
+											</SidebarMenuItem>
+										}
+									/>
+								</>
+							}
+						/>
 
-				<NewProjectModal
-					isOpen={isNewProjectModalOpen}
-					onClose={toggleNewProjectModal}
-				/>
-			</SidebarMenu>
+						<NewProjectModal
+							isOpen={isNewProjectModalOpen}
+							onClose={toggleNewProjectModal}
+						/>
+					</SidebarMenu>
+				</CollapsibleContent>
+			</Collapsible>
 		</SidebarGroup>
 	);
 }
