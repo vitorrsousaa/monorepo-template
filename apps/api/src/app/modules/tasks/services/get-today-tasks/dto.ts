@@ -7,6 +7,7 @@ export type GetTodayTasksInput = {
 export interface TodayProjectOutput {
 	id: string;
 	name: string;
+	color: string;
 	tasks: Task[];
 }
 

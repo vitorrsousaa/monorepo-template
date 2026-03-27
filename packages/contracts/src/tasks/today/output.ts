@@ -4,6 +4,7 @@ import type { TaskDto } from "../entities";
 export interface TodayProjectDto {
 	id: string;
 	name: string;
+	color: string;
 	tasks: TaskDto[];
 }
 

@@ -2,6 +2,7 @@ import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.
 import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { OptimisticState } from "@/utils/types";
+import { PriorityBadge } from "@/components/priority-badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
@@ -15,29 +16,6 @@ const PRIORITY_CLASSES = {
 	medium: "task-row-priority-medium",
 	low: "task-row-priority-low",
 } as const;
-
-function PriorityBarsIcon({ level }: { level: "high" | "medium" | "low" }) {
-	const paths =
-		level === "high"
-			? "M1 8V2M4.5 8V4M8 8V2"
-			: level === "medium"
-				? "M1 8V4M4.5 8V1M8 8V5"
-				: "M1 8V6M4.5 8V4M8 8V6";
-	return (
-		<svg
-			width="9"
-			height="9"
-			viewBox="0 0 9 9"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="1.8"
-			aria-hidden
-		>
-			<title>Priority bars</title>
-			<path d={paths} />
-		</svg>
-	);
-}
 
 export function TaskRow({
 	task,
@@ -192,20 +170,9 @@ export function TaskRow({
 					<RenderIf
 						condition={showPriority && !!priority}
 						render={
-							<span
-								className={cn(
-									"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-									priority === "high" && "bg-destructive/10 text-destructive",
-									priority === "medium" &&
-										"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-									priority === "low" && "bg-primary/10 text-primary",
-								)}
-							>
-								<PriorityBarsIcon
-									level={priority as "high" | "medium" | "low"}
-								/>
-								{priority}
-							</span>
+							<PriorityBadge
+								priority={priority as "high" | "medium" | "low"}
+							/>
 						}
 					/>
 					{children}

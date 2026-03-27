@@ -49,6 +49,27 @@ packages/
 
 Shared DTOs live in `packages/contracts/`. **Always import from `@repo/contracts/...`** for types shared between API and SPA. Never duplicate DTO types.
 
+## CRITICAL: Component Reuse (SPA)
+
+Before creating a new UI component, check if an equivalent already exists. When the same visual element appears in two or more places, **extract it into a shared component** instead of duplicating. If it's unclear whether to share or duplicate, **ask the user first**.
+
+### Where shared SPA components live
+
+| Scope | Location | Alias |
+|-------|----------|-------|
+| Cross-module UI (used by ≥2 features) | `apps/spa/src/view/components/<name>/` | `@/components/<name>` |
+| App-wide utilities (pure functions) | `apps/spa/src/app/utils/` | `@/utils/<name>` |
+
+### Current shared components
+
+| Component | Path | Used by |
+|-----------|------|---------|
+| `PriorityBadge` | `view/components/priority-badge/` | `TaskRow` (inbox/project lists), `ProjectColumn` (today kanban) |
+| `TaskRow` | `view/components/task-row/` | Inbox, project detail, dashboard |
+| `TaskListCard` | `view/components/task-list-card/` | Inbox, project sections |
+
+**Rule:** if you find yourself writing the same JSX structure in two files, stop and extract. Each shared component gets its own folder with `component.tsx` + `index.ts` barrel.
+
 ## Code Quality
 
 - **Linter/formatter: Biome** (not ESLint, not Prettier) — `biome.json` at root

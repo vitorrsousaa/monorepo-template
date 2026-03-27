@@ -12,6 +12,7 @@ export interface IGetTodayTasksService
 
 const INBOX_PROJECT_ID = "inbox";
 const INBOX_PROJECT_NAME = "Inbox";
+const INBOX_PROJECT_COLOR = "#8A8782";
 
 export class GetTodayTasksService implements IGetTodayTasksService {
 	constructor(
@@ -39,6 +40,7 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 			projects.push({
 				id: INBOX_PROJECT_ID,
 				name: INBOX_PROJECT_NAME,
+				color: INBOX_PROJECT_COLOR,
 				tasks: inboxTasks,
 			});
 		}
@@ -54,6 +56,7 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 				return {
 					id: projectId ?? "",
 					name: project?.name ?? "Unknown",
+					color: project?.color ?? "",
 					tasks: byProject.get(projectId) ?? [],
 				};
 			}),

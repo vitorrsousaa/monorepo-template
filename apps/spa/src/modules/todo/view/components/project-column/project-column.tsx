@@ -1,8 +1,9 @@
-import { PROJECT_INBOX_ID } from "@/config/constants";
+import { PriorityBadge } from "@/components/priority-badge";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { DeleteProjectModal } from "@/modules/todo/view/modals/delete-project-modal";
+import { getPriorityStripeColor } from "@/utils/priority";
 import type { TodayProjectDto } from "@repo/contracts/tasks/today";
 import { Card } from "@repo/ui/card";
 import { Checkbox } from "@repo/ui/checkbox";
@@ -12,17 +13,6 @@ import { Calendar, Plus } from "lucide-react";
 import { useMemo } from "react";
 import { ProjectColumnHeader } from "../project-column-header";
 import { useProjectColumnHook } from "./project-column.hook";
-
-/** Stripe color class for the left edge of task cards by project. */
-function getProjectStripeColor(projectId: string): string {
-	if (projectId === PROJECT_INBOX_ID) return "bg-muted-foreground/50";
-	// Cycle by project id for consistent colors across columns
-	const colors = ["bg-violet-500", "bg-emerald-600", "bg-blue-600"] as const;
-	const idx =
-		projectId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) %
-		colors.length;
-	return colors[idx];
-}
 
 type ProjectColumnProps = {
 	project: TodayProjectDto;
@@ -65,9 +55,9 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 
 	const editTodoFormHeaderMeta = useMemo(():
 		| {
-				projectName: string;
-				createdAt: string;
-		  }
+			projectName: string;
+			createdAt: string;
+		}
 		| undefined => {
 		if (!selectedTask) return undefined;
 		return {
@@ -79,6 +69,11 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 	return (
 		<>
 			<div className="flex-shrink-0 w-80 h-full flex flex-col rounded-[14px] border border-border bg-card overflow-hidden">
+				<div
+					className="h-[3px] w-full flex-shrink-0"
+					style={{ background: project.color }}
+					aria-hidden
+				/>
 				<div className="px-4 pt-4 pb-3 border-b border-border/70 flex-shrink-0">
 					<ProjectColumnHeader
 						project={project}
@@ -92,28 +87,23 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 					<div className="space-y-2">
 						{project.tasks.map((task) => {
 							const dateInfo = task.dueDate ? formatDate(task.dueDate) : null;
-							const isOverdue = !!dateInfo?.isOverdue && !task.completed;
-							const stripeColor = getProjectStripeColor(project.id);
+							const stripeColor = getPriorityStripeColor(task.priority);
 
 							return (
 								<Card
 									key={task.id}
-									className={cn(
-										"relative pl-5 pr-4 py-4 border-border hover:border-primary/50 transition-colors",
-										isOverdue
-											? "bg-[#FEF2F2] dark:bg-red-950/20 border-red-200/20 dark:border-red-900/20"
-											: "bg-card",
-									)}
+									className="relative pl-5 pr-4 py-4 bg-card border-border hover:border-primary/50 transition-colors"
 									onClick={() => handleTaskClick(task, project)}
 								>
-									{/* Category stripe — left edge */}
-									<div
-										className={cn(
-											"absolute left-0 top-2 bottom-2 w-[3px] rounded-r opacity-70",
-											stripeColor,
-										)}
-										aria-hidden
-									/>
+									{stripeColor && (
+										<div
+											className={cn(
+												"absolute left-0 top-2 bottom-2 w-[3px] rounded-r opacity-80",
+												stripeColor,
+											)}
+											aria-hidden
+										/>
+									)}
 									<div className="space-y-3">
 										{/* Task Header */}
 										<div className="flex items-start gap-3">
@@ -126,7 +116,7 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 													className={cn(
 														"font-medium text-balance leading-tight",
 														task.completed &&
-															"line-through text-muted-foreground",
+														"line-through text-muted-foreground",
 													)}
 												>
 													{task.title}
@@ -144,24 +134,39 @@ export const ProjectColumn = (props: ProjectColumnProps) => {
 
 										{/* Task Footer */}
 										<RenderIf
-											condition={!!dateInfo}
+											condition={!!dateInfo || !!task.priority}
 											render={
-												<div className="flex items-center gap-1 text-xs">
-													<Calendar className="w-3 h-3 shrink-0" />
-													<span
-														className={
-															dateInfo?.isOverdue
-																? "text-destructive"
-																: "text-muted-foreground"
+												<div className="flex items-center justify-between gap-2">
+													<RenderIf
+														condition={!!dateInfo}
+														render={
+															<div className="flex items-center gap-1 text-xs">
+																<Calendar className="w-3 h-3 shrink-0" />
+																<span
+																	className={
+																		dateInfo?.isOverdue
+																			? "text-destructive"
+																			: "text-muted-foreground"
+																	}
+																>
+																	{dateInfo?.text}
+																</span>
+															</div>
 														}
-													>
-														{dateInfo?.text}
-													</span>
-													{dateInfo?.isOverdue && !task.completed && (
-														<span className="text-[10px] font-semibold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 px-1.5 py-0.5 rounded">
-															overdue
-														</span>
-													)}
+													/>
+													<RenderIf
+														condition={!!task.priority}
+														render={
+															<PriorityBadge
+																priority={
+																	task.priority as
+																	| "high"
+																	| "medium"
+																	| "low"
+																}
+															/>
+														}
+													/>
 												</div>
 											}
 										/>
