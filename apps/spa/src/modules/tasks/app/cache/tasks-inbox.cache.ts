@@ -149,7 +149,10 @@ export function tasksInboxCache(queryClient: QueryClient) {
 		 * @param taskId - The ID of the task to update.
 		 * @param patch - The patch to apply to the task.
 		 */
-		patchTaskOptimistic(taskId: string, patch: Partial<TaskWithOptimisticState>) {
+		patchTaskOptimistic(
+			taskId: string,
+			patch: Partial<TaskWithOptimisticState>,
+		) {
 			queryClient.setQueryData<TasksInboxData>(queryKey, (old) => {
 				if (!old) return old;
 				return {

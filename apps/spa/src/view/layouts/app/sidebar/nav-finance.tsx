@@ -10,7 +10,11 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "@/config/routes";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@repo/ui/collapsible";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@repo/ui/collapsible";
 import {
 	SidebarGroup,
 	SidebarGroupLabel,
@@ -23,11 +27,31 @@ export function NavFinance() {
 	const { t } = useTranslation();
 
 	const items = [
-		{ url: ROUTES.FINANCE.OVERVIEW, label: t("sidebar.financeOverview"), icon: LayoutDashboard },
-		{ url: ROUTES.FINANCE.TRANSACTIONS, label: t("sidebar.financeTransactions"), icon: ListOrdered },
-		{ url: ROUTES.FINANCE.BUDGETS, label: t("sidebar.financeBudgets"), icon: PiggyBank },
-		{ url: ROUTES.FINANCE.ACCOUNTS, label: t("sidebar.financeAccounts"), icon: CreditCard },
-		{ url: ROUTES.FINANCE.REPORTS, label: t("sidebar.financeReports"), icon: TrendingUp },
+		{
+			url: ROUTES.FINANCE.OVERVIEW,
+			label: t("sidebar.financeOverview"),
+			icon: LayoutDashboard,
+		},
+		{
+			url: ROUTES.FINANCE.TRANSACTIONS,
+			label: t("sidebar.financeTransactions"),
+			icon: ListOrdered,
+		},
+		{
+			url: ROUTES.FINANCE.BUDGETS,
+			label: t("sidebar.financeBudgets"),
+			icon: PiggyBank,
+		},
+		{
+			url: ROUTES.FINANCE.ACCOUNTS,
+			label: t("sidebar.financeAccounts"),
+			icon: CreditCard,
+		},
+		{
+			url: ROUTES.FINANCE.REPORTS,
+			label: t("sidebar.financeReports"),
+			icon: TrendingUp,
+		},
 	];
 
 	return (

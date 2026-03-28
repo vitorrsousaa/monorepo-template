@@ -2,7 +2,11 @@ import { QUERY_KEYS } from "@/config/query-keys";
 import { projectDetailCache } from "@/modules/projects/app/cache";
 import { tasksInboxCache } from "@/modules/tasks/app/cache/tasks-inbox.cache";
 import { updateTaskCompletion } from "@/modules/tasks/app/services/update-task-completion";
-import { cancelRelatedQueries, generateTempId, restoreSnapshot } from "@/utils/optimistic";
+import {
+	cancelRelatedQueries,
+	generateTempId,
+	restoreSnapshot,
+} from "@/utils/optimistic";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { UpdateTaskCompletionInput } from "@repo/contracts/tasks/completion";
 import type { Task } from "@repo/contracts/tasks/entities";

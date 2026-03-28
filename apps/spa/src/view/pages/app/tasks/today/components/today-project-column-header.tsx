@@ -20,7 +20,9 @@ interface TodayProjectColumnHeaderProps {
 	project: TodayProjectDto;
 }
 
-export const TodayProjectColumnHeader = (props: TodayProjectColumnHeaderProps) => {
+export const TodayProjectColumnHeader = (
+	props: TodayProjectColumnHeaderProps,
+) => {
 	const { project } = props;
 
 	const navigate = useNavigate();

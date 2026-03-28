@@ -25,7 +25,9 @@ export function mapTaskFormToUpdateInput(
 			frequency: recurrence.frequency!,
 			weeklyDays: recurrence.weeklyDays,
 			endType: recurrence.endType!,
-			endDate: recurrence.endDate ? recurrence.endDate.toISOString() : undefined,
+			endDate: recurrence.endDate
+				? recurrence.endDate.toISOString()
+				: undefined,
 			endCount: recurrence.endCount,
 		};
 	}

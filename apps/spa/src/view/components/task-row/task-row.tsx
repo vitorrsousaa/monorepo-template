@@ -64,15 +64,15 @@ export function TaskRow({
 		priority: task.priority ?? "none",
 		recurrence: task.recurrence
 			? {
-				enabled: task.recurrence.enabled,
-				frequency: task.recurrence.frequency,
-				weeklyDays: task.recurrence.weeklyDays ?? [],
-				endType: task.recurrence.endType,
-				endDate: task.recurrence.endDate
-					? new Date(task.recurrence.endDate)
-					: undefined,
-				endCount: task.recurrence.endCount ?? undefined,
-			}
+					enabled: task.recurrence.enabled,
+					frequency: task.recurrence.frequency,
+					weeklyDays: task.recurrence.weeklyDays ?? [],
+					endType: task.recurrence.endType,
+					endDate: task.recurrence.endDate
+						? new Date(task.recurrence.endDate)
+						: undefined,
+					endCount: task.recurrence.endCount ?? undefined,
+				}
 			: { enabled: false },
 	};
 
@@ -198,7 +198,7 @@ export function TaskRow({
 								className={cn(
 									"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
 									chipStatus === "overdue" &&
-									"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+										"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
 									chipStatus === "late" && "bg-destructive/10 text-destructive",
 									chipStatus === "ok" && "bg-muted text-muted-foreground",
 								)}
@@ -212,9 +212,7 @@ export function TaskRow({
 					<RenderIf
 						condition={showPriority && !!priority}
 						render={
-							<PriorityBadge
-								priority={priority as "high" | "medium" | "low"}
-							/>
+							<PriorityBadge priority={priority as "high" | "medium" | "low"} />
 						}
 					/>
 					{children}

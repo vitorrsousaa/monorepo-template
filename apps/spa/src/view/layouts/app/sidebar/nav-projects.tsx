@@ -8,7 +8,11 @@ import { ProjectListError } from "@/layouts/app/sidebar/components/project-list-
 import { ProjectListSkeleton } from "@/layouts/app/sidebar/components/project-list-skeleton";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import { NewProjectModal } from "@/modules/projects/view/modals/new-project-modal";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@repo/ui/collapsible";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@repo/ui/collapsible";
 import { RenderIf } from "@repo/ui/render-if";
 import {
 	SidebarGroup,

@@ -31,7 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const queryClient = useQueryClient();
 
 	const { user, isProfileError, isProfileFetching, isProfileSuccess } =
-		useGetAccountInfo({ enabled: signedIn, staleTime: Number.POSITIVE_INFINITY });
+		useGetAccountInfo({
+			enabled: signedIn,
+			staleTime: Number.POSITIVE_INFINITY,
+		});
 
 	const signInWithGoogle = useCallback(() => {
 		// const CLIENT_ID = env.VITE_AUTH_GOOGLE_ID;

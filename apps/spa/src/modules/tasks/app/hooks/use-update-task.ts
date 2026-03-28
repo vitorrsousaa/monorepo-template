@@ -14,25 +14,28 @@ export function useUpdateTask() {
 	const queryClient = useQueryClient();
 
 	const { mutate: editTask, isPending } = useMutation({
-		mutationFn: ({ taskId, projectId: _projectId, ...input }: UpdateTaskVariables) =>
-			updateTask(taskId, input),
+		mutationFn: ({
+			taskId,
+			projectId: _projectId,
+			...input
+		}: UpdateTaskVariables) => updateTask(taskId, input),
 		onMutate: async (variables) => {
 			const isInbox = variables.projectId == null;
-			
+
 			if (isInbox) {
 				const cache = tasksInboxCache(queryClient);
-				cache.patchTaskOptimistic(variables.taskId, {...variables});
+				cache.patchTaskOptimistic(variables.taskId, { ...variables });
 			}
 		},
 		onSuccess: (data, variables) => {
 			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TASKS.TODAY });
-			
+
 			const isInbox = variables.projectId == null;
-			
+
 			if (isInbox) {
 				const cache = tasksInboxCache(queryClient);
 				cache.replaceTaskFromServer(data);
-			} 
+			}
 
 			if (variables.projectId) {
 				queryClient.invalidateQueries({
@@ -42,12 +45,12 @@ export function useUpdateTask() {
 		},
 		onError: async (_error, variables) => {
 			const isInbox = variables.projectId == null;
-			
+
 			if (isInbox) {
 				const cache = tasksInboxCache(queryClient);
 				cache.markError(variables.taskId);
 			}
-			
+
 			toast.error("Could not update task");
 		},
 	});

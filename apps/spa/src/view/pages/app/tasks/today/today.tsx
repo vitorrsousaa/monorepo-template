@@ -63,15 +63,11 @@ export function Today() {
 					render={
 						<div className="p-6 flex gap-4" style={{ minWidth: "max-content" }}>
 							{todayData.projects.map((project) => (
-								<TodayProjectColumn
-									key={project.id}
-									project={project}
-								/>
+								<TodayProjectColumn key={project.id} project={project} />
 							))}
 						</div>
 					}
 				/>
-
 			</div>
 
 			<NewTaskModal

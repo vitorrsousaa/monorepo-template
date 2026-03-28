@@ -9,8 +9,8 @@ export interface TaskListCardProps {
 	projectId: string;
 	tasks: TaskWithOptimisticState[];
 	onTaskCheck:
-	| ((task: TaskWithOptimisticState, checked: boolean) => void)
-	| undefined;
+		| ((task: TaskWithOptimisticState, checked: boolean) => void)
+		| undefined;
 	onRetry?: (taskId: string) => void;
 	projectName?: string;
 }

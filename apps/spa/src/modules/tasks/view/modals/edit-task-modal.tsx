@@ -26,7 +26,8 @@ export function EditTaskModal({
 	const { editTask } = useUpdateTask();
 
 	const taskId = initialValues.id;
-	const projectId = initialValues.project !== "inbox" ? initialValues.project : undefined;
+	const projectId =
+		initialValues.project !== "inbox" ? initialValues.project : undefined;
 
 	async function handleSubmit(data: TTaskFormSchema) {
 		if (!taskId) return;
