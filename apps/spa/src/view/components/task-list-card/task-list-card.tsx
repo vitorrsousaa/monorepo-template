@@ -24,7 +24,14 @@ export function TaskListCard(props: TaskListCardProps) {
 		task: TaskWithOptimisticState,
 		checked: boolean,
 	) => {
-		if (!task.id || task.optimisticState !== OptimisticState.SYNCED) return;
+		if (!task.id) return;
+		const os = task?.optimisticState;
+		if (
+			os === OptimisticState.PENDING ||
+			os === OptimisticState.ERROR
+		) {
+			return;
+		}
 		toggleTaskCompletion({
 			taskId: task.id,
 			projectId: task.projectId ?? null,

@@ -1,6 +1,7 @@
 import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
+import { Button } from "@repo/ui/button";
 import { cn } from "@repo/ui/utils";
 import { ChevronDown, GripVertical, Plus } from "lucide-react";
 import { useReducer, useState } from "react";
@@ -87,17 +88,15 @@ export function ProjectSectionBlock({
 					<span className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
 						{tasks.length}
 					</span>
-					<button
+					<Button
 						type="button"
-						className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground/80 opacity-0 transition-opacity hover:bg-muted hover:text-foreground [.group:hover]:opacity-100"
-						onClick={(e) => {
-							e.stopPropagation();
-							toggleIsNewTaskModalOpen();
-						}}
+						size="icon"
+						variant="ghost"
+						onClick={toggleIsNewTaskModalOpen}
 						aria-label={`Add task to ${name}`}
 					>
 						<Plus className="h-3 w-3" />
-					</button>
+					</Button>
 				</button>
 
 				{!collapsed && (
