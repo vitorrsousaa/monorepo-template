@@ -20,6 +20,7 @@ export function TodayProjectColumn(props: TodayProjectColumnProps) {
       taskId: task.id,
       projectId: task.projectId ?? null,
       nextCompleted: checked,
+      task,
     });
   };
   return (

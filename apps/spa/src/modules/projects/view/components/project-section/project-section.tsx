@@ -26,6 +26,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 			taskId: task.id,
 			projectId,
 			nextCompleted: checked,
+			task,
 		});
 	};
 

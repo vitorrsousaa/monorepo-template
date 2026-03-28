@@ -15,6 +15,29 @@ export function projectDetailCache(
 			return queryClient.getQueryData(queryKey) !== undefined;
 		},
 
+		/** Insert a fully-formed task (with all required fields) into a section optimistically. */
+		addFullTaskToSection(sectionId: string, task: Task) {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						sections: old.sections.map((section) => {
+							if (section.id !== sectionId) return section;
+							return {
+								...section,
+								tasks: [
+									...section.tasks,
+									{ ...task, optimisticState: OptimisticState.PENDING },
+								],
+							};
+						}),
+					};
+				},
+			);
+		},
+
 		addTaskToSection(sectionId: string, tempId: string, data: Partial<Task>) {
 			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
 				queryKey,

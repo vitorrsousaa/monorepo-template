@@ -2,8 +2,9 @@ import { QUERY_KEYS } from "@/config/query-keys";
 import { projectDetailCache } from "@/modules/projects/app/cache";
 import { tasksInboxCache } from "@/modules/tasks/app/cache/tasks-inbox.cache";
 import { updateTaskCompletion } from "@/modules/tasks/app/services/update-task-completion";
-import { cancelRelatedQueries, restoreSnapshot } from "@/utils/optimistic";
+import { cancelRelatedQueries, generateTempId, restoreSnapshot } from "@/utils/optimistic";
 import type { UpdateTaskCompletionInput } from "@repo/contracts/tasks/completion";
+import type { Task } from "@repo/contracts/tasks/entities";
 import { toast } from "@repo/ui/sonner";
 import {
 	type QueryClient,
@@ -15,6 +16,8 @@ import {
 type UpdateTaskCompletionVariables = UpdateTaskCompletionInput & {
 	taskId: string;
 	nextCompleted: boolean;
+	/** Full task object — required to handle recurring task next-task insertion */
+	task: Task;
 };
 
 type UpdateTaskCompletionMutationContext = {
@@ -23,13 +26,15 @@ type UpdateTaskCompletionMutationContext = {
 	touchedInbox: boolean;
 	touchedProject: boolean;
 	projectIdForDetail: string | null;
+	/** Temp ID of the optimistically inserted next task, if any */
+	tempNextTaskId: string | null;
 };
 
 async function runUpdateTaskCompletionOnMutate(
 	queryClient: QueryClient,
 	variables: UpdateTaskCompletionVariables,
 ): Promise<UpdateTaskCompletionMutationContext> {
-	const { taskId, projectId, nextCompleted } = variables;
+	const { taskId, projectId, nextCompleted, task } = variables;
 	const isInbox = projectId == null;
 
 	const relatedKeys: QueryKey[] = isInbox
@@ -60,12 +65,44 @@ async function runUpdateTaskCompletionOnMutate(
 		}
 	}
 
+	// Optimistically insert a next task when completing a recurring task
+	const isCompletingRecurring =
+		nextCompleted && task.recurrence?.enabled === true;
+	let tempNextTaskId: string | null = null;
+
+	if (isCompletingRecurring) {
+		tempNextTaskId = generateTempId();
+		const optimisticNextTask: Task = {
+			...task,
+			id: tempNextTaskId,
+			completed: false,
+			completedAt: null,
+			nextTaskId: null,
+		};
+
+		if (isInbox) {
+			tasksInboxCache(queryClient).addOptimistic(
+				tempNextTaskId,
+				optimisticNextTask,
+			);
+		} else if (projectId) {
+			const detailCache = projectDetailCache(queryClient, projectId);
+			if (detailCache.exists()) {
+				detailCache.addFullTaskToSection(
+					task.sectionId ?? "",
+					optimisticNextTask,
+				);
+			}
+		}
+	}
+
 	return {
 		inboxSnapshot,
 		projectDetailSnapshot,
 		touchedInbox: isInbox,
 		touchedProject: !isInbox,
 		projectIdForDetail: projectId ?? null,
+		tempNextTaskId,
 	};
 }
 
@@ -76,14 +113,17 @@ export function useUpdateTaskCompletion() {
 		mutationFn: async ({
 			taskId,
 			nextCompleted: _nextCompleted,
+			task: _task,
 			...input
 		}: UpdateTaskCompletionVariables) => {
 			return updateTaskCompletion({ taskId, ...input });
 		},
 		onMutate: (variables) =>
 			runUpdateTaskCompletionOnMutate(queryClient, variables),
-		onSuccess: (data, variables) => {
+		onSuccess: (data, variables, context) => {
 			const { projectId } = variables;
+			const { tempNextTaskId } = context;
+
 			if (projectId) {
 				const detailCache = projectDetailCache(queryClient, projectId);
 				if (detailCache.exists()) {
@@ -91,6 +131,41 @@ export function useUpdateTaskCompletion() {
 				}
 			} else {
 				tasksInboxCache(queryClient).replaceTaskFromServer(data.task);
+			}
+
+			// Handle the optimistic next task for recurring completions
+			if (tempNextTaskId !== null) {
+				if (data.nextTask) {
+					// Replace the temp task with the real server task
+					if (projectId) {
+						const detailCache = projectDetailCache(queryClient, projectId);
+						if (detailCache.exists()) {
+							detailCache.replaceTaskInSection(
+								data.nextTask.sectionId ?? "",
+								tempNextTaskId,
+								data.nextTask,
+							);
+						}
+					} else {
+						tasksInboxCache(queryClient).replaceWithReal(
+							tempNextTaskId,
+							data.nextTask,
+						);
+					}
+				} else {
+					// End condition reached — no next task; remove the optimistic placeholder
+					if (projectId) {
+						const detailCache = projectDetailCache(queryClient, projectId);
+						if (detailCache.exists()) {
+							detailCache.removeTaskFromSection(
+								variables.task.sectionId ?? "",
+								tempNextTaskId,
+							);
+						}
+					} else {
+						tasksInboxCache(queryClient).remove(tempNextTaskId);
+					}
+				}
 			}
 		},
 		onError: (error, _variables, context) => {

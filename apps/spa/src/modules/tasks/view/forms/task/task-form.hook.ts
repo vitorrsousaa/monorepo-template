@@ -49,6 +49,7 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 			section: data.section,
 			priority: data.priority,
 			dueDate,
+			recurrence: data.recurrence,
 		};
 
 		await onSubmit?.(payload);

@@ -1,13 +1,20 @@
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
+import { formatRecurrencePreview } from "@/utils/format-recurrence";
 import { OptimisticState } from "@/utils/types";
 import { PriorityBadge } from "@/components/priority-badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@repo/ui/tooltip";
 import { cn } from "@repo/ui/utils";
-import { AlertCircle, Calendar, Loader2 } from "lucide-react";
+import { AlertCircle, Calendar, Loader2, Repeat } from "lucide-react";
 import { useReducer } from "react";
 import type { TaskRowProps } from "./task-row-types";
 
@@ -43,6 +50,8 @@ export function TaskRow({
 		: null;
 	const chipStatus = dueDate ? getDueDateChipStatus(dueDate) : null;
 	const dueDateLabel = dueDate ? formatDueDateChip(dueDate) : null;
+	const recurrenceLabel = formatRecurrencePreview(task.recurrence ?? null);
+	const isRecurring = !!task.recurrence?.enabled;
 
 	const editModalInitialValues: Partial<TTaskFormSchema> = {
 		id: task.id,
@@ -53,6 +62,18 @@ export function TaskRow({
 		section: task.sectionId ?? "none",
 		project: task.projectId ?? "inbox",
 		priority: task.priority ?? "none",
+		recurrence: task.recurrence
+			? {
+					enabled: task.recurrence.enabled,
+					frequency: task.recurrence.frequency,
+					weeklyDays: task.recurrence.weeklyDays ?? [],
+					endType: task.recurrence.endType,
+					endDate: task.recurrence.endDate
+						? new Date(task.recurrence.endDate)
+						: undefined,
+					endCount: task.recurrence.endCount ?? undefined,
+				}
+			: { enabled: false },
 	};
 
 	const editModalHeaderMeta = {
@@ -148,7 +169,7 @@ export function TaskRow({
 					/>
 				</div>
 
-				{/* Meta: date chip, priority badge, slots */}
+				{/* Meta: date chip, recurrence indicator, priority badge, slots */}
 				<div className="flex shrink-0 items-center gap-2">
 					<RenderIf
 						condition={showDueDate && !!dueDateLabel && !!chipStatus}
@@ -165,6 +186,26 @@ export function TaskRow({
 								<Calendar className="h-3 w-3" aria-hidden />
 								{dueDateLabel}
 							</span>
+						}
+					/>
+					<RenderIf
+						condition={isRecurring}
+						render={
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<span
+											className="inline-flex items-center text-muted-foreground"
+											aria-label={recurrenceLabel || "Recurring task"}
+										>
+											<Repeat className="h-3 w-3" aria-hidden />
+										</span>
+									</TooltipTrigger>
+									<TooltipContent>
+										{recurrenceLabel || "Recurring task"}
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						}
 					/>
 					<RenderIf

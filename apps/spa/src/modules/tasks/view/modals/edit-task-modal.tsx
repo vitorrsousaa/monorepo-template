@@ -1,3 +1,5 @@
+import { useUpdateTask } from "@/modules/tasks/app/hooks/use-update-task";
+import { mapTaskFormToUpdateInput } from "@/modules/tasks/app/mappers/update-task";
 import { TaskForm } from "@/modules/tasks/view/forms/task";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { Button } from "@repo/ui/button";
@@ -21,6 +23,17 @@ export function EditTaskModal({
 	onDuplicate,
 	onDelete,
 }: EditTaskModalProps) {
+	const { editTask } = useUpdateTask();
+
+	const taskId = initialValues.id;
+	const projectId = initialValues.project !== "inbox" ? initialValues.project : undefined;
+
+	async function handleSubmit(data: TTaskFormSchema) {
+		if (!taskId) return;
+		editTask({ taskId, projectId, ...mapTaskFormToUpdateInput(data) });
+		onClose();
+	}
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent
@@ -60,6 +73,7 @@ export function EditTaskModal({
 				<TaskForm
 					mode="edit"
 					onCancel={onClose}
+					onSubmit={handleSubmit}
 					initialValues={initialValues}
 					metadata={headerMeta}
 				/>

@@ -36,6 +36,7 @@ export function Inbox() {
 			taskId: task.id,
 			projectId: task.projectId ?? null,
 			nextCompleted: checked,
+			task,
 		});
 	};
 
