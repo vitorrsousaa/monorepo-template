@@ -49,7 +49,7 @@ export class GetProjectsSummaryService implements IGetProjectsSummaryService {
 
 			const percentageCompleted =
 				totalCount > 0
-					? Math.round((completedCount / totalCount) * 10) / 10
+					? (Math.round((completedCount / totalCount) * 10) / 10) * 100
 					: 0;
 
 			return {
