@@ -16,7 +16,7 @@ export class UpdateTaskService implements IUpdateTaskService {
 		const currentTask = await this.repository.getByUserId(
 			input.taskId,
 			input.userId,
-			undefined,
+			input.projectId,
 		);
 
 		if (!currentTask) {
