@@ -1,9 +1,6 @@
 import { TaskListCard } from "@/components/task-list-card";
-import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
-import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
-import { OptimisticState } from "@/utils/types";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { RenderIf } from "@repo/ui/render-if";
@@ -24,21 +21,7 @@ export function Inbox() {
 	} = useInboxHook();
 
 	const { retryTask } = useCreateTasks();
-	const { toggleTaskCompletion } = useUpdateTaskCompletion();
 	const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
-
-	const handleInboxTaskCheck = (
-		task: TaskWithOptimisticState,
-		checked: boolean,
-	) => {
-		if (!task.id || task.optimisticState !== OptimisticState.SYNCED) return;
-		toggleTaskCompletion({
-			taskId: task.id,
-			projectId: task.projectId ?? null,
-			nextCompleted: checked,
-			task,
-		});
-	};
 
 	return (
 		<div className="p-8 space-y-8">
@@ -83,7 +66,6 @@ export function Inbox() {
 							<TaskListCard
 								projectId={PROJECTS_DEFAULT_IDS.INBOX}
 								tasks={inboxTasks}
-								onTaskCheck={handleInboxTaskCheck}
 								onRetry={retryTask}
 							/>
 						</div>

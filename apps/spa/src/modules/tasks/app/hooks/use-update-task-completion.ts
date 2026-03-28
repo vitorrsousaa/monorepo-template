@@ -7,6 +7,7 @@ import {
 	generateTempId,
 	restoreSnapshot,
 } from "@/utils/optimistic";
+import { OptimisticState } from "@/utils/types";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { UpdateTaskCompletionInput } from "@repo/contracts/tasks/completion";
 import type { Task } from "@repo/contracts/tasks/entities";
@@ -18,6 +19,7 @@ import {
 	useMutation,
 	useQueryClient,
 } from "@tanstack/react-query";
+import type { TaskWithOptimisticState } from "../cache/types";
 
 type UpdateTaskCompletionVariables = UpdateTaskCompletionInput & {
 	taskId: string;
@@ -93,7 +95,7 @@ async function runUpdateTaskCompletionOnMutate(
 	if (isCompletingRecurring) {
 		tempNextTaskId = generateTempId();
 		const nextDue = calculateNextDueDate(task);
-		const optimisticNextTask: Task = {
+		const optimisticNextTask: TaskWithOptimisticState = {
 			...task,
 			id: tempNextTaskId,
 			completed: false,
@@ -101,6 +103,7 @@ async function runUpdateTaskCompletionOnMutate(
 			nextTaskId: null,
 			dueDate: nextDue ?? task.dueDate,
 			recurrence: nextRecurrenceForOptimistic(task.recurrence),
+			optimisticState: OptimisticState.PENDING,
 		};
 
 		if (isInbox) {
@@ -189,7 +192,7 @@ export function useUpdateTaskCompletion() {
 				}
 			}
 		},
-		onError: (error, _variables, context) => {
+		onError: (_error, _variables, context) => {
 			if (!context) return;
 
 			if (context.touchedInbox) {

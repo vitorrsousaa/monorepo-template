@@ -31,7 +31,6 @@ export function ProjectSectionBlock({
 	sectionId,
 	projectId,
 	projectName,
-	onTaskCheck,
 }: ProjectSectionBlockProps) {
 	const [collapsed, setCollapsed] = useState(false);
 	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
@@ -106,7 +105,6 @@ export function ProjectSectionBlock({
 						sectionId={sectionId}
 						projectId={projectId}
 						tasks={tasks}
-						onTaskCheck={onTaskCheck}
 						projectName={projectName}
 					/>
 				)}

@@ -1,8 +1,5 @@
 import { TaskListCard } from "@/components/task-list-card";
-import type { TaskWithOptimisticState } from "@/modules/tasks/app/cache/types";
 import type { TodayTasksResponseWithOptimisticState } from "@/modules/tasks/app/hooks/use-get-today-tasks";
-import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
-import { OptimisticState } from "@/utils/types";
 import { TodayProjectColumnHeader } from "./today-project-column-header";
 
 export type TodayProjectColumnProps = {
@@ -12,17 +9,6 @@ export type TodayProjectColumnProps = {
 export function TodayProjectColumn(props: TodayProjectColumnProps) {
 	const { project } = props;
 
-	const { toggleTaskCompletion } = useUpdateTaskCompletion();
-
-	const handleTaskCheck = (task: TaskWithOptimisticState, checked: boolean) => {
-		if (!task.id || task?.optimisticState !== OptimisticState.SYNCED) return;
-		toggleTaskCompletion({
-			taskId: task.id,
-			projectId: task.projectId ?? null,
-			nextCompleted: checked,
-			task,
-		});
-	};
 	return (
 		<>
 			<div className="flex-shrink-0 w-80 h-full flex flex-col rounded-[14px] border border-border bg-card overflow-hidden">
@@ -42,7 +28,6 @@ export function TodayProjectColumn(props: TodayProjectColumnProps) {
 							<TaskListCard
 								projectId={project.id}
 								tasks={project.tasks}
-								onTaskCheck={handleTaskCheck}
 							/>
 						</div>
 					</div>
