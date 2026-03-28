@@ -69,9 +69,10 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(1);
-			expect(cached!.sections[0].tasks[0].id).toBe("new-task");
-			expect(cached!.sections[0].tasks[0].optimisticState).toBe(
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(1);
+			expect(cached?.sections[0].tasks[0].id).toBe("new-task");
+			expect(cached?.sections[0].tasks[0].optimisticState).toBe(
 				OptimisticState.PENDING,
 			);
 		});
@@ -105,17 +106,18 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			const addedTask = cached!.sections[0].tasks[0];
-			expect(addedTask.id).toBe("temp-id");
-			expect(addedTask.title).toBe("New Task");
-			expect(addedTask.projectId).toBe(PROJECT_ID);
-			expect(addedTask.sectionId).toBe("section-1");
-			expect(addedTask.completed).toBe(false);
-			expect(addedTask.description).toBeNull();
-			expect(addedTask.completedAt).toBeNull();
-			expect(addedTask.dueDate).toBeNull();
-			expect(addedTask.priority).toBeNull();
-			expect(addedTask.optimisticState).toBe(OptimisticState.PENDING);
+			expect(cached).toBeDefined();
+			const addedTask = cached?.sections[0].tasks[0];
+			expect(addedTask?.id).toBe("temp-id");
+			expect(addedTask?.title).toBe("New Task");
+			expect(addedTask?.projectId).toBe(PROJECT_ID);
+			expect(addedTask?.sectionId).toBe("section-1");
+			expect(addedTask?.completed).toBe(false);
+			expect(addedTask?.description).toBeNull();
+			expect(addedTask?.completedAt).toBeNull();
+			expect(addedTask?.dueDate).toBeNull();
+			expect(addedTask?.priority).toBeNull();
+			expect(addedTask?.optimisticState).toBe(OptimisticState.PENDING);
 		});
 
 		it("Should use provided data for optional fields when data is supplied", () => {
@@ -136,12 +138,13 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			const addedTask = cached!.sections[0].tasks[0];
-			expect(addedTask.title).toBe("Task with details");
-			expect(addedTask.description).toBe("A description");
-			expect(addedTask.dueDate).toBe("2026-06-01T00:00:00.000Z");
-			expect(addedTask.priority).toBe("high");
-			expect(addedTask.optimisticState).toBe(OptimisticState.PENDING);
+			expect(cached).toBeDefined();
+			const addedTask = cached?.sections[0].tasks[0];
+			expect(addedTask?.title).toBe("Task with details");
+			expect(addedTask?.description).toBe("A description");
+			expect(addedTask?.dueDate).toBe("2026-06-01T00:00:00.000Z");
+			expect(addedTask?.priority).toBe("high");
+			expect(addedTask?.optimisticState).toBe(OptimisticState.PENDING);
 		});
 	});
 
@@ -164,10 +167,11 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(1);
-			expect(cached!.sections[0].tasks[0].id).toBe("real-id");
-			expect(cached!.sections[0].tasks[0].title).toBe("Real Task");
-			expect(cached!.sections[0].tasks[0].optimisticState).toBe(
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(1);
+			expect(cached?.sections[0].tasks[0].id).toBe("real-id");
+			expect(cached?.sections[0].tasks[0].title).toBe("Real Task");
+			expect(cached?.sections[0].tasks[0].optimisticState).toBe(
 				OptimisticState.SYNCED,
 			);
 		});
@@ -194,10 +198,11 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(2);
-			expect(cached!.sections[0].tasks[0].id).toBe("existing-task");
-			expect(cached!.sections[0].tasks[0].title).toBe("Existing");
-			expect(cached!.sections[0].tasks[1].id).toBe("real-id");
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(2);
+			expect(cached?.sections[0].tasks[0].id).toBe("existing-task");
+			expect(cached?.sections[0].tasks[0].title).toBe("Existing");
+			expect(cached?.sections[0].tasks[1].id).toBe("real-id");
 		});
 	});
 
@@ -219,7 +224,8 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(0);
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(0);
 		});
 
 		it("Should leave section unchanged when task does not exist", () => {
@@ -239,8 +245,9 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(1);
-			expect(cached!.sections[0].tasks[0].id).toBe("existing-task");
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(1);
+			expect(cached?.sections[0].tasks[0].id).toBe("existing-task");
 		});
 	});
 
@@ -266,11 +273,12 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			const patchedTask = cached!.sections[0].tasks[0];
-			expect(patchedTask.completed).toBe(true);
-			expect(patchedTask.completedAt).toEqual(expect.any(String));
+			expect(cached).toBeDefined();
+			const patchedTask = cached?.sections[0].tasks[0];
+			expect(patchedTask?.completed).toBe(true);
+			expect(patchedTask?.completedAt).toEqual(expect.any(String));
 			expect(() =>
-				new Date(patchedTask.completedAt!).toISOString(),
+				new Date(patchedTask?.completedAt ?? "").toISOString(),
 			).not.toThrow();
 		});
 
@@ -295,9 +303,10 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			const patchedTask = cached!.sections[0].tasks[0];
-			expect(patchedTask.completed).toBe(false);
-			expect(patchedTask.completedAt).toBeNull();
+			expect(cached).toBeDefined();
+			const patchedTask = cached?.sections[0].tasks[0];
+			expect(patchedTask?.completed).toBe(false);
+			expect(patchedTask?.completedAt).toBeNull();
 		});
 
 		it("Should find task across multiple sections when task is not in first section", () => {
@@ -321,9 +330,10 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(0);
-			expect(cached!.sections[1].tasks[0].completed).toBe(true);
-			expect(cached!.sections[1].tasks[0].completedAt).toEqual(
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(0);
+			expect(cached?.sections[1].tasks[0].completed).toBe(true);
+			expect(cached?.sections[1].tasks[0].completedAt).toEqual(
 				expect.any(String),
 			);
 		});
@@ -345,8 +355,9 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks[0].completed).toBe(false);
-			expect(cached!.sections[0].tasks[0].completedAt).toBeNull();
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks[0].completed).toBe(false);
+			expect(cached?.sections[0].tasks[0].completedAt).toBeNull();
 		});
 	});
 
@@ -372,8 +383,9 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks[0].title).toBe("Updated from Server");
-			expect(cached!.sections[0].tasks[0].optimisticState).toBe(
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks[0].title).toBe("Updated from Server");
+			expect(cached?.sections[0].tasks[0].optimisticState).toBe(
 				OptimisticState.SYNCED,
 			);
 		});
@@ -397,8 +409,9 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[1].tasks[0].title).toBe("Updated");
-			expect(cached!.sections[1].tasks[0].optimisticState).toBe(
+			expect(cached).toBeDefined();
+			expect(cached?.sections[1].tasks[0].title).toBe("Updated");
+			expect(cached?.sections[1].tasks[0].optimisticState).toBe(
 				OptimisticState.SYNCED,
 			);
 		});
@@ -424,9 +437,10 @@ describe("projectDetailCache", () => {
 
 			// Assert
 			const cached = readCache(queryClient);
-			expect(cached!.sections[0].tasks).toHaveLength(1);
-			expect(cached!.sections[0].tasks[0].id).toBe("existing-task");
-			expect(cached!.sections[0].tasks[0].title).toBe("Unchanged");
+			expect(cached).toBeDefined();
+			expect(cached?.sections[0].tasks).toHaveLength(1);
+			expect(cached?.sections[0].tasks[0].id).toBe("existing-task");
+			expect(cached?.sections[0].tasks[0].title).toBe("Unchanged");
 		});
 	});
 });
