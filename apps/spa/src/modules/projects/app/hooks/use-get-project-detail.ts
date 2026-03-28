@@ -1,7 +1,8 @@
 import { QUERY_KEYS } from "@/config/query-keys";
+import { sectionsByProjectCache } from "@/modules/sections/app/cache";
 import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-create-tasks";
 import type { WithOptimisticState } from "@/utils/types";
-import { sectionsByProjectCache } from "@/modules/sections/app/cache";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProjectDetail } from "../services/get-project-detail";
@@ -35,7 +36,8 @@ export function useGetProjectDetail(params: UseGetProjectDetailParams) {
 				const projectDetail = await getProjectDetail({ projectId });
 
 				const sectionsCache = sectionsByProjectCache(queryClient, projectId);
-				sectionsCache.set(projectDetail.sections);
+				const sectionsWithoutInbox = projectDetail.sections.filter((section) => section.id !== PROJECTS_DEFAULT_IDS.INBOX);
+				sectionsCache.set(sectionsWithoutInbox);
 
 				return projectDetail as ProjectDetailWithOptimisticState;
 			},
