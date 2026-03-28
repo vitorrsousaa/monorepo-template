@@ -49,7 +49,7 @@ function parseDateString(dateStr: string): Date {
 		Number.isNaN(month) ||
 		Number.isNaN(day)
 	) {
-		return new Date(NaN);
+		return new Date(Number.NaN);
 	}
 	return new Date(year, month - 1, day);
 }

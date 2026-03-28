@@ -1,1 +1,1 @@
-export type { GetByUserSettingsResponse } from './output';
+export type { GetByUserSettingsResponse } from "./output";
