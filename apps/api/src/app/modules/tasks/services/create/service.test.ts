@@ -28,6 +28,7 @@ describe("CreateTasksService", () => {
 			dueDate: null,
 			projectId: null,
 			sectionId: null,
+			recurrence: null,
 		});
 	});
 
@@ -53,6 +54,7 @@ describe("CreateTasksService", () => {
 			dueDate: "2024-06-15",
 			projectId: "p-1",
 			sectionId: "s-1",
+			recurrence: null,
 		});
 	});
 
@@ -68,7 +70,37 @@ describe("CreateTasksService", () => {
 				dueDate: null,
 				projectId: null,
 				sectionId: null,
+				recurrence: null,
 			}),
+		);
+	});
+
+	it("should pass recurrence through to repository when provided", async () => {
+		const recurrence = {
+			enabled: true,
+			frequency: "daily" as const,
+			endType: "never" as const,
+		};
+		vi.mocked(repo.create).mockResolvedValue(buildTask({ recurrence }));
+
+		await sut.execute({
+			userId: "u-1",
+			title: "Recurring task",
+			recurrence,
+		});
+
+		expect(repo.create).toHaveBeenCalledWith(
+			expect.objectContaining({ recurrence }),
+		);
+	});
+
+	it("should pass recurrence: null to repository when not provided", async () => {
+		vi.mocked(repo.create).mockResolvedValue(buildTask());
+
+		await sut.execute({ userId: "u-1", title: "No recurrence" });
+
+		expect(repo.create).toHaveBeenCalledWith(
+			expect.objectContaining({ recurrence: null }),
 		);
 	});
 });

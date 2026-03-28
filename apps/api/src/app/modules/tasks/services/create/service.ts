@@ -19,6 +19,8 @@ export class CreateTasksService implements ICreateTasksService {
 			dueDate: input.dueDate ?? null,
 			projectId: input.projectId ?? null,
 			sectionId: input.sectionId ?? null,
+			recurrence: input.recurrence ?? null,
+			nextTaskId: null,
 		});
 		return { task };
 	}
