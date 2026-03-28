@@ -27,7 +27,7 @@ export class TasksDynamoRepository implements ITasksRepository {
 		private readonly dynamoClient: IDatabaseClient,
 		private readonly mapper: TasksMapper<TasksDynamoDBEntity>,
 	) {}
-
+	
 	async create(
 		data: Omit<
 			Task,
@@ -130,63 +130,6 @@ export class TasksDynamoRepository implements ITasksRepository {
 
 		const dbTodo = this.dbTodos.find((t) => t.id === id);
 		return dbTodo ? this.mapper.toDomain(dbTodo) : null;
-	}
-
-	async update(id: string, data: Partial<Todo>): Promise<Todo | null> {
-		// TODO: Implement DynamoDB update
-		// const updateExpression = this.buildUpdateExpression(data);
-		// const result = await this.dynamoClient.update({
-		//   TableName: this.tableName,
-		//   Key: { PK: `TODO#${id}`, SK: 'METADATA' },
-		//   UpdateExpression: updateExpression.expression,
-		//   ExpressionAttributeValues: updateExpression.values,
-		//   ReturnValues: 'ALL_NEW'
-		// });
-		// return result.Attributes ? this.mapper.toDomain(result.Attributes) : null;
-
-		const todoIndex = this.dbTodos.findIndex((t) => t.id === id);
-
-		if (todoIndex === -1) {
-			return null;
-		}
-
-		const currentDbTodo = this.dbTodos[todoIndex];
-
-		if (!currentDbTodo) {
-			return null;
-		}
-
-		// Converts DB entity to domain
-		const currentTodo = this.mapper.toDomain(currentDbTodo);
-
-		const updatedAt = new Date();
-		const completedAt =
-			data.completed === true
-				? updatedAt
-				: data.completed === false
-					? undefined
-					: currentTodo.completedAt;
-		const updatedTodo: Todo = {
-			id: currentTodo.id,
-			userId: currentTodo.userId,
-			projectId: currentTodo.projectId,
-			title: data.title ?? currentTodo.title,
-			description: data.description ?? currentTodo.description,
-			completed: data.completed ?? currentTodo.completed,
-			order: data.order ?? currentTodo.order,
-			createdAt: currentTodo.createdAt,
-			updatedAt,
-			completedAt: completedAt ?? currentTodo.completedAt,
-			dueDate: data.dueDate !== undefined ? data.dueDate : currentTodo.dueDate,
-			priority:
-				data.priority !== undefined ? data.priority : currentTodo.priority,
-		};
-
-		// Converts back to DB format
-		const updatedDbEntity = this.mapper.toDatabase(updatedTodo);
-		this.dbTodos[todoIndex] = updatedDbEntity;
-
-		return updatedTodo;
 	}
 
 	async delete(id: string): Promise<boolean> {
@@ -330,6 +273,123 @@ export class TasksDynamoRepository implements ITasksRepository {
 		]);
 
 		return updatedTask;
+	}
+
+	async updateTask(
+		task: Task,
+		updates: Partial<
+			Pick<
+				Task,
+				| "title"
+				| "description"
+				| "priority"
+				| "dueDate"
+				| "recurrence"
+				| "sectionId"
+				| "projectId"
+				| "updatedAt"
+			>
+		>,
+	): Promise<Task> {
+		const updatedTask: Task = { ...task, ...updates };
+
+		// If projectId is changing the PK changes, so we must delete+put
+		if ("projectId" in updates && updates.projectId !== task.projectId) {
+			const oldDbEntity = this.mapper.toDatabase(task);
+			const newDbEntity = this.mapper.toDatabase(updatedTask);
+
+			await this.dynamoClient.transactWrite([
+				{ Delete: { Key: { PK: oldDbEntity.PK, SK: oldDbEntity.SK } } },
+				{ Put: { Item: newDbEntity } },
+			]);
+
+			return updatedTask;
+		}
+
+		// Same PK: use UpdateItem to patch only changed fields
+		const oldDbEntity = this.mapper.toDatabase(task);
+
+		// Build UpdateExpression from updates
+		const expressionParts: string[] = [];
+		const expressionAttributeNames: Record<string, string> = {};
+		const expressionAttributeValues: Record<string, unknown> = {};
+
+		// Map domain field names to DynamoDB attribute names
+		const fieldMap: Record<string, string> = {
+			title: "title",
+			description: "description",
+			priority: "priority",
+			dueDate: "due_date",
+			recurrence: "recurrence",
+			sectionId: "section_id",
+			updatedAt: "updated_at",
+		};
+
+		for (const [domainField, dbField] of Object.entries(fieldMap)) {
+			if (domainField in updates) {
+				const nameAlias = `#${dbField}`;
+				const valueAlias = `:${dbField}`;
+				expressionAttributeNames[nameAlias] = dbField;
+
+				// Serialize values appropriately for DynamoDB
+				let value: unknown;
+				if (domainField === "dueDate") {
+					const dueDate = (updates as Record<string, unknown>)[domainField];
+					value = dueDate ? new Date(dueDate as string).toISOString() : null;
+				} else if (domainField === "updatedAt") {
+					const updatedAt = (updates as Record<string, unknown>)[domainField];
+					value = updatedAt
+						? new Date(updatedAt as string).toISOString()
+						: new Date().toISOString();
+				} else {
+					value = (updates as Record<string, unknown>)[domainField] ?? null;
+				}
+
+				expressionAttributeValues[valueAlias] = value;
+				expressionParts.push(`${nameAlias} = ${valueAlias}`);
+			}
+		}
+
+		// Always update updated_at if not explicitly provided
+		if (!("updatedAt" in updates)) {
+			expressionAttributeNames["#updated_at"] = "updated_at";
+			expressionAttributeValues[":updated_at"] = new Date().toISOString();
+			expressionParts.push("#updated_at = :updated_at");
+		}
+
+		if (expressionParts.length > 0) {
+			await this.dynamoClient.update({
+				Key: { PK: oldDbEntity.PK, SK: oldDbEntity.SK },
+				UpdateExpression: `SET ${expressionParts.join(", ")}`,
+				ExpressionAttributeNames: expressionAttributeNames,
+				ExpressionAttributeValues: expressionAttributeValues,
+			});
+		}
+
+		return updatedTask;
+	}
+
+	async updateField(
+		taskId: string,
+		userId: string,
+		projectId: string | null,
+		field: string,
+		value: unknown,
+	): Promise<void> {
+		// We need the PK and SK to update the item. Find the task first to get its SK.
+		const task = await this.getByUserId(taskId, userId, projectId);
+		if (!task) {
+			return;
+		}
+
+		const dbEntity = this.mapper.toDatabase(task);
+
+		await this.dynamoClient.update({
+			Key: { PK: dbEntity.PK, SK: dbEntity.SK },
+			UpdateExpression: "SET #field = :value",
+			ExpressionAttributeNames: { "#field": field },
+			ExpressionAttributeValues: { ":value": value },
+		});
 	}
 
 	async getTodosByProjectWithoutSection(

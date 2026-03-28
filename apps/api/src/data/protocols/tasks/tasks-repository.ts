@@ -27,9 +27,50 @@ export interface ITasksRepository {
 	 */
 	getTodayTasks(userId: string): Promise<Task[]>;
 
+	/**
+	 * Update a task's mutable fields.
+	 * If projectId changes, performs a delete+put transaction (PK changes).
+	 * Otherwise uses UpdateItem on the existing item.
+	 * @param task - Current task (used to derive old PK/SK)
+	 * @param updates - Partial set of fields to update
+	 * @returns The updated task
+	 */
+	updateTask(
+		task: Task,
+		updates: Partial<
+			Pick<
+				Task,
+				| "title"
+				| "description"
+				| "priority"
+				| "dueDate"
+				| "recurrence"
+				| "sectionId"
+				| "projectId"
+				| "updatedAt"
+			>
+		>,
+	): Promise<Task>;
+
+	/**
+	 * Lightweight single-field patch using UpdateItem.
+	 * Used for setting `nextTaskId` on a completed recurring task.
+	 * @param taskId - Task ID (for filter)
+	 * @param userId - User ID (for PK construction)
+	 * @param projectId - Project ID (for PK construction; null for inbox)
+	 * @param field - Attribute name to update
+	 * @param value - New value for the attribute
+	 */
+	updateField(
+		taskId: string,
+		userId: string,
+		projectId: string | null,
+		field: string,
+		value: unknown,
+	): Promise<void>;
+
 	findAll(): Promise<Todo[]>;
 	findById(id: string): Promise<Todo | null>;
-	update(id: string, data: Partial<Todo>): Promise<Todo | null>;
 	delete(id: string): Promise<boolean>;
 
 	/**
