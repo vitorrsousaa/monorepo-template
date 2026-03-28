@@ -1,9 +1,9 @@
+import { PriorityBadge } from "@/components/priority-badge";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { formatRecurrencePreview } from "@/utils/format-recurrence";
 import { OptimisticState } from "@/utils/types";
-import { PriorityBadge } from "@/components/priority-badge";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
@@ -64,15 +64,15 @@ export function TaskRow({
 		priority: task.priority ?? "none",
 		recurrence: task.recurrence
 			? {
-					enabled: task.recurrence.enabled,
-					frequency: task.recurrence.frequency,
-					weeklyDays: task.recurrence.weeklyDays ?? [],
-					endType: task.recurrence.endType,
-					endDate: task.recurrence.endDate
-						? new Date(task.recurrence.endDate)
-						: undefined,
-					endCount: task.recurrence.endCount ?? undefined,
-				}
+				enabled: task.recurrence.enabled,
+				frequency: task.recurrence.frequency,
+				weeklyDays: task.recurrence.weeklyDays ?? [],
+				endType: task.recurrence.endType,
+				endDate: task.recurrence.endDate
+					? new Date(task.recurrence.endDate)
+					: undefined,
+				endCount: task.recurrence.endCount ?? undefined,
+			}
 			: { enabled: false },
 	};
 
@@ -172,23 +172,6 @@ export function TaskRow({
 				{/* Meta: date chip, recurrence indicator, priority badge, slots */}
 				<div className="flex shrink-0 items-center gap-2">
 					<RenderIf
-						condition={showDueDate && !!dueDateLabel && !!chipStatus}
-						render={
-							<span
-								className={cn(
-									"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
-									chipStatus === "overdue" &&
-										"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-									chipStatus === "late" && "bg-destructive/10 text-destructive",
-									chipStatus === "ok" && "bg-muted text-muted-foreground",
-								)}
-							>
-								<Calendar className="h-3 w-3" aria-hidden />
-								{dueDateLabel}
-							</span>
-						}
-					/>
-					<RenderIf
 						condition={isRecurring}
 						render={
 							<TooltipProvider>
@@ -208,6 +191,24 @@ export function TaskRow({
 							</TooltipProvider>
 						}
 					/>
+					<RenderIf
+						condition={showDueDate && !!dueDateLabel && !!chipStatus}
+						render={
+							<span
+								className={cn(
+									"inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium",
+									chipStatus === "overdue" &&
+									"bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+									chipStatus === "late" && "bg-destructive/10 text-destructive",
+									chipStatus === "ok" && "bg-muted text-muted-foreground",
+								)}
+							>
+								<Calendar className="h-3 w-3" aria-hidden />
+								{dueDateLabel}
+							</span>
+						}
+					/>
+
 					<RenderIf
 						condition={showPriority && !!priority}
 						render={
