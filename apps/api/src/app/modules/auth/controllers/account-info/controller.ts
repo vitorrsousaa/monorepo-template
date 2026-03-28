@@ -2,7 +2,10 @@ import { Controller } from "@application/interfaces/controller";
 import type { IGetAccountInfoService } from "@application/modules/auth/services/account-info";
 import type { GetAccountInfoResponse } from "@repo/contracts/auth/account";
 
-export class GetAccountInfoController extends Controller<"private", GetAccountInfoResponse> {
+export class GetAccountInfoController extends Controller<
+	"private",
+	GetAccountInfoResponse
+> {
 	constructor(private readonly profileService: IGetAccountInfoService) {
 		super();
 	}

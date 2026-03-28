@@ -20,7 +20,7 @@ describe("UpdateTaskCompletionController", () => {
 			userId: "u-1",
 		});
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- test helper returns generic request
+		// biome-ignore lint/suspicious/noExplicitAny: test helper returns generic request
 		const response = await sut.execute(request as any);
 
 		expect(response.statusCode).toBe(200);
@@ -36,7 +36,7 @@ describe("UpdateTaskCompletionController", () => {
 			userId: "u-99",
 		});
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// biome-ignore lint/suspicious/noExplicitAny: test helper returns generic request
 		await sut.execute(request as any);
 
 		expect(service.execute).toHaveBeenCalledWith(
@@ -56,7 +56,7 @@ describe("UpdateTaskCompletionController", () => {
 			userId: "u-1",
 		});
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// biome-ignore lint/suspicious/noExplicitAny: test helper returns generic request
 		await sut.execute(request as any);
 
 		expect(service.execute).toHaveBeenCalledWith(

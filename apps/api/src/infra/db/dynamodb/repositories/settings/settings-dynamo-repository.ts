@@ -46,8 +46,7 @@ export class SettingsDynamoRepository implements IUserSettingsRepository {
 				PK: `USER#${userId}#SETTINGS`,
 				SK: "SETTINGS",
 			},
-			UpdateExpression:
-				"SET #settings = :settings, #updatedAt = :updatedAt",
+			UpdateExpression: "SET #settings = :settings, #updatedAt = :updatedAt",
 			ExpressionAttributeNames: {
 				"#settings": "settings",
 				"#updatedAt": "updated_at",
@@ -100,5 +99,4 @@ export class SettingsDynamoRepository implements IUserSettingsRepository {
 
 		return this.mapper.toDomain(dbEntity);
 	}
-
 }

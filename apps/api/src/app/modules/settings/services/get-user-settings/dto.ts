@@ -1,4 +1,4 @@
-import { UserSettings } from "@repo/contracts/settings/entities";
+import type { UserSettings } from "@repo/contracts/settings/entities";
 
 export interface GetUserSettingsInput {
 	userId: string;

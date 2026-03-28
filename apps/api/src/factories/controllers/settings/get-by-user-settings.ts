@@ -2,7 +2,7 @@ import { GetUserSettingsController } from "@application/modules/settings/control
 import { makeGetUserSettingsService } from "@factories/services/settings/get-user-settings";
 
 export function makeGetByUserSettingsController(): GetUserSettingsController {
-  const getUserSettingsService = makeGetUserSettingsService();
+	const getUserSettingsService = makeGetUserSettingsService();
 
-  return new GetUserSettingsController(getUserSettingsService);
+	return new GetUserSettingsController(getUserSettingsService);
 }

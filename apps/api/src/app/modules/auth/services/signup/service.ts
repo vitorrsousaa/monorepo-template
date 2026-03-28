@@ -2,7 +2,7 @@ import type { IService } from "@application/interfaces/service";
 import type { IAuthProvider } from "@data/protocols/auth/auth-provider";
 import type { IUserRepository } from "@data/protocols/auth/user-repository";
 import type { SignupInput, SignupOutput } from "./dto";
-import { IUserSettingsRepository } from "@data/protocols/settings/settings-repository";
+import type { IUserSettingsRepository } from "@data/protocols/settings/settings-repository";
 
 export interface ISignupService extends IService<SignupInput, SignupOutput> {}
 
@@ -26,7 +26,7 @@ export class SignupService implements ISignupService {
 			email: data.email,
 			name: `${data.firstName} ${data.lastName}`,
 		});
-		
+
 		await this.userSettingsRepository.create({
 			userId: result.userId,
 			settings: {
@@ -34,7 +34,7 @@ export class SignupService implements ISignupService {
 					language: "en",
 				},
 			},
-		})
+		});
 
 		return {
 			userId: result.userId,
