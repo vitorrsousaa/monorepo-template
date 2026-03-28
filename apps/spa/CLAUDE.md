@@ -172,6 +172,18 @@ File: `src/app/services/http-client.ts`
 <RenderIf condition={shouldShowList}  render={<List />} />
 ```
 
+## Testing
+
+See [TESTING.md](./TESTING.md) for full conventions.
+
+**Key rules:**
+- Test names: `Should <behavior> when <condition>` (English)
+- Structure: AAA (Arrange-Act-Assert) with comment markers
+- Cache helpers: always unit-test when adding/modifying cache methods
+- Query hooks with side effects: always integration-test
+- Builders: `@test/builders` — reuse existing, don't duplicate test data factories
+- QueryClient: `createTestQueryClient()` from `@test/query-client`
+
 ## Component File Organization
 
 Loading skeletons, empty states, and error states must be in **separate files** — never as local functions inside the parent. Name them `<parent>-skeleton.tsx`, `<parent>-empty-state.tsx`, `<parent>-error-state.tsx` in the same folder.

@@ -1,80 +1,42 @@
 {
-  "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "module": "ESNext",
-    "types": [
-      "vite/client"
-    ],
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    /* Aliases */
-    "baseUrl": ".",
-    "paths": {
-      "@/pages/*": [
-        "src/view/pages/*"
-      ],
-      "@/layouts/*": [
-        "src/view/layouts/*"
-      ],
-      "@/components/*": [
-        "./src/view/components/*"
-      ],
-      "@/ui/*": [
-        "./src/view/ui/*"
-      ],
-      "@/utils/*": [
-        "./src/app/utils/*"
-      ],
-      "@/services/*": [
-        "./src/app/services/*"
-      ],
-      "@/hooks/*": [
-        "./src/app/hooks/*"
-      ],
-      "@/contexts/*": [
-        "./src/app/contexts/*"
-      ],
-      "@/storage/*": [
-        "./src/app/storage/*"
-      ],
-      "@/config/*": [
-        "./src/app/config/*"
-      ],
-      "@/libs/*": [
-        "./src/app/libs/*"
-      ],
-      "@/entities/*": [
-        "./src/app/entities/*"
-      ],
-      "@/errors/*": [
-        "./src/app/errors/*"
-      ],
-      "@/modules/*": [
-        "./src/modules/*"
-      ],
-    }
-  },
-  "include": [
-    "src"
-  ]
+	"compilerOptions": {
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+		"target": "ES2022",
+		"useDefineForClassFields": true,
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"types": ["vite/client", "vitest/globals"],
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"erasableSyntaxOnly": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/pages/*": ["src/view/pages/*"],
+			"@/layouts/*": ["src/view/layouts/*"],
+			"@/components/*": ["./src/view/components/*"],
+			"@/ui/*": ["./src/view/ui/*"],
+			"@/utils/*": ["./src/app/utils/*"],
+			"@/services/*": ["./src/app/services/*"],
+			"@/hooks/*": ["./src/app/hooks/*"],
+			"@/contexts/*": ["./src/app/contexts/*"],
+			"@/storage/*": ["./src/app/storage/*"],
+			"@/config/*": ["./src/app/config/*"],
+			"@/libs/*": ["./src/app/libs/*"],
+			"@/entities/*": ["./src/app/entities/*"],
+			"@/errors/*": ["./src/app/errors/*"],
+			"@/modules/*": ["./src/modules/*"],
+			"@test/*": ["./src/test/*"]
+		}
+	},
+	"include": ["src"]
 }

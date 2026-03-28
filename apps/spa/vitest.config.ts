@@ -24,6 +24,7 @@ export default mergeConfig(
 				"@/entities": path.resolve(__dirname, "./src/app/entities"),
 				"@/storage": path.resolve(__dirname, "./src/app/storage"),
 				"@/modules": path.resolve(__dirname, "./src/modules"),
+				"@test": path.resolve(__dirname, "./src/test"),
 			},
 		},
 	}),

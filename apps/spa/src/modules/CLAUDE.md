@@ -88,6 +88,14 @@ allCache.replaceWithReal(context!.tempId, project);
 summaryCache.replaceWithReal(context!.tempId, project);
 ```
 
+### Testing Cache Helpers
+
+Every cache helper **must have co-located unit tests** (`<name>.cache.test.ts`).
+See [TESTING.md](../../TESTING.md) for full conventions.
+
+Tests are pure — create `QueryClient`, seed via `setQueryData`, call method, assert via `getQueryData`.
+Always cover: happy path, undefined cache, item not found, multi-section traversal.
+
 ### Referência
 
 - Implementação: `projects/app/cache/` (projects-all, projects-summary)
