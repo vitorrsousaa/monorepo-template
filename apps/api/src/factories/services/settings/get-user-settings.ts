@@ -1,4 +1,7 @@
-import { GetUserSettingsService, IGetUserSettingsService } from "@application/modules/settings/services/get-user-settings";
+import {
+	GetUserSettingsService,
+	type IGetUserSettingsService,
+} from "@application/modules/settings/services/get-user-settings";
 import { makeSettingsDynamoRepository } from "@infra/db/dynamodb/factories/settings-repository-factory";
 
 export function makeGetUserSettingsService(): IGetUserSettingsService {

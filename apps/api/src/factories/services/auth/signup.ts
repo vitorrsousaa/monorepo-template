@@ -7,5 +7,9 @@ export function makeSignupService(): SignupService {
 	const authProvider = makeCognitoAuthProvider();
 	const userRepository = makeUserDynamoRepository();
 	const userSettingsRepository = makeSettingsDynamoRepository();
-	return new SignupService(authProvider, userRepository, userSettingsRepository);
+	return new SignupService(
+		authProvider,
+		userRepository,
+		userSettingsRepository,
+	);
 }
