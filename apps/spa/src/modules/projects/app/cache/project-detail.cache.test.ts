@@ -583,4 +583,156 @@ describe("projectDetailCache", () => {
 			expect(cached).toBeUndefined();
 		});
 	});
+
+	describe("incrementCompletedCount", () => {
+		it("Should increment completedCount and recalculate percentageCompleted when cache has data", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const detail = buildProjectDetail({
+				project: {
+					...buildProjectDetail().project,
+					totalCount: 4,
+					completedCount: 1,
+					percentageCompleted: 25,
+				},
+			});
+			setupCache(queryClient, detail);
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.incrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeDefined();
+			expect(cached?.project.completedCount).toBe(2);
+			expect(cached?.project.totalCount).toBe(4);
+			expect(cached?.project.percentageCompleted).toBe(50);
+		});
+
+		it("Should not exceed totalCount when completedCount is already at max", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const detail = buildProjectDetail({
+				project: {
+					...buildProjectDetail().project,
+					totalCount: 3,
+					completedCount: 3,
+					percentageCompleted: 100,
+				},
+			});
+			setupCache(queryClient, detail);
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.incrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeDefined();
+			expect(cached?.project.completedCount).toBe(3);
+			expect(cached?.project.percentageCompleted).toBe(100);
+		});
+
+		it("Should leave cache intact when cache is undefined", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.incrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeUndefined();
+		});
+	});
+
+	describe("decrementCompletedCount", () => {
+		it("Should decrement completedCount and recalculate percentageCompleted when cache has data", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const detail = buildProjectDetail({
+				project: {
+					...buildProjectDetail().project,
+					totalCount: 4,
+					completedCount: 2,
+					percentageCompleted: 50,
+				},
+			});
+			setupCache(queryClient, detail);
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.decrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeDefined();
+			expect(cached?.project.completedCount).toBe(1);
+			expect(cached?.project.totalCount).toBe(4);
+			expect(cached?.project.percentageCompleted).toBe(25);
+		});
+
+		it("Should not go below zero when completedCount is already zero", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const detail = buildProjectDetail({
+				project: {
+					...buildProjectDetail().project,
+					totalCount: 3,
+					completedCount: 0,
+					percentageCompleted: 0,
+				},
+			});
+			setupCache(queryClient, detail);
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.decrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeDefined();
+			expect(cached?.project.completedCount).toBe(0);
+			expect(cached?.project.percentageCompleted).toBe(0);
+		});
+
+		it("Should set percentageCompleted to zero when totalCount is zero", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const detail = buildProjectDetail({
+				project: {
+					...buildProjectDetail().project,
+					totalCount: 0,
+					completedCount: 0,
+					percentageCompleted: 0,
+				},
+			});
+			setupCache(queryClient, detail);
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.decrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeDefined();
+			expect(cached?.project.completedCount).toBe(0);
+			expect(cached?.project.percentageCompleted).toBe(0);
+		});
+
+		it("Should leave cache intact when cache is undefined", () => {
+			// Arrange
+			const queryClient = new QueryClient();
+			const cache = projectDetailCache(queryClient, PROJECT_ID);
+
+			// Act
+			cache.decrementCompletedCount();
+
+			// Assert
+			const cached = readCache(queryClient);
+			expect(cached).toBeUndefined();
+		});
+	});
 });

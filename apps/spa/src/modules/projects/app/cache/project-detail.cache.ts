@@ -207,5 +207,50 @@ export function projectDetailCache(
 				},
 			);
 		},
+
+		incrementCompletedCount() {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					const completedCount = Math.min(
+						old.project.completedCount + 1,
+						old.project.totalCount,
+					);
+					return {
+						...old,
+						project: {
+							...old.project,
+							completedCount,
+							percentageCompleted:
+								old.project.totalCount > 0
+									? Math.round((completedCount / old.project.totalCount) * 100)
+									: 0,
+						},
+					};
+				},
+			);
+		},
+
+		decrementCompletedCount() {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					const completedCount = Math.max(0, old.project.completedCount - 1);
+					return {
+						...old,
+						project: {
+							...old.project,
+							completedCount,
+							percentageCompleted:
+								old.project.totalCount > 0
+									? Math.round((completedCount / old.project.totalCount) * 100)
+									: 0,
+						},
+					};
+				},
+			);
+		},
 	};
 }

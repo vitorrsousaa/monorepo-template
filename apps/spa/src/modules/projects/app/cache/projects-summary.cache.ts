@@ -23,6 +23,7 @@ export function projectsSummaryCache(queryClient: QueryClient) {
 			queryClient.setQueryData<ProjectSummaryItem[]>(queryKey, (old) =>
 				(old ?? []).concat({
 					id: tempId,
+					userId: "",
 					optimisticState: OptimisticState.PENDING,
 					name: data.name,
 					description: data.description,
@@ -52,6 +53,7 @@ export function projectsSummaryCache(queryClient: QueryClient) {
 					p.id === tempId
 						? {
 								id: realProject.id,
+								userId: realProject.userId,
 								name: realProject.name,
 								description: realProject.description,
 								color: realProject.color,
@@ -103,6 +105,42 @@ export function projectsSummaryCache(queryClient: QueryClient) {
 						percentageCompleted:
 							totalCount > 0
 								? Math.round((p.completedCount / totalCount) * 100)
+								: 0,
+					};
+				});
+			});
+		},
+
+		incrementCompletedCount(projectId: string) {
+			queryClient.setQueryData<ProjectSummaryItem[]>(queryKey, (old) => {
+				if (!old) return old;
+				return old.map((p) => {
+					if (p.id !== projectId) return p;
+					const completedCount = Math.min(p.completedCount + 1, p.totalCount);
+					return {
+						...p,
+						completedCount,
+						percentageCompleted:
+							p.totalCount > 0
+								? Math.round((completedCount / p.totalCount) * 100)
+								: 0,
+					};
+				});
+			});
+		},
+
+		decrementCompletedCount(projectId: string) {
+			queryClient.setQueryData<ProjectSummaryItem[]>(queryKey, (old) => {
+				if (!old) return old;
+				return old.map((p) => {
+					if (p.id !== projectId) return p;
+					const completedCount = Math.max(0, p.completedCount - 1);
+					return {
+						...p,
+						completedCount,
+						percentageCompleted:
+							p.totalCount > 0
+								? Math.round((completedCount / p.totalCount) * 100)
 								: 0,
 					};
 				});

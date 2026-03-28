@@ -1,5 +1,8 @@
 import { QUERY_KEYS } from "@/config/query-keys";
-import { projectDetailCache } from "@/modules/projects/app/cache";
+import {
+	projectDetailCache,
+	projectsSummaryCache,
+} from "@/modules/projects/app/cache";
 import { tasksInboxCache } from "@/modules/tasks/app/cache/tasks-inbox.cache";
 import { updateTaskCompletion } from "@/modules/tasks/app/services/update-task-completion";
 import {
@@ -31,6 +34,7 @@ type UpdateTaskCompletionVariables = UpdateTaskCompletionInput & {
 type UpdateTaskCompletionMutationContext = {
 	inboxSnapshot: unknown;
 	projectDetailSnapshot: unknown;
+	projectsSummarySnapshot: unknown;
 	touchedInbox: boolean;
 	touchedProject: boolean;
 	projectIdForDetail: string | null;
@@ -62,7 +66,10 @@ async function runUpdateTaskCompletionOnMutate(
 
 	const relatedKeys: QueryKey[] = isInbox
 		? [QUERY_KEYS.TASKS.INBOX]
-		: [QUERY_KEYS.PROJECTS.DETAIL(projectId as string)];
+		: [
+				QUERY_KEYS.PROJECTS.DETAIL(projectId as string),
+				QUERY_KEYS.PROJECTS.SUMMARY,
+			];
 
 	await cancelRelatedQueries(queryClient, relatedKeys);
 
@@ -72,6 +79,10 @@ async function runUpdateTaskCompletionOnMutate(
 	const projectDetailSnapshot =
 		!isInbox && projectId
 			? queryClient.getQueryData(QUERY_KEYS.PROJECTS.DETAIL(projectId))
+			: undefined;
+	const projectsSummarySnapshot =
+		!isInbox && projectId
+			? queryClient.getQueryData(QUERY_KEYS.PROJECTS.SUMMARY)
 			: undefined;
 
 	if (isInbox) {
@@ -83,8 +94,18 @@ async function runUpdateTaskCompletionOnMutate(
 
 	if (!isInbox && projectId) {
 		const detailCache = projectDetailCache(queryClient, projectId);
+		const summaryCache = projectsSummaryCache(queryClient);
+
 		if (detailCache.exists()) {
 			detailCache.patchTaskCompletionOptimistic(taskId, nextCompleted);
+		}
+
+		if (nextCompleted) {
+			detailCache.incrementCompletedCount();
+			summaryCache.incrementCompletedCount(projectId);
+		} else {
+			detailCache.decrementCompletedCount();
+			summaryCache.decrementCompletedCount(projectId);
 		}
 	}
 
@@ -123,6 +144,7 @@ async function runUpdateTaskCompletionOnMutate(
 	return {
 		inboxSnapshot,
 		projectDetailSnapshot,
+		projectsSummarySnapshot,
 		touchedInbox: isInbox,
 		touchedProject: !isInbox,
 		projectIdForDetail: projectId ?? null,
@@ -207,6 +229,11 @@ export function useUpdateTaskCompletion() {
 					queryClient,
 					QUERY_KEYS.PROJECTS.DETAIL(context.projectIdForDetail),
 					context.projectDetailSnapshot,
+				);
+				restoreSnapshot(
+					queryClient,
+					QUERY_KEYS.PROJECTS.SUMMARY,
+					context.projectsSummarySnapshot,
 				);
 			}
 
