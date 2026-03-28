@@ -64,6 +64,8 @@ export function projectDetailCache(
 										completedAt: null,
 										dueDate: data.dueDate ?? null,
 										priority: data.priority ?? null,
+										recurrence: data.recurrence ?? null,
+										nextTaskId: data.nextTaskId ?? null,
 										optimisticState: OptimisticState.PENDING,
 									},
 								],
@@ -159,6 +161,48 @@ export function projectDetailCache(
 									: t,
 							),
 						})),
+					};
+				},
+			);
+		},
+
+		incrementProjectTotalCount() {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					const totalCount = old.project.totalCount + 1;
+					return {
+						...old,
+						project: {
+							...old.project,
+							totalCount,
+							percentageCompleted:
+								totalCount > 0
+									? Math.round((old.project.completedCount / totalCount) * 100)
+									: 0,
+						},
+					};
+				},
+			);
+		},
+
+		decrementProjectTotalCount() {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					const totalCount = Math.max(0, old.project.totalCount - 1);
+					return {
+						...old,
+						project: {
+							...old.project,
+							totalCount,
+							percentageCompleted:
+								totalCount > 0
+									? Math.round((old.project.completedCount / totalCount) * 100)
+									: 0,
+						},
 					};
 				},
 			);

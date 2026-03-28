@@ -71,6 +71,8 @@ export function useCreateTasks() {
 						priority: variables.priority,
 						dueDate: variables.dueDate,
 					});
+
+					detailCache.incrementProjectTotalCount();
 				}
 			}
 
@@ -107,6 +109,8 @@ export function useCreateTasks() {
 						context.detailSectionId ?? "",
 						context.tempId,
 					);
+
+					detailCache.decrementProjectTotalCount();
 				}
 			}
 		},
