@@ -16,7 +16,6 @@ export function useUpdateTask() {
 	const { mutate: editTask, isPending } = useMutation({
 		mutationFn: ({
 			taskId,
-			projectId: _projectId,
 			...input
 		}: UpdateTaskVariables) => updateTask(taskId, input),
 		onMutate: async (variables) => {

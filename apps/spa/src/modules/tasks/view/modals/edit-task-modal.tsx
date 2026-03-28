@@ -31,7 +31,13 @@ export function EditTaskModal({
 
 	async function handleSubmit(data: TTaskFormSchema) {
 		if (!taskId) return;
-		editTask({ taskId, projectId, ...mapTaskFormToUpdateInput(data) });
+		const dataToUpdate = {
+			taskId,
+			projectId,
+			...mapTaskFormToUpdateInput(data)
+		}
+
+		editTask(dataToUpdate);
 		onClose();
 	}
 
