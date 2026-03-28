@@ -2,6 +2,7 @@ import type { IService } from "@application/interfaces/service";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type { ProjectSummary } from "@repo/contracts/projects/summary";
+import { calculatePercentageCompleted } from "../../functions/calculate-percentage-completed";
 import type {
 	GetProjectsSummaryInputService,
 	GetProjectsSummaryOutputService,
@@ -47,10 +48,10 @@ export class GetProjectsSummaryService implements IGetProjectsSummaryService {
 
 			const totalCount = completedCount + pendingCount;
 
-			const percentageCompleted =
-				totalCount > 0
-					? (Math.round((completedCount / totalCount) * 10) / 10) * 100
-					: 0;
+			const percentageCompleted = calculatePercentageCompleted(
+				completedCount,
+				totalCount,
+			);
 
 			return {
 				...p,

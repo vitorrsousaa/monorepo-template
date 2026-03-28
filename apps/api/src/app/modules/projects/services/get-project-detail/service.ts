@@ -10,6 +10,7 @@ import {
 import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 import type { SectionsWithTasks } from "@repo/contracts/sections/entities";
 import type { Task } from "@repo/contracts/tasks";
+import { calculatePercentageCompleted } from "../../functions/calculate-percentage-completed";
 import type {
 	GetProjectDetailInputService,
 	GetProjectDetailOutputService,
@@ -40,10 +41,11 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 	): Promise<GetProjectDetailOutputService> {
 		const { projectId, userId } = input;
 
-		const [project, sections, allPendingTasks] = await Promise.all([
+		const [project, sections, allPendingTasks, taskCounts] = await Promise.all([
 			this.projectRepository.getById(projectId, userId),
 			this.sectionRepository.getAllByProject(projectId, userId),
 			this.taskRepository.getAllPendingByProject(projectId, userId),
+			this.taskRepository.getTaskCountsByProject(projectId, userId),
 		]);
 
 		if (!project) {
@@ -85,8 +87,22 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 			tasks: tasksWithoutSection,
 		};
 
+		const totalCount = taskCounts.pending + taskCounts.completed;
+
+		const percentageCompleted = calculatePercentageCompleted(
+			taskCounts.completed,
+			totalCount,
+		);
+
+		const projectSummary: GetProjectDetailResponse["project"] = {
+			...project,
+			completedCount: taskCounts.completed,
+			totalCount,
+			percentageCompleted: percentageCompleted ?? 0,
+		};
+
 		const data: GetProjectDetailResponse = {
-			project,
+			project: projectSummary,
 			sections: [inboxSectionWithTasks, ...sectionsWithTasks],
 		};
 

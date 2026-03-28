@@ -12,3 +12,11 @@ export interface Project {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface Summary {
+	completedCount: number;
+	totalCount: number;
+	percentageCompleted: number;
+}
+
+export type ProjectSummary = Project & Summary;

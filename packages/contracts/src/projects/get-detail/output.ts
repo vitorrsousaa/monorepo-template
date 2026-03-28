@@ -1,8 +1,8 @@
 import type { SectionsWithTasks } from "../../sections/entities";
-import type { Project } from "../entities";
+import type { ProjectSummary } from "../entities";
 
 interface GetProjectDetailResponse {
-	project: Project;
+	project: ProjectSummary;
 	sections: SectionsWithTasks[];
 }
 
