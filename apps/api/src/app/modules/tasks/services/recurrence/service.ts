@@ -1,6 +1,6 @@
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import type { Task } from "@repo/contracts/tasks/entities";
-import { calculateNextDueDate } from "./date-calculator";
+import { calculateNextDueDate } from "@repo/contracts/tasks/recurrence";
 
 export class RecurrenceService {
 	constructor(private readonly repository: ITasksRepository) {}

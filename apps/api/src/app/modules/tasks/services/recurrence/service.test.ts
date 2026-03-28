@@ -1,10 +1,10 @@
 import { buildTask } from "@test/builders";
 import { mockTasksRepository } from "@test/mocks";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { calculateNextDueDate } from "./date-calculator";
+import { calculateNextDueDate } from "@repo/contracts/tasks/recurrence";
 import { RecurrenceService } from "./service";
 
-vi.mock("./date-calculator", () => ({
+vi.mock("@repo/contracts/tasks/recurrence", () => ({
 	calculateNextDueDate: vi.fn(),
 }));
 
@@ -236,6 +236,7 @@ describe("RecurrenceService", () => {
 			userId: "user-42",
 			dueDate: NEXT_DUE_DATE,
 			recurrence: { enabled: true, frequency: "daily", endType: "never" },
+			nextTaskId: null,
 		});
 	});
 });

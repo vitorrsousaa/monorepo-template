@@ -1,6 +1,6 @@
 import { buildTask } from "@test/builders";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { calculateNextDueDate } from "./date-calculator";
+import { calculateNextDueDate } from "@repo/contracts/tasks/recurrence";
 
 describe("calculateNextDueDate", () => {
 	afterEach(() => {

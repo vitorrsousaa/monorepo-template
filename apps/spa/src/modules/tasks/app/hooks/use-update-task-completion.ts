@@ -3,8 +3,10 @@ import { projectDetailCache } from "@/modules/projects/app/cache";
 import { tasksInboxCache } from "@/modules/tasks/app/cache/tasks-inbox.cache";
 import { updateTaskCompletion } from "@/modules/tasks/app/services/update-task-completion";
 import { cancelRelatedQueries, generateTempId, restoreSnapshot } from "@/utils/optimistic";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { UpdateTaskCompletionInput } from "@repo/contracts/tasks/completion";
 import type { Task } from "@repo/contracts/tasks/entities";
+import { calculateNextDueDate } from "@repo/contracts/tasks/recurrence";
 import { toast } from "@repo/ui/sonner";
 import {
 	type QueryClient,
@@ -29,6 +31,21 @@ type UpdateTaskCompletionMutationContext = {
 	/** Temp ID of the optimistically inserted next task, if any */
 	tempNextTaskId: string | null;
 };
+
+function projectTaskSectionCacheId(task: Pick<Task, "sectionId">): string {
+	return task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX;
+}
+
+function nextRecurrenceForOptimistic(
+	recurrence: Task["recurrence"],
+): Task["recurrence"] {
+	if (!recurrence) return null;
+	const next = { ...recurrence };
+	if (next.endType === "after_count" && next.endCount !== undefined) {
+		next.endCount = next.endCount - 1;
+	}
+	return next;
+}
 
 async function runUpdateTaskCompletionOnMutate(
 	queryClient: QueryClient,
@@ -65,19 +82,21 @@ async function runUpdateTaskCompletionOnMutate(
 		}
 	}
 
-	// Optimistically insert a next task when completing a recurring task
 	const isCompletingRecurring =
 		nextCompleted && task.recurrence?.enabled === true;
 	let tempNextTaskId: string | null = null;
 
 	if (isCompletingRecurring) {
 		tempNextTaskId = generateTempId();
+		const nextDue = calculateNextDueDate(task);
 		const optimisticNextTask: Task = {
 			...task,
 			id: tempNextTaskId,
 			completed: false,
 			completedAt: null,
 			nextTaskId: null,
+			dueDate: nextDue ?? task.dueDate,
+			recurrence: nextRecurrenceForOptimistic(task.recurrence),
 		};
 
 		if (isInbox) {
@@ -87,11 +106,9 @@ async function runUpdateTaskCompletionOnMutate(
 			);
 		} else if (projectId) {
 			const detailCache = projectDetailCache(queryClient, projectId);
+			const sectionKey = projectTaskSectionCacheId(task);
 			if (detailCache.exists()) {
-				detailCache.addFullTaskToSection(
-					task.sectionId ?? "",
-					optimisticNextTask,
-				);
+				detailCache.addFullTaskToSection(sectionKey, optimisticNextTask);
 			}
 		}
 	}
@@ -141,7 +158,7 @@ export function useUpdateTaskCompletion() {
 						const detailCache = projectDetailCache(queryClient, projectId);
 						if (detailCache.exists()) {
 							detailCache.replaceTaskInSection(
-								data.nextTask.sectionId ?? "",
+								projectTaskSectionCacheId(data.nextTask),
 								tempNextTaskId,
 								data.nextTask,
 							);
@@ -158,7 +175,7 @@ export function useUpdateTaskCompletion() {
 						const detailCache = projectDetailCache(queryClient, projectId);
 						if (detailCache.exists()) {
 							detailCache.removeTaskFromSection(
-								variables.task.sectionId ?? "",
+								projectTaskSectionCacheId(variables.task),
 								tempNextTaskId,
 							);
 						}
