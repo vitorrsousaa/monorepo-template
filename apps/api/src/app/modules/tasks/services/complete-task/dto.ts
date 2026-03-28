@@ -6,4 +6,5 @@ export interface CompleteTaskInput {
 
 export interface CompleteTaskOutput {
 	task: Task;
+	nextTask?: Task;
 }

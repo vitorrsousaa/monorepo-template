@@ -68,4 +68,28 @@ describe("UpdateTaskCompletionService", () => {
 
 		expect(repo.getByUserId).toHaveBeenCalledWith("t-1", "u-1", null);
 	});
+
+	it("should propagate nextTask when completing a recurring task", async () => {
+		const task = buildTask({
+			completed: false,
+			recurrence: { enabled: true, frequency: "daily", endType: "never" },
+		});
+		const nextTask = buildTask({ id: "next-task-id" });
+		vi.mocked(repo.getByUserId).mockResolvedValue(task);
+		vi.mocked(completeService.execute).mockResolvedValue({ task, nextTask });
+
+		const result = await sut.execute({ taskId: "t-1", userId: "u-1" });
+
+		expect(result.nextTask).toEqual(nextTask);
+	});
+
+	it("should not include nextTask when completing a non-recurring task", async () => {
+		const task = buildTask({ completed: false, recurrence: null });
+		vi.mocked(repo.getByUserId).mockResolvedValue(task);
+		vi.mocked(completeService.execute).mockResolvedValue({ task });
+
+		const result = await sut.execute({ taskId: "t-1", userId: "u-1" });
+
+		expect(result.nextTask).toBeUndefined();
+	});
 });

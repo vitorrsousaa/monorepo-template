@@ -20,7 +20,9 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 		private readonly projectRepository: IProjectRepository,
 	) {}
 
-	private sortByPriority(tasks: Awaited<ReturnType<ITasksRepository["getTodayTasks"]>>) {
+	private sortByPriority(
+		tasks: Awaited<ReturnType<ITasksRepository["getTodayTasks"]>>,
+	) {
 		const order: Record<string, number> = { high: 0, medium: 1, low: 2 };
 		return [...tasks].sort((a, b) => {
 			const pa = a.priority != null ? (order[a.priority] ?? 3) : 3;

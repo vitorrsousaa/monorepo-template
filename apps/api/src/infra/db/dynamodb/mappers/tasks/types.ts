@@ -1,3 +1,4 @@
+import type { Recurrence } from "@repo/contracts/tasks/entities";
 import type { BaseDynamoDBEntity } from "../../contracts/entity";
 
 /**
@@ -37,6 +38,10 @@ export interface TasksDynamoDBEntity extends BaseDynamoDBEntity {
 	completed_at?: string | null; // ISO 8601
 	due_date?: string | null; // ISO 8601 - data limite para conclusão da task
 	priority?: "low" | "medium" | "high" | null;
+
+	// Recurring task fields
+	recurrence?: Recurrence | null; // Stored as a DynamoDB map attribute
+	next_task_id?: string | null; // ID of the next recurrence after this task is completed
 
 	entity_type: string; // "TASKS"
 }

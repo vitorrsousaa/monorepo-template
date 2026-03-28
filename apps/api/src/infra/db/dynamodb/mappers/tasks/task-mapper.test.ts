@@ -39,6 +39,8 @@ describe("TasksDynamoMapper", () => {
 				completedAt: null,
 				dueDate: "2024-06-15T00:00:00.000Z",
 				priority: "high",
+				recurrence: null,
+				nextTaskId: null,
 			});
 		});
 
@@ -69,6 +71,28 @@ describe("TasksDynamoMapper", () => {
 			const result = mapper.toDomain(dbEntity);
 
 			expect(result.completedAt).toBe("2024-06-10T15:30:00.000Z");
+		});
+
+		it("should deserialize recurrence map attribute", () => {
+			const recurrence = {
+				enabled: true,
+				frequency: "weekly" as const,
+				weeklyDays: [1, 3, 5],
+				endType: "never" as const,
+			};
+			const dbEntity = buildTaskDynamoEntity({ recurrence });
+
+			const result = mapper.toDomain(dbEntity);
+
+			expect(result.recurrence).toEqual(recurrence);
+		});
+
+		it("should map next_task_id to nextTaskId", () => {
+			const dbEntity = buildTaskDynamoEntity({ next_task_id: "task-next-001" });
+
+			const result = mapper.toDomain(dbEntity);
+
+			expect(result.nextTaskId).toBe("task-next-001");
 		});
 	});
 
@@ -213,6 +237,33 @@ describe("TasksDynamoMapper", () => {
 			expect(result.GSI1PK).toBeUndefined();
 			expect(result.GSI1SK).toBeUndefined();
 		});
+
+		it("should serialize recurrence to recurrence attribute", () => {
+			const recurrence = {
+				enabled: true,
+				frequency: "daily" as const,
+				endType: "never" as const,
+			};
+			const task = buildTask({ recurrence });
+			const result = mapper.toDatabase(task);
+
+			expect(result.recurrence).toEqual(recurrence);
+		});
+
+		it("should serialize nextTaskId to next_task_id", () => {
+			const task = buildTask({ nextTaskId: "task-next-001" });
+			const result = mapper.toDatabase(task);
+
+			expect(result.next_task_id).toBe("task-next-001");
+		});
+
+		it("should set recurrence and next_task_id to null when not provided", () => {
+			const task = buildTask({ recurrence: null, nextTaskId: null });
+			const result = mapper.toDatabase(task);
+
+			expect(result.recurrence).toBeNull();
+			expect(result.next_task_id).toBeNull();
+		});
 	});
 
 	describe("roundtrip", () => {
@@ -269,6 +320,23 @@ describe("TasksDynamoMapper", () => {
 			expect(result.completed).toBe(original.completed);
 			expect(result.completedAt).toBe(original.completedAt);
 			expect(result.priority).toBe(original.priority);
+		});
+
+		it("should preserve recurrence through roundtrip", () => {
+			const recurrence = {
+				enabled: true,
+				frequency: "weekly" as const,
+				weeklyDays: [1, 3, 5],
+				endType: "after_count" as const,
+				endCount: 10,
+			};
+			const original = buildTask({ recurrence, nextTaskId: "task-next-001" });
+
+			const dbEntity = mapper.toDatabase(original);
+			const result = mapper.toDomain(dbEntity);
+
+			expect(result.recurrence).toEqual(recurrence);
+			expect(result.nextTaskId).toBe("task-next-001");
 		});
 	});
 });

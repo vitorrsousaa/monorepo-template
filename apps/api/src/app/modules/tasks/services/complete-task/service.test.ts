@@ -2,13 +2,19 @@ import { buildTask } from "@test/builders";
 import { mockTasksRepository } from "@test/mocks";
 import { CompleteTaskService } from "./service";
 
+const makeRecurrenceService = () => ({
+	createNextOccurrence: vi.fn(),
+});
+
 describe("CompleteTaskService", () => {
 	const repo = mockTasksRepository();
-	const sut = new CompleteTaskService(repo);
+	const recurrenceService = makeRecurrenceService();
+	const sut = new CompleteTaskService(repo, recurrenceService);
 
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.useFakeTimers();
+		recurrenceService.createNextOccurrence.mockResolvedValue(null);
 	});
 
 	afterEach(() => {
@@ -53,5 +59,48 @@ describe("CompleteTaskService", () => {
 		const result = await sut.execute({ task });
 
 		expect(result.task).toEqual(repoTask);
+	});
+
+	it("should not include nextTask when task has no recurrence", async () => {
+		const task = buildTask({ recurrence: null });
+		vi.mocked(repo.updateCompletion).mockImplementation((_old, updated) =>
+			Promise.resolve(updated),
+		);
+		recurrenceService.createNextOccurrence.mockResolvedValue(null);
+
+		const result = await sut.execute({ task });
+
+		expect(result.nextTask).toBeUndefined();
+	});
+
+	it("should include nextTask when recurrenceService returns one", async () => {
+		const task = buildTask({
+			recurrence: {
+				enabled: true,
+				frequency: "daily",
+				endType: "never",
+			},
+		});
+		const nextTask = buildTask({ id: "next-task-id" });
+		vi.mocked(repo.updateCompletion).mockImplementation((_old, updated) =>
+			Promise.resolve(updated),
+		);
+		recurrenceService.createNextOccurrence.mockResolvedValue({ nextTask });
+
+		const result = await sut.execute({ task });
+
+		expect(result.nextTask).toEqual(nextTask);
+	});
+
+	it("should call recurrenceService.createNextOccurrence with the completed task", async () => {
+		const task = buildTask({ completed: false });
+		const completedTask = buildTask({ id: task.id, completed: true });
+		vi.mocked(repo.updateCompletion).mockResolvedValue(completedTask);
+
+		await sut.execute({ task });
+
+		expect(recurrenceService.createNextOccurrence).toHaveBeenCalledWith(
+			completedTask,
+		);
 	});
 });

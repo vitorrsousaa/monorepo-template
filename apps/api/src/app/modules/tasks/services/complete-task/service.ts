@@ -1,12 +1,16 @@
 import type { IService } from "@application/interfaces/service";
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
+import type { RecurrenceService } from "../recurrence/service";
 import type { CompleteTaskInput, CompleteTaskOutput } from "./dto";
 
 export interface ICompleteTaskService
 	extends IService<CompleteTaskInput, CompleteTaskOutput> {}
 
 export class CompleteTaskService implements ICompleteTaskService {
-	constructor(private readonly taskRepository: ITasksRepository) {}
+	constructor(
+		private readonly taskRepository: ITasksRepository,
+		private readonly recurrenceService: RecurrenceService,
+	) {}
 
 	async execute(input: CompleteTaskInput): Promise<CompleteTaskOutput> {
 		const now = new Date().toISOString();
@@ -20,6 +24,10 @@ export class CompleteTaskService implements ICompleteTaskService {
 			input.task,
 			updatedTask,
 		);
-		return { task };
+
+		const recurrenceResult =
+			await this.recurrenceService.createNextOccurrence(task);
+
+		return { task, nextTask: recurrenceResult?.nextTask };
 	}
 }

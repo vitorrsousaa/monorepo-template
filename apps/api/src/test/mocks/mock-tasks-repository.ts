@@ -17,6 +17,8 @@ export function mockTasksRepository(
 		getTaskCountsByProject: vi.fn(),
 		getByUserId: vi.fn(),
 		updateCompletion: vi.fn(),
+		updateTask: vi.fn(),
+		updateField: vi.fn(),
 		...overrides,
 	};
 }

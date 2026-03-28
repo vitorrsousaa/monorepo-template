@@ -101,6 +101,8 @@ export class TasksDynamoMapper implements TasksMapper<TasksDynamoDBEntity> {
 				? new Date(dbEntity.due_date).toISOString()
 				: null,
 			priority: dbEntity.priority ?? null,
+			recurrence: dbEntity.recurrence ?? null,
+			nextTaskId: dbEntity.next_task_id ?? null,
 		};
 	}
 
@@ -148,6 +150,8 @@ export class TasksDynamoMapper implements TasksMapper<TasksDynamoDBEntity> {
 				: null,
 			due_date: task?.dueDate ? new Date(task.dueDate).toISOString() : null,
 			priority: task.priority ?? null,
+			recurrence: task.recurrence ?? null,
+			next_task_id: task.nextTaskId ?? null,
 			entity_type: "TASK",
 		};
 	}

@@ -14,6 +14,8 @@ const defaults: Task = {
 	completedAt: null,
 	dueDate: null,
 	priority: null,
+	recurrence: null,
+	nextTaskId: null,
 };
 
 export function buildTask(overrides?: Partial<Task>): Task {

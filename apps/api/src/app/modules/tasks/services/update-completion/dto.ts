@@ -9,4 +9,5 @@ export interface UpdateTaskCompletionInputService
 
 export interface UpdateTaskCompletionOutputService {
 	task: Task;
+	nextTask?: Task;
 }

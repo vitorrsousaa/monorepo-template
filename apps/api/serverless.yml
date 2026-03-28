@@ -217,3 +217,11 @@ functions:
           method: patch
           authorizer:
             name: CognitoAuthorizer
+  updateTask:
+    handler: src/server/functions/tasks/update-task/index.handler
+    events:
+      - httpApi:
+          path: /tasks/{taskId}
+          method: put
+          authorizer:
+            name: CognitoAuthorizer
