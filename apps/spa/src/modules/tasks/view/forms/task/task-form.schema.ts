@@ -1,4 +1,6 @@
 import {
+	RECURRENCE_END_TYPES,
+	RECURRENCE_FREQUENCIES,
 	TASK_DESCRIPTION_MAX,
 	TASK_TITLE_MAX,
 	TASK_TITLE_MIN,
@@ -9,9 +11,9 @@ const FORM_PRIORITY_VALUES = ["none", "low", "medium", "high"] as const;
 
 const recurrenceSchema = z.object({
 	enabled: z.boolean(),
-	frequency: z.enum(["daily", "weekly", "monthly", "yearly"]).optional(),
+	frequency: z.enum(RECURRENCE_FREQUENCIES).optional(),
 	weeklyDays: z.array(z.number().min(0).max(6)).optional(),
-	endType: z.enum(["never", "on_date", "after_count"]).optional(),
+	endType: z.enum(RECURRENCE_END_TYPES).optional(),
 	endDate: z.date().optional(),
 	endCount: z.number().positive().optional(),
 });

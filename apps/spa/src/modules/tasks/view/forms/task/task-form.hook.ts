@@ -41,6 +41,15 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 		// const projectId = data.project === "inbox" ? undefined : data.project;
 		// const sectionId = data.section === "none" ? undefined : data.section;
 		const dueDate = data.dueDate ? new Date(data.dueDate) : undefined;
+		
+		const recurrence: TTaskFormSchema['recurrence'] = data?.recurrence?.enabled ? {
+			enabled: data.recurrence.enabled,
+			frequency: data.recurrence.frequency,
+			weeklyDays: data.recurrence.weeklyDays,
+			endType: data.recurrence.endType ?? 'never',
+			endDate: data.recurrence.endDate,
+			endCount: data.recurrence.endCount,
+		} : undefined
 
 		const payload: TTaskFormSchema = {
 			title: data.title,
@@ -49,7 +58,7 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 			section: data.section,
 			priority: data.priority,
 			dueDate,
-			recurrence: data.recurrence,
+			recurrence,
 		};
 
 		await onSubmit?.(payload);
