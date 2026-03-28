@@ -1,3 +1,4 @@
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { DatePicker } from "@repo/ui/date-picker";
@@ -239,7 +240,7 @@ export function TaskForm(props: TaskFormProps) {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="none">
+											<SelectItem value={PROJECTS_DEFAULT_IDS.INBOX}>
 												{t("tasks.form.noSection")}
 											</SelectItem>
 											{sections.map((section) => (

@@ -1,5 +1,6 @@
 import { useCreateTasks } from "@/modules/tasks/app/hooks/use-create-tasks";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { X } from "lucide-react";
@@ -16,8 +17,8 @@ interface NewTaskModalProps {
 export function NewTaskModal(props: NewTaskModalProps) {
 	const { isOpen, onClose, projectId, sectionId } = props;
 	const initialValues: Partial<TTaskFormSchema> = {
-		project: projectId ?? "inbox",
-		section: sectionId ?? "none",
+		project: projectId ?? PROJECTS_DEFAULT_IDS.INBOX,
+		section: sectionId ?? PROJECTS_DEFAULT_IDS.INBOX,
 	};
 
 	const { createTasks } = useCreateTasks();

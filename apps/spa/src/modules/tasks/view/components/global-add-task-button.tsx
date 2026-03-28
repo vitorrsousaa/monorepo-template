@@ -1,4 +1,5 @@
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -14,7 +15,7 @@ export function GlobalAddTaskButton() {
 			>
 				<Plus className="w-6 h-6" />
 			</Button>
-			<NewTaskModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+			<NewTaskModal isOpen={isOpen} onClose={() => setIsOpen(false)} projectId={PROJECTS_DEFAULT_IDS.INBOX} />
 		</>
 	);
 }

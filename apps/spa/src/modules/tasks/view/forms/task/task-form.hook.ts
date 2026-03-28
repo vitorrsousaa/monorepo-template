@@ -2,6 +2,7 @@ import { useGetAllGoals } from "@/modules/goals/app/hooks/use-get-all-goals";
 import { useGetAllProjectsByUser } from "@/modules/projects/app/hooks/use-get-all-projects-by-user";
 import { useGetAllSectionsByProject } from "@/modules/sections/app/hooks/use-get-all-sections-by-project";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { useForm } from "react-hook-form";
 import type { TaskFormProps } from "./task-form";
 import {
@@ -32,7 +33,7 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 
 	const handleProjectChange = (value: string) => {
 		methods.setValue("project", value);
-		methods.setValue("section", "none");
+		methods.setValue("section", PROJECTS_DEFAULT_IDS.INBOX);
 	};
 
 	const { handleSubmit: hookFormSubmit } = methods;

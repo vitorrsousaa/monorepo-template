@@ -1,3 +1,4 @@
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import {
 	RECURRENCE_END_TYPES,
 	RECURRENCE_FREQUENCIES,
@@ -58,8 +59,8 @@ export type TRecurrenceForm = z.infer<typeof recurrenceSchema>;
 const defaultInitialValues: TTaskFormSchema = {
 	title: "",
 	description: "",
-	project: "inbox",
-	section: "none",
+	project: PROJECTS_DEFAULT_IDS.INBOX,
+	section: PROJECTS_DEFAULT_IDS.INBOX,
 	priority: "none",
 	dueDate: undefined,
 	completed: false,
@@ -74,8 +75,10 @@ const defaultInitialValues: TTaskFormSchema = {
 export function getTaskFormValues(
 	overrides?: Partial<TTaskFormSchema>,
 ): TTaskFormSchema {
+	const section = overrides?.section ?? PROJECTS_DEFAULT_IDS.INBOX;
 	return {
 		...defaultInitialValues,
 		...overrides,
+		section
 	};
 }
