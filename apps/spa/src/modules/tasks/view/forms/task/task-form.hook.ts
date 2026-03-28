@@ -6,9 +6,9 @@ import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { useForm } from "react-hook-form";
 import type { TaskFormProps } from "./task-form";
 import {
-	getTaskFormValues,
-	TaskFormSchema,
 	type TTaskFormSchema,
+	TaskFormSchema,
+	getTaskFormValues,
 } from "./task-form.schema";
 
 export const useTaskFormHook = (props: TaskFormProps) => {
@@ -40,7 +40,8 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 
 	const handleSubmit = hookFormSubmit(async (data) => {
 		// const projectId = data.project === "inbox" ? undefined : data.project;
-		// const sectionId = data.section === "none" ? undefined : data.section;
+		const sectionId =
+			data.section === PROJECTS_DEFAULT_IDS.INBOX ? undefined : data.section;
 		const dueDate = data.dueDate ? new Date(data.dueDate) : undefined;
 
 		const recurrence: TTaskFormSchema["recurrence"] = data?.recurrence?.enabled
@@ -58,7 +59,7 @@ export const useTaskFormHook = (props: TaskFormProps) => {
 			title: data.title,
 			description: data.description,
 			project: data.project,
-			section: data.section,
+			section: sectionId,
 			priority: data.priority,
 			dueDate,
 			recurrence,
