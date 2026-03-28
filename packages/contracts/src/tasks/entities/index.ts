@@ -1,3 +1,12 @@
+export interface Recurrence {
+	enabled: boolean;
+	frequency: "daily" | "weekly" | "monthly" | "yearly";
+	weeklyDays?: number[]; // 0=Sun..6=Sat, only when frequency=weekly
+	endType: "never" | "on_date" | "after_count";
+	endDate?: string; // ISO date, only when endType=on_date
+	endCount?: number; // remaining occurrences, only when endType=after_count
+}
+
 /**
  * Task as returned/sent by the API (serialized format).
  * Source of truth for task/todo wire format.
@@ -17,6 +26,8 @@ export interface Task {
 	completedAt: string | null;
 	dueDate: string | null;
 	priority: "low" | "medium" | "high" | null;
+	recurrence: Recurrence | null;
+	nextTaskId: string | null;
 }
 
 export type TaskDto = Task;
