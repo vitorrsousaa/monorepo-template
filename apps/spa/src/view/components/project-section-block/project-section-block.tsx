@@ -2,8 +2,9 @@ import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-crea
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
+import { RenderIf } from "@repo/ui/render-if";
 import { cn } from "@repo/ui/utils";
-import { ChevronDown, GripVertical, Plus } from "lucide-react";
+import { ChevronDown, GripVertical, Loader2, Plus } from "lucide-react";
 import { useReducer, useState } from "react";
 import { TaskListCard } from "../task-list-card";
 
@@ -21,6 +22,7 @@ export type ProjectSectionBlockProps = {
 	sectionId: string;
 	projectName?: string;
 	onTaskCheck?: (task: TaskWithOptimisticState, checked: boolean) => void;
+	isPending?: boolean;
 };
 
 export function ProjectSectionBlock({
@@ -32,6 +34,7 @@ export function ProjectSectionBlock({
 	sectionId,
 	projectId,
 	projectName,
+	isPending
 }: ProjectSectionBlockProps) {
 	const [collapsed, setCollapsed] = useState(false);
 	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
@@ -88,15 +91,32 @@ export function ProjectSectionBlock({
 					<span className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
 						{tasks.length}
 					</span>
-					<Button
-						type="button"
-						size="icon"
-						variant="ghost"
-						onClick={toggleIsNewTaskModalOpen}
-						aria-label={`Add task to ${name}`}
-					>
-						<Plus className="h-3 w-3" />
-					</Button>
+
+					<RenderIf
+						condition={Boolean(isPending)}
+						render={
+							<div className="mb-2 flex justify-end">
+								<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+							</div>
+						}
+					/>
+					<RenderIf
+						condition={!Boolean(isPending)}
+						render={
+							<Button
+								type="button"
+								size="icon"
+								variant="ghost"
+								onClick={toggleIsNewTaskModalOpen}
+								aria-label={`Add task to ${name}`}
+							>
+								<Plus className="h-3 w-3" />
+							</Button>
+						}
+					/>
+
+
+
 				</button>
 
 				{!collapsed && (

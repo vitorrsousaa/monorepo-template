@@ -2,7 +2,7 @@ import { ProjectSectionBlock } from "@/components/project-section-block";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
 import { OptimisticState } from "@/utils/types";
 import { cn } from "@repo/ui/utils";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 type ProjectSectionProps = {
 	section: ProjectDetailWithOptimisticState["sections"][number];
@@ -32,11 +32,6 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 					<span>Something went wrong while creating this section.</span>
 				</div>
 			)}
-			{isPending && (
-				<div className="mb-2 flex justify-end">
-					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-				</div>
-			)}
 			<ProjectSectionBlock
 				name={section.name}
 				uppercase
@@ -46,6 +41,7 @@ export const ProjectSection = (props: ProjectSectionProps) => {
 				projectId={projectId}
 				sectionId={section.id}
 				projectName={projectName}
+				isPending={isPending}
 			/>
 		</div>
 	);
