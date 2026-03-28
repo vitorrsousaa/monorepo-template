@@ -16,12 +16,12 @@ interface NewTaskModalProps {
 
 export function NewTaskModal(props: NewTaskModalProps) {
 	const { isOpen, onClose, projectId, sectionId } = props;
+	const { createTasks } = useCreateTasks();
+
 	const initialValues: Partial<TTaskFormSchema> = {
 		project: projectId ?? PROJECTS_DEFAULT_IDS.INBOX,
 		section: sectionId ?? PROJECTS_DEFAULT_IDS.INBOX,
 	};
-
-	const { createTasks } = useCreateTasks();
 
 	async function handleSubmit(data: TTaskFormSchema) {
 		const taskInput = mapTaskFormToCreateInput(data);
