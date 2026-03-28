@@ -46,9 +46,10 @@ export function Projects() {
 	}
 
 	const { project, sections } = projectDetail;
-	const allTasks = [...sections.flatMap((s) => s.tasks)];
-	const completedCount = allTasks.filter((t) => t.completed).length;
-	const totalCount = allTasks.length;
+
+	const totalCount = project.totalCount;
+	const completedCount = project.completedCount;
+	const percentageCompleted = project.percentageCompleted;
 
 	return (
 		<div className="flex h-full w-full flex-col overflow-hidden bg-background">
@@ -61,6 +62,7 @@ export function Projects() {
 						description={project.description}
 						completedCount={completedCount}
 						totalCount={totalCount}
+						percentageCompleted={percentageCompleted}
 						deadlineLabel={null}
 						statusLabel="Active"
 					/>

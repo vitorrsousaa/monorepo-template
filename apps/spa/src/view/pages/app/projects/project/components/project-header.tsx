@@ -9,20 +9,21 @@ type ProjectHeaderProps = {
 	progressColor?: string;
 	deadlineLabel?: string | null;
 	statusLabel?: string | null;
+	percentageCompleted: number;
 };
 
-export function ProjectHeader({
-	name,
-	description,
-	completedCount,
-	totalCount,
-	progressColor,
-	deadlineLabel,
-	statusLabel,
-}: ProjectHeaderProps) {
+export function ProjectHeader(props: ProjectHeaderProps) {
+	const {
+		name,
+		description,
+		completedCount,
+		totalCount,
+		progressColor,
+		deadlineLabel,
+		statusLabel,
+		percentageCompleted,
+	} = props;
 	const remaining = totalCount - completedCount;
-	const progressPercent =
-		totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
 	return (
 		<header className="mb-7">
@@ -44,7 +45,7 @@ export function ProjectHeader({
 						className="text-[28px] font-bold leading-none tracking-tight text-primary"
 						style={progressColor ? { color: progressColor } : undefined}
 					>
-						{progressPercent}%
+						{percentageCompleted}%
 					</div>
 					<div className="mt-0.5 text-[11px] text-muted-foreground">
 						completed
@@ -61,7 +62,7 @@ export function ProjectHeader({
 						<div
 							className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
 							style={{
-								width: `${progressPercent}%`,
+								width: `${percentageCompleted}%`,
 								...(progressColor && { backgroundColor: progressColor }),
 							}}
 						/>
