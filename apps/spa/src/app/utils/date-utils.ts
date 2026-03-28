@@ -1,3 +1,8 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+
 /**
  * Utilitários de data usando APIs nativas do JavaScript (Intl, Date).
  * Evita dependência de date-fns para operações comuns.
@@ -21,11 +26,14 @@ export function formatDateLong(date: Date): string {
 
 const ptBRShortMonth = new Intl.DateTimeFormat("pt-BR", { month: "short" });
 
-/** Formata data em pt-BR estilo curto: "13 mar" */
+/** Formata data em pt-BR estilo curto: "13 mar" — calendário UTC (due dates da API em `…T00:00:00.000Z`). */
 export function formatDateShort(date: Date): string {
-	const day = date.getDate();
-	const month = ptBRShortMonth.format(date).replace(".", "");
-	return `${day} ${month}`;
+	const d = dayjs.utc(date);
+	const month = new Intl.DateTimeFormat("pt-BR", {
+		month: "short",
+		timeZone: "UTC",
+	}).format(d.toDate());
+	return `${d.date()} ${month.replace(".", "")}`;
 }
 
 /** Formata data em pt-BR com ano: "13 mar 2026" */
