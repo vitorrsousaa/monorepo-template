@@ -14,10 +14,8 @@ export function useUpdateTask() {
 	const queryClient = useQueryClient();
 
 	const { mutate: editTask, isPending } = useMutation({
-		mutationFn: ({
-			taskId,
-			...input
-		}: UpdateTaskVariables) => updateTask(taskId, input),
+		mutationFn: ({ taskId, ...input }: UpdateTaskVariables) =>
+			updateTask(taskId, input),
 		onMutate: async (variables) => {
 			const isInbox = variables.projectId == null;
 

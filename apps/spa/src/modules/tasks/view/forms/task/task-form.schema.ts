@@ -79,6 +79,6 @@ export function getTaskFormValues(
 	return {
 		...defaultInitialValues,
 		...overrides,
-		section
+		section,
 	};
 }

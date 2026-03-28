@@ -137,7 +137,7 @@ export function tasksInboxCache(queryClient: QueryClient) {
 					...old,
 					tasks: old.tasks.map((t) =>
 						t.id === taskId
-							? { ...t, completed: nextCompleted, completedAt}
+							? { ...t, completed: nextCompleted, completedAt }
 							: t,
 					),
 				};

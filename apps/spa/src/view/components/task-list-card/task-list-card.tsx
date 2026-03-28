@@ -15,8 +15,7 @@ export interface TaskListCardProps {
 }
 
 export function TaskListCard(props: TaskListCardProps) {
-	const { sectionId, projectId, tasks, onRetry, projectName } =
-		props;
+	const { sectionId, projectId, tasks, onRetry, projectName } = props;
 
 	const { toggleTaskCompletion } = useUpdateTaskCompletion();
 
@@ -26,10 +25,7 @@ export function TaskListCard(props: TaskListCardProps) {
 	) => {
 		if (!task.id) return;
 		const os = task?.optimisticState;
-		if (
-			os === OptimisticState.PENDING ||
-			os === OptimisticState.ERROR
-		) {
+		if (os === OptimisticState.PENDING || os === OptimisticState.ERROR) {
 			return;
 		}
 		toggleTaskCompletion({
@@ -39,7 +35,6 @@ export function TaskListCard(props: TaskListCardProps) {
 			task,
 		});
 	};
-
 
 	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
 		(state) => !state,

@@ -25,10 +25,7 @@ export function TodayProjectColumn(props: TodayProjectColumnProps) {
 				<div className="flex-1 overflow-y-auto min-h-0 px-2 py-3">
 					<div className="max-h-[calc(100vh-220px)] overflow-y-auto">
 						<div className="mx-auto max-w-3xl">
-							<TaskListCard
-								projectId={project.id}
-								tasks={project.tasks}
-							/>
+							<TaskListCard projectId={project.id} tasks={project.tasks} />
 						</div>
 					</div>
 				</div>

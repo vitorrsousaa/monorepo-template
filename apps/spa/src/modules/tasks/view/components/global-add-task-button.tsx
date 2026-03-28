@@ -15,7 +15,11 @@ export function GlobalAddTaskButton() {
 			>
 				<Plus className="w-6 h-6" />
 			</Button>
-			<NewTaskModal isOpen={isOpen} onClose={() => setIsOpen(false)} projectId={PROJECTS_DEFAULT_IDS.INBOX} />
+			<NewTaskModal
+				isOpen={isOpen}
+				onClose={() => setIsOpen(false)}
+				projectId={PROJECTS_DEFAULT_IDS.INBOX}
+			/>
 		</>
 	);
 }

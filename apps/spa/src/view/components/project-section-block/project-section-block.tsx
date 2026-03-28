@@ -34,7 +34,7 @@ export function ProjectSectionBlock({
 	sectionId,
 	projectId,
 	projectName,
-	isPending
+	isPending,
 }: ProjectSectionBlockProps) {
 	const [collapsed, setCollapsed] = useState(false);
 	const [isNewTaskModalOpen, toggleIsNewTaskModalOpen] = useReducer(
@@ -94,15 +94,7 @@ export function ProjectSectionBlock({
 
 					<RenderIf
 						condition={Boolean(isPending)}
-						render={
-							<div className="mb-2 flex justify-end">
-								<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-							</div>
-						}
-					/>
-					<RenderIf
-						condition={!Boolean(isPending)}
-						render={
+						fallback={
 							<Button
 								type="button"
 								size="icon"
@@ -113,10 +105,12 @@ export function ProjectSectionBlock({
 								<Plus className="h-3 w-3" />
 							</Button>
 						}
+						render={
+							<div className="mb-2 flex justify-end">
+								<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+							</div>
+						}
 					/>
-
-
-
 				</button>
 
 				{!collapsed && (

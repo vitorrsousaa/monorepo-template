@@ -36,7 +36,9 @@ export function useGetProjectDetail(params: UseGetProjectDetailParams) {
 				const projectDetail = await getProjectDetail({ projectId });
 
 				const sectionsCache = sectionsByProjectCache(queryClient, projectId);
-				const sectionsWithoutInbox = projectDetail.sections.filter((section) => section.id !== PROJECTS_DEFAULT_IDS.INBOX);
+				const sectionsWithoutInbox = projectDetail.sections.filter(
+					(section) => section.id !== PROJECTS_DEFAULT_IDS.INBOX,
+				);
 				sectionsCache.set(sectionsWithoutInbox);
 
 				return projectDetail as ProjectDetailWithOptimisticState;

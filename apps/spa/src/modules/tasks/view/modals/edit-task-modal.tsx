@@ -34,8 +34,8 @@ export function EditTaskModal({
 		const dataToUpdate = {
 			taskId,
 			projectId,
-			...mapTaskFormToUpdateInput(data)
-		}
+			...mapTaskFormToUpdateInput(data),
+		};
 
 		editTask(dataToUpdate);
 		onClose();
