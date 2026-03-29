@@ -134,7 +134,7 @@ interface Project {
 ### Regras
 
 - Um usuário pode ter múltiplos Projects ativos simultaneamente.
-- **Ao deletar um Project, todas as suas Tasks e Sections são deletadas em cascata (hard delete).** O usuário deve ser avisado na UI antes de confirmar.
+- **Ao deletar um Project, todas as suas Tasks e Sections são soft-deletadas em cascata (set `deleted_at`).** O usuário deve ser avisado na UI antes de confirmar. Itens com `deleted_at` são filtrados por todas as queries existentes.
 - Um Project arquivado (`status: 'archived'`) não aparece na sidebar principal, mas pode ser consultado em "Arquivados".
 - Um Project completado (`status: 'completed'`) exibe data de conclusão e vai para "Concluídos".
 
@@ -336,7 +336,7 @@ Tasks vinculadas a um objetivo      → devem estar no Project com goal
 
 | Decisão | Regra |
 |---|---|
-| Deletar Project | Hard delete em cascata: deleta Tasks e Sections junto. UI deve pedir confirmação. |
+| Deletar Project | Soft delete em cascata: set `deleted_at` no Project, Tasks e Sections. UI deve pedir confirmação. |
 | View "Hoje" | `dueDate <= hoje` AND `completed = false`. Atrasadas aparecem no topo, separadas. |
 | Tasks sem Section no Project | Exibidas no topo do projeto, antes das Sections (grupo implícito "Sem seção"). |
 | View "Próximos dias" | Definição pendente — não implementar ainda. |
