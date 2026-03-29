@@ -38,6 +38,8 @@ export type TaskCacheOrchestrator = {
 	replaceTaskFromServer: (task: Task, tempId?: string) => void;
 	removeOptimisticTask: (tempId: string, sectionId?: string) => void;
 	restoreSnapshot: (snapshot: TaskCacheOrchestratorSnapshot) => void;
+	createTaskOptimistic: (task: Task) => void;
+	markTaskWithError: (task: Task) => void;
 };
 
 export function taskCacheOrchestrator(
@@ -51,12 +53,16 @@ export function taskCacheOrchestrator(
 
 	const isTodayTask = task.dueDate && task.dueDate <= new Date().toISOString();
 
-	const relatedKeys: QueryKey[] = isInbox
-		? [QUERY_KEYS.TASKS.INBOX]
-		: [
-				QUERY_KEYS.PROJECTS.DETAIL(projectId as string),
-				QUERY_KEYS.PROJECTS.SUMMARY,
-			];
+	const relatedKeys: QueryKey[] = [];
+
+	if (isInbox) {
+		relatedKeys.push(QUERY_KEYS.TASKS.INBOX);
+	}
+
+	if (projectId) {
+		relatedKeys.push(QUERY_KEYS.PROJECTS.SUMMARY);
+		relatedKeys.push(QUERY_KEYS.PROJECTS.DETAIL(projectId));
+	}
 
 	if (isTodayTask) {
 		relatedKeys.push(QUERY_KEYS.TASKS.TODAY);
@@ -155,12 +161,14 @@ export function taskCacheOrchestrator(
 			} else {
 				tasksInboxCache(queryClient).replaceTaskFromServer(task);
 			}
-			return;
 		}
 
 		if (isTodayTask) {
-			todayTasksCache(queryClient).replaceTaskFromServer(task);
-			return;
+			if (tempId) {
+				todayTasksCache(queryClient).replaceWithReal(tempId, task);
+			} else {
+				todayTasksCache(queryClient).replaceTaskFromServer(task);
+			}
 		}
 
 		if (projectId) {
@@ -222,6 +230,51 @@ export function taskCacheOrchestrator(
 		}
 	}
 
+	function createTaskOptimistic(task: Task) {
+		const sectionKey = task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX;
+
+		if (isInbox) {
+			tasksInboxCache(queryClient).addOptimistic(task.id, task);
+		}
+
+		if (projectId) {
+			projectsSummaryCache(queryClient).incrementTotalCount(projectId);
+
+			const detailCache = projectDetailCache(queryClient, projectId);
+
+			if (detailCache.exists()) {
+				detailCache.addTaskToSection(sectionKey, task.id, task);
+				detailCache.incrementProjectTotalCount();
+			}
+		}
+
+		if (isTodayTask) {
+			todayTasksCache(queryClient).addOptimistic(task);
+		}
+	}
+
+	function markTaskWithError(task: Task) {
+		const sectionKey = task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX;
+
+		if (isInbox) {
+			tasksInboxCache(queryClient).markError(task.id);
+		}
+
+		if (projectId) {
+			const detailCache = projectDetailCache(queryClient, projectId);
+			projectsSummaryCache(queryClient).decrementTotalCount(projectId);
+
+			if (detailCache.exists()) {
+				detailCache.removeTaskFromSection(sectionKey, task.id);
+				detailCache.decrementProjectTotalCount();
+			}
+		}
+
+		if (isTodayTask) {
+			todayTasksCache(queryClient).markError(task.id);
+		}
+	}
+
 	return {
 		cancel: async () => {
 			await cancelRelatedQueries(queryClient, relatedKeys);
@@ -232,5 +285,7 @@ export function taskCacheOrchestrator(
 		replaceTaskFromServer,
 		removeOptimisticTask,
 		restoreSnapshot: restoreSnapshotOrchestrator,
+		createTaskOptimistic,
+		markTaskWithError,
 	};
 }

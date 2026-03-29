@@ -1,5 +1,6 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import { OptimisticState } from "@/utils/types";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { Task } from "@repo/contracts/tasks/entities";
 import type { QueryClient } from "@tanstack/react-query";
 import type { TodayTasksResponseWithOptimisticState } from "../hooks/use-get-today-tasks";
@@ -87,6 +88,72 @@ export function todayTasksCache(queryClient: QueryClient) {
 							tasks: p.tasks.map((t) =>
 								t.id === task.id
 									? { ...task, optimisticState: OptimisticState.SYNCED }
+									: t,
+							),
+						})),
+					};
+				},
+			);
+		},
+
+		addOptimistic(task: Task) {
+			queryClient.setQueryData<TodayTasksResponseWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+
+					const projectId = task.projectId ?? PROJECTS_DEFAULT_IDS.INBOX;
+
+					return {
+						...old,
+						projects: old.projects.map((p) =>
+							p.id === projectId
+								? {
+										...p,
+										tasks: [
+											...p.tasks,
+											{ ...task, optimisticState: OptimisticState.PENDING },
+										],
+									}
+								: p,
+						),
+					};
+				},
+			);
+		},
+
+		markError(taskId: string) {
+			queryClient.setQueryData<TodayTasksResponseWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						projects: old.projects.map((p) => ({
+							...p,
+							tasks: p.tasks.map((t) =>
+								t.id === taskId
+									? { ...t, optimisticState: OptimisticState.ERROR }
+									: t,
+							),
+						})),
+					};
+				},
+			);
+		},
+
+		replaceWithReal(tempId: string, realTask: Task) {
+			queryClient.setQueryData<TodayTasksResponseWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						projects: old.projects.map((p) => ({
+							...p,
+							tasks: p.tasks.map((t) =>
+								t.id === tempId
+									? { ...realTask, optimisticState: OptimisticState.SYNCED }
 									: t,
 							),
 						})),
