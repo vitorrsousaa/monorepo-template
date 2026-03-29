@@ -27,7 +27,7 @@ export class TasksDynamoRepository implements ITasksRepository {
 		private readonly dynamoClient: IDatabaseClient,
 		private readonly mapper: TasksMapper<TasksDynamoDBEntity>,
 	) {}
-	
+
 	async create(
 		data: Omit<
 			Task,
@@ -308,65 +308,76 @@ export class TasksDynamoRepository implements ITasksRepository {
 
 		// Same PK: use UpdateItem to patch only changed fields
 		const oldDbEntity = this.mapper.toDatabase(task);
+		const { parts, names, values } = this.buildUpdateExpression(updates);
 
-		// Build UpdateExpression from updates
-		const expressionParts: string[] = [];
-		const expressionAttributeNames: Record<string, string> = {};
-		const expressionAttributeValues: Record<string, unknown> = {};
-
-		// Map domain field names to DynamoDB attribute names
-		const fieldMap: Record<string, string> = {
-			title: "title",
-			description: "description",
-			priority: "priority",
-			dueDate: "due_date",
-			recurrence: "recurrence",
-			sectionId: "section_id",
-			updatedAt: "updated_at",
-		};
-
-		for (const [domainField, dbField] of Object.entries(fieldMap)) {
-			if (domainField in updates) {
-				const nameAlias = `#${dbField}`;
-				const valueAlias = `:${dbField}`;
-				expressionAttributeNames[nameAlias] = dbField;
-
-				// Serialize values appropriately for DynamoDB
-				let value: unknown;
-				if (domainField === "dueDate") {
-					const dueDate = (updates as Record<string, unknown>)[domainField];
-					value = dueDate ? new Date(dueDate as string).toISOString() : null;
-				} else if (domainField === "updatedAt") {
-					const updatedAt = (updates as Record<string, unknown>)[domainField];
-					value = updatedAt
-						? new Date(updatedAt as string).toISOString()
-						: new Date().toISOString();
-				} else {
-					value = (updates as Record<string, unknown>)[domainField] ?? null;
-				}
-
-				expressionAttributeValues[valueAlias] = value;
-				expressionParts.push(`${nameAlias} = ${valueAlias}`);
-			}
-		}
-
-		// Always update updated_at if not explicitly provided
-		if (!("updatedAt" in updates)) {
-			expressionAttributeNames["#updated_at"] = "updated_at";
-			expressionAttributeValues[":updated_at"] = new Date().toISOString();
-			expressionParts.push("#updated_at = :updated_at");
-		}
-
-		if (expressionParts.length > 0) {
+		if (parts.length > 0) {
 			await this.dynamoClient.update({
 				Key: { PK: oldDbEntity.PK, SK: oldDbEntity.SK },
-				UpdateExpression: `SET ${expressionParts.join(", ")}`,
-				ExpressionAttributeNames: expressionAttributeNames,
-				ExpressionAttributeValues: expressionAttributeValues,
+				UpdateExpression: `SET ${parts.join(", ")}`,
+				ExpressionAttributeNames: names,
+				ExpressionAttributeValues: values,
 			});
 		}
 
 		return updatedTask;
+	}
+
+	private static readonly DOMAIN_TO_DB_FIELD: Record<string, string> = {
+		title: "title",
+		description: "description",
+		priority: "priority",
+		dueDate: "due_date",
+		recurrence: "recurrence",
+		sectionId: "section_id",
+		updatedAt: "updated_at",
+	};
+
+	private static readonly DATE_FIELDS = new Set(["dueDate", "updatedAt"]);
+
+	private serializeFieldValue(field: string, raw: unknown): unknown {
+		if (!TasksDynamoRepository.DATE_FIELDS.has(field)) {
+			return raw ?? null;
+		}
+		if (field === "updatedAt") {
+			return raw
+				? new Date(raw as string).toISOString()
+				: new Date().toISOString();
+		}
+		return raw ? new Date(raw as string).toISOString() : null;
+	}
+
+	private buildUpdateExpression(updates: Record<string, unknown>): {
+		parts: string[];
+		names: Record<string, string>;
+		values: Record<string, unknown>;
+	} {
+		const parts: string[] = [];
+		const names: Record<string, string> = {};
+		const values: Record<string, unknown> = {};
+
+		for (const [domainField, dbField] of Object.entries(
+			TasksDynamoRepository.DOMAIN_TO_DB_FIELD,
+		)) {
+			if (!(domainField in updates)) continue;
+
+			const nameAlias = `#${dbField}`;
+			const valueAlias = `:${dbField}`;
+			names[nameAlias] = dbField;
+			values[valueAlias] = this.serializeFieldValue(
+				domainField,
+				updates[domainField],
+			);
+			parts.push(`${nameAlias} = ${valueAlias}`);
+		}
+
+		// Always update updated_at if not explicitly provided
+		if (!("updatedAt" in updates)) {
+			names["#updated_at"] = "updated_at";
+			values[":updated_at"] = new Date().toISOString();
+			parts.push("#updated_at = :updated_at");
+		}
+
+		return { parts, names, values };
 	}
 
 	async updateField(
