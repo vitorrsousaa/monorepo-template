@@ -9,15 +9,17 @@ export type UseGetAccountInfoParams = Omit<
 >;
 
 export function useGetAccountInfo(params: UseGetAccountInfoParams) {
-	const { data, isError, isFetching, isSuccess, error, refetch } = useQuery({
-		queryKey: QUERY_KEYS.AUTH.ACCOUNT_INFO,
-		queryFn: getAccountInfo,
-		...params,
-	});
+	const { data, isError, isLoading, isFetching, isSuccess, error, refetch } =
+		useQuery({
+			queryKey: QUERY_KEYS.AUTH.ACCOUNT_INFO,
+			queryFn: getAccountInfo,
+			...params,
+		});
 
 	return {
 		user: data?.user ?? null,
 		isProfileError: isError,
+		isProfileLoading: isLoading,
 		isProfileFetching: isFetching,
 		isProfileSuccess: isSuccess,
 		profileError: error,

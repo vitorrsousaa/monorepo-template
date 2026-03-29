@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		user,
 		isProfileError,
 		profileError,
-		isProfileFetching,
+		isProfileLoading,
 		isProfileSuccess,
 	} = useGetAccountInfo({
 		enabled: signedIn,
@@ -112,8 +112,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	return (
 		<AuthContext.Provider value={value}>
-			{isProfileFetching && <LoadingScreen />}
-			{!isProfileFetching && children}
+			{isProfileLoading && <LoadingScreen />}
+			{!isProfileLoading && children}
 		</AuthContext.Provider>
 	);
 }
