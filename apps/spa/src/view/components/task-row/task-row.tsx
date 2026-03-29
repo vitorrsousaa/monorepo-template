@@ -4,6 +4,7 @@ import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
 import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
 import { formatRecurrencePreview } from "@/utils/format-recurrence";
 import { OptimisticState } from "@/utils/types";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
@@ -59,8 +60,8 @@ export function TaskRow({
 		description: task.description ?? undefined,
 		dueDate: dueDate ?? undefined,
 		completed: task.completed,
-		section: task.sectionId ?? "none",
-		project: task.projectId ?? "inbox",
+		section: task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX,
+		project: task.projectId ?? PROJECTS_DEFAULT_IDS.INBOX,
 		priority: task.priority ?? "none",
 		recurrence: task.recurrence
 			? {
