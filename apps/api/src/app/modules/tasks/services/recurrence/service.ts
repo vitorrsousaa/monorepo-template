@@ -6,54 +6,28 @@ export class RecurrenceService {
 	constructor(private readonly repository: ITasksRepository) {}
 
 	async createNextOccurrence(task: Task): Promise<{ nextTask: Task } | null> {
-		// Guard: task must have recurrence enabled
-		if (!task.recurrence || !task.recurrence.enabled) {
+		if (!task.recurrence?.enabled) {
 			return null;
 		}
 
-		// Duplicate guard: if nextTaskId exists, check if the next task is still pending
-		if (task.nextTaskId) {
-			const existingNextTask = await this.repository.getByUserId(
-				task.nextTaskId,
-				task.userId,
-				task.projectId,
-			);
-			// If a pending (non-completed) next task already exists, skip creation
-			if (existingNextTask && !existingNextTask.completed) {
-				return null;
-			}
-			// If it's completed (or not found), continue to re-create
+		if (await this.hasPendingNextTask(task)) {
+			return null;
 		}
 
-		// Check end conditions before calculating next date
 		const recurrence = task.recurrence;
 
-		if (
-			recurrence.endType === "after_count" &&
-			(recurrence.endCount ?? 0) <= 1
-		) {
+		if (this.isRecurrenceExhausted(recurrence)) {
 			return null;
 		}
 
-		// Calculate next due date
 		const nextDueDate = calculateNextDueDate(task);
 
-		if (recurrence.endType === "on_date" && recurrence.endDate) {
-			if (nextDueDate && nextDueDate > recurrence.endDate) {
-				return null;
-			}
+		if (this.isNextDatePastEnd(recurrence, nextDueDate)) {
+			return null;
 		}
 
-		// Build recurrence for next task
-		const nextRecurrence = { ...recurrence };
-		if (
-			recurrence.endType === "after_count" &&
-			recurrence.endCount !== undefined
-		) {
-			nextRecurrence.endCount = recurrence.endCount - 1;
-		}
+		const nextRecurrence = this.buildNextRecurrence(recurrence);
 
-		// Create next task
 		const nextTask = await this.repository.create({
 			title: task.title,
 			description: task.description,
@@ -66,7 +40,6 @@ export class RecurrenceService {
 			nextTaskId: null,
 		});
 
-		// Link the completed task to its next occurrence
 		await this.repository.updateField(
 			task.id,
 			task.userId,
@@ -76,5 +49,49 @@ export class RecurrenceService {
 		);
 
 		return { nextTask };
+	}
+
+	private async hasPendingNextTask(task: Task): Promise<boolean> {
+		if (!task.nextTaskId) return false;
+
+		const existing = await this.repository.getByUserId(
+			task.nextTaskId,
+			task.userId,
+			task.projectId,
+		);
+		return existing !== null && !existing.completed;
+	}
+
+	private isRecurrenceExhausted(
+		recurrence: NonNullable<Task["recurrence"]>,
+	): boolean {
+		return (
+			recurrence.endType === "after_count" && (recurrence.endCount ?? 0) <= 1
+		);
+	}
+
+	private isNextDatePastEnd(
+		recurrence: NonNullable<Task["recurrence"]>,
+		nextDueDate: string | null,
+	): boolean {
+		return (
+			recurrence.endType === "on_date" &&
+			!!recurrence.endDate &&
+			!!nextDueDate &&
+			nextDueDate > recurrence.endDate
+		);
+	}
+
+	private buildNextRecurrence(
+		recurrence: NonNullable<Task["recurrence"]>,
+	): NonNullable<Task["recurrence"]> {
+		const next = { ...recurrence };
+		if (
+			recurrence.endType === "after_count" &&
+			recurrence.endCount !== undefined
+		) {
+			next.endCount = recurrence.endCount - 1;
+		}
+		return next;
 	}
 }
