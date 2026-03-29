@@ -12,19 +12,22 @@ import type { Task } from "@repo/contracts/tasks/entities";
 import { calculateNextDueDate } from "@repo/contracts/tasks/recurrence";
 import type { QueryClient, QueryKey } from "@tanstack/react-query";
 import { nextRecurrenceForOptimistic } from "../helpers/recurrence";
+import type { TodayTasksResponseWithOptimisticState } from "../hooks/use-get-today-tasks";
 import { tasksInboxCache } from "./tasks-inbox.cache";
+import { todayTasksCache } from "./today-tasks.cache";
 import type { TaskWithOptimisticState } from "./types";
 
 export type TaskCacheOrchestratorVariables = {
 	projectId: string | null | undefined;
-	taskId: string;
 	nextCompleted: boolean;
+	task: Task;
 };
 
 export type TaskCacheOrchestratorSnapshot = {
 	inboxSnapshot: unknown;
 	projectDetailSnapshot: unknown;
 	projectsSummarySnapshot: unknown;
+	todayTasksSnapshot: TodayTasksResponseWithOptimisticState | undefined;
 };
 
 export type TaskCacheOrchestrator = {
@@ -41,9 +44,12 @@ export function taskCacheOrchestrator(
 	queryClient: QueryClient,
 	variables: TaskCacheOrchestratorVariables,
 ): TaskCacheOrchestrator {
-	const { projectId, taskId, nextCompleted } = variables;
+	const { projectId, task, nextCompleted } = variables;
+	const taskId = task.id;
 
 	const isInbox = Boolean(!projectId);
+
+	const isTodayTask = task.dueDate && task.dueDate <= new Date().toISOString();
 
 	const relatedKeys: QueryKey[] = isInbox
 		? [QUERY_KEYS.TASKS.INBOX]
@@ -51,6 +57,10 @@ export function taskCacheOrchestrator(
 				QUERY_KEYS.PROJECTS.DETAIL(projectId as string),
 				QUERY_KEYS.PROJECTS.SUMMARY,
 			];
+
+	if (isTodayTask) {
+		relatedKeys.push(QUERY_KEYS.TASKS.TODAY);
+	}
 
 	function patchTaskCompletionOptimistic() {
 		if (isInbox) {
@@ -75,6 +85,10 @@ export function taskCacheOrchestrator(
 				detailCache.decrementCompletedCount();
 				summaryCache.decrementCompletedCount(projectId);
 			}
+		}
+
+		if (isTodayTask) {
+			todayTasksCache(queryClient).patchTaskCompletionOptimistic(taskId);
 		}
 	}
 
@@ -122,11 +136,15 @@ export function taskCacheOrchestrator(
 			!isInbox && projectId
 				? queryClient.getQueryData(QUERY_KEYS.PROJECTS.SUMMARY)
 				: undefined;
+		const todayTasksSnapshot = isTodayTask
+			? todayTasksCache(queryClient).getSnapshot()
+			: undefined;
 
 		return {
 			inboxSnapshot,
 			projectDetailSnapshot,
 			projectsSummarySnapshot,
+			todayTasksSnapshot,
 		};
 	}
 
@@ -137,6 +155,11 @@ export function taskCacheOrchestrator(
 			} else {
 				tasksInboxCache(queryClient).replaceTaskFromServer(task);
 			}
+			return;
+		}
+
+		if (isTodayTask) {
+			todayTasksCache(queryClient).replaceTaskFromServer(task);
 			return;
 		}
 
@@ -179,6 +202,10 @@ export function taskCacheOrchestrator(
 				QUERY_KEYS.TASKS.INBOX,
 				snapshot.inboxSnapshot,
 			);
+		}
+
+		if (isTodayTask && snapshot.todayTasksSnapshot) {
+			todayTasksCache(queryClient).restoreSnapshot(snapshot.todayTasksSnapshot);
 		}
 
 		if (!isInbox && projectId) {

@@ -19,9 +19,10 @@ export function useUpdateTaskCompletionMutation(queryClient: QueryClient) {
 	async function runOnMutate(variables: UpdateTaskCompletionVariables) {
 		const coordVariables: TaskCacheOrchestratorVariables = {
 			projectId: variables.projectId ?? null,
-			taskId: variables.taskId,
 			nextCompleted: variables.nextCompleted,
+			task: variables.task,
 		};
+
 		const coordinator = taskCacheOrchestrator(queryClient, coordVariables);
 
 		await coordinator.cancel();
