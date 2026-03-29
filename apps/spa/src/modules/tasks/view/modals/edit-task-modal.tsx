@@ -2,6 +2,7 @@ import { useUpdateTask } from "@/modules/tasks/app/hooks/use-update-task";
 import { mapTaskFormToUpdateInput } from "@/modules/tasks/app/mappers/update-task";
 import { TaskForm } from "@/modules/tasks/view/forms/task";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@repo/ui/dialog";
 import { Copy, Trash2, X } from "lucide-react";
@@ -27,7 +28,9 @@ export function EditTaskModal({
 
 	const taskId = initialValues.id;
 	const projectId =
-		initialValues.project !== "inbox" ? initialValues.project : undefined;
+		initialValues.project !== PROJECTS_DEFAULT_IDS.INBOX
+			? initialValues.project
+			: undefined;
 
 	async function handleSubmit(data: TTaskFormSchema) {
 		if (!taskId) return;
