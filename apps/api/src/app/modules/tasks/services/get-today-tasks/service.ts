@@ -32,14 +32,14 @@ export class GetTodayTasksService implements IGetTodayTasksService {
 	}
 
 	async execute(data: GetTodayTasksInput): Promise<GetTodayTasksOutput> {
-		const todos = await this.taskRepository.getTodayTasks(data.userId);
+		const tasks = await this.taskRepository.getTodayTasks(data.userId);
 
 		// Group by projectId (null = Inbox)
-		const byProject = new Map<string | null, typeof todos>();
-		for (const todo of todos) {
-			const key = todo.projectId ?? null;
+		const byProject = new Map<string | null, typeof tasks>();
+		for (const task of tasks) {
+			const key = task.projectId ?? null;
 			const list = byProject.get(key) ?? [];
-			list.push(todo);
+			list.push(task);
 			byProject.set(key, list);
 		}
 
