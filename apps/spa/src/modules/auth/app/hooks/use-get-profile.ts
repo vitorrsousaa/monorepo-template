@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import { getAccountInfo } from "@/modules/auth/app/services/account";
 import type { GetAccountInfoResponse } from "@repo/contracts/auth/account";
-import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 export type UseGetAccountInfoParams = Omit<
 	UseQueryOptions<GetAccountInfoResponse>,
@@ -9,7 +9,7 @@ export type UseGetAccountInfoParams = Omit<
 >;
 
 export function useGetAccountInfo(params: UseGetAccountInfoParams) {
-	const { data, isError, isFetching, isSuccess, refetch } = useQuery({
+	const { data, isError, isFetching, isSuccess, error, refetch } = useQuery({
 		queryKey: QUERY_KEYS.AUTH.ACCOUNT_INFO,
 		queryFn: getAccountInfo,
 		...params,
@@ -20,6 +20,7 @@ export function useGetAccountInfo(params: UseGetAccountInfoParams) {
 		isProfileError: isError,
 		isProfileFetching: isFetching,
 		isProfileSuccess: isSuccess,
+		profileError: error,
 		refetchProfile: refetch,
 	};
 }

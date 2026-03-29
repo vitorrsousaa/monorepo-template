@@ -1,4 +1,5 @@
 import { LoadingScreen } from "@/components/loading-screen";
+import { AppError } from "@/errors/app-error";
 import { useGetAccountInfo } from "@/modules/auth/app/hooks/use-get-profile";
 import { tokenStorage } from "@/storage/token-storage";
 import type { GetAccountInfoResponse } from "@repo/contracts/auth/account";
@@ -30,11 +31,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const queryClient = useQueryClient();
 
-	const { user, isProfileError, isProfileFetching, isProfileSuccess } =
-		useGetAccountInfo({
-			enabled: signedIn,
-			staleTime: Number.POSITIVE_INFINITY,
-		});
+	const {
+		user,
+		isProfileError,
+		profileError,
+		isProfileFetching,
+		isProfileSuccess,
+	} = useGetAccountInfo({
+		enabled: signedIn,
+		retry: (failureCount, error) => {
+			if (
+				error instanceof AppError &&
+				(error.statusCode === 401 || error.statusCode === 403)
+			) {
+				return false;
+			}
+			return failureCount < 1;
+		},
+		refetchInterval: 5 * 60 * 1000,
+		refetchOnWindowFocus: "always",
+	});
 
 	const signInWithGoogle = useCallback(() => {
 		// const CLIENT_ID = env.VITE_AUTH_GOOGLE_ID;
@@ -83,10 +99,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	);
 
 	useEffect(() => {
-		if (isProfileError) {
+		if (!isProfileError || !profileError) return;
+
+		const isAuthError =
+			profileError instanceof AppError &&
+			(profileError.statusCode === 401 || profileError.statusCode === 403);
+
+		if (isAuthError) {
 			signout();
 		}
-	}, [isProfileError, signout]);
+	}, [isProfileError, profileError, signout]);
 
 	return (
 		<AuthContext.Provider value={value}>
