@@ -20,7 +20,7 @@ import type { TaskWithOptimisticState } from "./types";
 export type TaskCacheOrchestratorVariables = {
 	projectId: string | null | undefined;
 	nextCompleted: boolean;
-	task: Task;
+	task: Partial<Task> & { id: string };
 };
 
 export type TaskCacheOrchestratorSnapshot = {
@@ -39,7 +39,10 @@ export type TaskCacheOrchestrator = {
 	removeOptimisticTask: (tempId: string, sectionId?: string) => void;
 	restoreSnapshot: (snapshot: TaskCacheOrchestratorSnapshot) => void;
 	createTaskOptimistic: (task: Task) => void;
-	markTaskWithError: (task: Task) => void;
+	markTaskWithError: (task: Partial<Task> & { id: string }) => void;
+	patchTaskOptimistic: (
+		task: Partial<TaskWithOptimisticState> & { id: string },
+	) => void;
 };
 
 export function taskCacheOrchestrator(
@@ -253,7 +256,7 @@ export function taskCacheOrchestrator(
 		}
 	}
 
-	function markTaskWithError(task: Task) {
+	function markTaskWithError(task: Partial<Task> & { id: string }) {
 		const sectionKey = task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX;
 
 		if (isInbox) {
@@ -275,6 +278,25 @@ export function taskCacheOrchestrator(
 		}
 	}
 
+	function patchTaskOptimistic(
+		task: Partial<TaskWithOptimisticState> & { id: string },
+	) {
+		if (isInbox) {
+			tasksInboxCache(queryClient).patchTaskOptimistic(task.id, task);
+		}
+
+		if (projectId) {
+			const detailCache = projectDetailCache(queryClient, projectId);
+			if (detailCache.exists()) {
+				detailCache.patchTaskOptimistic(task.id, task);
+			}
+		}
+
+		if (isTodayTask) {
+			todayTasksCache(queryClient).patchTaskOptimistic(task.id, task);
+		}
+	}
+
 	return {
 		cancel: async () => {
 			await cancelRelatedQueries(queryClient, relatedKeys);
@@ -287,5 +309,6 @@ export function taskCacheOrchestrator(
 		restoreSnapshot: restoreSnapshotOrchestrator,
 		createTaskOptimistic,
 		markTaskWithError,
+		patchTaskOptimistic,
 	};
 }

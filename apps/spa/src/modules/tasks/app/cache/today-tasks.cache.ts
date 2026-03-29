@@ -4,6 +4,7 @@ import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { Task } from "@repo/contracts/tasks/entities";
 import type { QueryClient } from "@tanstack/react-query";
 import type { TodayTasksResponseWithOptimisticState } from "../hooks/use-get-today-tasks";
+import type { TaskWithOptimisticState } from "./types";
 
 /**
  * Typed cache helper for the inbox tasks query.
@@ -69,6 +70,28 @@ export function todayTasksCache(queryClient: QueryClient) {
 				},
 			);
 		},
+
+		patchTaskOptimistic(
+			taskId: string,
+			patch: Partial<TaskWithOptimisticState>,
+		) {
+			queryClient.setQueryData<TodayTasksResponseWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						projects: old.projects.map((p) => ({
+							...p,
+							tasks: p.tasks.map((t) =>
+								t.id === taskId ? { ...t, ...patch } : t,
+							),
+						})),
+					};
+				},
+			);
+		},
+
 		/**
 		 * Replaces a row whose id equals `task.id` with the payload from the API (authoritative snapshot).
 		 *

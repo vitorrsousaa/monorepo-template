@@ -1,5 +1,6 @@
 import { QUERY_KEYS } from "@/config/query-keys";
 import type { ProjectDetailWithOptimisticState } from "@/modules/projects/app/hooks/use-get-project-detail";
+import type { TaskWithOptimisticState } from "@/modules/tasks/app/cache/types";
 import { OptimisticState } from "@/utils/types";
 import type { Task } from "@repo/contracts/tasks/entities";
 import type { QueryClient } from "@tanstack/react-query";
@@ -135,6 +136,27 @@ export function projectDetailCache(
 								t.id === taskId
 									? { ...t, completed: nextCompleted, completedAt }
 									: t,
+							),
+						})),
+					};
+				},
+			);
+		},
+
+		patchTaskOptimistic(
+			taskId: string,
+			patch: Partial<TaskWithOptimisticState>,
+		) {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						sections: old.sections.map((section) => ({
+							...section,
+							tasks: section.tasks.map((t) =>
+								t.id === taskId ? { ...t, ...patch } : t,
 							),
 						})),
 					};
