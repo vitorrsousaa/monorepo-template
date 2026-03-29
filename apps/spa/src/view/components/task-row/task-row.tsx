@@ -1,7 +1,11 @@
 import { PriorityBadge } from "@/components/priority-badge";
 import type { TTaskFormSchema } from "@/modules/tasks/view/forms/task/task-form.schema";
 import { EditTaskModal } from "@/modules/tasks/view/modals/edit-task-modal";
-import { formatDueDateChip, getDueDateChipStatus } from "@/utils/date-utils";
+import {
+	formatDueDateChip,
+	getDueDateChipStatus,
+	utcToLocalDate,
+} from "@/utils/date-utils";
 import { formatRecurrencePreview } from "@/utils/format-recurrence";
 import { OptimisticState } from "@/utils/types";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
@@ -58,7 +62,7 @@ export function TaskRow({
 		id: task.id,
 		title: task.title,
 		description: task.description ?? undefined,
-		dueDate: dueDate ?? undefined,
+		dueDate: dueDate ? utcToLocalDate(dueDate) : undefined,
 		completed: task.completed,
 		section: task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX,
 		project: task.projectId ?? PROJECTS_DEFAULT_IDS.INBOX,

@@ -8,6 +8,28 @@ dayjs.extend(utc);
  * Evita dependência de date-fns para operações comuns.
  */
 
+/**
+ * Converts a UTC-midnight Date (e.g. `2026-04-04T00:00:00.000Z`) to a local Date
+ * representing the same calendar day (April 4 at local midnight).
+ *
+ * Use at the API→form boundary so that date-fns / Calendar (which use local time)
+ * display the correct calendar day.
+ */
+export function utcToLocalDate(date: Date): Date {
+	const d = dayjs.utc(date);
+	return new Date(d.year(), d.month(), d.date());
+}
+
+/**
+ * Converts a local Date back to a UTC-midnight ISO string preserving the calendar day.
+ * `new Date(2026, 3, 4)` (local April 4) → `"2026-04-04T00:00:00.000Z"`.
+ *
+ * Use at the form→API boundary so the API always receives `T00:00:00.000Z`.
+ */
+export function localDateToUTCMidnightISO(date: Date): string {
+	return dayjs(date).format("YYYY-MM-DD[T]00:00:00.000[Z]");
+}
+
 /** Adiciona N dias a uma data. Retorna nova instância. */
 export function addDays(date: Date, days: number): Date {
 	const result = new Date(date);

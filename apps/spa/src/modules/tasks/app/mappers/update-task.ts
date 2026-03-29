@@ -1,3 +1,4 @@
+import { localDateToUTCMidnightISO } from "@/utils/date-utils";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
 import type { UpdateTaskInput } from "@repo/contracts/tasks/update";
 import type { TTaskFormSchema } from "../../view/forms/task/task-form.schema";
@@ -37,7 +38,9 @@ export function mapTaskFormToUpdateInput(
 		title: formData.title,
 		description: formData.description || null,
 		priority: formData.priority === "none" ? null : formData.priority,
-		dueDate: formData.dueDate ? formData.dueDate.toISOString() : null,
+		dueDate: formData.dueDate
+			? localDateToUTCMidnightISO(formData.dueDate)
+			: null,
 		recurrence: mappedRecurrence,
 		sectionId:
 			formData.section === PROJECTS_DEFAULT_IDS.INBOX ? null : formData.section,
