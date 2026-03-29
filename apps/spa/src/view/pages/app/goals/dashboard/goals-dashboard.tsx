@@ -2,6 +2,7 @@ import type { Goal, GoalProgress } from "@/modules/goals/app/entities/goal";
 import { GoalCard } from "@/modules/goals/view/components/goal-card";
 import { EditValueModal } from "@/modules/goals/view/modals/edit-value-modal";
 import { NewGoalModal } from "@/modules/goals/view/modals/new-goal-modal";
+import { createLogger } from "@/utils/logger";
 import { Button } from "@repo/ui/button";
 import { cn } from "@repo/ui/utils";
 import { Plus, Target } from "lucide-react";
@@ -12,6 +13,8 @@ import {
 	type GoalsProject,
 	type GoalsTask,
 } from "./goals-dashboard.mocks";
+
+const logger = createLogger({ module: "goals", component: "GoalsDashboard" });
 
 type FilterType = "todas" | "em-andamento" | "concluida" | "pausada";
 
@@ -89,13 +92,13 @@ export function GoalsDashboard() {
 
 	const handleUpdateGoalValue = (goalId: string, value: number) => {
 		// TODO: Integrar com API - por enquanto atualiza local apenas para demo
-		console.log("[v0] Update goal value:", goalId, value);
+		logger.info("Update goal value:", goalId, value);
 		setEditingGoalId(null);
 	};
 
 	const handleDeleteGoal = (goalId: string) => {
 		// TODO: Integrar com API - por enquanto apenas log
-		console.log("[v0] Delete goal:", goalId);
+		logger.info("Delete goal:", goalId);
 	};
 
 	const editingGoal = editingGoalId

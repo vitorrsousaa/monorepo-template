@@ -17,6 +17,7 @@
 		"ci:test": "vitest run"
 	},
 	"dependencies": {
+		"@repo/logger": "workspace:*",
 		"@tanstack/react-query": "^5.90.5",
 		"dayjs": "^1.11.20",
 		"i18next": "^25.8.18",

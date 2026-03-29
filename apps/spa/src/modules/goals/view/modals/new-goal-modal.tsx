@@ -1,5 +1,6 @@
 import type React from "react";
 
+import { createLogger } from "@/utils/logger";
 import { Button } from "@repo/ui/button";
 import {
 	Dialog,
@@ -19,6 +20,8 @@ interface NewGoalModalProps {
 	onClose: () => void;
 }
 
+const logger = createLogger({ module: "goals", component: "NewGoalModal" });
+
 export function NewGoalModal({ isOpen, onClose }: NewGoalModalProps) {
 	const [goalName, setGoalName] = useState("");
 	const [goalDescription, setGoalDescription] = useState("");
@@ -27,11 +30,7 @@ export function NewGoalModal({ isOpen, onClose }: NewGoalModalProps) {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		// Handle goal creation logic here
-		console.log("[v0] Creating goal:", {
-			goalName,
-			goalDescription,
-			goalDeadline,
-		});
+		logger.info("Creating goal:", { goalName, goalDescription, goalDeadline });
 
 		// Reset form and close modal
 		setGoalName("");
