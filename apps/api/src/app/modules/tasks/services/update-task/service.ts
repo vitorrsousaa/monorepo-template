@@ -10,6 +10,14 @@ export interface IUpdateTaskService
 export class UpdateTaskService implements IUpdateTaskService {
 	constructor(private readonly repository: ITasksRepository) {}
 
+	private static readonly NULLABLE_FIELDS = [
+		"description",
+		"priority",
+		"dueDate",
+		"projectId",
+		"sectionId",
+	] as const;
+
 	async execute(
 		input: UpdateTaskServiceInput,
 	): Promise<UpdateTaskServiceOutput> {
@@ -23,53 +31,51 @@ export class UpdateTaskService implements IUpdateTaskService {
 			throw new TaskNotFound();
 		}
 
-		const updates: Partial<
-			Pick<
-				Task,
-				| "title"
-				| "description"
-				| "priority"
-				| "dueDate"
-				| "recurrence"
-				| "sectionId"
-				| "projectId"
-			>
-		> = {};
+		const updates = this.buildUpdates(input);
+		const updatedTask = await this.repository.updateTask(currentTask, updates);
+
+		return { task: updatedTask };
+	}
+
+	private buildUpdates(
+		input: UpdateTaskServiceInput,
+	): Partial<
+		Pick<
+			Task,
+			| "title"
+			| "description"
+			| "priority"
+			| "dueDate"
+			| "recurrence"
+			| "sectionId"
+			| "projectId"
+		>
+	> {
+		const updates: Record<string, unknown> = {};
 
 		if (input.title !== undefined) {
 			updates.title = input.title;
 		}
 
-		if (input.description !== undefined) {
-			updates.description = input.description ?? null;
-		}
-
-		if (input.priority !== undefined) {
-			updates.priority = input.priority ?? null;
-		}
-
-		if (input.dueDate !== undefined) {
-			updates.dueDate = input.dueDate ?? null;
-		}
-
-		if (input.projectId !== undefined) {
-			updates.projectId = input.projectId ?? null;
-		}
-
-		if (input.sectionId !== undefined) {
-			updates.sectionId = input.sectionId ?? null;
-		}
-
-		if (input.recurrence !== undefined) {
-			if (input.recurrence === null || input.recurrence.enabled === false) {
-				updates.recurrence = null;
-			} else {
-				updates.recurrence = input.recurrence;
+		for (const field of UpdateTaskService.NULLABLE_FIELDS) {
+			if (input[field] !== undefined) {
+				updates[field] = input[field] ?? null;
 			}
 		}
 
-		const updatedTask = await this.repository.updateTask(currentTask, updates);
+		if (input.recurrence !== undefined) {
+			updates.recurrence = this.resolveRecurrence(input.recurrence);
+		}
 
-		return { task: updatedTask };
+		return updates;
+	}
+
+	private resolveRecurrence(
+		recurrence: UpdateTaskServiceInput["recurrence"],
+	): Task["recurrence"] {
+		if (recurrence === null || recurrence?.enabled === false) {
+			return null;
+		}
+		return recurrence ?? null;
 	}
 }
