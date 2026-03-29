@@ -257,8 +257,6 @@ export function taskCacheOrchestrator(
 	}
 
 	function markTaskWithError(task: Partial<Task> & { id: string }) {
-		const sectionKey = task.sectionId ?? PROJECTS_DEFAULT_IDS.INBOX;
-
 		if (isInbox) {
 			tasksInboxCache(queryClient).markError(task.id);
 		}
@@ -268,8 +266,7 @@ export function taskCacheOrchestrator(
 			projectsSummaryCache(queryClient).decrementTotalCount(projectId);
 
 			if (detailCache.exists()) {
-				detailCache.removeTaskFromSection(sectionKey, task.id);
-				detailCache.decrementProjectTotalCount();
+				detailCache.markTaskWithError(task.id);
 			}
 		}
 

@@ -164,6 +164,26 @@ export function projectDetailCache(
 			);
 		},
 
+		markTaskWithError(taskId: string) {
+			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
+				queryKey,
+				(old) => {
+					if (!old) return old;
+					return {
+						...old,
+						sections: old.sections.map((section) => ({
+							...section,
+							tasks: section.tasks.map((t) =>
+								t.id === taskId
+									? { ...t, optimisticState: OptimisticState.ERROR }
+									: t,
+							),
+						})),
+					};
+				},
+			);
+		},
+
 		/** Replace task by id across all sections with server payload (source of truth). */
 		replaceTaskFromServer(task: Task) {
 			queryClient.setQueryData<ProjectDetailWithOptimisticState>(
