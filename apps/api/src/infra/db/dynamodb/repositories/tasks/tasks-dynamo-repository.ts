@@ -292,12 +292,14 @@ export class TasksDynamoRepository implements ITasksRepository {
 		>,
 	): Promise<Task> {
 		const updatedTask: Task = { ...task, ...updates };
+		const oldDbEntity = this.mapper.toDatabase(task);
+		const newDbEntity = this.mapper.toDatabase(updatedTask);
+
+		const keysChanged =
+			oldDbEntity.PK !== newDbEntity.PK || oldDbEntity.SK !== newDbEntity.SK;
 
 		// If projectId is changing the PK changes, so we must delete+put
-		if ("projectId" in updates && updates.projectId !== task.projectId) {
-			const oldDbEntity = this.mapper.toDatabase(task);
-			const newDbEntity = this.mapper.toDatabase(updatedTask);
-
+		if (keysChanged) {
 			await this.dynamoClient.transactWrite([
 				{ Delete: { Key: { PK: oldDbEntity.PK, SK: oldDbEntity.SK } } },
 				{ Put: { Item: newDbEntity } },
@@ -307,13 +309,15 @@ export class TasksDynamoRepository implements ITasksRepository {
 		}
 
 		// Same PK: use UpdateItem to patch only changed fields
-		const oldDbEntity = this.mapper.toDatabase(task);
-		const { parts, names, values } = this.buildUpdateExpression(updates);
+		const { expression, names, values } = this.buildUpdateExpression(
+			updates,
+			newDbEntity,
+		);
 
-		if (parts.length > 0) {
+		if (expression) {
 			await this.dynamoClient.update({
 				Key: { PK: oldDbEntity.PK, SK: oldDbEntity.SK },
-				UpdateExpression: `SET ${parts.join(", ")}`,
+				UpdateExpression: expression,
 				ExpressionAttributeNames: names,
 				ExpressionAttributeValues: values,
 			});
@@ -346,12 +350,16 @@ export class TasksDynamoRepository implements ITasksRepository {
 		return raw ? new Date(raw as string).toISOString() : null;
 	}
 
-	private buildUpdateExpression(updates: Record<string, unknown>): {
-		parts: string[];
+	private buildUpdateExpression(
+		updates: Record<string, unknown>,
+		newDbEntity: TasksDynamoDBEntity,
+	): {
+		expression: string;
 		names: Record<string, string>;
 		values: Record<string, unknown>;
 	} {
-		const parts: string[] = [];
+		const setParts: string[] = [];
+		const removeParts: string[] = [];
 		const names: Record<string, string> = {};
 		const values: Record<string, unknown> = {};
 
@@ -367,17 +375,35 @@ export class TasksDynamoRepository implements ITasksRepository {
 				domainField,
 				updates[domainField],
 			);
-			parts.push(`${nameAlias} = ${valueAlias}`);
+			setParts.push(`${nameAlias} = ${valueAlias}`);
 		}
 
-		// Always update updated_at if not explicitly provided
 		if (!("updatedAt" in updates)) {
 			names["#updated_at"] = "updated_at";
 			values[":updated_at"] = new Date().toISOString();
-			parts.push("#updated_at = :updated_at");
+			setParts.push("#updated_at = :updated_at");
 		}
 
-		return { parts, names, values };
+		if (newDbEntity.GSI1PK != null && newDbEntity.GSI1SK != null) {
+			names["#GSI1PK"] = "GSI1PK";
+			values[":GSI1PK"] = newDbEntity.GSI1PK;
+			setParts.push("#GSI1PK = :GSI1PK");
+
+			names["#GSI1SK"] = "GSI1SK";
+			values[":GSI1SK"] = newDbEntity.GSI1SK;
+			setParts.push("#GSI1SK = :GSI1SK");
+		} else {
+			names["#GSI1PK"] = "GSI1PK";
+			names["#GSI1SK"] = "GSI1SK";
+			removeParts.push("#GSI1PK", "#GSI1SK");
+		}
+
+		const clauses: string[] = [];
+		if (setParts.length > 0) clauses.push(`SET ${setParts.join(", ")}`);
+		if (removeParts.length > 0)
+			clauses.push(`REMOVE ${removeParts.join(", ")}`);
+
+		return { expression: clauses.join(" "), names, values };
 	}
 
 	async updateField(
