@@ -26,4 +26,4 @@ jobs:
       # Rule packs from the public registry: TypeScript, Node.js, JWT-focused rules.
       # Remove --error if you want findings to be reported without failing the job.
       - name: Run Semgrep
-        run: pnpm run ci:semgrep
+        run: semgrep scan --error --config p/typescript --config p/nodejs --config p/jwt --config p/secrets
