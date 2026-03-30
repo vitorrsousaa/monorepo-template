@@ -1,4 +1,5 @@
 import { QUERY_KEYS } from "@/config/query-keys";
+import { snapshotQueryData } from "@/utils/optimistic";
 import { OptimisticState, type WithOptimisticState } from "@/utils/types";
 import type { Task } from "@repo/contracts/tasks/entities";
 import type { GetInboxTasksResponse } from "@repo/contracts/tasks/inbox";
@@ -30,15 +31,13 @@ export function tasksInboxCache(queryClient: QueryClient) {
 		 *
 		 * @returns Cached tasks (empty list if unset) and total count.
 		 */
-		get(): TasksInboxData {
-			const data = queryClient.getQueryData<GetInboxTasksResponse>(queryKey);
-			return {
-				tasks: (data?.tasks ?? []).map((t) => ({
-					...t,
-					optimisticState: OptimisticState.SYNCED,
-				})),
-				total: data?.total ?? 0,
-			};
+		getSnapshot(): GetInboxTasksResponse {
+			return (
+				snapshotQueryData<GetInboxTasksResponse>(queryClient, queryKey) ?? {
+					tasks: [],
+					total: 0,
+				}
+			);
 		},
 
 		/**
