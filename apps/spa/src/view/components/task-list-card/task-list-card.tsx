@@ -2,20 +2,30 @@ import type { TaskWithOptimisticState } from "@/modules/tasks/app/hooks/use-crea
 import { useUpdateTaskCompletion } from "@/modules/tasks/app/hooks/use-update-task-completion";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { OptimisticState } from "@/utils/types";
+import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
+import { RenderIf } from "@repo/ui/render-if";
 import { Plus } from "lucide-react";
 import { useReducer } from "react";
 import { TaskRow } from "../task-row";
 
 export interface TaskListCardProps {
 	sectionId?: string;
-	projectId: string;
+	projectId?: string;
 	tasks: TaskWithOptimisticState[];
 	onRetry?: (taskId: string) => void;
 	projectName?: string;
+	shouldAllowAddTask?: boolean;
 }
 
 export function TaskListCard(props: TaskListCardProps) {
-	const { sectionId, projectId, tasks, onRetry, projectName } = props;
+	const {
+		sectionId,
+		projectId,
+		tasks,
+		onRetry,
+		projectName,
+		shouldAllowAddTask = true,
+	} = props;
 
 	const { toggleTaskCompletion } = useUpdateTaskCompletion();
 
@@ -28,9 +38,11 @@ export function TaskListCard(props: TaskListCardProps) {
 		if (os === OptimisticState.PENDING || os === OptimisticState.ERROR) {
 			return;
 		}
+
+		const projectIdToUse = projectId ?? task.projectId;
 		toggleTaskCompletion({
 			taskId: task.id,
-			projectId: task.projectId ?? null,
+			projectId: projectIdToUse ?? null,
 			nextCompleted: checked,
 			task,
 		});
@@ -46,7 +58,7 @@ export function TaskListCard(props: TaskListCardProps) {
 			<NewTaskModal
 				isOpen={isNewTaskModalOpen}
 				onClose={toggleIsNewTaskModalOpen}
-				projectId={projectId}
+				projectId={projectId ?? PROJECTS_DEFAULT_IDS.INBOX}
 				sectionId={sectionId}
 			/>
 
@@ -66,14 +78,19 @@ export function TaskListCard(props: TaskListCardProps) {
 						/>
 					))
 				)}
-				<button
-					type="button"
-					className="flex w-full items-center gap-2 border-t border-dashed border-border py-2 pl-[18px] pr-3.5 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-					onClick={toggleIsNewTaskModalOpen}
-				>
-					<Plus className="h-3 w-3" />
-					Add task
-				</button>
+				<RenderIf
+					condition={shouldAllowAddTask}
+					render={
+						<button
+							type="button"
+							className="flex w-full items-center gap-2 border-t border-dashed border-border py-2 pl-[18px] pr-3.5 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+							onClick={toggleIsNewTaskModalOpen}
+						>
+							<Plus className="h-3 w-3" />
+							Add task
+						</button>
+					}
+				/>
 			</div>
 		</>
 	);

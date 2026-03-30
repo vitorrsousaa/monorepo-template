@@ -1,41 +1,14 @@
-import { ROUTES } from "@/config/routes";
 import { useAuth } from "@/hooks/auth";
 import { NewTaskModal } from "@/modules/tasks/view/modals/new-task-modal";
 import { cn } from "@repo/ui/utils";
-import {
-	AlertCircle,
-	ArrowRight,
-	Calendar,
-	CheckCircle2,
-	TrendingUp,
-} from "lucide-react";
+import { AlertCircle, Calendar, CheckCircle2, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { DashboardTasksPanel } from "./components/dashboard-tasks-panel";
 import { ProjectPanel } from "./components/project-panel";
 import { PROJECTS_MOCK, TASKS_MOCK } from "./dashboard.mocks";
-import { TaskCard } from "./task-card";
-
-/** Category for task stripe: maps project id to semantic color. */
-function getProjectCategory(
-	projectId: string,
-): "work" | "home" | "study" | "health" {
-	switch (projectId) {
-		case "1":
-			return "work";
-		case "2":
-			return "home";
-		case "3":
-			return "study";
-		case "4":
-			return "health";
-		default:
-			return "work";
-	}
-}
 
 export function Dashboard() {
-	const navigate = useNavigate();
 	const { user } = useAuth();
 	const { t } = useTranslation();
 	const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
@@ -260,56 +233,7 @@ export function Dashboard() {
 			{/* Content grid: Tarefas de Hoje (left) + Projetos (right) */}
 			<div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 items-start">
 				{/* Tarefas de Hoje — panel */}
-				<div className="bg-card border border-border rounded-[14px] shadow-sm overflow-hidden">
-					<div className="flex items-center justify-between px-5 py-4 border-b border-border/70">
-						<h3 className="text-[13px] font-semibold text-foreground">
-							{t("dashboard.panels.todayTasks")}
-						</h3>
-						<button
-							type="button"
-							onClick={() => navigate(ROUTES.TASKS.TODAY)}
-							className="text-xs font-medium text-primary hover:text-primary/90 flex items-center gap-0.5 no-underline"
-						>
-							{t("dashboard.panels.seeAll")}
-							<ArrowRight className="w-3 h-3" />
-						</button>
-					</div>
-					{todayTasks.length === 0 ? (
-						<div className="flex flex-col items-center justify-center py-12 text-center">
-							<CheckCircle2 className="w-10 h-10 text-muted-foreground/40 mb-3" />
-							<p className="font-medium text-muted-foreground">
-								{t("dashboard.panels.nothingToday")}
-							</p>
-							<p className="text-sm text-muted-foreground/60 mt-1">
-								{t("dashboard.panels.nothingTodayDesc")}
-							</p>
-							<button
-								type="button"
-								onClick={() => setIsNewTaskOpen(true)}
-								className="mt-4 text-sm text-primary font-medium hover:underline"
-							>
-								{t("dashboard.panels.createTask")}
-							</button>
-						</div>
-					) : (
-						<div className="divide-y divide-border/70">
-							{todayTasks.map((t) => {
-								const project = projects.find((pr) => pr.id === t.projectId);
-								const isOverdue = t.dueDate < today && t.status === "pendente";
-								const category = getProjectCategory(t.projectId);
-								return (
-									<TaskCard
-										key={t.id}
-										task={t}
-										project={project}
-										category={category}
-										isOverdue={isOverdue}
-									/>
-								);
-							})}
-						</div>
-					)}
-				</div>
+				<DashboardTasksPanel />
 
 				{/* Projetos — panel */}
 				<ProjectPanel />
