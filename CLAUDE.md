@@ -192,61 +192,31 @@ Files: `modules/<feature>/app/cache/<name>.cache.ts`
 
 ## DevContainer (Claude Sandbox)
 
-O Claude Code roda dentro de um container Docker isolado. Isso elimina qualquer risco de exposição de dados sensíveis do host (credenciais, arquivos pessoais, variáveis de ambiente locais) — o container só enxerga o workspace montado.
+Container Docker isolado para Claude Code. Firewall restritivo (`init-firewall.sh`) permite apenas GitHub, npm, Anthropic API, Sentry e VS Code Marketplace.
 
-### Por que usar
-
-- **Isolamento total**: Claude não tem acesso ao sistema de arquivos do host além do workspace.
-- **Firewall de rede restritivo**: ao iniciar, `init-firewall.sh` configura `iptables` para bloquear todo tráfego de saída **exceto**:
-  - IPs do GitHub (via `api.github.com/meta`)
-  - `registry.npmjs.org`
-  - `api.anthropic.com`
-  - `statsig.anthropic.com` / `statsig.com`
-  - `sentry.io`
-  - VS Code Marketplace (`marketplace.visualstudio.com`, `vscode.blob.core.windows.net`, `update.code.visualstudio.com`)
-- **Sem credenciais no container**: variáveis sensíveis (AWS, banco de dados, etc.) não são injetadas automaticamente — você controla o que passa.
-- **Configuração Claude persistida**: `~/.claude` fica em volume Docker nomeado, sobrevive a rebuilds.
-
-### Dois modos de uso
-
-**VS Code Dev Containers** (recomendado para desenvolvimento integrado):
-```
-Cmd+Shift+P → "Dev Containers: Reopen in Container"
-```
-O `devcontainer.json` instala a extensão `anthropic.claude-code` automaticamente.
-
-**Docker Compose (CLI standalone)**, sem VS Code:
 ```bash
-# Subir o container
+# VS Code: Cmd+Shift+P → "Dev Containers: Reopen in Container"
+# CLI standalone:
 docker compose -f .devcontainer/docker-compose.yml up -d
-
-# Entrar no container
 docker compose -f .devcontainer/docker-compose.yml exec claude-sandbox zsh
-
-# Parar
-docker compose -f .devcontainer/docker-compose.yml down
 ```
 
-### Estrutura dos arquivos
-
-```
-.devcontainer/
-  Dockerfile          — imagem base node:20 + ferramentas + Claude Code global
-  devcontainer.json   — config VS Code Dev Containers
-  docker-compose.yml  — config standalone (equivalente ao devcontainer.json)
-  init-firewall.sh    — script de firewall executado no postStartCommand
-```
-
-### Volumes nomeados
-
-| Volume | Ponto de montagem | Propósito |
-|--------|-------------------|-----------|
-| `claude-code-config` | `/home/node/.claude` | Configuração e contexto do Claude |
-| `claude-code-bashhistory` | `/commandhistory` | Histórico de shell |
-
-Os volumes são criados por `devcontainerId` (modo VS Code) ou compartilhados por projeto (modo Compose).
+Estrutura: `.devcontainer/` (Dockerfile, devcontainer.json, docker-compose.yml, init-firewall.sh). Volumes nomeados persistem `~/.claude` e histórico de shell.
 
 ## Related documentation
 
+### Apps
+- [apps/api/CLAUDE.md](apps/api/CLAUDE.md) — API architecture, request flow, code patterns
+- [apps/spa/CLAUDE.md](apps/spa/CLAUDE.md) — SPA structure, TanStack Query, UI conventions
+- [apps/web/CLAUDE.md](apps/web/CLAUDE.md) — Next.js marketing site (scaffold)
+- [apps/cli/CLAUDE.md](apps/cli/CLAUDE.md) — CLI boilerplate generator (`pnpm cosmos`)
+
+### Packages
 - [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) — shared types and usage
+- [packages/ui/CLAUDE.md](packages/ui/CLAUDE.md) — component library (Radix + Tailwind)
+- [packages/logger/CLAUDE.md](packages/logger/CLAUDE.md) — shared logging utility
+- [packages/typescript-config/CLAUDE.md](packages/typescript-config/CLAUDE.md) — tsconfig bases
+- [packages/vitest-preset/CLAUDE.md](packages/vitest-preset/CLAUDE.md) — shared test presets
+
+### Docs
 - [docs/schema-pattern.md](docs/schema-pattern.md) — schema pattern across layers
