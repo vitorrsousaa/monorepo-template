@@ -29,6 +29,7 @@ describe("CreateTasksService", () => {
 			projectId: null,
 			sectionId: null,
 			recurrence: null,
+			nextTaskId: null,
 		});
 	});
 
@@ -55,6 +56,7 @@ describe("CreateTasksService", () => {
 			projectId: "p-1",
 			sectionId: "s-1",
 			recurrence: null,
+			nextTaskId: null,
 		});
 	});
 
