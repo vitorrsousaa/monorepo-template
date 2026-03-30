@@ -1,44 +1,43 @@
 {
-  "name": "api",
-  "private": true,
-  "version": "1.0.0",
-  "scripts": {
-    "test": "vitest run",
-    "test:unit": "vitest run",
-    "test:integration:up": "docker compose -f docker-compose.test.yml up -d",
-    "test:integration:down": "docker compose -f docker-compose.test.yml down",
-    "test:integration": "vitest run --config vitest.integration.config.ts",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "ci:test": "vitest run",
-    "lint": "biome lint --write ./src",
-    "ci:lint": "biome lint ./src",
-    "typecheck": "tsc --noEmit",
-    "ci:typecheck": "tsc --noEmit",
-    "format": "biome format --write ./src",
-    "ci:format": "biome format ./src",
-    "dev:no-watch": "pnpm exec serverless offline",
-    "deploy:dev": "pnpm exec serverless deploy --stage dev",
-    "deploy:prod": "pnpm exec serverless deploy --stage prod",
-    "deploy:fn:dev": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage dev' sh",
-    "deploy:fn:prod": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage prod' sh",
-    "serverless": "pnpm exec serverless",
-    "validate:dev": "pnpm exec serverless package --stage dev",
-    "validate:prod": "pnpm exec serverless package --stage prod"
-  },
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@repo/vitest-presets": "workspace:*",
-    "@types/aws-lambda": "^8.10.160"
-  },
-  "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.1009.0",
-    "@aws-sdk/client-dynamodb": "^3.1009.0",
-    "@aws-sdk/lib-dynamodb": "^3.1009.0",
-    "@repo/contracts": "workspace:*",
-    "@repo/logger": "workspace:*",
-    "dotenv": "^16.4.7",
-    "serverless": "^4.31.0",
-    "serverless-dotenv-plugin": "^6.0.0"
-  }
+	"name": "api",
+	"private": true,
+	"version": "1.0.0",
+	"scripts": {
+		"test": "vitest run",
+		"test:unit": "vitest run",
+		"test:integration:up": "docker compose -f docker-compose.test.yml up -d",
+		"test:integration:down": "docker compose -f docker-compose.test.yml down",
+		"test:integration": "vitest run --config vitest.integration.config.ts",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
+		"ci:test": "vitest run",
+		"lint": "biome lint --write ./src",
+		"ci:lint": "biome lint ./src",
+		"typecheck": "tsc --noEmit",
+		"ci:typecheck": "tsc --noEmit",
+		"format": "biome format --write ./src",
+		"ci:format": "biome format ./src",
+		"dev:no-watch": "pnpm exec serverless offline",
+		"deploy:dev": "pnpm exec serverless deploy --stage dev",
+		"deploy:prod": "pnpm exec serverless deploy --stage prod",
+		"deploy:fn:dev": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage dev' sh",
+		"deploy:fn:prod": "sh -c 'pnpm exec serverless deploy function --function \"$1\" --stage prod' sh",
+		"serverless": "pnpm exec serverless",
+		"validate:dev": "pnpm exec serverless package --stage dev",
+		"validate:prod": "pnpm exec serverless package --stage prod"
+	},
+	"devDependencies": {
+		"@repo/typescript-config": "workspace:*",
+		"@repo/vitest-presets": "workspace:*",
+		"@types/aws-lambda": "^8.10.160"
+	},
+	"dependencies": {
+		"@aws-sdk/client-cognito-identity-provider": "^3.1009.0",
+		"@aws-sdk/client-dynamodb": "^3.1009.0",
+		"@aws-sdk/lib-dynamodb": "^3.1009.0",
+		"@repo/contracts": "workspace:*",
+		"@repo/logger": "workspace:*",
+		"dotenv": "^16.4.7",
+		"serverless": "^4.31.0"
+	}
 }
