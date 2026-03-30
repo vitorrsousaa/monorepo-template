@@ -63,8 +63,8 @@ const config: KnipConfig = {
 		"packages/vitest-preset": {
 			entry: ["browser/vitest.config.js", "node/vitest.config.js"],
 			project: ["**/*.{js,ts}"],
-			// Loaded by Vitest when coverage.provider is v8, not a static import in this package.
-			ignoreDependencies: ["@vitest/coverage-v8"],
+			// Loaded by Vitest at runtime (not static imports in this package).
+			ignoreDependencies: ["@vitest/coverage-v8", "happy-dom"],
 		},
 	},
 };
