@@ -1,8 +1,9 @@
+import type { Task } from "@repo/contracts/tasks/entities";
 import { cn } from "@repo/ui/utils";
 
 export type PriorityLevel = "high" | "medium" | "low";
 
-function PriorityBarsIcon({ level }: { level: PriorityLevel }) {
+function PriorityBarsIcon({ level }: { level: Task["priority"] }) {
 	const paths =
 		level === "high"
 			? "M1 8V2M4.5 8V4M8 8V2"
@@ -26,7 +27,7 @@ function PriorityBarsIcon({ level }: { level: PriorityLevel }) {
 }
 
 /** Priority pill badge with a bars icon and level label. */
-export function PriorityBadge({ priority }: { priority: PriorityLevel }) {
+export function PriorityBadge({ priority }: { priority: Task["priority"] }) {
 	return (
 		<span
 			className={cn(
