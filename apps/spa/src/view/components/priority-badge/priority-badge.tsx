@@ -1,8 +1,6 @@
 import type { Task } from "@repo/contracts/tasks/entities";
 import { cn } from "@repo/ui/utils";
 
-export type PriorityLevel = "high" | "medium" | "low";
-
 function PriorityBarsIcon({ level }: { level: Task["priority"] }) {
 	const paths =
 		level === "high"
