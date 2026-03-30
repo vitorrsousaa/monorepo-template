@@ -27,6 +27,7 @@ const config: KnipConfig = {
 				"src/view/router/**/*.{ts,tsx}",
 			],
 			project: ["src/**/*.{ts,tsx}"],
+			ignore: ["src/app/config/environment.ts"],
 			vite: false,
 			// Coverage + browser env come from @repo/vitest-presets (hoisted).
 			ignoreDependencies: ["@vitest/coverage-v8", "happy-dom"],
