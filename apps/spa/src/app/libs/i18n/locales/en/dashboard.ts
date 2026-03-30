@@ -36,6 +36,9 @@ export default {
 		projectsError: "Failed to load projects",
 		projectsErrorDesc: "Something went wrong. Please try again.",
 		projectsRetryButton: "Try Again",
+		tasksError: "Failed to load tasks",
+		tasksErrorDesc: "Could not load your tasks. Please try again.",
+		tasksRetryButton: "Try Again",
 	},
 	weekSummary: {
 		title: "Weekly Summary",

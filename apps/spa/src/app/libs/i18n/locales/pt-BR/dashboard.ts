@@ -36,6 +36,9 @@ export default {
 		projectsError: "Falha ao carregar projetos",
 		projectsErrorDesc: "Algo deu errado. Por favor, tente novamente.",
 		projectsRetryButton: "Tentar novamente",
+		tasksError: "Falha ao carregar tarefas",
+		tasksErrorDesc: "Não foi possível carregar suas tarefas. Tente novamente.",
+		tasksRetryButton: "Tentar novamente",
 	},
 	weekSummary: {
 		title: "Resumo da semana",

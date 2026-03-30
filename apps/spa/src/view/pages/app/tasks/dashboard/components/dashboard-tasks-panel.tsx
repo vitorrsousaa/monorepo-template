@@ -7,38 +7,29 @@ import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardTasksPanelEmpty } from "./dashboard-tasks-panel-empty";
-
-/** Category for task stripe: maps project id to semantic color. */
-function getProjectCategory(
-	projectId: string,
-): "work" | "home" | "study" | "health" {
-	switch (projectId) {
-		case "1":
-			return "work";
-		case "2":
-			return "home";
-		case "3":
-			return "study";
-		case "4":
-			return "health";
-		default:
-			return "work";
-	}
-}
+import { DashboardTasksPanelErrorState } from "./dashboard-tasks-panel-error-state";
+import { DashboardTasksPanelSkeleton } from "./dashboard-tasks-panel-skeleton";
 
 export function DashboardTasksPanel() {
 	const navigate = useNavigate();
-
 	const { t } = useTranslation();
 
-	const { todayData } = useGetTodayTasks();
+	const {
+		todayData,
+		isFetchingTodayTasks,
+		isErrorTodayTasks,
+		refetchTodayTasks,
+	} = useGetTodayTasks();
 
 	const todayTasks = todayData.projects
 		.filter((p) => p.id !== PROJECTS_DEFAULT_IDS.INBOX)
 		.flatMap((p) => p.tasks)
 		.slice(0, 7);
 
-	const shouldRenderEmptyState = todayTasks.length === 0;
+	const shouldRenderEmptyState =
+		!isFetchingTodayTasks && !isErrorTodayTasks && todayTasks.length === 0;
+	const shouldRenderList =
+		!isFetchingTodayTasks && !isErrorTodayTasks && todayTasks.length > 0;
 
 	return (
 		<div className="bg-card border border-border rounded-[14px] shadow-sm overflow-hidden">
@@ -56,15 +47,20 @@ export function DashboardTasksPanel() {
 				</button>
 			</div>
 			<RenderIf
+				condition={isFetchingTodayTasks}
+				render={<DashboardTasksPanelSkeleton />}
+			/>
+			<RenderIf
+				condition={isErrorTodayTasks}
+				render={<DashboardTasksPanelErrorState onRetry={refetchTodayTasks} />}
+			/>
+			<RenderIf
 				condition={shouldRenderEmptyState}
 				render={<DashboardTasksPanelEmpty />}
-				fallback={
-					<TaskListCard
-						projectId="1"
-						tasks={todayTasks}
-						shouldAllowAddTask={false}
-					/>
-				}
+			/>
+			<RenderIf
+				condition={shouldRenderList}
+				render={<TaskListCard tasks={todayTasks} shouldAllowAddTask={false} />}
 			/>
 		</div>
 	);
