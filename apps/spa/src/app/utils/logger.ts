@@ -8,4 +8,3 @@ const instrumentor = new LoggerInstrumentor({
 });
 
 export const createLogger = instrumentor.createLogger.bind(instrumentor);
-export const getLogger = instrumentor.getLogger.bind(instrumentor);

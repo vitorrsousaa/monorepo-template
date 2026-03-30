@@ -30,7 +30,12 @@ const config: KnipConfig = {
 			ignore: ["src/app/config/environment.ts"],
 			vite: false,
 			// Coverage + browser env come from @repo/vitest-presets (hoisted).
-			ignoreDependencies: ["@vitest/coverage-v8", "happy-dom"],
+			// @vitejs/plugin-react is imported in vite.config.ts but Knip can't see it (vite: false).
+			ignoreDependencies: [
+				"@vitest/coverage-v8",
+				"happy-dom",
+				"@vitejs/plugin-react",
+			],
 		},
 		// Web — Next.js (app router)
 		"apps/web": {
@@ -50,7 +55,9 @@ const config: KnipConfig = {
 		"packages/ui": {
 			entry: ["src/components/**/*.{ts,tsx}"],
 			project: ["src/**/*.{ts,tsx}"],
-			ignoreDependencies: ["@hookform/resolvers"],
+			// @hookform/resolvers: resolved by consumer apps, not this package.
+			// postcss-load-config: only used as JSDoc @type hint in postcss.config.mjs (transitive of postcss).
+			ignoreDependencies: ["@hookform/resolvers", "postcss-load-config"],
 		},
 		"packages/logger": {
 			project: ["src/**/*.ts"],
