@@ -5,9 +5,7 @@ export function mockSectionsRepository(
 ): ISectionRepository {
 	return {
 		getAllByProject: vi.fn(),
-		getById: vi.fn(),
 		create: vi.fn(),
-		update: vi.fn(),
 		delete: vi.fn(),
 		...overrides,
 	};

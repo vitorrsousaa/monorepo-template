@@ -9,7 +9,6 @@ export function mockTasksRepository(
 		getTodayTasks: vi.fn(),
 		findAll: vi.fn(),
 		findById: vi.fn(),
-		update: vi.fn(),
 		delete: vi.fn(),
 		getAllBySection: vi.fn(),
 		getTodosByProjectWithoutSection: vi.fn(),
