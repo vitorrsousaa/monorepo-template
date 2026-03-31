@@ -1,3 +1,4 @@
+import type { IProjectParams } from "@application/interfaces/params";
 import {
 	buildPrivateRequest,
 	buildProject,
@@ -32,7 +33,10 @@ describe("GetProjectDetailController", () => {
 
 		service.execute.mockResolvedValue(serviceResult);
 
-		const request = buildPrivateRequest({
+		const request = buildPrivateRequest<
+			Record<string, unknown>,
+			IProjectParams
+		>({
 			userId: "u-1",
 			params: { projectId: "p-1" },
 		});
@@ -53,7 +57,10 @@ describe("GetProjectDetailController", () => {
 
 		service.execute.mockResolvedValue(serviceResult);
 
-		const request = buildPrivateRequest({
+		const request = buildPrivateRequest<
+			Record<string, unknown>,
+			IProjectParams
+		>({
 			userId: "u-123",
 			params: { projectId: "p-456" },
 		});
@@ -69,7 +76,10 @@ describe("GetProjectDetailController", () => {
 	it("should propagate service error when project not found", async () => {
 		service.execute.mockRejectedValue(new ProjectNotFound());
 
-		const request = buildPrivateRequest({
+		const request = buildPrivateRequest<
+			Record<string, unknown>,
+			IProjectParams
+		>({
 			userId: "u-1",
 			params: { projectId: "nonexistent" },
 		});

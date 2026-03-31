@@ -60,8 +60,8 @@ describe("GetProjectDetailService", () => {
 
 		expect(result.data.project.id).toBe("p-1");
 		expect(result.data.sections).toHaveLength(3); // inbox + 2 sections
-		expect(result.data.sections[0].id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
-		expect(result.data.sections[0].name).toBe(
+		expect(result.data.sections[0]?.id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
+		expect(result.data.sections[0]?.name).toBe(
 			SECTION_DEFAULT_NAMES.UNSECTIONED,
 		);
 		expect(result.data.sections[1]).toEqual({ ...section1, tasks: [task1] });
@@ -88,11 +88,11 @@ describe("GetProjectDetailService", () => {
 		const result = await sut.execute({ projectId: "p-1", userId: "u-1" });
 
 		const inboxSection = result.data.sections[0];
-		expect(inboxSection.id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
-		expect(inboxSection.tasks).toEqual([taskWithoutSection]);
+		expect(inboxSection?.id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
+		expect(inboxSection?.tasks).toEqual([taskWithoutSection]);
 
 		const regularSection = result.data.sections[1];
-		expect(regularSection.tasks).toEqual([taskWithSection]);
+		expect(regularSection?.tasks).toEqual([taskWithSection]);
 	});
 
 	it("should return empty sections array when project has no sections or tasks", async () => {
@@ -109,8 +109,8 @@ describe("GetProjectDetailService", () => {
 		const result = await sut.execute({ projectId: "p-1", userId: "u-1" });
 
 		expect(result.data.sections).toHaveLength(1); // only synthetic inbox
-		expect(result.data.sections[0].id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
-		expect(result.data.sections[0].tasks).toEqual([]);
+		expect(result.data.sections[0]?.id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
+		expect(result.data.sections[0]?.tasks).toEqual([]);
 	});
 
 	it("should group multiple tasks in the same section", async () => {
@@ -135,8 +135,8 @@ describe("GetProjectDetailService", () => {
 		const result = await sut.execute({ projectId: "p-1", userId: "u-1" });
 
 		const regularSection = result.data.sections[1];
-		expect(regularSection.tasks).toHaveLength(3);
-		expect(regularSection.tasks).toEqual([task1, task2, task3]);
+		expect(regularSection?.tasks).toHaveLength(3);
+		expect(regularSection?.tasks).toEqual([task1, task2, task3]);
 	});
 
 	it("should calculate percentage correctly based on task counts", async () => {
@@ -193,10 +193,10 @@ describe("GetProjectDetailService", () => {
 
 		const result = await sut.execute({ projectId: "p-1", userId: "u-1" });
 
-		expect(result.data.sections[0].id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
-		expect(result.data.sections[1].name).toBe("First");
-		expect(result.data.sections[2].name).toBe("Second");
-		expect(result.data.sections[3].name).toBe("Third");
+		expect(result.data.sections[0]?.id).toBe(PROJECTS_DEFAULT_IDS.INBOX);
+		expect(result.data.sections[1]?.name).toBe("First");
+		expect(result.data.sections[2]?.name).toBe("Second");
+		expect(result.data.sections[3]?.name).toBe("Third");
 	});
 
 	it("should call all 4 parallel queries with correct parameters", async () => {

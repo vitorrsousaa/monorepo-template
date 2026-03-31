@@ -79,9 +79,9 @@ describe("GetProjectsSummaryService", () => {
 
 		const result = await sut.execute({ userId: "u-1" });
 
-		expect(result.projects[0].completedCount).toBe(1);
-		expect(result.projects[0].totalCount).toBe(3);
-		expect(result.projects[0].percentageCompleted).toBe(33);
+		expect(result.projects[0]?.completedCount).toBe(1);
+		expect(result.projects[0]?.totalCount).toBe(3);
+		expect(result.projects[0]?.percentageCompleted).toBe(33);
 	});
 
 	it("should call getTaskCountsByProject once per project", async () => {
