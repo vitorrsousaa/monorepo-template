@@ -286,7 +286,9 @@ describe("UpdateTaskService", () => {
 			title: "Only title updated",
 		});
 
-		const callArgs = vi.mocked(repo.updateTask).mock.calls[0][1];
+		expect(repo.updateTask).toHaveBeenCalledTimes(1);
+		const callArgs = vi.mocked(repo.updateTask).mock.calls[0]?.[1];
+		expect(callArgs).toBeDefined();
 		expect(callArgs).toEqual({ title: "Only title updated" });
 		expect(callArgs).not.toHaveProperty("description");
 		expect(callArgs).not.toHaveProperty("priority");

@@ -1,12 +1,9 @@
-import type { Todo } from "@core/domain/todo/todo";
 import type { TasksMapper } from "@data/protocols/tasks/tasks-mapper";
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
-import type { TodoDynamoDBEntity } from "@infra/db/dynamodb/mappers/todo/types";
 import type { Task } from "@repo/contracts/tasks";
 import type { IDatabaseClient } from "../../contracts/client";
 import { AvailableIndexes } from "../../contracts/entity";
 import type { TasksDynamoDBEntity } from "../../mappers/tasks/types";
-import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
 
 /**
  * TasksDynamoRepository
@@ -21,8 +18,6 @@ import { TODO_DYNAMO_MOCKS } from "./todo-dynamo-repository.mocks";
  * For now, keeps data in memory for development (see tasks-dynamo-repository.mocks.ts).
  */
 export class TasksDynamoRepository implements ITasksRepository {
-	private dbTodos: TodoDynamoDBEntity[] = [...TODO_DYNAMO_MOCKS];
-
 	constructor(
 		private readonly dynamoClient: IDatabaseClient,
 		private readonly mapper: TasksMapper<TasksDynamoDBEntity>,
@@ -104,79 +99,6 @@ export class TasksDynamoRepository implements ITasksRepository {
 
 		const results = queryResult ?? [];
 		return results.map((dbEntity) => this.mapper.toDomain(dbEntity));
-	}
-
-	async findAll(): Promise<Todo[]> {
-		// TODO: Implement DynamoDB query
-		// const result = await this.dynamoClient.query({
-		//   TableName: this.tableName,
-		//   IndexName: 'GSI1',
-		//   KeyConditionExpression: 'GSI1PK = :pk',
-		//   ExpressionAttributeValues: { ':pk': 'TODO' }
-		// });
-		// return result.Items.map(item => this.mapper.toDomain(item));
-
-		// Simulates query and maps from DB to Domain
-		return this.dbTodos.map((dbTodo) => this.mapper.toDomain(dbTodo));
-	}
-
-	async findById(id: string): Promise<Todo | null> {
-		// TODO: Implement DynamoDB get
-		// const result = await this.dynamoClient.get({
-		//   TableName: this.tableName,
-		//   Key: { PK: `TODO#${id}`, SK: 'METADATA' }
-		// });
-		// return result.Item ? this.mapper.toDomain(result.Item) : null;
-
-		const dbTodo = this.dbTodos.find((t) => t.id === id);
-		return dbTodo ? this.mapper.toDomain(dbTodo) : null;
-	}
-
-	async delete(id: string): Promise<boolean> {
-		// TODO: Implement DynamoDB delete
-		// await this.dynamoClient.delete({
-		//   TableName: this.tableName,
-		//   Key: { PK: `TODO#${id}`, SK: 'METADATA' }
-		// });
-		// return true;
-
-		const todoIndex = this.dbTodos.findIndex((t) => t.id === id);
-
-		if (todoIndex === -1) {
-			return false;
-		}
-
-		this.dbTodos.splice(todoIndex, 1);
-		return true;
-	}
-
-	async getAllBySection(
-		sectionId: string,
-		projectId: string,
-		userId: string,
-	): Promise<Todo[]> {
-		// Docs: Use GSI3 (SectionIndex) to query todos by section
-		// Real DynamoDB Query:
-		// IndexName: 'GSI3-SectionIndex'
-		// KeyConditionExpression: GSI3PK = :gsi3pk AND begins_with(GSI3SK, 'TODO#PENDING#')
-		// FilterExpression: attribute_not_exists(deleted_at)
-
-		const gsi3pk = `USER#${userId}#PROJECT#${projectId}#SECTION#${sectionId}`;
-
-		// Simulating GSI3 query (orders by GSI3SK which includes order)
-		return this.dbTodos
-			.filter(
-				(t) => t.GSI3PK === gsi3pk && t.GSI3SK?.startsWith("TODO#PENDING#"),
-			)
-			.filter((t) => !t.completed) // Additional safety check
-			.sort((a, b) => {
-				// GSI3SK format: TODO#PENDING#order#todoId
-				// Sorting by GSI3SK gives correct order
-				const skA = a.GSI3SK || "";
-				const skB = b.GSI3SK || "";
-				return skA.localeCompare(skB);
-			})
-			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 
 	async getAllPendingByProject(
@@ -427,27 +349,5 @@ export class TasksDynamoRepository implements ITasksRepository {
 			ExpressionAttributeNames: { "#field": field },
 			ExpressionAttributeValues: { ":value": value },
 		});
-	}
-
-	async getTodosByProjectWithoutSection(
-		projectId: string,
-		userId: string,
-	): Promise<Todo[]> {
-		// Docs: PK = USER#userId#PROJECT#projectId, todos without section have no GSI3PK / section_id null
-		const pk = `USER#${userId}#PROJECT#${projectId}`;
-
-		return this.dbTodos
-			.filter(
-				(t) =>
-					t.PK === pk &&
-					(t.section_id === null || t.section_id === undefined) &&
-					!t.SK.startsWith("TODO#INBOX#"),
-			)
-			.sort((a, b) => {
-				const skA = a.SK || "";
-				const skB = b.SK || "";
-				return skA.localeCompare(skB);
-			})
-			.map((dbTodo) => this.mapper.toDomain(dbTodo));
 	}
 }
