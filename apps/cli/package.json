@@ -1,33 +1,32 @@
 {
-  "name": "cli",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.ts",
-  "scripts": {
-    "build": "tsup",
-    "start": "node dist/index.js",
-    "dev": "tsup --watch",
-    "clean": "rm -rf dist",
-    "lint": "biome lint --write ./src",
-    "ci:lint": "biome lint ./src",
-    "typecheck": "tsc --noEmit",
-    "ci:typecheck": "tsc --noEmit",
-    "format": "biome format --write ./src",
-    "ci:format": "biome format ./src"
-  },
-  "bin": {
-    "cosmos": "dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "commander": "^13.0.0",
-    "fs-extra": "^11.3.0",
-    "inquirer": "^12.3.2"
-  },
-  "devDependencies": {
-    "@types/fs-extra": "^11.0.4",
-    "ts-node": "^10.9.2"
-  }
+	"name": "cli",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "tsup",
+		"start": "node dist/index.js",
+		"dev": "tsup --watch",
+		"clean": "rm -rf dist",
+		"lint": "biome lint --write ./src",
+		"ci:lint": "biome lint ./src",
+		"typecheck": "tsc --noEmit",
+		"ci:typecheck": "tsc --noEmit",
+		"format": "biome format --write ./src",
+		"ci:format": "biome format ./src"
+	},
+	"bin": {
+		"cosmos": "dist/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"commander": "^13.0.0",
+		"fs-extra": "^11.3.0",
+		"inquirer": "^12.3.2"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^11.0.4"
+	}
 }

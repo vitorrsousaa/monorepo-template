@@ -35,7 +35,7 @@ export class RecurrenceService {
 			projectId: task.projectId,
 			sectionId: task.sectionId,
 			userId: task.userId,
-			dueDate: nextDueDate ? new Date(nextDueDate).toISOString() : null,
+			dueDate: nextDueDate,
 			recurrence: nextRecurrence,
 			nextTaskId: null,
 		});

@@ -231,7 +231,6 @@ pnpm dev:api          # Start API on port 4000
 ```
 
 ## Deploy
-
 ```bash
 pnpm run deploy:dev                              # full stack → dev
 pnpm run deploy:prod                             # full stack → prod
@@ -242,10 +241,10 @@ pnpm run deploy:fn:prod -- --function <name>     # single function shortcut (pro
 
 ## Related documentation
 
-- [src/app/modules/claude.md](src/app/modules/claude.md) — module structure conventions (controllers, services, mappers, errors)
-- [src/infra/CLAUDE.md](src/infra/CLAUDE.md) — infrastructure layer overview (DynamoDB + Cognito)
-- [src/infra/db/dynamodb/mappers/CLAUDE.md](src/infra/db/dynamodb/mappers/CLAUDE.md) — DynamoDB mapper conventions
-- [src/infra/db/dynamodb/repositories/CLAUDE.md](src/infra/db/dynamodb/repositories/CLAUDE.md) — DynamoDB repository conventions
-- [src/infra/db/dynamodb/factories/CLAUDE.md](src/infra/db/dynamodb/factories/CLAUDE.md) — repository factory conventions
-- [src/test/CLAUDE.md](src/test/CLAUDE.md) — test utilities (builders, mocks, integration setup)
-- [src/app/modules/tasks/CLAUDE.md](src/app/modules/tasks/CLAUDE.md) — task domain rules (priority sort order, today grouping)
+- [src/app/modules/claude.md](src/app/modules/claude.md) — module structure (controllers, services, mappers, errors)
+- [src/infra/CLAUDE.md](src/infra/CLAUDE.md) — infrastructure layer (DynamoDB + Cognito)
+- [src/infra/db/dynamodb/mappers/CLAUDE.md](src/infra/db/dynamodb/mappers/CLAUDE.md) — DynamoDB mappers
+- [src/infra/db/dynamodb/repositories/CLAUDE.md](src/infra/db/dynamodb/repositories/CLAUDE.md) — DynamoDB repositories
+- [src/infra/db/dynamodb/factories/CLAUDE.md](src/infra/db/dynamodb/factories/CLAUDE.md) — repository factories
+- [src/test/CLAUDE.md](src/test/CLAUDE.md) — test utilities (builders, mocks, integration)
+- [src/app/modules/tasks/CLAUDE.md](src/app/modules/tasks/CLAUDE.md) — task domain rules (priority, today grouping)

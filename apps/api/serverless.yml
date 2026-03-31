@@ -121,14 +121,6 @@ functions:
           trigger: PreSignUp
           existing: true
           forceDeploy: true
-  getTodos:
-    handler: src/server/functions/todo/get-todos/index.handler
-    events:
-      - httpApi:
-          path: /todos
-          method: get
-          authorizer: 
-            name: CognitoAuthorizer
   getInboxTasks:
     handler: src/server/functions/tasks/get-inbox-tasks/index.handler
     events:

@@ -18,19 +18,6 @@ export interface ISectionRepository {
 	getAllByProject(projectId: string, userId: string): Promise<Section[]>;
 
 	/**
-	 * Get a specific section by ID
-	 * @param sectionId - Section ID
-	 * @param projectId - Project ID
-	 * @param userId - User ID (for multi-tenancy)
-	 * @returns Section or null if not found
-	 */
-	getById(
-		sectionId: string,
-		projectId: string,
-		userId: string,
-	): Promise<Section | null>;
-
-	/**
 	 * Create a new section
 	 * @param data - Section data (without id, createdAt, updatedAt)
 	 * @returns Created section with generated fields
@@ -38,21 +25,6 @@ export interface ISectionRepository {
 	create(
 		data: Omit<Section, "id" | "createdAt" | "updatedAt" | "deletedAt">,
 	): Promise<Section>;
-
-	/**
-	 * Update an existing section
-	 * @param sectionId - Section ID
-	 * @param projectId - Project ID
-	 * @param userId - User ID
-	 * @param data - Partial section data to update
-	 * @returns Updated section or null if not found
-	 */
-	update(
-		sectionId: string,
-		projectId: string,
-		userId: string,
-		data: Partial<Section>,
-	): Promise<Section | null>;
 
 	/**
 	 * Soft delete a section

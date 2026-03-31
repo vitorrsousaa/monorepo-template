@@ -1,10 +1,13 @@
 import { buildTask } from "@test/builders";
 import { mockTasksRepository } from "@test/mocks";
+import type { RecurrenceService } from "../recurrence/service";
 import { CompleteTaskService } from "./service";
 
-const makeRecurrenceService = () => ({
-	createNextOccurrence: vi.fn(),
-});
+const makeRecurrenceService = () => {
+	return {
+		createNextOccurrence: vi.fn(),
+	} as unknown as RecurrenceService;
+};
 
 describe("CompleteTaskService", () => {
 	const repo = mockTasksRepository();
@@ -14,7 +17,7 @@ describe("CompleteTaskService", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.useFakeTimers();
-		recurrenceService.createNextOccurrence.mockResolvedValue(null);
+		vi.mocked(recurrenceService.createNextOccurrence).mockResolvedValue(null);
 	});
 
 	afterEach(() => {
@@ -66,7 +69,7 @@ describe("CompleteTaskService", () => {
 		vi.mocked(repo.updateCompletion).mockImplementation((_old, updated) =>
 			Promise.resolve(updated),
 		);
-		recurrenceService.createNextOccurrence.mockResolvedValue(null);
+		vi.mocked(recurrenceService.createNextOccurrence).mockResolvedValue(null);
 
 		const result = await sut.execute({ task });
 
@@ -85,7 +88,9 @@ describe("CompleteTaskService", () => {
 		vi.mocked(repo.updateCompletion).mockImplementation((_old, updated) =>
 			Promise.resolve(updated),
 		);
-		recurrenceService.createNextOccurrence.mockResolvedValue({ nextTask });
+		vi.mocked(recurrenceService.createNextOccurrence).mockResolvedValue({
+			nextTask,
+		});
 
 		const result = await sut.execute({ task });
 

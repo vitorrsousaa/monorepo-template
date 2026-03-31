@@ -135,7 +135,7 @@ export function taskCacheOrchestrator(
 
 	function getSnapshot() {
 		const inboxSnapshot = isInbox
-			? queryClient.getQueryData(QUERY_KEYS.TASKS.INBOX)
+			? tasksInboxCache(queryClient).getSnapshot()
 			: undefined;
 		const projectDetailSnapshot =
 			!isInbox && projectId

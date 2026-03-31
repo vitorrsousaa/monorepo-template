@@ -9,6 +9,7 @@ import {
 import { formatRecurrencePreview } from "@/utils/format-recurrence";
 import { OptimisticState } from "@/utils/types";
 import { PROJECTS_DEFAULT_IDS } from "@repo/contracts/enums";
+import type { Task } from "@repo/contracts/tasks/entities";
 import { Button } from "@repo/ui/button";
 import { Checkbox } from "@repo/ui/checkbox";
 import { RenderIf } from "@repo/ui/render-if";
@@ -216,9 +217,7 @@ export function TaskRow({
 
 					<RenderIf
 						condition={showPriority && !!priority}
-						render={
-							<PriorityBadge priority={priority as "high" | "medium" | "low"} />
-						}
+						render={<PriorityBadge priority={priority as Task["priority"]} />}
 					/>
 					{children}
 					<RenderIf

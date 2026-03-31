@@ -1,4 +1,4 @@
-import { LoggerInstrumentor, LogLevel } from "@repo/logger";
+import { LogLevel, LoggerInstrumentor } from "@repo/logger";
 
 const instrumentor = new LoggerInstrumentor({
 	logger: {
@@ -8,4 +8,3 @@ const instrumentor = new LoggerInstrumentor({
 });
 
 export const createLogger = instrumentor.createLogger.bind(instrumentor);
-export const getLogger = instrumentor.getLogger.bind(instrumentor);
