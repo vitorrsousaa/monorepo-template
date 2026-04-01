@@ -1,3 +1,4 @@
+import { NOTIFICATIONS_MOCK } from "@/pages/app/user/notifications/notifications.mock";
 import { BadgeCheck, Bell, LogOut, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -28,6 +29,14 @@ export function NavUser() {
 	const handleNavigateToSettings = () => {
 		navigate(ROUTES.USER.SETTINGS);
 	};
+
+	const handleNavigateToNotifications = () => {
+		navigate(ROUTES.USER.NOTIFICATIONS);
+	};
+
+	const unreadCount = NOTIFICATIONS_MOCK.filter(
+		(n) => n.status === "unread",
+	).length;
 
 	return (
 		<SidebarMenu>
@@ -62,9 +71,14 @@ export function NavUser() {
 							<BadgeCheck className="w-4 h-4 mr-2" />
 							{t("common.navUser.profile")}
 						</DropdownMenuItem>
-						<DropdownMenuItem>
+						<DropdownMenuItem onSelect={handleNavigateToNotifications}>
 							<Bell className="w-4 h-4 mr-2" />
 							{t("common.navUser.notifications")}
+							{unreadCount > 0 && (
+								<span className="ml-auto flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold">
+									{unreadCount}
+								</span>
+							)}
 						</DropdownMenuItem>
 						<DropdownMenuItem onSelect={handleNavigateToSettings}>
 							<Settings className="w-4 h-4 mr-2" />

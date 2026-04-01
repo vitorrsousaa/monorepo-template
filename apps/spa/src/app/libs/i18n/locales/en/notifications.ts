@@ -1,0 +1,50 @@
+export default {
+	title: "Notifications",
+	subtitle_one: "{{count}} unread · last updated just now",
+	subtitle_other: "{{count}} unread · last updated just now",
+	noUnread: "All caught up",
+	markAllRead: "Mark all read",
+	tabs: {
+		all: "All",
+		tasks: "Tasks",
+		invites: "Invites",
+	},
+	dateGroups: {
+		pendingInvites: "Pending invites",
+		today: "Today",
+		yesterday: "Yesterday",
+		past: "Past",
+	},
+	types: {
+		taskDue: "is due today",
+		taskOverdue: "is overdue by {{days}} days",
+		taskCompleted: "was completed",
+		goalProgress: "goal reached {{percent}}%",
+		comment: "commented on",
+		sharedTask: "shared a task with you",
+		sharedExpense: "added a shared expense",
+		invite: "invited you to",
+		financeBudget: "budget alert",
+		system: "System notification",
+	},
+	actions: {
+		viewTask: "View task",
+		viewGoal: "View goal",
+		accept: "Accept",
+		decline: "Decline",
+		dismiss: "Dismiss",
+	},
+	inviteStatus: {
+		joined: "Joined",
+		declined: "Declined",
+	},
+	empty: {
+		title: "No notifications",
+		description: "You're all caught up. Check back later for updates.",
+	},
+	error: {
+		title: "Could not load notifications",
+		description: "Check your connection and try again.",
+		retry: "Retry",
+	},
+};

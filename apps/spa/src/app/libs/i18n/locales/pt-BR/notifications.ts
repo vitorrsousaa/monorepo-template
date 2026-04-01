@@ -1,0 +1,50 @@
+export default {
+	title: "Notificações",
+	subtitle_one: "{{count}} não lida · atualizado agora",
+	subtitle_other: "{{count}} não lidas · atualizado agora",
+	noUnread: "Tudo em dia",
+	markAllRead: "Marcar todas como lidas",
+	tabs: {
+		all: "Todas",
+		tasks: "Tarefas",
+		invites: "Convites",
+	},
+	dateGroups: {
+		pendingInvites: "Convites pendentes",
+		today: "Hoje",
+		yesterday: "Ontem",
+		past: "Anteriores",
+	},
+	types: {
+		taskDue: "vence hoje",
+		taskOverdue: "está atrasada há {{days}} dias",
+		taskCompleted: "foi concluída",
+		goalProgress: "meta atingiu {{percent}}%",
+		comment: "comentou em",
+		sharedTask: "compartilhou uma tarefa com você",
+		sharedExpense: "adicionou uma despesa compartilhada",
+		invite: "convidou você para",
+		financeBudget: "alerta de orçamento",
+		system: "Notificação do sistema",
+	},
+	actions: {
+		viewTask: "Ver tarefa",
+		viewGoal: "Ver meta",
+		accept: "Aceitar",
+		decline: "Recusar",
+		dismiss: "Dispensar",
+	},
+	inviteStatus: {
+		joined: "Entrou",
+		declined: "Recusou",
+	},
+	empty: {
+		title: "Nenhuma notificação",
+		description: "Você está em dia. Volte mais tarde para novidades.",
+	},
+	error: {
+		title: "Não foi possível carregar as notificações",
+		description: "Verifique sua conexão e tente novamente.",
+		retry: "Tentar novamente",
+	},
+};

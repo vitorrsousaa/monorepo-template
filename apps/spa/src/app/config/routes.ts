@@ -14,6 +14,7 @@ export const USER_ROUTES = {
 	PROFILE: "/user",
 	SETTINGS: "/user/settings",
 	SUPPORT: "/user/support",
+	NOTIFICATIONS: "/user/notifications",
 } as const;
 
 export const FINANCE_ROUTES = {

@@ -20,6 +20,12 @@ const Support = lazy(() =>
 	})),
 );
 
+const Notifications = lazy(() =>
+	import("@/pages/app/user/notifications").then((module) => ({
+		default: module.Notifications,
+	})),
+);
+
 export const userRoutes: RouteObject = {
 	path: "user",
 	element: <UserLayout />,
@@ -35,6 +41,10 @@ export const userRoutes: RouteObject = {
 		{
 			path: "support",
 			element: <Support />,
+		},
+		{
+			path: "notifications",
+			element: <Notifications />,
 		},
 	],
 };
