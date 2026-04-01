@@ -13,8 +13,5 @@ export default {
 	financeBudgets: "Orçamentos",
 	financeAccounts: "Contas e cartões",
 	financeReports: "Relatórios",
-	shared: "Compartilhado",
-	sharedWithMe: "Compartilhado comigo",
-	sharedMyContent: "Meus compartilhamentos",
 	allProjects: "Todos os projetos",
 };
