@@ -95,6 +95,54 @@ Config: `knip.config.ts` at root. Each workspace declares explicit `entry` + `pr
 - API Lambda handlers are under `src/server/functions/**/*.ts` (not `src/handlers/`). Must stay in `entry` or Knip flags them as unused.
 - First-run report contains both real dead code and false positives — triage before enforcing CI failure. Use `ignoreDependencies`/`ignore` in `knip.config.ts` to suppress confirmed false positives.
 
+### Function Parameter Convention
+
+**Rule: functions with more than 2 parameters must receive a single typed object, never positional args.**
+
+Positional parameters become error-prone and hard to read as the count grows — especially when multiple params share the same type (e.g., two `string` args that are easy to swap). An object makes each argument self-documenting at the call site.
+
+```typescript
+// ❌ wrong — 3+ positional params, call site is ambiguous
+function shareProject(
+  requesterId: string,
+  projectId: string,
+  role: SharingRole,
+  expiresAt?: Date
+) { ... }
+
+shareProject(userId, projId, "viewer"); // which string is which?
+
+// ✅ correct — single typed object, self-documenting at call site
+interface ShareProjectParams {
+  requesterId: string;
+  projectId: string;
+  role: SharingRole;
+  expiresAt?: Date;
+}
+
+function shareProject(params: ShareProjectParams) { ... }
+
+shareProject({ requesterId: userId, projectId: projId, role: "viewer" });
+```
+
+This applies everywhere: service methods, repository methods, controllers, utilities, and React component helpers. It does **not** apply to functions that genuinely have ≤2 params — don't over-engineer simple cases.
+
+```typescript
+// ✅ fine — only 2 params, no object needed
+function formatDate(date: Date, locale: string): string { ... }
+
+// ❌ wrong — 3 params, must use object
+function createTask(title: string, projectId: string, priority: Priority) { ... }
+
+// ✅ correct
+interface CreateTaskParams {
+  title: string;
+  projectId: string;
+  priority: Priority;
+}
+function createTask(params: CreateTaskParams) { ... }
+```
+
 ## Current Dev State
 
 - **Auth: Cognito JWT** — Cognito authorizer validates JWT tokens. `MOCK_USER_ID` descontinuado.
