@@ -8,6 +8,8 @@ const defaults: Project = {
 	color: "#7F77DD",
 	createdAt: "2024-01-01T00:00:00.000Z",
 	updatedAt: "2024-01-01T00:00:00.000Z",
+	isShared: false,
+	role: "owner",
 };
 
 export function buildProject(overrides?: Partial<Project>): Project {
