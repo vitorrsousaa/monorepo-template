@@ -25,18 +25,129 @@ export * from "./schema";
 ## services/
 
 - **Uma pasta por feature**, espelhando o controller.
-- **Arquivos:**
+- **4 arquivos obrigatórios:**
   - `service.ts` — regra de negócio e acesso a repositórios.
-  - `dto.ts` — Zod + tipos de input/output (SignupInput, SignupOutput, etc.).
-  - `index.ts` — **obrigatório**: exporta service e dto.
+  - `dto.ts` — interfaces TS puras de input/output.
+  - `index.ts` — barrel export.
+  - `service.test.ts` — testes unitários co-localizados.
+
+**Canonical example:** `tasks/services/create/` — use como referência para novos services.
+
+### Interface exposure (obrigatório)
+
+Todo service DEVE exportar uma interface `IXService extends IService<Input, Output>`. Controllers dependem da interface, nunca da classe concreta.
 
 ```ts
-// services/<feature>/index.ts
+// ✅ correct — exports interface, controller depends on ICreateTasksService
+import type { IService } from "@application/interfaces/service";
+
+export interface ICreateTasksService
+  extends IService<CreateTasksInputService, CreateTasksOutputService> {}
+
+export class CreateTasksService implements ICreateTasksService {
+  constructor(private readonly taskRepository: ITasksRepository) {}
+
+  async execute(input: CreateTasksInputService): Promise<CreateTasksOutputService> {
+    const task = await this.taskRepository.create({ ... });
+    return { task };
+  }
+}
+```
+
+```ts
+// ❌ wrong — no interface exported, controller depends on concrete class
+export class CreateTasksService {
+  constructor(private readonly taskRepository: ITasksRepository) {}
+
+  async execute(input: CreateTasksInputService): Promise<CreateTasksOutputService> {
+    const task = await this.taskRepository.create({ ... });
+    return { task };
+  }
+}
+```
+
+### DTO pattern
+
+Service DTO é **interface TS pura** (sem Zod). O controller já validou com Zod; o service recebe dados tipados. `InputService` extends tipo do `@repo/contracts` + adiciona `userId`. `OutputService` é um typed object simples. Ver [docs/schema-pattern.md](../../../../docs/schema-pattern.md).
+
+```ts
+// ✅ correct — extends contracts type, adds userId, output is typed object
+import type { Task } from "@repo/contracts/tasks";
+import type { CreateTaskInput } from "@repo/contracts/tasks/create";
+
+export interface CreateTasksInputService extends CreateTaskInput {
+  userId: string;
+}
+
+export interface CreateTasksOutputService {
+  task: Task;
+}
+```
+
+```ts
+// ❌ wrong — inline types, no contracts reuse, Zod in service layer
+import { z } from "zod";
+
+export const createTaskSchema = z.object({
+  userId: z.string(),
+  title: z.string(),
+});
+
+export type CreateTasksInputService = z.infer<typeof createTaskSchema>;
+export type CreateTasksOutputService = { task: any };
+```
+
+### Barrel export
+
+```ts
+// ✅ correct — services/<feature>/index.ts
 export * from "./dto";
 export * from "./service";
 ```
 
-- **Regra:** service DTO é **interface TS pura** (sem Zod). O controller já validou com Zod; o service recebe dados tipados. Usar `import type` do `@repo/contracts` para derivar a interface (ex.: `extends CreateTaskInputDto`), adicionando campos internos como `userId`. Não importar schemas Zod no service. Ver [docs/schema-pattern.md](../../../../docs/schema-pattern.md).
+```ts
+// ❌ wrong — missing dto export or exporting internals
+export * from "./service";
+// dto not exported — consumers can't import types
+```
+
+### Test co-location
+
+Testes ficam ao lado do service (`service.test.ts`). Usar builders/mocks de `@test/`, naming `sut`, e `vi.clearAllMocks()`.
+
+```ts
+// ✅ correct — co-located, uses builders/mocks, sut naming, clearAllMocks
+import { buildTask } from "@test/builders";
+import { mockTasksRepository } from "@test/mocks";
+import { CreateTasksService } from "./service";
+
+describe("CreateTasksService", () => {
+  const repo = mockTasksRepository();
+  const sut = new CreateTasksService(repo);
+
+  beforeEach(() => { vi.clearAllMocks(); });
+
+  it("should create task", async () => {
+    vi.mocked(repo.create).mockResolvedValue(buildTask());
+    const result = await sut.execute({ userId: "u-1", title: "Test" });
+    expect(result.task).toBeDefined();
+  });
+});
+```
+
+```ts
+// ❌ wrong — manual mock creation, no builders, no sut naming
+import { CreateTasksService } from "./service";
+
+describe("CreateTasksService", () => {
+  it("should create task", async () => {
+    const repo = { create: jest.fn().mockResolvedValue({ id: "1", title: "Test" }) };
+    const service = new CreateTasksService(repo as any);
+    const result = await service.execute({ userId: "u-1", title: "Test" });
+    expect(result.task).toBeDefined();
+  });
+});
+```
 
 ## mappers/ (opcional por módulo)
 

@@ -217,3 +217,84 @@ functions:
           method: put
           authorizer:
             name: CognitoAuthorizer
+  # Sharing
+  inviteToProject:
+    handler: src/server/functions/sharing/invite-to-project/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sharing/invite
+          method: post
+          authorizer:
+            name: CognitoAuthorizer
+  getProjectInvitations:
+    handler: src/server/functions/sharing/get-project-invitations/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sharing/invitations
+          method: get
+          authorizer:
+            name: CognitoAuthorizer
+  cancelInvitation:
+    handler: src/server/functions/sharing/cancel-invitation/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sharing/invitations/{invitationId}
+          method: delete
+          authorizer:
+            name: CognitoAuthorizer
+  getProjectMembers:
+    handler: src/server/functions/sharing/get-project-members/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sharing/members
+          method: get
+          authorizer:
+            name: CognitoAuthorizer
+  updateMemberRole:
+    handler: src/server/functions/sharing/update-member-role/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sharing/members/{memberId}
+          method: patch
+          authorizer:
+            name: CognitoAuthorizer
+  removeMember:
+    handler: src/server/functions/sharing/remove-member/index.handler
+    events:
+      - httpApi:
+          path: /projects/{projectId}/sharing/members/{memberId}
+          method: delete
+          authorizer:
+            name: CognitoAuthorizer
+  getMyInvitations:
+    handler: src/server/functions/sharing/get-my-invitations/index.handler
+    events:
+      - httpApi:
+          path: /sharing/invitations/mine
+          method: get
+          authorizer:
+            name: CognitoAuthorizer
+  acceptInvitation:
+    handler: src/server/functions/sharing/accept-invitation/index.handler
+    events:
+      - httpApi:
+          path: /sharing/invitations/{invitationId}/accept
+          method: post
+          authorizer:
+            name: CognitoAuthorizer
+  declineInvitation:
+    handler: src/server/functions/sharing/decline-invitation/index.handler
+    events:
+      - httpApi:
+          path: /sharing/invitations/{invitationId}/decline
+          method: post
+          authorizer:
+            name: CognitoAuthorizer
+  userSearch:
+    handler: src/server/functions/sharing/user-search/index.handler
+    events:
+      - httpApi:
+          path: /sharing/users/search
+          method: get
+          authorizer:
+            name: CognitoAuthorizer

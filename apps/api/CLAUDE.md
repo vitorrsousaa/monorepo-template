@@ -102,9 +102,7 @@ Route visibility is determined by serverless.yml (authorizer present or not). Th
 
 ## Modules structure
 
-See **`src/app/modules/claude.md`** for the single source of truth on what goes in each subfolder (`controllers/`, `services/`, `mappers/`, `errors/`) and the one-folder-per-feature convention.
-
-**Index exports (required):** Every controller feature folder must have `index.ts` exporting both controller and schema. Every service feature folder must have `index.ts` exporting both service and dto. See `.cursor/rules/api-patterns.mdc` for the exact pattern.
+See **`src/app/modules/claude.md`** for the single source of truth on subfolder conventions (`controllers/`, `services/`, `mappers/`, `errors/`), one-folder-per-feature, and required `index.ts` barrel exports.
 
 ## Adding a New Feature — Checklist
 
@@ -176,7 +174,17 @@ export class HealthController extends Controller<"public", HealthResponse> {
 ```
 
 ### Service
+
+Every service MUST export an `IXService` interface. Controllers depend on the interface, never the concrete class. **Canonical example:** `src/app/modules/tasks/services/create/` (all 4 files).
+
+**Required files per service folder:** `service.ts`, `dto.ts`, `index.ts`, `service.test.ts`
+
 ```ts
+// ✅ correct — service.ts with interface export
+import type { IService } from "@application/interfaces/service";
+
+export interface IXService extends IService<XInput, XOutput> {}
+
 export class XService implements IXService {
   constructor(private readonly repo: IXRepository) {}
 
@@ -186,25 +194,26 @@ export class XService implements IXService {
 }
 ```
 
+```ts
+// ❌ wrong — no interface, controller depends on concrete class
+export class XService {
+  async execute(data: XInput): Promise<XOutput> { ... }
+}
+```
+
+**DTO:** Input extends `@repo/contracts` type + `userId`; Output is a typed object. No Zod in services. See `src/app/modules/CLAUDE.md` for full pattern with examples.
+
 ## Error Handling
 
-- `AppError` for domain errors: `throw new AppError("message", statusCode)`
-- Errors are handled in the **lambda adapter** (try/catch around `controller.execute(request)` + `errorHandler`). Controllers do not use try/catch or call `errorHandler`.
-- `missingFields` (used by base `Controller.validateBody`) validates via Zod schema and **throws** `ZodError` on failure; the adapter turns it into a formatted response.
+Domain errors: `throw new AppError("message", statusCode)`. All errors handled in the **lambda adapter** (try/catch + `errorHandler`) — controllers do NOT use try/catch. `Controller.validateBody` throws `ZodError` on failure; adapter formats it.
 
 ## Auth State — Cognito JWT
 
-- `requestAdapter` extracts `userId` (sub claim) do JWT do Cognito via `event.requestContext.authorizer.jwt.claims.sub`
-- Rotas com `CognitoAuthorizer` no `serverless.yml` requerem JWT válido
-- `MOCK_USER_ID` foi descontinuado; remover quando encontrado em mocks antigos
+`requestAdapter` extracts `userId` from JWT sub claim (`event.requestContext.authorizer.jwt.claims.sub`). Routes with `CognitoAuthorizer` in `serverless.yml` require valid JWT. `MOCK_USER_ID` is deprecated.
 
 ## DynamoDB State
 
-Repositórios implementam acesso ao DynamoDB via `IDatabaseClient`. Verificar configuração de ambiente para connection string.
-
-- Mock IDs (legado): `src/infra/db/dynamodb/repositories/mock-ids.ts`
-- DB schema reference: `docs/database-design.md` (single-table, PK/SK pattern)
-- Remover arquivos `*-repository.mocks.ts` quando não mais necessários
+Repos use `IDatabaseClient`. Schema: `docs/database-design.md` (single-table, PK/SK). Mock IDs (legacy): `src/infra/db/dynamodb/repositories/mock-ids.ts`. Remove `*-repository.mocks.ts` when no longer needed.
 
 ## Testing
 
@@ -216,27 +225,14 @@ Repositórios implementam acesso ao DynamoDB via `IDatabaseClient`. Verificar co
 | `pnpm --filter api test:integration:up` | Start DynamoDB Local (Docker) |
 | `pnpm --filter api test:integration:down` | Stop DynamoDB Local |
 
-**Conventions:**
-- Unit tests are co-located with source files (e.g., `service.test.ts` next to `service.ts`)
-- Services are tested with mocked repositories; controllers with mocked services
-- Builders and mocks live in `src/test/` — import from `@test/builders` and `@test/mocks`
-- Integration tests use DynamoDB Local via Docker (`docker-compose.test.yml`)
+**Conventions:** Co-located tests (`service.test.ts` next to `service.ts`). Services tested with mocked repos; controllers with mocked services. Builders/mocks: `@test/builders`, `@test/mocks`. Integration tests: DynamoDB Local via Docker. See [`src/test/CLAUDE.md`](src/test/CLAUDE.md).
 
-See [`src/test/CLAUDE.md`](src/test/CLAUDE.md) for full testing patterns and examples.
-
-## Local Dev
-
+## Local Dev & Deploy
 ```bash
-pnpm dev:api          # Start API on port 4000
-```
-
-## Deploy
-```bash
-pnpm run deploy:dev                              # full stack → dev
-pnpm run deploy:prod                             # full stack → prod
-pnpm run deploy:fn -- <functionName> <stage>     # single function
-pnpm run deploy:fn:dev -- --function <name>      # single function shortcut (dev)
-pnpm run deploy:fn:prod -- --function <name>     # single function shortcut (prod)
+pnpm run deploy:dev       # full stack → dev
+pnpm run deploy:prod      # full stack → prod
+pnpm run deploy:fn:dev -- --function <name>   # single function (dev)
+pnpm run deploy:fn:prod -- --function <name>  # single function (prod)
 ```
 
 ## Related documentation
