@@ -1,0 +1,1 @@
+export { RemoveMemberController } from "./controller";
