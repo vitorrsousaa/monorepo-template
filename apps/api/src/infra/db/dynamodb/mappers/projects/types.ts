@@ -17,4 +17,12 @@ export interface ProjectDynamoDBEntity extends BaseDynamoDBEntity {
 	deleted_at?: string | null; // ISO 8601 - soft delete timestamp
 	created_at: string; // ISO 8601
 	updated_at: string; // ISO 8601
+	/** Embedded members list for shared board access (owner + guests). Optional for backward compat. */
+	members?: Array<{
+		user_id: string;
+		name: string;
+		email: string;
+		role: string;
+		joined_at: string | null;
+	}>;
 }

@@ -19,6 +19,7 @@ describe("ProjectDynamoMapper", () => {
 				created_at: "2024-06-01T00:00:00.000Z",
 				updated_at: "2024-06-02T00:00:00.000Z",
 				entity_type: "PROJECT",
+				members: [],
 			};
 
 			const result = mapper.toDomain(dbEntity);
@@ -31,6 +32,7 @@ describe("ProjectDynamoMapper", () => {
 				description: "Work stuff",
 				deletedAt: undefined,
 				createdAt: "2024-06-01T00:00:00.000Z",
+				members: [],
 				updatedAt: "2024-06-02T00:00:00.000Z",
 			});
 		});

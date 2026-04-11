@@ -1,3 +1,4 @@
+import type { Member } from "@core/domain/sharing/member";
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
 import type { Project } from "@repo/contracts/projects";
 import type { ProjectDynamoDBEntity } from "./types";
@@ -34,7 +35,19 @@ export class ProjectDynamoMapper
 				: undefined,
 			createdAt: new Date(dbEntity.created_at).toISOString(),
 			updatedAt: new Date(dbEntity.updated_at).toISOString(),
+			members: this.membersFromDatabase(dbEntity),
 		};
+	}
+
+	membersFromDatabase(dbEntity: ProjectDynamoDBEntity): Member[] {
+		if (!dbEntity.members) return [];
+		return dbEntity.members.map((m) => ({
+			userId: m.user_id,
+			name: m.name,
+			email: m.email,
+			role: m.role as Member["role"],
+			joinedAt: m.joined_at,
+		}));
 	}
 
 	/**
