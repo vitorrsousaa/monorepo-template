@@ -2,10 +2,11 @@ import {
 	GetAllByProjectService,
 	type IGetAllByProjectService,
 } from "@application/modules/sections/services/get-all-by-project";
+import { makePermissionService } from "@factories/services/sharing/permission-service";
 import { makeSectionDynamoRepository } from "@infra/db/dynamodb/factories/section-repository-factory";
 
 export function makeGetAllByProjectService(): IGetAllByProjectService {
 	const sectionRepository = makeSectionDynamoRepository();
 
-	return new GetAllByProjectService(sectionRepository);
+	return new GetAllByProjectService(sectionRepository, makePermissionService());
 }
