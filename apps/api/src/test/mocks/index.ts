@@ -4,3 +4,4 @@ export { mockSectionsRepository } from "./mock-sections-repository";
 export { mockDatabaseClient } from "./mock-database-client";
 export { mockSharingRepository } from "./mock-sharing-repository";
 export { mockUserRepository } from "./mock-user-repository";
+export { mockPermissionService } from "./mock-permission-service";
