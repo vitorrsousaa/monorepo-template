@@ -38,6 +38,12 @@ export type TransactWriteItem = {
 		>,
 		"TableName"
 	>;
+	Update?: Omit<
+		NonNullable<
+			NonNullable<TransactWriteCommandInput["TransactItems"]>[number]["Update"]
+		>,
+		"TableName"
+	>;
 };
 
 export interface IDatabaseClient {

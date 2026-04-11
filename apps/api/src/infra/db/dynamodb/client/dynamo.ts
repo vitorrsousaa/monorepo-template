@@ -41,6 +41,9 @@ export class DatabaseClient implements IDatabaseClient {
 				...(item.Delete && {
 					Delete: { TableName: this.table.TABLE_NAME, ...item.Delete },
 				}),
+				...(item.Update && {
+					Update: { TableName: this.table.TABLE_NAME, ...item.Update },
+				}),
 			})),
 		});
 		await this.dynamoClient.send(command);
