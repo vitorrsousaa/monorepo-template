@@ -2,6 +2,7 @@ import type { IService } from "@application/interfaces/service";
 import { ProjectNotFound } from "@application/modules/projects/errors/project-not-found";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ISectionRepository } from "@data/protocols/sections/section-repository";
+import type { IPermissionService } from "@data/protocols/sharing/permission-service";
 import type { ITasksRepository } from "@data/protocols/tasks/tasks-repository";
 import {
 	PROJECTS_DEFAULT_IDS,
@@ -9,6 +10,7 @@ import {
 } from "@repo/contracts/enums";
 import type { GetProjectDetailResponse } from "@repo/contracts/projects/get-detail";
 import type { SectionsWithTasks } from "@repo/contracts/sections/entities";
+import type { SharingRole } from "@repo/contracts/sharing/types";
 import type { Task } from "@repo/contracts/tasks";
 import { calculatePercentageCompleted } from "../../functions/calculate-percentage-completed";
 import type {
@@ -34,6 +36,7 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 		private readonly projectRepository: IProjectRepository,
 		private readonly sectionRepository: ISectionRepository,
 		private readonly taskRepository: ITasksRepository,
+		private readonly permissionService?: IPermissionService,
 	) {}
 
 	async execute(
@@ -41,11 +44,24 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 	): Promise<GetProjectDetailOutputService> {
 		const { projectId, userId } = input;
 
+		let ownerUserId = userId;
+		let effectiveRole: SharingRole = "owner";
+		if (this.permissionService) {
+			const result = await this.permissionService.requireRole({
+				requesterId: userId,
+				resourceType: "project",
+				resourceId: projectId,
+				requiredRole: "viewer",
+			});
+			ownerUserId = result.ownerUserId;
+			effectiveRole = result.effectiveRole;
+		}
+
 		const [project, sections, allPendingTasks, taskCounts] = await Promise.all([
-			this.projectRepository.getById(projectId, userId),
-			this.sectionRepository.getAllByProject(projectId, userId),
-			this.taskRepository.getAllPendingByProject(projectId, userId),
-			this.taskRepository.getTaskCountsByProject(projectId, userId),
+			this.projectRepository.getById(projectId, ownerUserId),
+			this.sectionRepository.getAllByProject(projectId, ownerUserId),
+			this.taskRepository.getAllPendingByProject(projectId, ownerUserId),
+			this.taskRepository.getTaskCountsByProject(projectId, ownerUserId),
 		]);
 
 		if (!project) {
@@ -94,8 +110,12 @@ export class GetProjectDetailService implements IGetProjectDetailService {
 			totalCount,
 		);
 
+		const embeddedMembers = project.members ?? [];
 		const projectSummary: GetProjectDetailResponse["project"] = {
 			...project,
+			role: effectiveRole,
+			isShared: ownerUserId !== userId,
+			memberCount: embeddedMembers.length,
 			completedCount: taskCounts.completed,
 			totalCount,
 			percentageCompleted: percentageCompleted ?? 0,
