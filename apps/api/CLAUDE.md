@@ -142,10 +142,33 @@ export function makeXController() {
 ### Controller
 Controllers extend the base `Controller<TType, TBody>` class (do not `implements IController`). Pass `"private"` or `"public"` to `super()` so the request adapter sets `userId` correctly. Define `schema` (optional) and implement only `handle()`. No try/catch; errors are handled by the lambda adapter. Only `request.body` is validated; pass `userId` and `params` from `request` in `handle()` when the service needs them.
 
+**CRITICAL — always depend on the service interface (`IXService`), never the concrete class.** Import from the barrel (`index.ts`), not from `service.ts` directly.
+
+```ts
+// ✅ correct — imports IXService from barrel, constructor typed as interface
+import type { IGetAllProjectsByUserService } from "@application/modules/projects/services/get-all-projects-by-user";
+//                                                                                                          ^^^^^^^^^^^ barrel index, not /service.ts
+
+export class GetAllProjectsByUserController extends Controller<"private", GetAllProjectsByUserResponse> {
+  constructor(private readonly service: IGetAllProjectsByUserService) { ... }
+}
+```
+
+```ts
+// ❌ wrong — imports the concrete class from service.ts; controller is tightly coupled to implementation
+import type { GetAllProjectsByUserService } from "@application/modules/projects/services/get-all-projects-by-user/service";
+//                                                                                                                  ^^^^^^^^ direct file import
+
+export class GetAllProjectsByUserController extends Controller<"private", GetAllProjectsByUserResponse> {
+  constructor(private readonly service: GetAllProjectsByUserService) { ... }
+}
+```
+
 **Private controller (recommended for most endpoints):** Use `Controller<'private', ResponseType>` and `Controller.Request<'private'>` so `request.userId` is typed as `string` (no `?? ""` needed).
 
 ```ts
 import { Controller } from "@application/interfaces/controller";
+import type { IGetAllProjectsByUserService } from "@application/modules/projects/services/get-all-projects-by-user";
 import type { GetAllProjectsByUserResponse } from "@repo/contracts/projects";
 
 export class GetAllProjectsByUserController extends Controller<"private", GetAllProjectsByUserResponse> {
@@ -205,7 +228,39 @@ export class XService {
 
 ## Error Handling
 
-Domain errors: `throw new AppError("message", statusCode)`. All errors handled in the **lambda adapter** (try/catch + `errorHandler`) — controllers do NOT use try/catch. `Controller.validateBody` throws `ZodError` on failure; adapter formats it.
+All errors are handled in the **lambda adapter** (try/catch + `errorHandler`) — controllers do NOT use try/catch. `Controller.validateBody` throws `ZodError` on failure; adapter formats it.
+
+### Domain errors — always extend AppError
+
+Every error thrown inside a service **must be a named class that extends `AppError`**, defined in the module's `errors/` folder. Never throw a bare `Error` or an inline `new AppError(...)` from a service — the named class makes the error identifiable, reusable, and carries the correct HTTP status code.
+
+```ts
+// ✅ correct — named class in errors/, imported by the service
+// src/app/modules/projects/errors/project-not-found.ts
+import { AppError } from "@application/errors/app-error";
+
+export class ProjectNotFound extends AppError {
+  constructor() {
+    super("Project not found", 404);
+  }
+}
+
+// service.ts
+import { ProjectNotFound } from "../../errors/project-not-found";
+
+const project = await this.projectRepo.getById(projectId, ownerUserId);
+if (!project) throw new ProjectNotFound(); // ← typed, 404, identifiable
+```
+
+```ts
+// ❌ wrong — generic Error loses statusCode, lambda returns 500
+if (!project) throw new Error("Project not found");
+
+// ❌ wrong — inline AppError, not reusable, message/status scattered across service files
+if (!project) throw new AppError("Project not found", 404);
+```
+
+If the module does not yet have an `errors/` folder, create it together with the first error file. See `src/app/modules/claude.md` for the full folder convention and examples.
 
 ## Auth State — Cognito JWT
 

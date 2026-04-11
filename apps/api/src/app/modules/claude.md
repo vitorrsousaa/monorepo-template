@@ -22,6 +22,33 @@ export * from "./schema";
 
 - Em rotas que devolvem entidades de domínio, o controller usa **mappers** do módulo para converter saída do service para DTO do contrato (`@repo/contracts`).
 
+### Dependência de service — regra crítica
+
+O controller **sempre depende da interface do service** (`IXService`), nunca da classe concreta. O import deve vir do barrel (`index.ts`) da pasta do service, não do arquivo `service.ts` diretamente.
+
+```ts
+// ✅ correto — importa ICreateSectionService do barrel
+import type { ICreateSectionService } from "@application/modules/sections/services/create-section";
+
+export class CreateSectionController extends Controller<"private", CreateSectionOutput, CreateSectionInput, IProjectParams> {
+  constructor(private readonly createSectionService: ICreateSectionService) {
+    super("private");
+  }
+  // ...
+}
+```
+
+```ts
+// ❌ errado — importa a classe concreta diretamente do service.ts
+import type { UserSearchService } from "@application/modules/sharing/services/user-search/service";
+
+export class UserSearchController extends Controller<"private", UserSearchResponse> {
+  constructor(private readonly service: UserSearchService) { // ← acoplado à implementação
+    super();
+  }
+}
+```
+
 ## services/
 
 - **Uma pasta por feature**, espelhando o controller.
@@ -159,10 +186,59 @@ Exemplo: `projects/mappers/project-to-dto.ts`, `tasks/mappers/task-to-dto.ts`.
 
 ## errors/ (opcional por módulo)
 
-- Erros específicos do domínio (ex.: `ProjectNotFound`).
-- Usados por services e controllers do mesmo módulo.
+- Erros específicos do domínio (ex.: `ProjectNotFound`, `MemberNotFoundError`).
+- Usados por services (e controllers, se necessário) do mesmo módulo.
+- **Todo erro de domínio DEVE estender `AppError`** (de `@application/errors/app-error`). Nunca lance `new Error()` diretamente nos services.
 
-Exemplo: `projects/errors/project-not-found.ts`.
+### Regra: erros de domínio sempre estendem AppError
+
+`AppError` carrega `message` e `statusCode`. O lambda adapter captura qualquer `AppError` e converte para a resposta HTTP correta. Um `Error` genérico resulta em 500 mesmo que o erro seja semântico (ex.: "not found" → deveria ser 404).
+
+```ts
+// ✅ correto — classe específica em errors/, estende AppError
+// apps/api/src/app/modules/projects/errors/project-not-found.ts
+import { AppError } from "@application/errors/app-error";
+
+export class ProjectNotFound extends AppError {
+  constructor() {
+    super("Project not found", 404);
+  }
+}
+
+// service.ts — importa e lança a classe específica
+import { ProjectNotFound } from "../../errors/project-not-found";
+
+if (!project) throw new ProjectNotFound();
+```
+
+```ts
+// ❌ errado — Error genérico, statusCode perdido, lambda retorna 500
+if (!project) throw new Error("Project not found");
+
+// ❌ errado — AppError inline no service, sem classe reutilizável
+import { AppError } from "@application/errors/app-error";
+if (!project) throw new AppError("Project not found", 404);
+```
+
+### Onde criar o arquivo
+
+Cada módulo tem sua própria pasta `errors/`. Crie um arquivo por erro:
+
+```
+modules/
+├── projects/
+│   └── errors/
+│       └── project-not-found.ts   ← um arquivo por erro
+├── sharing/
+│   └── errors/
+│       ├── member-not-found.ts
+│       ├── already-member.ts
+│       └── index.ts               ← barrel opcional, mas recomendado
+```
+
+Se o módulo ainda não tem pasta `errors/`, crie-a junto com o primeiro erro.
+
+Exemplo: `projects/errors/project-not-found.ts`, `sharing/errors/member-not-found.ts`.
 
 ---
 
