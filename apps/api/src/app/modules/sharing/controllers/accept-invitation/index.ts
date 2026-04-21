@@ -1,0 +1,1 @@
+export { AcceptInvitationController } from "./controller";
