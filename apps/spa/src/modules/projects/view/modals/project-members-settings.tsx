@@ -3,6 +3,7 @@ import { Button } from "@repo/ui/button";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
 import { Plus, X } from "lucide-react";
 import { useGetProjectDetail } from "../../app/hooks/use-get-project-detail";
+import { ProjectMembersSettingsPendingInvitations } from "../components/project-members-settings-pending-invitations";
 
 interface ProjectMembersSettingsModalProps {
 	isOpen: boolean;
@@ -85,9 +86,9 @@ export function ProjectMembersSettingsModal(
 						</Button>
 					</section>
 
-					<div className="mt-4 gap-2 border-t border-border/60 pt-4">
-						Pending invites
-					</div>
+					<div className="-mx-7 h-px bg-border/60" />
+
+					<ProjectMembersSettingsPendingInvitations />
 				</div>
 			</DialogContent>
 		</Dialog>
