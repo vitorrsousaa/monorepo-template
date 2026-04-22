@@ -97,6 +97,8 @@ export class CreateTasksService {
 
 Service DTO é **interface TS pura** (sem Zod). O controller já validou com Zod; o service recebe dados tipados. `InputService` extends tipo do `@repo/contracts` + adiciona `userId`. `OutputService` é um typed object simples. Ver [docs/schema-pattern.md](../../../../docs/schema-pattern.md).
 
+**Services sem retorno:** quando o service não retorna dados (ex.: delete, cancel), use `undefined` como output type — **nunca `void`**. `void` não é um tipo concreto e causa problemas com `IService<Input, Output>`.
+
 ```ts
 // ✅ correct — extends contracts type, adds userId, output is typed object
 import type { Task } from "@repo/contracts/tasks";
@@ -109,6 +111,22 @@ export interface CreateTasksInputService extends CreateTaskInput {
 export interface CreateTasksOutputService {
   task: Task;
 }
+```
+
+```ts
+// ✅ correct — service sem retorno usa undefined
+export interface CancelInvitationInputService {
+  userId: string;
+  projectId: string;
+  invitationId: string;
+}
+
+export type CancelInvitationOutputService = undefined;
+```
+
+```ts
+// ❌ wrong — void não é tipo concreto, quebra IService<Input, Output>
+export type CancelInvitationOutputService = void;
 ```
 
 ```ts

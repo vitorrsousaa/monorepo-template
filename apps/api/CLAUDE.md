@@ -224,7 +224,7 @@ export class XService {
 }
 ```
 
-**DTO:** Input extends `@repo/contracts` type + `userId`; Output is a typed object. No Zod in services. See `src/app/modules/CLAUDE.md` for full pattern with examples.
+**DTO:** Input extends `@repo/contracts` type + `userId`; Output is a typed object. No Zod in services. Services sem retorno usam `undefined` como output type (nunca `void`). See `src/app/modules/CLAUDE.md` for full pattern with examples.
 
 ## Error Handling
 
