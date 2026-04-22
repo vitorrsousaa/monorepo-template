@@ -21,10 +21,16 @@ const AUTH = {
 	ACCOUNT_INFO: ["auth", "account-info"],
 };
 
+const SHARING = {
+	MEMBERS: (projectId: string) => ["sharing", "members", projectId],
+	INVITATIONS: (projectId: string) => ["sharing", "invitations", projectId],
+};
+
 export const QUERY_KEYS = {
 	TASKS,
 	PROJECTS,
 	SECTIONS,
 	GOALS,
 	AUTH,
+	SHARING,
 } as const;
