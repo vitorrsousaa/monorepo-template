@@ -45,7 +45,7 @@ export class SectionDynamoRepository implements ISectionRepository {
 
 		const resultSections = queryResult ? queryResult : [];
 
-		const sections = resultSections.map(this.mapper.toDomain);
+		const sections = resultSections.map((s) => this.mapper.toDomain(s));
 
 		return sections;
 	}

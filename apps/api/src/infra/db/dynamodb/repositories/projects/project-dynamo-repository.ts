@@ -1,8 +1,8 @@
+import { randomUUID } from "node:crypto";
 import type { ProjectMapper } from "@data/protocols/projects/project-mapper";
 import type { IProjectRepository } from "@data/protocols/projects/project-repository";
 import type { ProjectDynamoDBEntity } from "@infra/db/dynamodb/mappers/projects/types";
 import type { Project } from "@repo/contracts/projects";
-import { randomUUID } from "node:crypto";
 import type { IDatabaseClient } from "../../contracts/client";
 
 /**
@@ -40,7 +40,7 @@ export class ProjectDynamoRepository implements IProjectRepository {
 
 		const projects = result || [];
 
-		return projects.map(this.mapper.toDomain);
+		return projects.map((p) => this.mapper.toDomain(p));
 	}
 
 	async getById(projectId: string, userId: string): Promise<Project | null> {
