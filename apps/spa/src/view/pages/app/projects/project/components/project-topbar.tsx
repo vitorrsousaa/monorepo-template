@@ -4,6 +4,7 @@ import { Button } from "@repo/ui/button";
 import { LayoutGrid, Plus, Settings } from "lucide-react";
 import { useReducer } from "react";
 import { Link } from "react-router-dom";
+import { ProjectMembersButton } from "./project-members-button";
 
 type ProjectTopbarProps = {
 	projectName: string;
@@ -41,6 +42,8 @@ export function ProjectTopbar({ projectName, projectId }: ProjectTopbarProps) {
 					>
 						<Settings className="h-3.5 w-3.5" />
 					</Button>
+					<ProjectMembersButton projectId={projectId} />
+
 					<Button
 						size="sm"
 						className="h-8 gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:opacity-90"
