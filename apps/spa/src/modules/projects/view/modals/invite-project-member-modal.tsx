@@ -1,7 +1,13 @@
+import { useInviteToProject } from "@/modules/sharing/app/hooks/use-invite-to-project";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
+import { toast } from "@repo/ui/sonner";
 import { useGetProjectDetail } from "../../app/hooks/use-get-project-detail";
 import { ProjectMembersSettingsPendingInvitations } from "../components/project-members-settings-pending-invitations";
+import { InviteProjectMemberForm } from "../forms/invite-project-member";
+import type { InviteProjectMemberFormValues } from "../forms/invite-project-member/invite-project-member-form.schema";
+
+const INVITE_FORM_ID = "invite-project-member-form";
 
 interface InviteProjectMemberModalProps {
 	isOpen: boolean;
@@ -19,9 +25,18 @@ export function InviteProjectMemberModal({
 		enabled: isOpen,
 	});
 
+	const { inviteToProjectAsync, isInviteToProjectPending } =
+		useInviteToProject();
+
 	if (!projectDetail) return null;
 
 	const { project } = projectDetail;
+
+	const handleInviteSubmit = async (data: InviteProjectMemberFormValues) => {
+		await inviteToProjectAsync({ projectId, body: data });
+
+		toast.success("Invite sent successfully");
+	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
@@ -38,6 +53,12 @@ export function InviteProjectMemberModal({
 						</div>
 					</div>
 
+					<InviteProjectMemberForm
+						formId={INVITE_FORM_ID}
+						isSubmitting={isInviteToProjectPending}
+						onSubmit={handleInviteSubmit}
+					/>
+
 					<div className="-mx-7 h-px bg-border/60" />
 
 					<ProjectMembersSettingsPendingInvitations />
@@ -48,6 +69,7 @@ export function InviteProjectMemberModal({
 							variant="outline"
 							className="h-9 rounded-lg px-4 text-xs font-medium"
 							onClick={onClose}
+							disabled={isInviteToProjectPending}
 						>
 							Back
 						</Button>
@@ -55,6 +77,9 @@ export function InviteProjectMemberModal({
 							type="submit"
 							className="h-9 rounded-lg px-5 text-xs font-medium text-white hover:opacity-90"
 							style={{ backgroundColor: project.color }}
+							form={INVITE_FORM_ID}
+							disabled={isInviteToProjectPending}
+							loading={isInviteToProjectPending}
 						>
 							Send Invite
 						</Button>
