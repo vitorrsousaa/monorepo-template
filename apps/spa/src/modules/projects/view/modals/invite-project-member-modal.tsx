@@ -61,7 +61,7 @@ export function InviteProjectMemberModal({
 
 					<div className="-mx-7 h-px bg-border/60" />
 
-					<ProjectMembersSettingsPendingInvitations />
+					<ProjectMembersSettingsPendingInvitations projectId={projectId} />
 
 					<div className="mt-4 flex justify-end gap-2 border-t border-border/60 pt-4">
 						<Button

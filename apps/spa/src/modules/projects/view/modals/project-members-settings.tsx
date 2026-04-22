@@ -102,7 +102,7 @@ export function ProjectMembersSettingsModal(
 
 						<div className="-mx-7 h-px bg-border/60" />
 
-						<ProjectMembersSettingsPendingInvitations />
+						<ProjectMembersSettingsPendingInvitations projectId={projectId} />
 					</div>
 				</DialogContent>
 			</Dialog>
