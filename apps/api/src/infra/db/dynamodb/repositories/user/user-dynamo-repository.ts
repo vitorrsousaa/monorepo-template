@@ -24,7 +24,19 @@ export class UserDynamoRepository implements IUserRepository {
 		};
 		const dbEntity = this.mapper.toDatabase(newUser);
 
-		await this.dynamoClient.create(dbEntity);
+		await this.dynamoClient.transactWrite([
+			{ Put: { Item: dbEntity } },
+			{
+				Put: {
+					Item: {
+						PK: `USER_EMAIL#${data.email}`,
+						SK: "METADATA",
+						entity_type: "USER_EMAIL_LOOKUP",
+						user_id: data.id,
+					},
+				},
+			},
+		]);
 
 		return newUser;
 	}
