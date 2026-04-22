@@ -2,9 +2,9 @@ import type {
 	InvitationStatus,
 	ResourceType,
 	SharingRole,
-} from "../types/types";
+} from "@repo/contracts/sharing/types";
 
-export interface InvitationDto {
+export interface Invitation {
 	id: string;
 	resourceType: ResourceType;
 	resourceId: string;
@@ -15,4 +15,5 @@ export interface InvitationDto {
 	status: InvitationStatus;
 	expiresAt: string;
 	createdAt: string;
+	updatedAt: string;
 }
