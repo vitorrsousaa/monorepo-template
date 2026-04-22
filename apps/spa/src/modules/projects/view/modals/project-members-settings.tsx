@@ -1,7 +1,7 @@
 import { useGetProjectMembers } from "@/modules/sharing/app/hooks/use-get-project-members";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useGetProjectDetail } from "../../app/hooks/use-get-project-detail";
 
 interface ProjectMembersSettingsModalProps {
@@ -28,9 +28,6 @@ export function ProjectMembersSettingsModal(
 	if (!projectDetail) return null;
 
 	const { project } = projectDetail;
-
-	console.log(projectDetail);
-	console.log(members);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
@@ -59,9 +56,34 @@ export function ProjectMembersSettingsModal(
 						</Button>
 					</div>
 
-					<div className="mt-4 gap-2 border-t border-border/60 pt-4">
-						Invite someone to collaborate
-					</div>
+					<section
+						className="flex flex-col gap-3 rounded-[14px] border border-solid p-3 px-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
+						style={{
+							backgroundColor: `${project.color}22`,
+							borderColor: `${project.color}40`,
+						}}
+					>
+						<div className="min-w-0 space-y-0.5">
+							<p
+								className="text-xs font-medium"
+								style={{ color: project.color }}
+							>
+								Invite someone to collaborate
+							</p>
+							<p className="text-[11px] text-foreground/70">
+								They'll receive an email invitation to join this project
+							</p>
+						</div>
+						<Button
+							type="button"
+							size="sm"
+							className="shrink-0 whitespace-nowrap border-0 text-white shadow-none hover:opacity-90 [&_svg]:size-[11px]"
+							style={{ backgroundColor: project.color }}
+						>
+							<Plus className="size-[11px] shrink-0" aria-hidden />
+							Invite member
+						</Button>
+					</section>
 
 					<div className="mt-4 gap-2 border-t border-border/60 pt-4">
 						Pending invites
