@@ -37,10 +37,7 @@ export class GetProjectInvitationsService
 			await this.sharingRepo.getAllInvitationsByProject(projectId);
 
 		return {
-			invitations: invitations.map(({ updatedAt: _, ...inv }) => ({
-				...inv,
-				role: inv.role,
-			})),
+			invitations,
 		};
 	}
 }

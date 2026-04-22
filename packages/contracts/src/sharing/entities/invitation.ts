@@ -15,4 +15,7 @@ export interface InvitationDto {
 	status: InvitationStatus;
 	expiresAt: string;
 	createdAt: string;
+	updatedAt: string;
 }
+
+export type Invitation = InvitationDto;
