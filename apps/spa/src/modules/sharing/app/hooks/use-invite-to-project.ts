@@ -15,9 +15,6 @@ export function useInviteToProject() {
 			inviteToProjectService(variables),
 		onSuccess: (_data, variables) => {
 			queryClient.invalidateQueries({
-				queryKey: QUERY_KEYS.SHARING.MEMBERS(variables.projectId),
-			});
-			queryClient.invalidateQueries({
 				queryKey: QUERY_KEYS.SHARING.INVITATIONS(variables.projectId),
 			});
 		},
